@@ -8,12 +8,14 @@ const useStyles = createStyles((theme, _params, getRef) => ({
     },
     scrollbarWidth: "none",
     msOverflowStyle: "none",
+    position: "sticky",
+    top: 0,
+    backgroundColor: theme.colors.dark[7],
+    zIndex: 1,
   },
   chipGroup: {
     paddingTop: theme.spacing.md,
     paddingBottom: theme.spacing.md,
-    position: "sticky",
-    top: 0,
     width: "max-content",
   },
   chip: {
