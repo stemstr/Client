@@ -13,12 +13,17 @@ import { CustomFonts } from "../theme/CustomFonts";
 import { ApplicationContainer } from "../components/ApplicationContainer/ApplicationContainer";
 import { NostrProvider } from "nostr-react";
 import { reduxWrapper } from "../store/Store";
+import NostrStateProvider from "../store/NostrStateProvider";
 
 const relayUrls = [
   "wss://eden.nostr.land",
   "wss://puravida.nostr.land",
   "wss://nostr.milou.lol",
   "wss://nostr.wine",
+  // "wss://relay.damus.io",
+  // "wss://relay.snort.social",
+  // "wss://nos.lol",
+  // "wss://relay.current.fyi",
 ];
 
 function App(props: AppProps & { colorScheme: ColorScheme }) {
@@ -67,12 +72,14 @@ function App(props: AppProps & { colorScheme: ColorScheme }) {
           withNormalizeCSS
         >
           <CustomFonts />
-          <NostrProvider relayUrls={relayUrls} debug={true}>
-            <NotificationsProvider>
-              <ApplicationContainer>
-                <Component {...pageProps} />
-              </ApplicationContainer>
-            </NotificationsProvider>
+          <NostrProvider relayUrls={relayUrls} debug={false}>
+            <NostrStateProvider>
+              <NotificationsProvider>
+                <ApplicationContainer>
+                  <Component {...pageProps} />
+                </ApplicationContainer>
+              </NotificationsProvider>
+            </NostrStateProvider>
           </NostrProvider>
         </MantineProvider>
       </ColorSchemeProvider>

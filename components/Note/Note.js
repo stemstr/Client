@@ -10,11 +10,6 @@ export default function Note(props) {
     pubkey: event.pubkey,
   });
   const { classes } = useStyles();
-  // console.log(event);
-
-  useEffect(() => {
-    // console.log(userData);
-  }, [userData]);
 
   return (
     <Box className={classes.box}>

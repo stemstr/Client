@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useNostrEvents, dateToUnix } from "nostr-react";
 import Note from "../Note/Note";
 import { Stack } from "@mantine/core";
