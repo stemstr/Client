@@ -1,4 +1,5 @@
-import { Box, Group, Text } from '@mantine/core';
+import { Box, Group, Text } from "@mantine/core";
+import { BellIcon, SearchIcon } from "../../icons/StemstrIcon";
 
 export default function GlobalFeedHeader() {
   return (
@@ -18,7 +19,10 @@ export default function GlobalFeedHeader() {
       >
         Stemstr
       </Text>
-      <Text>🔔</Text>
+      <Group spacing={48}>
+        <SearchIcon />
+        <BellIcon />
+      </Group>
     </Box>
   );
 }

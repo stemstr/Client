@@ -1,8 +1,17 @@
-import { Avatar, Box, Group, Stack, Text } from "@mantine/core";
+import { Avatar, Box, Center, Group, Stack, Text } from "@mantine/core";
 import useStyles from "./Note.styles";
 import NoteAction from "../NoteAction/NoteAction";
 import { dateToUnix, useProfile } from "nostr-react";
 import { useEffect } from "react";
+import {
+  DownloadIcon,
+  MoreIcon,
+  CommentIcon,
+  ZapIcon,
+  ShakaIcon,
+  RepostIcon,
+  VerifiedIcon,
+} from "../../icons/StemstrIcon";
 
 export default function Note(props) {
   const { event } = props;
@@ -15,7 +24,7 @@ export default function Note(props) {
     <Box className={classes.box}>
       <Stack>
         <Group position="apart">
-          <Group>
+          <Group spacing={6}>
             <Avatar
               src={userData?.picture}
               alt={userData?.name}
@@ -27,17 +36,36 @@ export default function Note(props) {
                 ? userData.display_name
                 : `@${event.pubkey.substring(0, 5)}...`}
             </Text>
-            <Text>✅</Text>
+            <VerifiedIcon width={14} height={14} />
             <Text size="xs" color="rgba(255, 255, 255, 0.74)">
               {userData?.name ? `@${userData.name}` : ""}
             </Text>
             <Text size="sm" color="rgba(255, 255, 255, 0.38)">
-              {Math.floor((dateToUnix(new Date()) - event.created_at) / 60)}m
+              · {Math.floor((dateToUnix(new Date()) - event.created_at) / 60)}m
             </Text>
           </Group>
           <Group position="right">
-            <Text>⬇️</Text>
-            <Text>⋮</Text>
+            <Center
+              sx={(theme) => ({
+                width: 28,
+                height: 28,
+                borderRadius: "50%",
+                border: "1px solid",
+                borderColor: theme.colors.gray[2],
+                color: theme.white,
+              })}
+            >
+              <DownloadIcon width={12} height={12} />
+            </Center>
+            <Center
+              sx={(theme) => ({
+                width: 28,
+                height: 28,
+                color: theme.colors.gray[2],
+              })}
+            >
+              <MoreIcon width={24} height={24} />
+            </Center>
           </Group>
         </Group>
         <Box className={classes.player}></Box>
@@ -49,11 +77,18 @@ export default function Note(props) {
           <Text>#synthpad</Text>
         </Group>
         <Group position="apart">
-          <NoteAction>💬 12</NoteAction>
-          <NoteAction>🔁 4</NoteAction>
-          <NoteAction>🤙🏻 4</NoteAction>
-          <NoteAction>⚡️ 4</NoteAction>
-          <NoteAction>✉️</NoteAction>
+          <NoteAction sx={{ color: "white" }}>
+            <CommentIcon width={18} height={18} /> 12
+          </NoteAction>
+          <NoteAction>
+            <RepostIcon width={18} height={18} /> 4
+          </NoteAction>
+          <NoteAction>
+            <ShakaIcon width={18} height={18} /> 4
+          </NoteAction>
+          <NoteAction>
+            <ZapIcon width={18} height={18} /> 4
+          </NoteAction>
         </Group>
       </Stack>
     </Box>
