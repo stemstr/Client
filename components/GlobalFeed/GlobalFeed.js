@@ -4,7 +4,7 @@ import Note from "../Note/Note";
 import { Stack } from "@mantine/core";
 
 export default function GlobalFeed() {
-  const startTime = useRef(dateToUnix(new Date()) - 60 * 5); // Make sure current time isn't re-rendered
+  const startTime = useRef(dateToUnix(new Date()) - 60 * 0); // Make sure start time isn't re-rendered
 
   const { events } = useNostrEvents({
     filter: {
