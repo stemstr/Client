@@ -1,18 +1,22 @@
-# Mantine Next Template
+# Stemstr Client
 
-Get started with Mantine + Next with just a few button clicks.
-Click `Use this template` button at the header of repository or [follow this link](https://github.com/mantinedev/mantine-next-template/generate) and
-create new repository with `@mantine` packages. Note that you have to be logged in to GitHub to generate template.
+Web client/PWA for stemstr. Stemstr is a Nostr client that facilitates collaboration between music artists/producers.
 
-## Features
+## Local environment
 
-This template comes with several essential features:
+1. Copy .env into .env.local and set your local environment variables.
 
-- Server side rendering setup for Mantine
-- Color scheme is stored in cookie to avoid color scheme mismatch after hydration
-- Storybook with color scheme toggle
-- Jest with react testing library
-- ESLint setup with [eslint-config-mantine](https://github.com/mantinedev/eslint-config-mantine)
+2. Install packages:
+
+```
+yarn
+```
+
+3. Start dev server:
+
+```
+npm run dev
+```
 
 ## npm scripts
 
