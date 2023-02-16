@@ -16,10 +16,15 @@ import { reduxWrapper } from "../store/Store";
 import NostrStateProvider from "../store/NostrStateProvider";
 
 const relayUrls = [
+  process.env.NEXT_PUBLIC_STEMSTR_RELAY,
+
+  // paid relays
   "wss://eden.nostr.land",
   "wss://puravida.nostr.land",
   "wss://nostr.milou.lol",
   "wss://nostr.wine",
+
+  // public relays
   // "wss://relay.damus.io",
   // "wss://relay.snort.social",
   // "wss://nos.lol",
