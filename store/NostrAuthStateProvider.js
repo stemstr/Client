@@ -1,19 +1,27 @@
 import { useProfile } from "nostr-react";
+import { nip19 } from "nostr-tools";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
+import { cacheProfile, getCachedProfile } from "../cache/cache";
 import { setAuthUser } from "./Auth";
 
 export default function NostrStateProvider({ pk }) {
   const dispatch = useDispatch();
-  const { data: userData } = useProfile({
+
+  const npub = pk ? nip19.npubEncode(pk) : null;
+  const cachedProfile = getCachedProfile(npub);
+  cacheProfile.npub = npub;
+  const { data: fetchedProfile } = useProfile({
     pubkey: pk,
+    enabled: !!pk,
   });
+  const profile = fetchedProfile || cachedProfile;
 
   useEffect(() => {
-    if (userData?.npub) {
-      dispatch(setAuthUser(userData));
+    if (profile) {
+      dispatch(setAuthUser(profile));
     }
-  }, [userData?.npub]);
+  }, [profile?.npub]);
 
   return <></>;
 }
