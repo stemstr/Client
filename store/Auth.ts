@@ -1,13 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { AppState } from "./Store";
 import { HYDRATE } from "next-redux-wrapper";
-import { User, usersSlice } from "./Users";
+import { User } from "./Users";
 import { nip19, getPublicKey } from "nostr-tools";
+import { cacheAuthState } from "../cache/cache";
 
 // Type for our state
 export interface AuthState {
-  sk: string | null; // hex
-  nsec: string | null;
+  sk?: string | null; // hex
+  nsec?: string | null;
   user: User;
 }
 
@@ -18,6 +19,7 @@ const initialState: AuthState = {
   user: {
     pk: "",
     npub: "",
+    metadata: {},
   },
 };
 
@@ -26,6 +28,12 @@ export const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
+    setAuthState: (state, action) => {
+      return {
+        ...state,
+        ...action.payload,
+      };
+    },
     setSK: (state, action) => {
       // TODO: Validate keys
       let sk, nsec, pk, npub;
@@ -45,12 +53,14 @@ export const authSlice = createSlice({
       state.nsec = nsec;
       state.user.pk = pk;
       state.user.npub = npub;
+      cacheAuthState(state);
     },
     setAuthUser: (state, action) => {
       let user = action.payload;
       let { type, data } = nip19.decode(user.npub);
       user.pk = data;
       state.user = user;
+      cacheAuthState(state);
     },
     reset: () => initialState,
   },
@@ -65,7 +75,7 @@ export const authSlice = createSlice({
   },
 });
 
-export const { setSK, setAuthUser, reset } = authSlice.actions;
+export const { setSK, setAuthUser, reset, setAuthState } = authSlice.actions;
 
 export const selectAuthState = (state: AppState) => state.auth;
 

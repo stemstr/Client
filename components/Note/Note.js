@@ -2,7 +2,8 @@ import { Avatar, Box, Center, Group, Stack, Text } from "@mantine/core";
 import useStyles from "./Note.styles";
 import NoteAction from "../NoteAction/NoteAction";
 import { dateToUnix, useProfile } from "nostr-react";
-import { useEffect } from "react";
+import { nip19 } from "nostr-tools";
+import { useEffect, useState } from "react";
 import {
   DownloadIcon,
   MoreIcon,
@@ -12,13 +13,26 @@ import {
   RepostIcon,
   VerifiedIcon,
 } from "../../icons/StemstrIcon";
+import { cacheProfile, getCachedProfile } from "../../cache/cache";
 
 export default function Note(props) {
   const { event } = props;
-  const { data: userData } = useProfile({
+  const cachedProfile = getCachedProfile(nip19.npubEncode(event.pubkey));
+  const [userData, setUserData] = useState(cachedProfile);
+  const [profileFetched, setProfileFetched] = useState(false);
+  const { data } = useProfile({
     pubkey: event.pubkey,
+    enabled: !!event.pubkey && !userData,
   });
   const { classes } = useStyles();
+
+  useEffect(() => {
+    if (!profileFetched && data) {
+      setProfileFetched(true);
+      setUserData(data);
+      cacheProfile(data.npub, data);
+    }
+  }, [data, setUserData]);
 
   return (
     <Box className={classes.box}>

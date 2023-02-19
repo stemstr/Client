@@ -1,21 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { AppState } from "./Store";
 import { HYDRATE } from "next-redux-wrapper";
+import { Metadata } from "nostr-react";
 
 // Type for User
 export interface User {
-  pk: string; // hex
-  npub: string;
-  name?: string;
-  username?: string;
-  display_name?: string;
-  about?: string;
-  picture?: string;
-  website?: string;
-  banner?: string;
-  nip05?: string;
-  lud06?: string;
-  lud16?: string;
+  pk?: string; // hex
+  npub?: string;
+  metadata?: Metadata;
 }
 
 // Type for our state

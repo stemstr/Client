@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { useProfile } from "nostr-react";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { cacheAuthState } from "../../cache/cache";
 import { selectAuthState, reset as logout } from "../../store/Auth";
 
 export default function ProfilePage() {
@@ -19,8 +20,8 @@ export default function ProfilePage() {
   }, [userData]);
 
   const handleLogout = () => {
-    console.log("HERE");
     dispatch(logout());
+    cacheAuthState(null);
     router.push("/login");
   };
 
@@ -37,7 +38,7 @@ export default function ProfilePage() {
         <Text size="lg" color="white">
           {userData?.display_name
             ? userData.display_name
-            : `@${userData?.pk.substring(0, 5)}...`}
+            : `@${userData?.pk?.substring(0, 5)}...`}
         </Text>
         <Text>✅</Text>
         <Text size="xs" color="rgba(255, 255, 255, 0.74)">
