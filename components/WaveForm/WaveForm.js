@@ -10,7 +10,6 @@ export default function WaveForm({ audioFile }) {
 
   return (
     <Group
-      spacing="auto"
       grow
       spacing={4}
       sx={(theme) => ({
