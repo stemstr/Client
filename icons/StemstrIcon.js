@@ -12,6 +12,10 @@ import Collection from "./collection.svg";
 import Repost from "./repost.svg";
 import Shaka from "./shaka.svg";
 import Verified from "./verified.svg";
+import Stem from "./stem.svg";
+import Tags from "./Line icons/Finance & eCommerce/tag-03.svg";
+import Play from "./Line icons/Media & devices/play.svg";
+import Stop from "./Line icons/Media & devices/stop.svg";
 
 export default function StemstrIcon({ children }) {
   return children;
@@ -125,6 +129,38 @@ export const VerifiedIcon = (props) => {
   return (
     <StemstrIcon>
       <Verified {...props} />
+    </StemstrIcon>
+  );
+};
+
+export const StemIcon = (props) => {
+  return (
+    <StemstrIcon>
+      <Stem {...props} />
+    </StemstrIcon>
+  );
+};
+
+export const TagsIcon = (props) => {
+  return (
+    <StemstrIcon>
+      <Tags {...props} />
+    </StemstrIcon>
+  );
+};
+
+export const PlayIcon = (props) => {
+  return (
+    <StemstrIcon>
+      <Play {...props} />
+    </StemstrIcon>
+  );
+};
+
+export const StopIcon = (props) => {
+  return (
+    <StemstrIcon>
+      <Stop {...props} />
     </StemstrIcon>
   );
 };

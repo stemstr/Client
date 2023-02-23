@@ -7,7 +7,7 @@ export default function GlobalFeedHeader() {
       component={Group}
       position="apart"
       sx={(theme) => ({
-        // paddingBottom: theme.spacing.md,
+        marginBottom: theme.spacing.md,
       })}
     >
       <Text

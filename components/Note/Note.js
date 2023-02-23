@@ -1,4 +1,4 @@
-import { Avatar, Box, Center, Group, Stack, Text } from "@mantine/core";
+import { Avatar, Box, Center, Chip, Group, Stack, Text } from "@mantine/core";
 import useStyles from "./Note.styles";
 import NoteAction from "../NoteAction/NoteAction";
 import { dateToUnix, useProfile } from "nostr-react";
@@ -85,10 +85,17 @@ export default function Note(props) {
         <Box className={classes.player}></Box>
         <Text sx={{ overflowWrap: "anywhere" }}>{event.content}</Text>
         <Group position="left">
-          <Text>#hiphop</Text>
+          {event?.tags
+            ?.filter((tag) => tag[0] == "t")
+            .map((tag, index) => (
+              <Chip radius="md" key={index}>
+                #{tag[1]}
+              </Chip>
+            ))}
+          {/* <Text>#hiphop</Text>
           <Text>#soul</Text>
           <Text>#indie</Text>
-          <Text>#synthpad</Text>
+          <Text>#synthpad</Text> */}
         </Group>
         <Group position="apart">
           <NoteAction sx={{ color: "white" }}>
