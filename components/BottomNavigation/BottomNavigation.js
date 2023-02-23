@@ -1,16 +1,6 @@
-import {
-  Anchor,
-  Avatar,
-  Box,
-  Center,
-  Footer,
-  Group,
-  Text,
-} from "@mantine/core";
-import Link from "next/link";
+import { Avatar, Center, Footer, Group, Text } from "@mantine/core";
 import useStyles from "./BottomNavigation.styles";
 import BottomNavigationItem from "../BottomNavigationItem/BottomNavigationItem";
-import { useSelector } from "react-redux";
 import { selectAuthState } from "../../store/Auth";
 import {
   CompassIcon,
@@ -19,10 +9,17 @@ import {
   PlusIcon,
   CollectionIcon,
 } from "../../icons/StemstrIcon";
+import { useDispatch, useSelector } from "react-redux";
+import { openSheet } from "../../store/Sheets";
 
 export default function BottomNavigation() {
   const { classes } = useStyles();
   const authState = useSelector(selectAuthState);
+  const dispatch = useDispatch();
+
+  const openShareSheet = () => {
+    dispatch(openSheet("shareSheet"));
+  };
 
   return (
     <Footer
@@ -53,6 +50,7 @@ export default function BottomNavigation() {
         </BottomNavigationItem>
         <BottomNavigationItem>
           <Center
+            onClick={openShareSheet}
             sx={{
               width: "100%",
               height: "100%",
@@ -60,6 +58,7 @@ export default function BottomNavigation() {
               background:
                 "linear-gradient(142.52deg, #856BA3 9.14%, rgba(129, 36, 238, 0.76) 90.68%)",
               color: "white",
+              cursor: "pointer",
             }}
           >
             <PlusIcon />
