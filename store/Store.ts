@@ -4,6 +4,7 @@ import { createWrapper } from "next-redux-wrapper";
 import { authSlice } from "./Auth";
 import { sheetsSlice } from "./Sheets";
 import { relaysSlice } from "./Relays";
+import { eventsSlice } from "./Events";
 
 const makeStore = () =>
   configureStore({
@@ -12,6 +13,7 @@ const makeStore = () =>
       [authSlice.name]: authSlice.reducer,
       [sheetsSlice.name]: sheetsSlice.reducer,
       [relaysSlice.name]: relaysSlice.reducer,
+      [eventsSlice.name]: eventsSlice.reducer,
     },
     devTools: true,
   });

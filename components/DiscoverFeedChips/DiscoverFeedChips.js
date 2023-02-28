@@ -1,7 +1,7 @@
 import { Box, Chip } from "@mantine/core";
-import useStyles from "./GlobalFeedChips.styles";
+import useStyles from "./DiscoverFeedChips.styles";
 
-export default function GlobalFeedChips() {
+export default function DiscoverFeedChips() {
   const { classes } = useStyles();
   const chipNames = [
     "🔥 Trending now",
