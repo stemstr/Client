@@ -1,4 +1,13 @@
-import { Avatar, Box, Center, Chip, Group, Stack, Text } from "@mantine/core";
+import {
+  Anchor,
+  Avatar,
+  Box,
+  Center,
+  Chip,
+  Group,
+  Stack,
+  Text,
+} from "@mantine/core";
 import useStyles from "./Note.styles";
 import NoteAction from "../NoteAction/NoteAction";
 import { dateToUnix, useProfile } from "nostr-react";
@@ -14,6 +23,7 @@ import {
   VerifiedIcon,
 } from "../../icons/StemstrIcon";
 import { cacheProfile, getCachedProfile } from "../../cache/cache";
+import Link from "next/link";
 
 export default function Note(props) {
   const { event } = props;
@@ -39,12 +49,14 @@ export default function Note(props) {
       <Stack>
         <Group position="apart">
           <Group spacing={6}>
-            <Avatar
-              src={userData?.picture}
-              alt={userData?.name}
-              size={42}
-              radius="50%"
-            />
+            <Anchor component={Link} href={`/user/${event.pubkey}`}>
+              <Avatar
+                src={userData?.picture}
+                alt={userData?.name}
+                size={42}
+                radius="50%"
+              />
+            </Anchor>
             <Text size="lg" color="white">
               {userData?.display_name
                 ? userData.display_name

@@ -1,12 +1,12 @@
-import GlobalFeed from "../components/GlobalFeed/GlobalFeed";
-import GlobalFeedHeader from "../components/GlobalFeedHeader/GlobalFeedHeader";
+import HomeFeed from "../components/HomeFeed/HomeFeed";
+import HomeFeedHeader from "../components/HomeFeedHeader/HomeFeedHeader";
 
 export default function HomePage() {
   return (
     <>
       {/* <ColorSchemeToggle /> */}
-      <GlobalFeedHeader />
-      <GlobalFeed />
+      <HomeFeedHeader />
+      <HomeFeed />
     </>
   );
 }

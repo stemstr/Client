@@ -1,6 +1,6 @@
 import { Avatar, Button, Group, Image, Text } from "@mantine/core";
 import { useRouter } from "next/router";
-import { useProfile } from "nostr-react";
+import { useProfile } from "../../nostr/hooks/useProfile";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { cacheAuthState } from "../../cache/cache";

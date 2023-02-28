@@ -1,7 +1,7 @@
 import { Box, Group, Text } from "@mantine/core";
 import { BellIcon, SearchIcon } from "../../icons/StemstrIcon";
 
-export default function GlobalFeedHeader() {
+export default function HomeFeedHeader() {
   return (
     <Box
       component={Group}

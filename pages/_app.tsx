@@ -11,7 +11,7 @@ import { NotificationsProvider } from "@mantine/notifications";
 import stemstrTheme from "../theme/Theme";
 import { CustomFonts } from "../theme/CustomFonts";
 import { ApplicationContainer } from "../components/ApplicationContainer/ApplicationContainer";
-import { NostrProvider } from "nostr-react";
+import NostrProvider from "../nostr/NostrProvider";
 import { reduxWrapper } from "../store/Store";
 import NostrStateProvider from "../store/NostrStateProvider";
 
