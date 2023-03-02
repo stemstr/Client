@@ -10,9 +10,10 @@ import {
 } from "@mantine/core";
 import useStyles from "./Note.styles";
 import NoteAction from "../NoteAction/NoteAction";
+import SoundPlayer from "../SoundPlayer/SoundPlayer";
 import { dateToUnix, useProfile } from "nostr-react";
 import { nip19 } from "nostr-tools";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   DownloadIcon,
   MoreIcon,
@@ -94,8 +95,10 @@ export default function Note(props) {
             </Center>
           </Group>
         </Group>
-        <Box className={classes.player}></Box>
-        <Text sx={{ overflowWrap: "anywhere" }}>{event.content}</Text>
+        <SoundPlayer event={event} />
+        <Text c="white" sx={{ overflowWrap: "anywhere" }}>
+          {event.content}
+        </Text>
         <Group position="left">
           {event?.tags
             ?.filter((tag) => tag[0] == "t")
@@ -104,10 +107,6 @@ export default function Note(props) {
                 #{tag[1]}
               </Chip>
             ))}
-          {/* <Text>#hiphop</Text>
-          <Text>#soul</Text>
-          <Text>#indie</Text>
-          <Text>#synthpad</Text> */}
         </Group>
         <Group position="apart">
           <NoteAction sx={{ color: "white" }}>

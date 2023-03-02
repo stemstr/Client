@@ -1,7 +1,7 @@
 import { Box, Group } from "@mantine/core";
 import { useEffect, useRef } from "react";
 
-export default function WaveForm({ audioFile }) {
+export default function WaveForm({ audioFile, playProgress = 0 }) {
   const waveFormData = useRef(null);
 
   useEffect(() => {
@@ -14,7 +14,7 @@ export default function WaveForm({ audioFile }) {
       spacing={4}
       sx={(theme) => ({
         height: 64,
-        flexGrow: 1,
+        flexGrow: "1!important",
       })}
     >
       {waveFormData.current?.map((n, index) => (
@@ -22,7 +22,10 @@ export default function WaveForm({ audioFile }) {
           key={index}
           sx={(theme) => ({
             height: n,
-            backgroundColor: theme.colors.dark[2],
+            backgroundColor:
+              playProgress > index / waveFormData.current.length
+                ? "#9747FF"
+                : "rgba(134, 90, 226, 0.48)",
             borderRadius: theme.radius.xl,
           })}
         ></Box>
@@ -33,20 +36,12 @@ export default function WaveForm({ audioFile }) {
 
 function generateRandomWaveFormData(n) {
   let result = [];
-  let min = 6;
+  let min = 16;
   let max = 64;
-  let prevNumber = null;
 
   for (let i = 0; i < n; i++) {
-    let randomNumber = Math.floor(Math.random() * (max - min + 1) + min);
-
-    if (prevNumber !== null && Math.abs(randomNumber - prevNumber) > 16) {
-      i--;
-      continue;
-    }
-
-    result.push(randomNumber);
-    prevNumber = randomNumber;
+    let number = ((Math.sin((i / n) * 16) + 1) / 2) * (max - min) + min;
+    result[i] = number;
   }
 
   return result;

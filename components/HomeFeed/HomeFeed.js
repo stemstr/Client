@@ -15,17 +15,14 @@ export default function HomeFeed() {
     () => filterPosts(eventsCache),
     [eventsCache, filterPosts]
   );
-  const startTime = useRef(dateToUnix(new Date()) - 60 * 1); // Make sure start time isn't re-rendered
+  const startTime = useRef(dateToUnix(new Date()) - 60 * 60 * 1); // Make sure start time isn't re-rendered
 
   const { events, connectedRelays } = useNostrEvents({
     filter: {
       since: startTime.current, // all new events from startTime
       kinds: [1],
     },
-    // relayUrls: [
-    //   // "wss://nostr.milou.lol",
-    //   process.env.NEXT_PUBLIC_STEMSTR_RELAY,
-    // ],
+    relayUrls: [process.env.NEXT_PUBLIC_STEMSTR_RELAY],
   });
 
   return (

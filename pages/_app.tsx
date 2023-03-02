@@ -21,7 +21,6 @@ const relayUrls: string[] = [
   "wss://puravida.nostr.land",
   "wss://nostr.milou.lol",
   "wss://nostr.wine",
-
   // public relays
   // "wss://relay.damus.io",
   // "wss://relay.snort.social",

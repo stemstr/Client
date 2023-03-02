@@ -20,7 +20,7 @@ interface NostrContextType {
   connectedRelays: Relay[];
   onConnect: (_onConnectCallback?: OnConnectFunc) => void;
   onDisconnect: (_onDisconnectCallback?: OnDisconnectFunc) => void;
-  publish: (event: NostrEvent) => void;
+  publish: (event: NostrEvent, relayUrls?: string[]) => void;
 }
 
 export const NostrContext = createContext<NostrContextType>({
@@ -85,7 +85,7 @@ export default function NostrProvider({
   }, []);
 
   useEffect(() => {
-    console.log(isLoading, connectedRelays, totalConnections);
+    // console.log(isLoading, connectedRelays, totalConnections);
   }, [connectedRelays]);
 
   useEffect(() => {

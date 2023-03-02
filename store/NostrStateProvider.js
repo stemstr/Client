@@ -1,4 +1,3 @@
-import { useProfile } from "nostr-react";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getCachedAuth } from "../cache/cache";
@@ -11,7 +10,7 @@ export default function NostrStateProvider({ children }) {
   const authState = useSelector(selectAuthState);
 
   useEffect(() => {
-    console.log(authState);
+    // console.log(authState);
   }, [authState]);
 
   useEffect(() => {

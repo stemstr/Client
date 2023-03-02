@@ -7,10 +7,12 @@ import CommentFieldGroup from "../FieldGroups/CommentFieldGroup";
 import TagsFieldGroup from "../FieldGroups/TagsFieldGroup";
 import ShareAcrossField from "../ShareAcrossField/ShareAcrossField";
 import { parseHashtags } from "../TagsField/TagsField";
-import { relayInit, getEventHash, signEvent } from "nostr-tools";
-import { useRef } from "react";
+import { getEventHash, signEvent } from "nostr-tools";
+import axios from "axios";
+import useNostr from "../../nostr/hooks/useNostr";
 
 export default function ShareSheet() {
+  const { publish } = useNostr();
   const sheetKey = "shareSheet";
   const auth = useSelector((state) => state.auth);
   const relays = useSelector((state) => state.relays);
@@ -27,38 +29,60 @@ export default function ShareSheet() {
   });
 
   const handleSubmit = async (values) => {
-    let tags = parseHashtags(values.tags).map((hashtag) => ["t", hashtag]);
-    let event = {
-      kind: 1,
-      pubkey: auth.user.pk,
-      created_at: Math.floor(Date.now() / 1000),
-      tags,
-      content: values.comment + " " + values.file.name,
-    };
-    event.id = getEventHash(event);
-    event.sig = signEvent(event, auth.sk);
+    let tags = parseHashtags(values.tags);
+    let sum = await calculateHash(values.file);
 
-    console.log(values);
-    console.log(event);
+    axios
+      .post(
+        `${process.env.NEXT_PUBLIC_STEMSTR_API}/upload/quote`,
+        {
+          pk: auth.user.pk,
+          size: values.file.size,
+          sum: sum,
+          desc: values.comment,
+          tags: tags,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      .then((response) => {
+        let event = {
+          kind: response.data.event.kind,
+          pubkey: response.data.event.pubkey,
+          created_at: response.data.event.created_at,
+          tags: response.data.event.tags,
+          content: response.data.event.content,
+        };
+        event.id = getEventHash(event);
+        event.sig = signEvent(event, auth.sk);
 
-    const relay = relayInit(relays.stemstrRelay);
+        const formData = new FormData();
+        formData.append("pk", response.data.event.pubkey);
+        formData.append("size", values.file.size);
+        formData.append("sum", sum);
+        formData.append("event", window.btoa(JSON.stringify(event)));
+        formData.append("fileName", values.file.name);
+        formData.append("file", values.file);
 
-    relay.on("connect", () => {
-      console.log(`connected to ${relay.url}`);
-      let pub = relay.publish(event);
-      pub.on("ok", () => {
-        console.log(`${relay.url} has accepted our event`);
-        dispatch(closeSheet("shareSheet"));
+        axios
+          .post(`${process.env.NEXT_PUBLIC_STEMSTR_API}/upload`, formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          })
+          .then((response) => {
+            dispatch(closeSheet("shareSheet"));
+          })
+          .catch((error) => {
+            // TODO: handle error
+          });
+      })
+      .catch((error) => {
+        // TODO: handle error
       });
-      pub.on("failed", (reason) => {
-        console.log(`failed to publish to ${relay.url}: ${reason}`);
-      });
-    });
-    relay.on("error", () => {
-      console.log(`failed to connect to ${relay.url}`);
-    });
-
-    await relay.connect();
   };
 
   const toggleSheet = () => {
@@ -111,4 +135,16 @@ export default function ShareSheet() {
       </form>
     </Drawer>
   );
+}
+
+async function calculateHash(file) {
+  const hashBuffer = await crypto.subtle.digest(
+    "SHA-256",
+    await file.arrayBuffer()
+  );
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const hashHex = hashArray
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+  return hashHex;
 }
