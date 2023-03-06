@@ -17,8 +17,8 @@ export default function BottomNavigation() {
   const authState = useSelector(selectAuthState);
   const dispatch = useDispatch();
 
-  const openShareSheet = () => {
-    dispatch(openSheet("shareSheet"));
+  const openPostSheet = () => {
+    dispatch(openSheet("postSheet"));
   };
 
   return (
@@ -50,7 +50,7 @@ export default function BottomNavigation() {
         </BottomNavigationItem>
         <BottomNavigationItem>
           <Center
-            onClick={openShareSheet}
+            onClick={openPostSheet}
             sx={{
               width: "100%",
               height: "100%",

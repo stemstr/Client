@@ -17,10 +17,18 @@ export default function HomeFeed() {
   );
   const startTime = useRef(dateToUnix(new Date()) - 60 * 60 * 1); // Make sure start time isn't re-rendered
 
-  const { events, connectedRelays } = useNostrEvents({
+  const { events: textEvents } = useNostrEvents({
     filter: {
-      since: startTime.current, // all new events from startTime
-      kinds: [1],
+      since: startTime.current, // all new textEvents from startTime
+      kinds: [Kind.Text],
+    },
+    relayUrls: [process.env.NEXT_PUBLIC_STEMSTR_RELAY],
+  });
+
+  const { events: reactionEvents } = useNostrEvents({
+    filter: {
+      since: startTime.current, // all new textEvents from startTime
+      kinds: [Kind.Reaction],
     },
     relayUrls: [process.env.NEXT_PUBLIC_STEMSTR_RELAY],
   });
@@ -28,12 +36,9 @@ export default function HomeFeed() {
   return (
     <>
       <Stack>
-        {events.map((event) => (
-          <Note key={event.id} event={event} />
+        {textEvents.map((event) => (
+          <Note key={event.id} event={event} reactionEvents={reactionEvents} />
         ))}
-        {/* {events.length > 0 ? (
-          <Note key={events[events.length - 1].id} event={events[events.length - 1]} />
-        ) : null} */}
       </Stack>
     </>
   );

@@ -11,9 +11,9 @@ import { getEventHash, signEvent } from "nostr-tools";
 import axios from "axios";
 import useNostr from "../../nostr/hooks/useNostr";
 
-export default function ShareSheet() {
+export default function PostSheet() {
   const { publish } = useNostr();
-  const sheetKey = "shareSheet";
+  const sheetKey = "postSheet";
   const auth = useSelector((state) => state.auth);
   const relays = useSelector((state) => state.relays);
   const opened = useSelector((state) => state.sheets[sheetKey]);
@@ -29,7 +29,7 @@ export default function ShareSheet() {
   });
 
   const handleSubmit = async (values) => {
-    let tags = parseHashtags(values.tags);
+    let hashtags = parseHashtags(values.tags);
     let sum = await calculateHash(values.file);
 
     axios
@@ -39,8 +39,6 @@ export default function ShareSheet() {
           pk: auth.user.pk,
           size: values.file.size,
           sum: sum,
-          desc: values.comment,
-          tags: tags,
         },
         {
           headers: {
@@ -49,20 +47,30 @@ export default function ShareSheet() {
         }
       )
       .then((response) => {
+        let created_at = Math.floor(Date.now() / 1000);
+        let tags = [
+          ["download_url", response.data.download_url],
+          ["stream_url", response.data.stream_url],
+          ["stemstr_version", "1.0"],
+        ];
+        hashtags.forEach((hashtag) => {
+          tags.push(["t", hashtag]);
+        });
         let event = {
-          kind: response.data.event.kind,
-          pubkey: response.data.event.pubkey,
-          created_at: response.data.event.created_at,
-          tags: response.data.event.tags,
-          content: response.data.event.content,
+          kind: 1,
+          pubkey: auth.user.pk,
+          created_at: created_at,
+          tags: tags,
+          content: `${values.comment}`,
         };
         event.id = getEventHash(event);
         event.sig = signEvent(event, auth.sk);
 
         const formData = new FormData();
-        formData.append("pk", response.data.event.pubkey);
+        formData.append("pk", auth.user.pk);
         formData.append("size", values.file.size);
         formData.append("sum", sum);
+        formData.append("quoteId", response.data.quote_id);
         formData.append("event", window.btoa(JSON.stringify(event)));
         formData.append("fileName", values.file.name);
         formData.append("file", values.file);
@@ -74,10 +82,12 @@ export default function ShareSheet() {
             },
           })
           .then((response) => {
-            dispatch(closeSheet("shareSheet"));
+            dispatch(closeSheet("postSheet"));
+            console.log(response);
           })
           .catch((error) => {
             // TODO: handle error
+            console.log(error);
           });
       })
       .catch((error) => {
@@ -138,6 +148,7 @@ export default function ShareSheet() {
 }
 
 async function calculateHash(file) {
+  if (!file) return null;
   const hashBuffer = await crypto.subtle.digest(
     "SHA-256",
     await file.arrayBuffer()

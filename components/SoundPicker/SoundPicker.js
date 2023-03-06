@@ -100,7 +100,7 @@ export default function SoundPicker(props) {
         {props.value && (
           <audio ref={audioRef} src={audioBlobURL} onEnded={handleAudioEnded} />
         )}
-        <WaveForm audioFile={props.value} />
+        <WaveForm data={props.value} />
       </Group>
     </>
   );

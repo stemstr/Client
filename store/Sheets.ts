@@ -1,13 +1,13 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-type SheetKey = "shareSheet";
+type SheetKey = "postSheet";
 
 interface SheetsState {
-  shareSheet: boolean;
+  postSheet: boolean;
 }
 
 const initialState: SheetsState = {
-  shareSheet: false,
+  postSheet: false,
 };
 
 export const sheetsSlice = createSlice({

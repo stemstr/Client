@@ -83,7 +83,7 @@ export default function SoundPlayer({ event, ...rest }) {
             />
           )}
 
-          <WaveForm audioFile={null} playProgress={playProgress} />
+          <WaveForm data={true} playProgress={playProgress} />
         </Group>
         <Group position="apart">
           <Text fz="xs" c="white">

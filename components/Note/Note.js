@@ -12,7 +12,7 @@ import useStyles from "./Note.styles";
 import NoteAction from "../NoteAction/NoteAction";
 import SoundPlayer from "../SoundPlayer/SoundPlayer";
 import { dateToUnix, useProfile } from "nostr-react";
-import { nip19 } from "nostr-tools";
+import { getEventHash, Kind, nip19, signEvent } from "nostr-tools";
 import { useEffect, useMemo, useState } from "react";
 import {
   DownloadIcon,
@@ -25,9 +25,14 @@ import {
 } from "../../icons/StemstrIcon";
 import { cacheProfile, getCachedProfile } from "../../cache/cache";
 import Link from "next/link";
+import { useSelector } from "react-redux";
+import useNostr from "../../nostr/hooks/useNostr";
 
 export default function Note(props) {
-  const { event } = props;
+  const { event, reactionEvents } = props;
+  const { classes } = useStyles();
+  const { publish } = useNostr();
+  const auth = useSelector((state) => state.auth);
   const cachedProfile = getCachedProfile(nip19.npubEncode(event.pubkey));
   const [userData, setUserData] = useState(cachedProfile);
   const [profileFetched, setProfileFetched] = useState(false);
@@ -35,7 +40,39 @@ export default function Note(props) {
     pubkey: event.pubkey,
     enabled: !!event.pubkey && !userData,
   });
-  const { classes } = useStyles();
+  const reactions = useMemo(
+    () =>
+      reactionEvents.filter((ev) =>
+        ev.tags.reduce(
+          (carry, tag) => carry || (tag[0] == "e" && tag[1] == event.id),
+          false
+        )
+      ),
+    [reactionEvents]
+  );
+
+  const handleClickShaka = () => {
+    let created_at = Math.floor(Date.now() / 1000);
+    let tags = [
+      ["p", event.pubkey],
+      ["e", event.id],
+    ];
+    let reactionEvent = {
+      kind: Kind.Reaction,
+      pubkey: auth.user.pk,
+      created_at: created_at,
+      tags: tags,
+      content: "🤙",
+    };
+    reactionEvent.id = getEventHash(reactionEvent);
+    reactionEvent.sig = signEvent(reactionEvent, auth.sk);
+    publish(reactionEvent, [process.env.NEXT_PUBLIC_STEMSTR_RELAY]);
+    console.log(reactionEvent);
+  };
+
+  useEffect(() => {
+    console.log(reactionEvents);
+  }, [reactionEvents]);
 
   useEffect(() => {
     if (!profileFetched && data) {
@@ -116,7 +153,8 @@ export default function Note(props) {
             <RepostIcon width={18} height={18} /> 4
           </NoteAction>
           <NoteAction>
-            <ShakaIcon width={18} height={18} /> 4
+            <ShakaIcon onClick={handleClickShaka} width={18} height={18} />{" "}
+            {reactions?.length}
           </NoteAction>
           <NoteAction>
             <ZapIcon width={18} height={18} /> 4

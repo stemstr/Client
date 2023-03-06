@@ -1,6 +1,6 @@
 import { AppShell } from "@mantine/core";
 import BottomNavigation from "../BottomNavigation/BottomNavigation";
-import ShareSheet from "../ShareSheet/ShareSheet";
+import PostSheet from "../PostSheet/PostSheet";
 
 export const ApplicationContainer = ({ children }) => {
   return (
@@ -20,7 +20,7 @@ export const ApplicationContainer = ({ children }) => {
       footer={<BottomNavigation />}
     >
       {children}
-      <ShareSheet />
+      <PostSheet />
     </AppShell>
   );
 };

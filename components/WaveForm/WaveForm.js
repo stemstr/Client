@@ -1,12 +1,12 @@
 import { Box, Group } from "@mantine/core";
 import { useEffect, useRef } from "react";
 
-export default function WaveForm({ audioFile, playProgress = 0 }) {
+export default function WaveForm({ data, playProgress = 0 }) {
   const waveFormData = useRef(null);
 
   useEffect(() => {
-    waveFormData.current = generateRandomWaveFormData(64);
-  }, [audioFile]);
+    if (data) waveFormData.current = generateWaveFormData(64);
+  }, [data]);
 
   return (
     <Group
@@ -34,7 +34,7 @@ export default function WaveForm({ audioFile, playProgress = 0 }) {
   );
 }
 
-function generateRandomWaveFormData(n) {
+function generateWaveFormData(n) {
   let result = [];
   let min = 16;
   let max = 64;
