@@ -32,67 +32,94 @@ export default function PostSheet() {
     let hashtags = parseHashtags(values.tags);
     let sum = await calculateHash(values.file);
 
-    axios
-      .post(
-        `${process.env.NEXT_PUBLIC_STEMSTR_API}/upload/quote`,
-        {
-          pk: auth.user.pk,
-          size: values.file.size,
-          sum: sum,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
+    if (values.file) {
+      axios
+        .post(
+          `${process.env.NEXT_PUBLIC_STEMSTR_API}/upload/quote`,
+          {
+            pk: auth.user.pk,
+            size: values.file.size,
+            sum: sum,
           },
-        }
-      )
-      .then((response) => {
-        let created_at = Math.floor(Date.now() / 1000);
-        let tags = [
-          ["download_url", response.data.download_url],
-          ["stream_url", response.data.stream_url],
-          ["stemstr_version", "1.0"],
-        ];
-        hashtags.forEach((hashtag) => {
-          tags.push(["t", hashtag]);
-        });
-        let event = {
-          kind: 1,
-          pubkey: auth.user.pk,
-          created_at: created_at,
-          tags: tags,
-          content: `${values.comment}`,
-        };
-        event.id = getEventHash(event);
-        event.sig = signEvent(event, auth.sk);
-
-        const formData = new FormData();
-        formData.append("pk", auth.user.pk);
-        formData.append("size", values.file.size);
-        formData.append("sum", sum);
-        formData.append("quoteId", response.data.quote_id);
-        formData.append("event", window.btoa(JSON.stringify(event)));
-        formData.append("fileName", values.file.name);
-        formData.append("file", values.file);
-
-        axios
-          .post(`${process.env.NEXT_PUBLIC_STEMSTR_API}/upload`, formData, {
+          {
             headers: {
-              "Content-Type": "multipart/form-data",
+              "Content-Type": "application/json",
             },
-          })
-          .then((response) => {
-            dispatch(closeSheet("postSheet"));
-            console.log(response);
-          })
-          .catch((error) => {
-            // TODO: handle error
-            console.log(error);
+          }
+        )
+        .then((response) => {
+          let created_at = Math.floor(Date.now() / 1000);
+          let tags = [
+            ["download_url", response.data.download_url],
+            ["stream_url", response.data.stream_url],
+            ["stemstr_version", "1.0"],
+          ];
+          hashtags.forEach((hashtag) => {
+            tags.push(["t", hashtag]);
           });
-      })
-      .catch((error) => {
-        // TODO: handle error
+          let event = {
+            kind: 1,
+            pubkey: auth.user.pk,
+            created_at: created_at,
+            tags: tags,
+            content: `${values.comment}`,
+          };
+          event.id = getEventHash(event);
+          event.sig = signEvent(event, auth.sk);
+
+          const formData = new FormData();
+          formData.append("pk", auth.user.pk);
+          formData.append("size", values.file.size);
+          formData.append("sum", sum);
+          formData.append("quoteId", response.data.quote_id);
+          formData.append("event", window.btoa(JSON.stringify(event)));
+          formData.append("fileName", values.file.name);
+          formData.append("file", values.file);
+
+          axios
+            .post(`${process.env.NEXT_PUBLIC_STEMSTR_API}/upload`, formData, {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            })
+            .then((response) => {
+              dispatch(closeSheet("postSheet"));
+              console.log(response);
+            })
+            .catch((error) => {
+              // TODO: handle error
+              console.log(error);
+            });
+        })
+        .catch((error) => {
+          // TODO: handle error
+        });
+    } else {
+      let created_at = Math.floor(Date.now() / 1000);
+      let tags = [["stemstr_version", "1.0"]];
+      hashtags.forEach((hashtag) => {
+        tags.push(["t", hashtag]);
       });
+      let event = {
+        kind: 1,
+        pubkey: auth.user.pk,
+        created_at: created_at,
+        tags: tags,
+        content: `${values.comment}`,
+      };
+      event.id = getEventHash(event);
+      event.sig = signEvent(event, auth.sk);
+      axios
+        .post(`${process.env.NEXT_PUBLIC_STEMSTR_API}/event`, event)
+        .then((response) => {
+          dispatch(closeSheet("postSheet"));
+          console.log(response);
+        })
+        .catch((error) => {
+          // TODO: handle error
+          console.log(error);
+        });
+    }
   };
 
   const toggleSheet = () => {
