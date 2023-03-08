@@ -21,6 +21,9 @@ const initialState: EventsCache = {
   [Kind.Text]: [],
   [Kind.RecommendRelay]: [],
   [Kind.Contacts]: [],
+  [Kind.Reaction]: [],
+  [Kind.ZapRequest]: [],
+  [Kind.Zap]: [],
 };
 
 // Actual Slice

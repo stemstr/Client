@@ -52,17 +52,16 @@ export default function SoundPicker(props) {
           accept="audio/*"
           ref={inputRef}
           style={{ display: "none" }}
-          // value={props.value}
-          // onChange={handleAudioChange}
           {...props}
         />
       </Box>
       <Group
         sx={(theme) => ({
-          backgroundColor: theme.colors.dark[7],
+          background:
+            "linear-gradient(180deg, rgba(44, 44, 44, 0) 0%, rgba(134, 90, 226, 0.4) 100%);",
           padding: "14px 16px",
           borderRadius: 8,
-          border: `1px solid ${theme.colors.gray[4]}`,
+          border: `1px solid rgba(187, 134, 252, 0.4)`,
         })}
       >
         {props.value ? (
@@ -101,7 +100,7 @@ export default function SoundPicker(props) {
         {props.value && (
           <audio ref={audioRef} src={audioBlobURL} onEnded={handleAudioEnded} />
         )}
-        <WaveForm audioFile={props.value} />
+        <WaveForm data={props.value} />
       </Group>
     </>
   );
