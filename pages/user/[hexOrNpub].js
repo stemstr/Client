@@ -10,13 +10,12 @@ import {
 } from "@mantine/core";
 import { useRouter } from "next/router";
 import { useProfile } from "../../nostr/hooks/useProfile";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { cacheAuthState } from "../../cache/cache";
 import { selectAuthState, reset as logout } from "../../store/Auth";
 import { getPublicKeys } from "../../nostr/utils";
 import {
-  ProfileIcon,
   SettingsIcon,
   ZapIcon,
   ShareIcon,
@@ -25,9 +24,9 @@ import {
   KeyIcon,
   VerifiedIcon,
 } from "../../icons/StemstrIcon";
-import Link from "next/link";
 import ProfileActionButton from "../../components/ProfileActionButton/ProfileActionButton";
 import ProfileLink from "../../components/ProfileLink/ProfileLink";
+import useContactList from "../../nostr/hooks/useContactList";
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -36,6 +35,9 @@ export default function ProfilePage() {
   const { pk, npub } = useMemo(() => getPublicKeys(hexOrNpub), [hexOrNpub]);
   const authState = useSelector(selectAuthState);
   const { data: userData } = useProfile({
+    pubkey: pk,
+  });
+  const { contactList } = useContactList({
     pubkey: pk,
   });
 
@@ -168,7 +170,7 @@ export default function ProfilePage() {
       >
         <Text>
           <Text span fw="700">
-            0
+            {contactList ? contactList.tags.length : 0}
           </Text>{" "}
           following
         </Text>
