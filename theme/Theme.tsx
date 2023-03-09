@@ -1,5 +1,9 @@
 import { MantineThemeOverride } from "@mantine/styles";
-import { Tuple, DefaultMantineColor } from "@mantine/core";
+import {
+  Tuple,
+  DefaultMantineColor,
+  ActionIconStylesParams,
+} from "@mantine/core";
 
 type ExtendedCustomColors = "purple" | DefaultMantineColor;
 
@@ -85,6 +89,18 @@ const stemstrTheme: MantineThemeOverride = {
         },
         label: {
           fontWeight: 500,
+        },
+      }),
+    },
+    ActionIcon: {
+      defaultProps: {
+        variant: "default",
+        color: "white",
+      },
+      styles: (theme, params: ActionIconStylesParams) => ({
+        root: {
+          backgroundColor: "transparent !important",
+          border: "none",
         },
       }),
     },

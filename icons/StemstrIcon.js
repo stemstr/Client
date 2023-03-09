@@ -1,21 +1,35 @@
+import Bell from "./Line icons/Alerts & feedback/bell-02.svg";
+
+import Download from "./Line icons/Arrows/arrow-down.svg";
+
+import Comment from "./Line icons/Communication/message-square-02.svg";
+
+import Tags from "./Line icons/Finance & eCommerce/tag-03.svg";
+
+import Copy from "./Line icons/General/copy-03.svg";
+import Edit from "./Line icons/General/edit-02.svg";
 import Home from "./Line icons/General/home-03.svg";
-import Compass from "./Line icons/Maps & travel/compass-03.svg";
+import More from "./Line icons/General/dots-vertical.svg";
 import Plus from "./Line icons/General/plus.svg";
 import Search from "./Line icons/General/search-sm.svg";
-import Profile from "./Line icons/Users/user-circle.svg";
-import Download from "./Line icons/Arrows/arrow-down.svg";
-import More from "./Line icons/General/dots-vertical.svg";
-import Comment from "./Line icons/Communication/message-square-02.svg";
-import Bell from "./Line icons/Alerts & feedback/bell-02.svg";
+import Settings from "./Line icons/General/settings-02.svg";
+import Share from "./Line icons/General/share-02.svg";
 import Zap from "./Line icons/General/zap.svg";
+
+import Compass from "./Line icons/Maps & travel/compass-03.svg";
+
+import Play from "./Line icons/Media & devices/play.svg";
+import Stop from "./Line icons/Media & devices/stop.svg";
+
+import Key from "./Line icons/Security/key-01.svg";
+
+import Profile from "./Line icons/Users/user-circle.svg";
+
 import Collection from "./collection.svg";
 import Repost from "./repost.svg";
 import Shaka from "./shaka.svg";
-import Verified from "./verified.svg";
 import Stem from "./stem.svg";
-import Tags from "./Line icons/Finance & eCommerce/tag-03.svg";
-import Play from "./Line icons/Media & devices/play.svg";
-import Stop from "./Line icons/Media & devices/stop.svg";
+import Verified from "./verified.svg";
 
 export default function StemstrIcon({ children }) {
   return children;
@@ -161,6 +175,46 @@ export const StopIcon = (props) => {
   return (
     <StemstrIcon>
       <Stop {...props} />
+    </StemstrIcon>
+  );
+};
+
+export const SettingsIcon = (props) => {
+  return (
+    <StemstrIcon>
+      <Settings {...props} />
+    </StemstrIcon>
+  );
+};
+
+export const ShareIcon = (props) => {
+  return (
+    <StemstrIcon>
+      <Share {...props} />
+    </StemstrIcon>
+  );
+};
+
+export const EditIcon = (props) => {
+  return (
+    <StemstrIcon>
+      <Edit {...props} />
+    </StemstrIcon>
+  );
+};
+
+export const CopyIcon = (props) => {
+  return (
+    <StemstrIcon>
+      <Copy {...props} />
+    </StemstrIcon>
+  );
+};
+
+export const KeyIcon = (props) => {
+  return (
+    <StemstrIcon>
+      <Key {...props} />
     </StemstrIcon>
   );
 };

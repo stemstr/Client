@@ -5,6 +5,7 @@ import PostSheet from "../PostSheet/PostSheet";
 export const ApplicationContainer = ({ children }) => {
   return (
     <AppShell
+      // padding={0}
       styles={{
         root: {
           width: "100%",
