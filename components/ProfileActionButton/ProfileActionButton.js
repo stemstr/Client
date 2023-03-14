@@ -13,6 +13,9 @@ export default function ProfileActionButton({ children, onClick }) {
         backgroundColor: theme.colors.dark[7],
         color: theme.white,
         cursor: "pointer",
+        fontSize: 12,
+        fontWeight: 500,
+        lineHeight: "normal",
       })}
       onClick={onClick}
     >

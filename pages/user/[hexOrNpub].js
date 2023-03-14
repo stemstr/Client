@@ -98,13 +98,16 @@ export default function ProfilePage() {
         />
         <Group>
           <ProfileActionButton>
-            <ShareIcon width={16} height={16} />
+            <ShareIcon width={13} height={13} />
           </ProfileActionButton>
           <ProfileActionButton>
-            <ZapIcon width={16} height={16} />
+            <ZapIcon width={13} height={13} />
           </ProfileActionButton>
           <ProfileActionButton>
-            <EditIcon width={16} height={16} />
+            <EditIcon width={13} height={13} />
+            <Text lh="normal" ml={8}>
+              Edit Profile
+            </Text>
           </ProfileActionButton>
         </Group>
       </Group>
