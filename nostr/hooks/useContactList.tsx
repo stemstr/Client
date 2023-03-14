@@ -21,7 +21,7 @@ export default function useContactList({
     try {
       if (contactList?.content) return JSON.parse(contactList?.content);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
     return {};
   }, [contactList]);

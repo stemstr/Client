@@ -34,7 +34,7 @@ export default function ProfilePage() {
   const { hexOrNpub } = router.query;
   const { pk, npub } = useMemo(() => getPublicKeys(hexOrNpub), [hexOrNpub]);
   const authState = useSelector(selectAuthState);
-  const { data: userData } = useProfile({
+  const { data: userData, nip05 } = useProfile({
     pubkey: pk,
   });
   const { contactList, relayList } = useContactList({
@@ -119,11 +119,15 @@ export default function ProfilePage() {
         </Text>
         <Group spacing={4}>
           <Text size="sm">{userData?.name && `@${userData.name}`}</Text>
-          <VerifiedIcon width={14} height={14} />
-          <Text size="sm" color="purple.2">
-            {userData?.nip05 &&
-              userData.nip05.slice(userData.nip05.indexOf("@") + 1)}
-          </Text>
+          {nip05 && (
+            <>
+              <VerifiedIcon width={14} height={14} />
+              <Text size="sm" color="purple.2">
+                {userData?.nip05 &&
+                  userData.nip05.slice(userData.nip05.indexOf("@") + 1)}
+              </Text>
+            </>
+          )}
         </Group>
         <Text size="sm" mb={8} sx={{ whiteSpace: "pre-wrap" }}>
           {userData?.about}
