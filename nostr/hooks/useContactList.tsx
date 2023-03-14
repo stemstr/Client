@@ -1,5 +1,5 @@
 import { Event, Kind } from "nostr-tools";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import useNostrEvents from "./useNostrEvents";
 
 export default function useContactList({
@@ -17,6 +17,14 @@ export default function useContactList({
     relayUrls,
   });
   const [contactList, setContactList] = useState<Event | null>(null);
+  const relayList = useMemo(() => {
+    try {
+      if (contactList?.content) return JSON.parse(contactList?.content);
+    } catch (error) {
+      console.log(error);
+    }
+    return {};
+  }, [contactList]);
 
   useEffect(() => {
     setContactList(() => {
@@ -30,5 +38,6 @@ export default function useContactList({
 
   return {
     contactList,
+    relayList,
   };
 }

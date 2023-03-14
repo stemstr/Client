@@ -37,12 +37,12 @@ export default function ProfilePage() {
   const { data: userData } = useProfile({
     pubkey: pk,
   });
-  const { contactList } = useContactList({
+  const { contactList, relayList } = useContactList({
     pubkey: pk,
   });
 
   useEffect(() => {
-    console.log(userData);
+    // console.log(userData);
   }, [userData]);
 
   const handleLogout = () => {
@@ -86,7 +86,6 @@ export default function ProfilePage() {
             <ActionIcon variant="default" color="white">
               <SettingsIcon width={24} height={24} />
             </ActionIcon>
-            <ProfileLink />
           </Group>
         </Group>
       </Box>
@@ -182,7 +181,7 @@ export default function ProfilePage() {
         </Text>
         <Text>
           <Text span fw="700">
-            0
+            {Object.keys(relayList).length}
           </Text>{" "}
           relays
         </Text>
