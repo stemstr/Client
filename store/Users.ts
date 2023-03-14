@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { AppState } from "./Store";
 import { HYDRATE } from "next-redux-wrapper";
-import { Metadata } from "nostr-react";
+import { Metadata } from "../nostr/hooks/useProfile";
 
 // Type for User
 export interface User {

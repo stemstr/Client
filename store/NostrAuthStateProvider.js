@@ -1,4 +1,4 @@
-import { useProfile } from "nostr-react";
+import { useProfile } from "../nostr/hooks/useProfile";
 import { nip19 } from "nostr-tools";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";

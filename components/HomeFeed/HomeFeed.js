@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useRef } from "react";
-import { dateToUnix } from "nostr-react";
+import { dateToUnix } from "../../nostr/utils";
 import useNostrEvents from "../../nostr/hooks/useNostrEvents";
 import Note from "../Note/Note";
 import { Stack } from "@mantine/core";

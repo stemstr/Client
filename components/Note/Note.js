@@ -11,7 +11,8 @@ import {
 import useStyles from "./Note.styles";
 import NoteAction from "../NoteAction/NoteAction";
 import SoundPlayer from "../SoundPlayer/SoundPlayer";
-import { dateToUnix, useProfile } from "nostr-react";
+import { dateToUnix } from "../../nostr/utils";
+import { useProfile } from "../../nostr/hooks/useProfile";
 import { getEventHash, Kind, nip19, signEvent } from "nostr-tools";
 import { useEffect, useMemo, useState } from "react";
 import {
