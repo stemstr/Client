@@ -27,6 +27,7 @@ import {
 import ProfileActionButton from "../../components/ProfileActionButton/ProfileActionButton";
 import ProfileLink from "../../components/ProfileLink/ProfileLink";
 import useContactList from "../../nostr/hooks/useContactList";
+import CopyNpub from "../../components/CopyNpub/CopyNpub";
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -132,28 +133,7 @@ export default function ProfilePage() {
         <Text size="sm" mb={8} sx={{ whiteSpace: "pre-wrap" }}>
           {userData?.about}
         </Text>
-        <Group
-          align="center"
-          spacing={8}
-          sx={(theme) => ({
-            color: theme.fn.rgba(theme.white, 0.4),
-          })}
-        >
-          <Group
-            spacing={6}
-            sx={(theme) => ({
-              borderRadius: theme.radius.xl,
-              backgroundColor: theme.colors.gray[4],
-              padding: 4,
-            })}
-          >
-            <KeyIcon width={16} height={16} />
-            <Text fz="xs" lh="normal">
-              {npub.substring(0, 16)}:{npub.substring(npub.length - 16)}
-            </Text>
-          </Group>
-          <CopyIcon width={16} height={16} />
-        </Group>
+        <CopyNpub npub={npub} />
       </Stack>
       <Group
         spacing="xl"

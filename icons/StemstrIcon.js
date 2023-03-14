@@ -6,6 +6,7 @@ import Comment from "./Line icons/Communication/message-square-02.svg";
 
 import Tags from "./Line icons/Finance & eCommerce/tag-03.svg";
 
+import Check from "./Line icons/General/check.svg";
 import Copy from "./Line icons/General/copy-03.svg";
 import Edit from "./Line icons/General/edit-02.svg";
 import Home from "./Line icons/General/home-03.svg";
@@ -215,6 +216,14 @@ export const KeyIcon = (props) => {
   return (
     <StemstrIcon>
       <Key {...props} />
+    </StemstrIcon>
+  );
+};
+
+export const CheckIcon = (props) => {
+  return (
+    <StemstrIcon>
+      <Check {...props} />
     </StemstrIcon>
   );
 };
