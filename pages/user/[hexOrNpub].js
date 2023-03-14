@@ -176,7 +176,7 @@ export default function ProfilePage() {
         </Text>
         <Text>
           <Text span fw="700">
-            0
+            ?
           </Text>{" "}
           followers
         </Text>
