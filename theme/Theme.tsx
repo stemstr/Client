@@ -79,6 +79,22 @@ const stemstrTheme: MantineThemeOverride = {
         },
       }),
     },
+    PasswordInput: {
+      defaultProps: {
+        radius: "md",
+      },
+      styles: (theme, params) => ({
+        input: {
+          backgroundColor: theme.colors.dark[7],
+          borderColor: theme.colors.gray[4],
+          color: theme.colors.gray[2],
+          minHeight: 40,
+        },
+        innerInput: {
+          minHeight: 40,
+        },
+      }),
+    },
     Button: {
       styles: (theme, params) => ({
         root: {
