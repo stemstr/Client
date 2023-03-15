@@ -1,5 +1,5 @@
 import { atom, useAtom } from "jotai";
-import { nip19 } from "nostr-tools";
+import { Kind, nip19 } from "nostr-tools";
 import { useEffect, useState } from "react";
 
 import useNostrEvents from "./useNostrEvents";
@@ -28,12 +28,12 @@ const requestedPubkeysAtom = atom<string[]>([]);
 const fetchedProfilesAtom = atom<Record<string, Metadata>>({});
 
 function useProfileQueue({ pubkey }: { pubkey: string }) {
-  const [isReadyToFetch, setIsReadyToFetch] = useState(false);
+  const [isReadyToFetch, setIsReadyToFetch] = useState(false); // Is debounced and ready to fetch again
 
-  const [queuedPubkeys, setQueuedPubkeys] = useAtom(queuedPubkeysAtom);
+  const [queuedPubkeys, setQueuedPubkeys] = useAtom(queuedPubkeysAtom); // List of profiles waiting to be requested
 
-  const [requestedPubkeys] = useAtom(requestedPubkeysAtom);
-  const alreadyRequested = !!requestedPubkeys.includes(pubkey);
+  const [requestedPubkeys] = useAtom(requestedPubkeysAtom); // List of profiles currently requested
+  const alreadyRequested = !!requestedPubkeys.includes(pubkey); // Prevents same profile from being requested twice simultaneously
 
   useEffect(() => {
     if (alreadyRequested) {
@@ -77,7 +77,7 @@ export function useProfile({
 
   const { onEvent, onSubscribe, isLoading, onDone } = useNostrEvents({
     filter: {
-      kinds: [0],
+      kinds: [Kind.Metadata],
       authors: pubkeysToFetch,
     },
     enabled,

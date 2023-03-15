@@ -10,7 +10,7 @@ import {
 } from "@mantine/core";
 import { useRouter } from "next/router";
 import { useProfile } from "../../nostr/hooks/useProfile";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { cacheAuthState } from "../../cache/cache";
 import { selectAuthState, reset as logout } from "../../store/Auth";
@@ -20,14 +20,12 @@ import {
   ZapIcon,
   ShareIcon,
   EditIcon,
-  CopyIcon,
-  KeyIcon,
   VerifiedIcon,
 } from "../../icons/StemstrIcon";
 import ProfileActionButton from "../../components/ProfileActionButton/ProfileActionButton";
-import ProfileLink from "../../components/ProfileLink/ProfileLink";
 import useContactList from "../../nostr/hooks/useContactList";
 import CopyNpub from "../../components/CopyNpub/CopyNpub";
+import ProfileFeed from "../../components/ProfileFeed/ProfileFeed";
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -174,8 +172,11 @@ export default function ProfilePage() {
         </Text>
       </Group>
       {authState?.user?.npub === userData?.npub ? (
-        <Button onClick={handleLogout}>Logout</Button>
+        <Button onClick={handleLogout} mb="md">
+          Logout
+        </Button>
       ) : null}
+      <ProfileFeed pubkey={pk} />
     </>
   );
 }
