@@ -1,6 +1,6 @@
 import { Group, Text } from "@mantine/core";
 import { useState } from "react";
-import { CopyIcon, KeyIcon, CheckIcon } from "../../icons/StemstrIcon";
+import { CopyIcon, KeyIcon, CheckCircleIcon } from "../../icons/StemstrIcon";
 
 export default function CopyNpub({ npub }) {
   const [isCopied, setIsCopied] = useState(false);
@@ -37,7 +37,7 @@ export default function CopyNpub({ npub }) {
         </Text>
       </Group>
       {isCopied ? (
-        <CheckIcon width={16} height={16} />
+        <CheckCircleIcon width={16} height={16} />
       ) : (
         <CopyIcon width={16} height={16} />
       )}
