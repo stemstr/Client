@@ -1,4 +1,4 @@
-import { Button, Text, TextInput } from "@mantine/core";
+import { Button, PasswordInput, Text, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
@@ -30,7 +30,7 @@ export default function LoginForm() {
 
   return (
     <form onSubmit={form.onSubmit(handleSubmit)}>
-      <TextInput
+      <PasswordInput
         {...form.getInputProps("sk")}
         placeholder="Private key here..."
         aria-label="Private key"

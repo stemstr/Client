@@ -1,4 +1,4 @@
-import { Metadata } from "nostr-react";
+import { Metadata } from "../nostr/hooks/useProfile";
 import { AuthState, setAuthState } from "../store/Auth";
 
 const AUTH_KEY = "stemstr:cachedAuth";

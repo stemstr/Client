@@ -1,5 +1,9 @@
 import { MantineThemeOverride } from "@mantine/styles";
-import { Tuple, DefaultMantineColor } from "@mantine/core";
+import {
+  Tuple,
+  DefaultMantineColor,
+  ActionIconStylesParams,
+} from "@mantine/core";
 
 type ExtendedCustomColors = "purple" | DefaultMantineColor;
 
@@ -75,6 +79,22 @@ const stemstrTheme: MantineThemeOverride = {
         },
       }),
     },
+    PasswordInput: {
+      defaultProps: {
+        radius: "md",
+      },
+      styles: (theme, params) => ({
+        input: {
+          backgroundColor: theme.colors.dark[7],
+          borderColor: theme.colors.gray[4],
+          color: theme.colors.gray[2],
+          minHeight: 40,
+        },
+        innerInput: {
+          minHeight: 40,
+        },
+      }),
+    },
     Button: {
       styles: (theme, params) => ({
         root: {
@@ -85,6 +105,18 @@ const stemstrTheme: MantineThemeOverride = {
         },
         label: {
           fontWeight: 500,
+        },
+      }),
+    },
+    ActionIcon: {
+      defaultProps: {
+        variant: "default",
+        color: "white",
+      },
+      styles: (theme, params: ActionIconStylesParams) => ({
+        root: {
+          backgroundColor: "transparent !important",
+          border: "none",
         },
       }),
     },

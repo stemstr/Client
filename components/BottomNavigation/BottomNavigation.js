@@ -8,6 +8,7 @@ import {
   ProfileIcon,
   PlusIcon,
   CollectionIcon,
+  BellIcon,
 } from "../../icons/StemstrIcon";
 import { useDispatch, useSelector } from "react-redux";
 import { openSheet } from "../../store/Sheets";
@@ -67,15 +68,8 @@ export default function BottomNavigation() {
         <BottomNavigationItem href="/collections">
           <CollectionIcon width={24} height={24} />
         </BottomNavigationItem>
-        <BottomNavigationItem href="/profile">
-          <Avatar
-            src={authState?.user?.picture}
-            alt={authState?.user?.name}
-            size={36}
-            radius="50%"
-          >
-            <ProfileIcon />
-          </Avatar>
+        <BottomNavigationItem href="/notifications">
+          <BellIcon width={24} height={24} />
         </BottomNavigationItem>
       </Group>
     </Footer>

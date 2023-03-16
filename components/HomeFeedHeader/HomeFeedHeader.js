@@ -1,5 +1,6 @@
 import { Box, Group, Text } from "@mantine/core";
-import { BellIcon, SearchIcon } from "../../icons/StemstrIcon";
+import { SearchIcon } from "../../icons/StemstrIcon";
+import ProfileLink from "../ProfileLink/ProfileLink";
 
 export default function HomeFeedHeader() {
   return (
@@ -19,9 +20,9 @@ export default function HomeFeedHeader() {
       >
         Stemstr
       </Text>
-      <Group spacing={48}>
+      <Group spacing={20}>
         <SearchIcon />
-        <BellIcon />
+        <ProfileLink />
       </Group>
     </Box>
   );

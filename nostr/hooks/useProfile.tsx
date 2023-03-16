@@ -1,9 +1,10 @@
 import { atom, useAtom } from "jotai";
-import { nip19 } from "nostr-tools";
+import { Kind, nip19 } from "nostr-tools";
 import { useEffect, useState } from "react";
 
 import useNostrEvents from "./useNostrEvents";
 import { uniqValues } from "../utils";
+import axios from "axios";
 
 export interface Metadata {
   name?: string;
@@ -27,12 +28,12 @@ const requestedPubkeysAtom = atom<string[]>([]);
 const fetchedProfilesAtom = atom<Record<string, Metadata>>({});
 
 function useProfileQueue({ pubkey }: { pubkey: string }) {
-  const [isReadyToFetch, setIsReadyToFetch] = useState(false);
+  const [isReadyToFetch, setIsReadyToFetch] = useState(false); // Is debounced and ready to fetch again
 
-  const [queuedPubkeys, setQueuedPubkeys] = useAtom(queuedPubkeysAtom);
+  const [queuedPubkeys, setQueuedPubkeys] = useAtom(queuedPubkeysAtom); // List of profiles waiting to be requested
 
-  const [requestedPubkeys] = useAtom(requestedPubkeysAtom);
-  const alreadyRequested = !!requestedPubkeys.includes(pubkey);
+  const [requestedPubkeys] = useAtom(requestedPubkeysAtom); // List of profiles currently requested
+  const alreadyRequested = !!requestedPubkeys.includes(pubkey); // Prevents same profile from being requested twice simultaneously
 
   useEffect(() => {
     if (alreadyRequested) {
@@ -72,10 +73,11 @@ export function useProfile({
   const enabled = _enabled && !!pubkeysToFetch.length;
 
   const [fetchedProfiles, setFetchedProfiles] = useAtom(fetchedProfilesAtom);
+  const nip05 = useNIP05(fetchedProfiles[pubkey], pubkey);
 
   const { onEvent, onSubscribe, isLoading, onDone } = useNostrEvents({
     filter: {
-      kinds: [0],
+      kinds: [Kind.Metadata],
       authors: pubkeysToFetch,
     },
     enabled,
@@ -119,5 +121,35 @@ export function useProfile({
           npub,
         }
       : undefined,
+    nip05,
   };
+}
+
+export function useNIP05(data: Metadata, pubkey: string) {
+  const [nip05, setNIP05] = useState<{ name: string; hostname: string } | null>(
+    null
+  );
+
+  useEffect(() => {
+    if (data?.nip05) {
+      const { name, hostname } = parseNIP05(data.nip05);
+      axios
+        .get(`https://${hostname}/.well-known/nostr.json?name=${name}`)
+        .then((response) => {
+          if (response.data.names[name] === pubkey) {
+            setNIP05({ name, hostname });
+          }
+        })
+        .catch((error) => console.error(error));
+    }
+  }, [data]);
+
+  return nip05;
+}
+
+function parseNIP05(nip05: string): { name: string; hostname: string } {
+  const atIndex = nip05.indexOf("@");
+  const name = nip05.slice(0, atIndex);
+  const hostname = nip05.slice(atIndex + 1);
+  return { name, hostname };
 }

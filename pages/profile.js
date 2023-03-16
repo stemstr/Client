@@ -1,4 +1,4 @@
-import { Router, useRouter } from "next/router";
+import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { selectAuthState } from "../store/Auth";
