@@ -16,7 +16,6 @@ import { cacheProfile, getCachedProfile } from "../../cache/cache";
 import {
   CommentIcon,
   MoreIcon,
-  RepostIcon,
   ShakaIcon,
   VerifiedIcon,
   ZapIcon,
@@ -27,6 +26,7 @@ import { dateToUnix } from "../../nostr/utils";
 import DownloadSoundButton from "../DownloadSoundButton/DownloadSoundButton";
 import NoteAction from "../NoteAction/NoteAction";
 import SoundPlayer from "../SoundPlayer/SoundPlayer";
+import RepostButton from "../RepostButton/RepostButton";
 import useStyles from "./Note.styles";
 
 export default function Note(props) {
@@ -132,9 +132,7 @@ export default function Note(props) {
           <NoteAction sx={{ color: "white" }}>
             <CommentIcon width={18} height={18} /> 12
           </NoteAction>
-          <NoteAction>
-            <RepostIcon width={18} height={18} /> 4
-          </NoteAction>
+          <RepostButton note={note} />
           <NoteAction>
             <ShakaIcon onClick={handleClickShaka} width={18} height={18} /> 0
           </NoteAction>

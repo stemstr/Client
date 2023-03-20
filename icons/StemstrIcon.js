@@ -6,6 +6,7 @@ import Comment from "./Line icons/Communication/message-square-02.svg";
 
 import Tags from "./Line icons/Finance & eCommerce/tag-03.svg";
 
+import Check from "./Line icons/General/check.svg";
 import CheckCircle from "./Line icons/General/check-circle.svg";
 import Copy from "./Line icons/General/copy-03.svg";
 import Edit from "./Line icons/General/edit-02.svg";
@@ -15,6 +16,7 @@ import Plus from "./Line icons/General/plus.svg";
 import Search from "./Line icons/General/search-sm.svg";
 import Settings from "./Line icons/General/settings-02.svg";
 import Share from "./Line icons/General/share-02.svg";
+import XClose from "./Line icons/General/x-close.svg";
 import Zap from "./Line icons/General/zap.svg";
 
 import Compass from "./Line icons/Maps & travel/compass-03.svg";
@@ -224,6 +226,22 @@ export const CheckCircleIcon = (props) => {
   return (
     <StemstrIcon>
       <CheckCircle {...props} />
+    </StemstrIcon>
+  );
+};
+
+export const CheckIcon = (props) => {
+  return (
+    <StemstrIcon>
+      <Check {...props} />
+    </StemstrIcon>
+  );
+};
+
+export const XCloseIcon = (props) => {
+  return (
+    <StemstrIcon>
+      <XClose {...props} />
     </StemstrIcon>
   );
 };
