@@ -4,11 +4,11 @@ import { dateToUnix } from "../utils";
 import { Note, useFeed } from "./useFeed";
 
 export function useHomeFeed({ relayUrls }: { relayUrls?: string[] }) {
-  const startTime = useRef(dateToUnix(new Date()) - 60 * 60 * 1); // Make sure start time isn't re-rendered
+  const startTime = useRef(dateToUnix(new Date()) - 60 * 60 * 24 * 7); // Make sure start time isn't re-rendered
   const { feed } = useFeed({
     filter: {
       since: startTime.current,
-      kinds: [Kind.Text],
+      kinds: [Kind.Text, 6],
     },
     relayUrls: [process.env.NEXT_PUBLIC_STEMSTR_RELAY as string],
   });

@@ -8,26 +8,26 @@ import {
   Stack,
   Text,
 } from "@mantine/core";
-import useStyles from "./Note.styles";
+import Link from "next/link";
+import { getEventHash, Kind, nip19, signEvent } from "nostr-tools";
+import { useEffect, useMemo, useState } from "react";
+import { useSelector } from "react-redux";
+import { cacheProfile, getCachedProfile } from "../../cache/cache";
+import {
+  CommentIcon,
+  MoreIcon,
+  ShakaIcon,
+  VerifiedIcon,
+  ZapIcon,
+} from "../../icons/StemstrIcon";
+import useNostr from "../../nostr/hooks/useNostr";
+import { useProfile } from "../../nostr/hooks/useProfile";
+import { dateToUnix } from "../../nostr/utils";
+import DownloadSoundButton from "../DownloadSoundButton/DownloadSoundButton";
 import NoteAction from "../NoteAction/NoteAction";
 import SoundPlayer from "../SoundPlayer/SoundPlayer";
-import { dateToUnix } from "../../nostr/utils";
-import { useProfile } from "../../nostr/hooks/useProfile";
-import { getEventHash, Kind, nip19, signEvent } from "nostr-tools";
-import { useEffect, useState } from "react";
-import {
-  DownloadIcon,
-  MoreIcon,
-  CommentIcon,
-  ZapIcon,
-  ShakaIcon,
-  RepostIcon,
-  VerifiedIcon,
-} from "../../icons/StemstrIcon";
-import { cacheProfile, getCachedProfile } from "../../cache/cache";
-import Link from "next/link";
-import { useSelector } from "react-redux";
-import useNostr from "../../nostr/hooks/useNostr";
+import RepostButton from "../RepostButton/RepostButton";
+import useStyles from "./Note.styles";
 
 export default function Note(props) {
   const { note } = props;
@@ -40,6 +40,11 @@ export default function Note(props) {
   const { data } = useProfile({
     pubkey: note.event.pubkey,
   });
+  const downloadUrl = useMemo(() => {
+    const downloadUrlTag =
+      note.event.tags?.find((tag) => tag[0] === "download_url") || null;
+    return downloadUrlTag ? downloadUrlTag[1] : null;
+  }, [note.event]);
 
   const handleClickShaka = () => {
     let created_at = Math.floor(Date.now() / 1000);
@@ -98,18 +103,7 @@ export default function Note(props) {
             </Text>
           </Group>
           <Group position="right">
-            <Center
-              sx={(theme) => ({
-                width: 28,
-                height: 28,
-                borderRadius: "50%",
-                border: "1px solid",
-                borderColor: theme.colors.gray[2],
-                color: theme.white,
-              })}
-            >
-              <DownloadIcon width={12} height={12} />
-            </Center>
+            <DownloadSoundButton href={downloadUrl} />
             <Center
               sx={(theme) => ({
                 width: 28,
@@ -138,9 +132,7 @@ export default function Note(props) {
           <NoteAction sx={{ color: "white" }}>
             <CommentIcon width={18} height={18} /> 12
           </NoteAction>
-          <NoteAction>
-            <RepostIcon width={18} height={18} /> 4
-          </NoteAction>
+          <RepostButton note={note} />
           <NoteAction>
             <ShakaIcon onClick={handleClickShaka} width={18} height={18} /> 0
           </NoteAction>

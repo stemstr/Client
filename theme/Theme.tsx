@@ -3,6 +3,7 @@ import {
   Tuple,
   DefaultMantineColor,
   ActionIconStylesParams,
+  ButtonStylesParams,
 } from "@mantine/core";
 
 type ExtendedCustomColors = "purple" | DefaultMantineColor;
@@ -96,12 +97,13 @@ const stemstrTheme: MantineThemeOverride = {
       }),
     },
     Button: {
-      styles: (theme, params) => ({
+      styles: (theme, params: ButtonStylesParams) => ({
         root: {
           width: "100%",
           borderRadius: theme.radius.md,
           minHeight: 40,
-          backgroundColor: theme.colors.purple[4],
+          backgroundColor:
+            params.variant === "default" ? theme.colors.purple[4] : undefined,
         },
         label: {
           fontWeight: 500,
