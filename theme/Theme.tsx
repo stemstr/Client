@@ -21,12 +21,24 @@ const stemstrTheme: MantineThemeOverride = {
       "#EAE2FC", // purple.1
       "#BFAAEA", // purple.2
       "#BFAAEA", // purple.3
-      "#865AE2", // purple.4
+      "#BFAAEA", // purple.4
       "#865AE2", // purple.5
-      "#763AF4", // purple.6
-      "#763AF4", // purple.7
+      "#865AE2", // purple.6
+      "#865AE2", // purple.7
       "#41355C", // purple.8
       "#41355C", // purple.9
+    ],
+    green: [
+      "#8BF6E3", // purple.0
+      "#8BF6E3", // purple.1
+      "#09D4B0", // purple.2
+      "#09D4B0", // purple.3
+      "#09D4B0", // purple.4
+      "#07B898", // purple.5
+      "#07B898", // purple.6
+      "#07B898", // purple.7
+      "#0B6252", // purple.8
+      "#0B6252", // purple.9
     ],
     gray: [
       "#FAFAFA", // gray.0
@@ -99,11 +111,16 @@ const stemstrTheme: MantineThemeOverride = {
     Button: {
       styles: (theme, params: ButtonStylesParams) => ({
         root: {
-          width: "100%",
+          // width: "100%",
           borderRadius: theme.radius.md,
           minHeight: 40,
           backgroundColor:
-            params.variant === "default" ? theme.colors.purple[4] : undefined,
+            params.variant === "default"
+              ? theme.colors.purple[4]
+              : params.variant === "light"
+              ? theme.colors.gray[6]
+              : undefined,
+          color: params.variant === "light" ? theme.white : undefined,
         },
         label: {
           fontWeight: 500,

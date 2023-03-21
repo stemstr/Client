@@ -1,55 +1,86 @@
-import { Box, Button, Image, Space, Text, TextInput } from "@mantine/core";
+import {
+  Box,
+  Button,
+  Group,
+  Image,
+  Space,
+  Stack,
+  Text,
+  TextInput,
+} from "@mantine/core";
 import LoginForm from "../components/LoginForm/LoginForm";
 
 export default function Login() {
   return (
     <Box
       sx={{
-        marginTop: 136,
+        marginTop: 48,
       }}
     >
       <Image
         src="/logo.svg"
         alt="stemstr"
-        width={70}
-        height={70}
-        sx={{ margin: "auto", marginBottom: 34 }}
+        width={66}
+        height={66}
+        sx={{ margin: "auto", marginBottom: 16 }}
       />
-      <Text fz={32} fw={700} c="gray.0" ta="center" mb="md">
-        Login
+      <Text fz={32} fw={700} c="gray.0" ta="center" lh="normal">
+        Stemstr
       </Text>
-      <Text fz="sm" c="gray.1" ta="center" mb={44}>
-        Enter your private key in the input below to sign in
-      </Text>
-      <Box sx={{ marginLeft: 64, marginRight: 64 }}>
-        <LoginForm />
-        <Space h={40} />
+      <Box sx={{ textAlign: "center" }}>
+        <Text
+          variant="gradient"
+          gradient={{ from: "#F9F5FF", to: "#A17BF0", deg: 135 }}
+          display="inline-block"
+          fz="xl"
+          ta="center"
+          mb={48}
+          lh="normal"
+        >
+          The sounds of music
+        </Text>
+      </Box>
+      <Stack
+        sx={{
+          maxWidth: 348,
+          margin: "auto",
+        }}
+      >
         <Box
           sx={(theme) => ({
-            borderRadius: theme.radius.lg,
             border: `1px solid ${theme.colors.gray[4]}`,
-            padding: 24,
-            background: `linear-gradient(102.06deg, #2B2B2D 41.2%, rgba(39, 62, 75, .3) 76.4%, #2B2B2D 100%)`,
+            borderRadius: theme.radius.lg,
+            padding: theme.spacing.md,
           })}
         >
-          <Text fz="xl" mb={8}>
-            <Text c="white" span>
-              Need an account?
-            </Text>
-            <Text span></Text> — we got you!
+          <Text ta="center" mb="sm" c="white" fw={500}>
+            You new here?
           </Text>
-          <Text fz="sm" mb={16}>
-            Quickly generate your keys. Make sure you save them safely.
+          <Text ta="center" mb="md" c="gray.0" fz="sm">
+            Ready to get started?
           </Text>
-          <Button
-            sx={(theme) => ({
-              background: theme.colors.gray[7],
-            })}
-          >
-            Generate key
+          <Group grow>
+            <Button variant="light">Learn more</Button>
+            <Button>Sign me up</Button>
+          </Group>
+        </Box>
+        <Box
+          sx={(theme) => ({
+            border: `1px solid ${theme.colors.gray[4]}`,
+            borderRadius: theme.radius.lg,
+            padding: theme.spacing.md,
+          })}
+        >
+          <LoginForm />
+          <Space h={24} />
+          <Text fz="xs" c="white" fw={500} mb={8}>
+            Login with Extension ⓘ
+          </Text>
+          <Button variant="light" fullWidth>
+            Login securely with Flamingo
           </Button>
         </Box>
-      </Box>
+      </Stack>
     </Box>
   );
 }
