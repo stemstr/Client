@@ -1,7 +1,7 @@
 import { Box, Center, FileInput, Group } from "@mantine/core";
 import { useEffect, useRef, useState } from "react";
-import { PlusIcon, PlayIcon, StopIcon } from "../../icons/StemstrIcon";
-import WaveForm from "../WaveForm/WaveForm";
+import { PlusIcon, PlayIcon, StopIcon } from "../../../icons/StemstrIcon";
+import WaveForm from "../../WaveForm/WaveForm";
 
 export default function SoundPicker(props) {
   const [audioBlobURL, setAudioBlobURL] = useState(null);

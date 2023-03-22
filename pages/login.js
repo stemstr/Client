@@ -1,13 +1,5 @@
-import {
-  Box,
-  Button,
-  Group,
-  Image,
-  Space,
-  Stack,
-  Text,
-  TextInput,
-} from "@mantine/core";
+import { Box, Button, Group, Image, Space, Stack, Text } from "@mantine/core";
+import Link from "next/link";
 import LoginForm from "../components/LoginForm/LoginForm";
 
 export default function Login() {
@@ -61,7 +53,9 @@ export default function Login() {
           </Text>
           <Group grow>
             <Button variant="light">Learn more</Button>
-            <Button>Sign me up</Button>
+            <Link href="/signup">
+              <Button>Sign me up</Button>
+            </Link>
           </Group>
         </Box>
         <Box

@@ -1,6 +1,7 @@
 import Bell from "./Line icons/Alerts & feedback/bell-02.svg";
 
 import Download from "./Line icons/Arrows/arrow-down.svg";
+import ChevronRight from "./Line icons/Arrows/chevron-right.svg";
 
 import Comment from "./Line icons/Communication/message-square-02.svg";
 
@@ -18,6 +19,8 @@ import Settings from "./Line icons/General/settings-02.svg";
 import Share from "./Line icons/General/share-02.svg";
 import XClose from "./Line icons/General/x-close.svg";
 import Zap from "./Line icons/General/zap.svg";
+
+import CameraPlus from "./Line icons/Images/camera-plus.svg";
 
 import Compass from "./Line icons/Maps & travel/compass-03.svg";
 
@@ -242,6 +245,22 @@ export const XCloseIcon = (props) => {
   return (
     <StemstrIcon>
       <XClose {...props} />
+    </StemstrIcon>
+  );
+};
+
+export const ChevronRightIcon = (props) => {
+  return (
+    <StemstrIcon>
+      <ChevronRight {...props} />
+    </StemstrIcon>
+  );
+};
+
+export const CameraPlusIcon = (props) => {
+  return (
+    <StemstrIcon>
+      <CameraPlus {...props} />
     </StemstrIcon>
   );
 };

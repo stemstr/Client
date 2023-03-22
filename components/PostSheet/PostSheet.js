@@ -6,7 +6,7 @@ import SoundFieldGroup from "../FieldGroups/SoundFieldGroup";
 import CommentFieldGroup from "../FieldGroups/CommentFieldGroup";
 import TagsFieldGroup from "../FieldGroups/TagsFieldGroup";
 import ShareAcrossField from "../ShareAcrossField/ShareAcrossField";
-import { parseHashtags } from "../TagsField/TagsField";
+import { parseHashtags } from "../Fields/TagsField/TagsField";
 import { getEventHash, signEvent } from "nostr-tools";
 import axios from "axios";
 import useNostr from "../../nostr/hooks/useNostr";
