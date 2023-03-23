@@ -15,6 +15,11 @@ export default function Signup() {
   const [sk, setSk] = useState(null);
 
   const handleSubmit = (values) => {
+    if (values.name.length > 1) {
+      values.name = values.name.slice(1);
+    } else {
+      values.name = "";
+    }
     let created_at = Math.floor(Date.now() / 1000);
     let newSk = generatePrivateKey();
     let pk = getPublicKey(newSk);

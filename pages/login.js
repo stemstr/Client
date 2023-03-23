@@ -1,8 +1,10 @@
 import { Box, Button, Group, Image, Space, Stack, Text } from "@mantine/core";
-import Link from "next/link";
+import { useRouter } from "next/router";
 import LoginForm from "../components/LoginForm/LoginForm";
 
 export default function Login() {
+  const router = useRouter();
+
   return (
     <Box
       sx={{
@@ -53,9 +55,9 @@ export default function Login() {
           </Text>
           <Group grow>
             <Button variant="light">Learn more</Button>
-            <Link href="/signup">
-              <Button>Sign me up</Button>
-            </Link>
+            <Button onClick={() => router.push(`/signup`)} fullWidth>
+              Sign me up
+            </Button>
           </Group>
         </Box>
         <Box

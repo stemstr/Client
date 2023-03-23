@@ -29,16 +29,16 @@ const stemstrTheme: MantineThemeOverride = {
       "#41355C", // purple.9
     ],
     green: [
-      "#8BF6E3", // purple.0
-      "#8BF6E3", // purple.1
-      "#09D4B0", // purple.2
-      "#09D4B0", // purple.3
-      "#09D4B0", // purple.4
-      "#07B898", // purple.5
-      "#07B898", // purple.6
-      "#07B898", // purple.7
-      "#0B6252", // purple.8
-      "#0B6252", // purple.9
+      "#8BF6E3", // green.0
+      "#8BF6E3", // green.1
+      "#09D4B0", // green.2
+      "#09D4B0", // green.3
+      "#09D4B0", // green.4
+      "#07B898", // green.5
+      "#07B898", // green.6
+      "#07B898", // green.7
+      "#0B6252", // green.8
+      "#0B6252", // green.9
     ],
     gray: [
       "#FAFAFA", // gray.0

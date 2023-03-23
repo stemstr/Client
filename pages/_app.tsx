@@ -24,7 +24,7 @@ const relayUrls: string[] = [
   // public relays
   // "wss://relay.damus.io",
   // "wss://relay.snort.social",
-  // "wss://nos.lol",
+  "wss://nos.lol",
   // "wss://relay.current.fyi",
 ];
 if (process.env.NEXT_PUBLIC_STEMSTR_RELAY)
