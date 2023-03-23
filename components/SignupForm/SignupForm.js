@@ -16,7 +16,7 @@ export default function SignupForm({ handleSubmit }) {
       display_name: "",
       name: "",
       about: "",
-      lnurl: "",
+      //   lnurl: "",
     },
     validate: {},
   });
@@ -30,7 +30,7 @@ export default function SignupForm({ handleSubmit }) {
         <DisplayNameFieldGroup {...form.getInputProps("display_name")} />
         <NameFieldGroup {...form.getInputProps("name")} />
         <AboutFieldGroup {...form.getInputProps("about")} />
-        <LNURLFieldGroup {...form.getInputProps("lnurl")} />
+        {/* <LNURLFieldGroup {...form.getInputProps("lnurl")} /> */}
         <Space h={42} />
         <Button type="submit">
           Sign me up and generate keys{" "}
