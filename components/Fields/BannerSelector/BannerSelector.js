@@ -41,6 +41,10 @@ export default function BannerSelector(props) {
           color: theme.white,
           position: "relative",
           cursor: "pointer",
+          border: "1px dashed transparent",
+          ":hover": {
+            borderColor: theme.white,
+          },
         })}
       >
         {props.value && (

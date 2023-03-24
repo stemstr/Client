@@ -45,6 +45,10 @@ export default function ProfilePicSelector(props) {
           cursor: "pointer",
           marginTop: -50,
           position: "relative",
+          border: "1px dashed transparent",
+          ":hover": {
+            borderColor: theme.white,
+          },
         })}
       >
         <Avatar
