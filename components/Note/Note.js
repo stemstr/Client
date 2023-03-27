@@ -9,7 +9,7 @@ import {
   Text,
 } from "@mantine/core";
 import Link from "next/link";
-import { getEventHash, Kind, nip19, signEvent } from "nostr-tools";
+import { Kind, nip19 } from "nostr-tools";
 import { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { cacheProfile, getCachedProfile } from "../../cache/cache";
@@ -32,7 +32,7 @@ import useStyles from "./Note.styles";
 export default function Note(props) {
   const { note } = props;
   const { classes } = useStyles();
-  const { publish } = useNostr();
+  const { publish, signEvent } = useNostr();
   const auth = useSelector((state) => state.auth);
   const cachedProfile = getCachedProfile(nip19.npubEncode(note.event.pubkey));
   const [userData, setUserData] = useState(cachedProfile);
@@ -54,14 +54,15 @@ export default function Note(props) {
     ];
     let reactionEvent = {
       kind: Kind.Reaction,
-      pubkey: auth.user.pk,
       created_at: created_at,
       tags: tags,
       content: "🤙",
     };
-    reactionEvent.id = getEventHash(reactionEvent);
-    reactionEvent.sig = signEvent(reactionEvent, auth.sk);
-    publish(reactionEvent, [process.env.NEXT_PUBLIC_STEMSTR_RELAY]);
+    signEvent(reactionEvent).then((reactionEvent) => {
+      if (reactionEvent) {
+        publish(reactionEvent, [process.env.NEXT_PUBLIC_STEMSTR_RELAY]);
+      }
+    });
   };
 
   useEffect(() => {

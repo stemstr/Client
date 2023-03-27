@@ -1,13 +1,12 @@
 import NoteAction from "../NoteAction/NoteAction";
-import { CheckIcon, RepostIcon, XCloseIcon } from "../../icons/StemstrIcon";
+import { CheckIcon, RepostIcon } from "../../icons/StemstrIcon";
 import { useDisclosure } from "@mantine/hooks";
 import { Button, Center, Drawer, Group, Stack, Text } from "@mantine/core";
 import { useSelector } from "react-redux";
 import useNostr from "../../nostr/hooks/useNostr";
-import { getEventHash, signEvent } from "nostr-tools";
 
 export default function RepostButton({ note }) {
-  const { publish } = useNostr();
+  const { publish, signEvent } = useNostr();
   const auth = useSelector((state) => state.auth);
   const [opened, { open, close }] = useDisclosure(false);
 
@@ -19,15 +18,16 @@ export default function RepostButton({ note }) {
     ];
     let event = {
       kind: 6,
-      pubkey: auth.user.pk,
       created_at: created_at,
       tags: tags,
       content: "",
     };
-    event.id = getEventHash(event);
-    event.sig = signEvent(event, auth.sk);
-    publish(event, [process.env.NEXT_PUBLIC_STEMSTR_RELAY]);
-    close();
+    signEvent(event).then((event) => {
+      if (event) {
+        publish(event, [process.env.NEXT_PUBLIC_STEMSTR_RELAY]);
+        close();
+      }
+    });
   };
 
   return (

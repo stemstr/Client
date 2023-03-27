@@ -7,9 +7,24 @@ import {
   useRef,
   useState,
 } from "react";
-import { Relay, Event as NostrEvent, relayInit } from "nostr-tools";
+import {
+  Relay,
+  Event as NostrEvent,
+  relayInit,
+  getEventHash,
+} from "nostr-tools";
 import { uniqBy, log } from "./utils";
 import { relaysSlice } from "../store/Relays";
+import { useSelector } from "react-redux";
+import { AppState } from "../store/Store";
+import { AuthState } from "../store/Auth";
+import { signEvent as signEv } from "nostr-tools";
+
+declare global {
+  interface Window {
+    nostr?: any; // Replace `any` with the appropriate type of `nostr` if you know it.
+  }
+}
 
 type OnConnectFunc = (relay: Relay) => void;
 type OnDisconnectFunc = (relay: Relay) => void;
@@ -21,6 +36,7 @@ interface NostrContextType {
   onConnect: (_onConnectCallback?: OnConnectFunc) => void;
   onDisconnect: (_onDisconnectCallback?: OnDisconnectFunc) => void;
   publish: (event: NostrEvent, relayUrls?: string[]) => void;
+  signEvent: (event: NostrEvent) => void;
 }
 
 export const NostrContext = createContext<NostrContextType>({
@@ -29,6 +45,7 @@ export const NostrContext = createContext<NostrContextType>({
   onConnect: () => null,
   onDisconnect: () => null,
   publish: () => null,
+  signEvent: () => null,
 });
 
 export default function NostrProvider({
@@ -47,6 +64,7 @@ export default function NostrProvider({
     return relays.filter((relay) => relay.status === 1);
   }, [relays.map((relay) => relay.status)]);
   const [isLoading, setIsLoading] = useState(true);
+  const auth = useSelector<AppState, AuthState>((state) => state.auth);
 
   let onConnectCallback: null | OnConnectFunc = null;
   let onDisconnectCallback: null | OnDisconnectFunc = null;
@@ -108,11 +126,36 @@ export default function NostrProvider({
       });
   };
 
+  const signEvent = async (
+    event: NostrEvent
+  ): Promise<NostrEvent | undefined> => {
+    if (auth.nip07) {
+      if (window.nostr) {
+        return await window.nostr
+          .signEvent(event)
+          .then((signedEvent: NostrEvent) => {
+            return signedEvent;
+          })
+          .catch((err: Error) => {
+            console.error(err);
+          });
+      }
+    } else {
+      if (auth.sk && auth.user.pk) {
+        event.pubkey = auth.user.pk;
+        event.id = getEventHash(event);
+        event.sig = signEv(event, auth.sk);
+        return event;
+      }
+    }
+  };
+
   const value: NostrContextType = {
     debug,
     isLoading,
     connectedRelays,
     publish,
+    signEvent,
     onConnect: (_onConnectCallback?: OnConnectFunc) => {
       if (_onConnectCallback) {
         onConnectCallback = _onConnectCallback;
