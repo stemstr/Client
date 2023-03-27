@@ -1,9 +1,25 @@
 import { Box, Button, Group, Image, Space, Stack, Text } from "@mantine/core";
 import { useRouter } from "next/router";
+import { useDispatch } from "react-redux";
 import LoginForm from "../components/LoginForm/LoginForm";
+import { setNIP07 } from "../store/Auth";
 
 export default function Login() {
   const router = useRouter();
+  const dispatch = useDispatch();
+
+  const handleSecureLogin = () => {
+    if (window.nostr) {
+      window.nostr
+        .getPublicKey()
+        .then((pk) => {
+          dispatch(setNIP07(pk));
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    }
+  };
 
   return (
     <Box
@@ -72,8 +88,8 @@ export default function Login() {
           <Text fz="xs" c="white" fw={500} mb={8}>
             Login with Extension ⓘ
           </Text>
-          <Button variant="light" fullWidth>
-            Login securely with Flamingo
+          <Button onClick={handleSecureLogin} variant="light" fullWidth>
+            Connect
           </Button>
         </Box>
       </Stack>

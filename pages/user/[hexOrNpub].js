@@ -12,7 +12,6 @@ import { useRouter } from "next/router";
 import { useProfile } from "../../nostr/hooks/useProfile";
 import { useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { cacheAuthState } from "../../cache/cache";
 import { selectAuthState, reset as logout } from "../../store/Auth";
 import { getPublicKeys } from "../../nostr/utils";
 import {
@@ -46,7 +45,6 @@ export default function ProfilePage() {
 
   const handleLogout = () => {
     dispatch(logout());
-    cacheAuthState(null);
     router.push("/login");
   };
 

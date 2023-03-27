@@ -5,7 +5,7 @@ import { useDispatch } from "react-redux";
 import { cacheProfile, getCachedProfile } from "../cache/cache";
 import { setAuthUser } from "./Auth";
 
-export default function NostrStateProvider({ pk }) {
+export default function NostrAuthStateProvider({ pk }) {
   const dispatch = useDispatch();
 
   const npub = pk ? nip19.npubEncode(pk) : null;
