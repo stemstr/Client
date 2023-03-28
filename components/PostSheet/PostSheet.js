@@ -7,7 +7,6 @@ import CommentFieldGroup from "../FieldGroups/CommentFieldGroup";
 import TagsFieldGroup from "../FieldGroups/TagsFieldGroup";
 import ShareAcrossField from "../ShareAcrossField/ShareAcrossField";
 import { parseHashtags } from "../Fields/TagsField/TagsField";
-import axios from "axios";
 import useNostr from "../../nostr/hooks/useNostr";
 
 export default function PostSheet() {
@@ -20,6 +19,10 @@ export default function PostSheet() {
   const form = useForm({
     initialValues: {
       file: null,
+      uploadResponse: {
+        streamUrl: null,
+        downloadUrl: null,
+      },
       comment: "",
       tags: "",
       shareAcross: true,
@@ -29,80 +32,33 @@ export default function PostSheet() {
 
   const handleSubmit = async (values) => {
     let hashtags = parseHashtags(values.tags);
-    let sum = await calculateHash(values.file);
+    let created_at = Math.floor(Date.now() / 1000);
+    let tags = [
+      ["client", "stemstr.app"],
+      ["stemstr_version", "1.0"],
+    ];
+    hashtags.forEach((hashtag) => {
+      tags.push(["t", hashtag]);
+    });
 
-    if (values.file) {
-      axios
-        .post(
-          `${process.env.NEXT_PUBLIC_STEMSTR_API}/upload/quote`,
-          {
-            pk: auth.user.pk,
-            size: values.file.size,
-            sum: sum,
-          },
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        )
-        .then((response) => {
-          let created_at = Math.floor(Date.now() / 1000);
-          let tags = [
-            ["download_url", response.data.download_url],
-            ["stream_url", response.data.stream_url],
-            ["stemstr_version", "1.0"],
-          ];
-          hashtags.forEach((hashtag) => {
-            tags.push(["t", hashtag]);
-          });
-          let event = {
-            kind: 1,
-            created_at: created_at,
-            tags: tags,
-            content: `${values.comment}`,
-          };
-          signEvent(event).then((event) => {
-            if (event) {
-              const formData = new FormData();
-              formData.append("pk", auth.user.pk);
-              formData.append("size", values.file.size);
-              formData.append("sum", sum);
-              formData.append("quoteId", response.data.quote_id);
-              formData.append("event", window.btoa(JSON.stringify(event)));
-              formData.append("fileName", values.file.name);
-              formData.append("file", values.file);
-
-              axios
-                .post(
-                  `${process.env.NEXT_PUBLIC_STEMSTR_API}/upload`,
-                  formData,
-                  {
-                    headers: {
-                      "Content-Type": "multipart/form-data",
-                    },
-                  }
-                )
-                .then((response) => {
-                  dispatch(closeSheet("postSheet"));
-                  console.log(response);
-                })
-                .catch((error) => {
-                  // TODO: handle error
-                  console.log(error);
-                });
-            }
-          });
-        })
-        .catch((error) => {
-          // TODO: handle error
-        });
-    } else {
-      let created_at = Math.floor(Date.now() / 1000);
-      let tags = [["stemstr_version", "1.0"]];
-      hashtags.forEach((hashtag) => {
-        tags.push(["t", hashtag]);
+    if (values.uploadResponse.streamUrl && values.uploadResponse.downloadUrl) {
+      tags.push(["download_url", values.uploadResponse.downloadUrl]);
+      tags.push(["stream_url", values.uploadResponse.streamUrl]);
+      let event = {
+        kind: 1808,
+        created_at: created_at,
+        tags: tags,
+        content: `${values.comment}`,
+      };
+      signEvent(event).then((event) => {
+        if (event) {
+          console.log(event);
+          publish(event, [process.env.NEXT_PUBLIC_STEMSTR_RELAY]);
+          form.reset();
+          dispatch(closeSheet(sheetKey));
+        }
       });
+    } else {
       let event = {
         kind: 1,
         created_at: created_at,
@@ -111,16 +67,9 @@ export default function PostSheet() {
       };
       signEvent(event).then((event) => {
         if (event) {
-          axios
-            .post(`${process.env.NEXT_PUBLIC_STEMSTR_API}/event`, event)
-            .then((response) => {
-              dispatch(closeSheet("postSheet"));
-              console.log(response);
-            })
-            .catch((error) => {
-              // TODO: handle error
-              console.log(error);
-            });
+          publish(event, [process.env.NEXT_PUBLIC_STEMSTR_RELAY]);
+          form.reset();
+          dispatch(closeSheet(sheetKey));
         }
       });
     }
@@ -167,7 +116,7 @@ export default function PostSheet() {
     >
       <form onSubmit={form.onSubmit(handleSubmit)}>
         <Stack spacing={28}>
-          <SoundFieldGroup {...form.getInputProps("file")} />
+          <SoundFieldGroup form={form} {...form.getInputProps("file")} />
           <CommentFieldGroup {...form.getInputProps("comment")} />
           <TagsFieldGroup {...form.getInputProps("tags")} />
           <ShareAcrossField {...form.getInputProps("shareAcross")} />
@@ -176,17 +125,4 @@ export default function PostSheet() {
       </form>
     </Drawer>
   );
-}
-
-async function calculateHash(file) {
-  if (!file) return null;
-  const hashBuffer = await crypto.subtle.digest(
-    "SHA-256",
-    await file.arrayBuffer()
-  );
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  const hashHex = hashArray
-    .map((b) => b.toString(16).padStart(2, "0"))
-    .join("");
-  return hashHex;
 }

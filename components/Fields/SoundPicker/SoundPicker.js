@@ -1,17 +1,53 @@
 import { Box, Center, FileInput, Group } from "@mantine/core";
+import axios from "axios";
 import { useEffect, useRef, useState } from "react";
+import { useSelector } from "react-redux";
 import { PlusIcon, PlayIcon, StopIcon } from "../../../icons/StemstrIcon";
 import WaveForm from "../../WaveForm/WaveForm";
 
 export default function SoundPicker(props) {
+  const auth = useSelector((state) => state.auth);
   const [audioBlobURL, setAudioBlobURL] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef(null);
   const inputRef = useRef(null);
 
-  const handleAudioChange = () => {
-    if (props.value) setAudioBlobURL(URL.createObjectURL(props.value));
+  const handleAudioChange = async () => {
+    props.form.setValues((prev) => ({
+      ...prev,
+      "uploadResponse.streamUrl": null,
+      "uploadResponse.downloadUrl": null,
+    }));
     setIsPlaying(false);
+    if (props.value) {
+      let sum = await calculateHash(props.value);
+      const formData = new FormData();
+      formData.append("pk", auth.user.pk);
+      formData.append("sum", sum);
+      formData.append("filename", props.value.name);
+      formData.append("file", props.value);
+      axios
+        .post(`${process.env.NEXT_PUBLIC_STEMSTR_API}/upload`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then((response) => {
+          setAudioBlobURL(URL.createObjectURL(props.value));
+          props.form.setFieldValue(
+            "uploadResponse.streamUrl",
+            response.data.stream_url
+          );
+          props.form.setFieldValue(
+            "uploadResponse.downloadUrl",
+            response.data.download_url
+          );
+        })
+        .catch((error) => {
+          props.onChange(null);
+          console.error(error);
+        });
+    }
   };
 
   const handlePlayClick = () => {
@@ -104,4 +140,17 @@ export default function SoundPicker(props) {
       </Group>
     </>
   );
+}
+
+async function calculateHash(file) {
+  if (!file) return null;
+  const hashBuffer = await crypto.subtle.digest(
+    "SHA-256",
+    await file.arrayBuffer()
+  );
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const hashHex = hashArray
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+  return hashHex;
 }
