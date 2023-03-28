@@ -4,9 +4,11 @@ import { HYDRATE } from "next-redux-wrapper";
 import { User } from "./Users";
 import { nip19, getPublicKey } from "nostr-tools";
 import { cacheAuthState } from "../cache/cache";
+import { getPublicKeys } from "../nostr/utils";
 
 // Type for our state
 export interface AuthState {
+  nip07: boolean;
   sk?: string | null; // hex
   nsec?: string | null;
   user: User;
@@ -14,6 +16,7 @@ export interface AuthState {
 
 // Initial state
 const initialState: AuthState = {
+  nip07: false,
   sk: null,
   nsec: null,
   user: {
@@ -55,6 +58,15 @@ export const authSlice = createSlice({
       state.user.npub = npub;
       cacheAuthState(state);
     },
+    setNIP07: (state, action) => {
+      Object.assign(state, initialState);
+      state.nip07 = true;
+      // payload is user's pubkey
+      const { pk, npub } = getPublicKeys(action.payload);
+      state.user.pk = pk;
+      state.user.npub = npub;
+      cacheAuthState(state);
+    },
     setAuthUser: (state, action) => {
       let user = action.payload;
       let { type, data } = nip19.decode(user.npub);
@@ -62,7 +74,10 @@ export const authSlice = createSlice({
       state.user = user;
       cacheAuthState(state);
     },
-    reset: () => initialState,
+    reset: () => {
+      cacheAuthState(null);
+      return initialState;
+    },
   },
   // Special reducer for hydrating the state. Special case for next-redux-wrapper
   extraReducers: {
@@ -75,7 +90,8 @@ export const authSlice = createSlice({
   },
 });
 
-export const { setSK, setAuthUser, reset, setAuthState } = authSlice.actions;
+export const { setSK, setAuthUser, reset, setAuthState, setNIP07 } =
+  authSlice.actions;
 
 export const selectAuthState = (state: AppState) => state.auth;
 

@@ -6,13 +6,12 @@ import SoundFieldGroup from "../FieldGroups/SoundFieldGroup";
 import CommentFieldGroup from "../FieldGroups/CommentFieldGroup";
 import TagsFieldGroup from "../FieldGroups/TagsFieldGroup";
 import ShareAcrossField from "../ShareAcrossField/ShareAcrossField";
-import { parseHashtags } from "../TagsField/TagsField";
-import { getEventHash, signEvent } from "nostr-tools";
+import { parseHashtags } from "../Fields/TagsField/TagsField";
 import axios from "axios";
 import useNostr from "../../nostr/hooks/useNostr";
 
 export default function PostSheet() {
-  const { publish } = useNostr();
+  const { publish, signEvent } = useNostr();
   const sheetKey = "postSheet";
   const auth = useSelector((state) => state.auth);
   const relays = useSelector((state) => state.relays);
@@ -59,37 +58,41 @@ export default function PostSheet() {
           });
           let event = {
             kind: 1,
-            pubkey: auth.user.pk,
             created_at: created_at,
             tags: tags,
             content: `${values.comment}`,
           };
-          event.id = getEventHash(event);
-          event.sig = signEvent(event, auth.sk);
+          signEvent(event).then((event) => {
+            if (event) {
+              const formData = new FormData();
+              formData.append("pk", auth.user.pk);
+              formData.append("size", values.file.size);
+              formData.append("sum", sum);
+              formData.append("quoteId", response.data.quote_id);
+              formData.append("event", window.btoa(JSON.stringify(event)));
+              formData.append("fileName", values.file.name);
+              formData.append("file", values.file);
 
-          const formData = new FormData();
-          formData.append("pk", auth.user.pk);
-          formData.append("size", values.file.size);
-          formData.append("sum", sum);
-          formData.append("quoteId", response.data.quote_id);
-          formData.append("event", window.btoa(JSON.stringify(event)));
-          formData.append("fileName", values.file.name);
-          formData.append("file", values.file);
-
-          axios
-            .post(`${process.env.NEXT_PUBLIC_STEMSTR_API}/upload`, formData, {
-              headers: {
-                "Content-Type": "multipart/form-data",
-              },
-            })
-            .then((response) => {
-              dispatch(closeSheet("postSheet"));
-              console.log(response);
-            })
-            .catch((error) => {
-              // TODO: handle error
-              console.log(error);
-            });
+              axios
+                .post(
+                  `${process.env.NEXT_PUBLIC_STEMSTR_API}/upload`,
+                  formData,
+                  {
+                    headers: {
+                      "Content-Type": "multipart/form-data",
+                    },
+                  }
+                )
+                .then((response) => {
+                  dispatch(closeSheet("postSheet"));
+                  console.log(response);
+                })
+                .catch((error) => {
+                  // TODO: handle error
+                  console.log(error);
+                });
+            }
+          });
         })
         .catch((error) => {
           // TODO: handle error
@@ -102,23 +105,24 @@ export default function PostSheet() {
       });
       let event = {
         kind: 1,
-        pubkey: auth.user.pk,
         created_at: created_at,
         tags: tags,
         content: `${values.comment}`,
       };
-      event.id = getEventHash(event);
-      event.sig = signEvent(event, auth.sk);
-      axios
-        .post(`${process.env.NEXT_PUBLIC_STEMSTR_API}/event`, event)
-        .then((response) => {
-          dispatch(closeSheet("postSheet"));
-          console.log(response);
-        })
-        .catch((error) => {
-          // TODO: handle error
-          console.log(error);
-        });
+      signEvent(event).then((event) => {
+        if (event) {
+          axios
+            .post(`${process.env.NEXT_PUBLIC_STEMSTR_API}/event`, event)
+            .then((response) => {
+              dispatch(closeSheet("postSheet"));
+              console.log(response);
+            })
+            .catch((error) => {
+              // TODO: handle error
+              console.log(error);
+            });
+        }
+      });
     }
   };
 

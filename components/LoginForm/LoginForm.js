@@ -32,20 +32,22 @@ export default function LoginForm() {
     <form onSubmit={form.onSubmit(handleSubmit)}>
       <PasswordInput
         {...form.getInputProps("sk")}
-        placeholder="Private key here..."
+        placeholder="Login with private key"
         aria-label="Private key"
         label={
-          <Text fz="sm" c="white" mb={8}>
-            Private key ⓘ
+          <Text fz="xs" c="white" mb={8}>
+            Already on nostr?
           </Text>
         }
         styles={(theme) => ({
           root: {
-            marginBottom: theme.spacing.md,
+            marginBottom: 24,
           },
         })}
       />
-      <Button type="submit">Login now</Button>
+      <Button type="submit" color="green" fullWidth>
+        Login with key
+      </Button>
       {/* {authState?.user ? <Text>{JSON.stringify(authState.user)}</Text> : null} */}
     </form>
   );

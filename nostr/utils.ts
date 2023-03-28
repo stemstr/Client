@@ -49,11 +49,15 @@ export const getPublicKeys = (
 };
 
 // TODO: Write this function fr
-export const isNpub = (hexOrNpub: string) => {
+export const isNpub = (hexOrNpub: string): boolean => {
   return hexOrNpub.startsWith("npub1");
 };
 
 // TODO: Write this function fr
-export const isHexPubkey = (hexOrNpub: string) => {
+export const isHexPubkey = (hexOrNpub: string): boolean => {
   return !isNpub(hexOrNpub);
+};
+
+export const abbreviateKey = (key: string): string => {
+  return `${key.slice(0, 12)}...${key.slice(-12)}`;
 };
