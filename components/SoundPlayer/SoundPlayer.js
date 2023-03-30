@@ -4,20 +4,27 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { PlayIcon, StopIcon } from "../../icons/StemstrIcon";
 import WaveForm from "../WaveForm/WaveForm";
 import useStyles from "./SoundPlayer.styles";
+import Hls from "hls.js";
 
 export default function SoundPlayer({ event, ...rest }) {
   const audioRef = useRef();
+  const hlsRef = useRef(null);
+  const [mediaAttached, setMediaAttached] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(null);
   const playProgress = useMemo(() => {
     return duration ? currentTime / duration : 0;
   }, [currentTime, duration]);
-  const [canDownload, setCanDownload] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const downloadUrl = useMemo(() => {
     const downloadUrlTag =
       event.tags?.find((tag) => tag[0] === "download_url") || null;
     return downloadUrlTag ? downloadUrlTag[1] : null;
+  }, [event]);
+  const streamUrl = useMemo(() => {
+    const streamUrlTag =
+      event.tags?.find((tag) => tag[0] === "stream_url") || null;
+    return streamUrlTag ? streamUrlTag[1] : null;
   }, [event]);
   const { classes } = useStyles();
   const [waveformData, setWaveformData] = useState([]);
@@ -28,10 +35,23 @@ export default function SoundPlayer({ event, ...rest }) {
       axios
         .get(`${process.env.NEXT_PUBLIC_STEMSTR_API}/metadata/${hash}`)
         .then((response) => {
-          // console.log(response.data.waveform);
           setWaveformData(response.data.waveform);
         });
     }
+    if (streamUrl) {
+      if (Hls.isSupported()) {
+        hlsRef.current = new Hls();
+        hlsRef.current.loadSource(streamUrl);
+        hlsRef.current.on(Hls.Events.MANIFEST_PARSED, () => {
+          console.log("HLS manifest parsed");
+        });
+      }
+    }
+    return () => {
+      if (hlsRef.current) {
+        hlsRef.current.destroy();
+      }
+    };
   }, [event]);
 
   const handleTimeUpdate = () => {
@@ -41,7 +61,7 @@ export default function SoundPlayer({ event, ...rest }) {
 
   const handlePlayClick = () => {
     if (audioRef.current && !isPlaying) {
-      setCanDownload(true);
+      attachMedia();
       setIsPlaying(true);
       audioRef.current.play();
     }
@@ -64,13 +84,20 @@ export default function SoundPlayer({ event, ...rest }) {
     setDuration(audioRef.current.duration);
   };
 
+  const attachMedia = () => {
+    if (!mediaAttached) {
+      hlsRef.current.attachMedia(audioRef.current);
+      setMediaAttached(true);
+    }
+  };
+
   return (
     downloadUrl && (
       <Stack justify="center" spacing={0} className={classes.player}>
         <Group>
           <Center
             onClick={isPlaying ? handlePauseClick : handlePlayClick}
-            onMouseOver={() => setCanDownload(true)}
+            onMouseOver={() => attachMedia()}
             sx={(theme) => ({
               width: 36,
               height: 36,
@@ -87,15 +114,12 @@ export default function SoundPlayer({ event, ...rest }) {
             )}
           </Center>
 
-          {canDownload && (
-            <audio
-              ref={audioRef}
-              src={downloadUrl}
-              onCanPlay={handleCanPlay}
-              onEnded={handleAudioEnded}
-              onTimeUpdate={handleTimeUpdate}
-            />
-          )}
+          <audio
+            ref={audioRef}
+            onCanPlay={handleCanPlay}
+            onEnded={handleAudioEnded}
+            onTimeUpdate={handleTimeUpdate}
+          />
 
           <WaveForm data={waveformData} playProgress={playProgress} />
         </Group>
