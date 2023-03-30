@@ -169,7 +169,7 @@ export default function ProfilePage() {
           relays
         </Text>
       </Group>
-      {authState?.user?.npub === userData?.npub ? (
+      {authState?.user?.npub === npub ? (
         <Button onClick={handleLogout} mb="md">
           Logout
         </Button>
