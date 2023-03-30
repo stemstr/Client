@@ -45,6 +45,12 @@ export default function SoundPlayer({ event, ...rest }) {
         hlsRef.current.on(Hls.Events.MANIFEST_PARSED, () => {
           console.log("HLS manifest parsed");
         });
+      } else if (
+        audioRef.current.canPlayType("application/vnd.apple.mpegurl")
+      ) {
+        audioRef.current.src = streamUrl;
+      } else {
+        console.error("HLS is not supported by this browser");
       }
     }
     return () => {
@@ -85,7 +91,7 @@ export default function SoundPlayer({ event, ...rest }) {
   };
 
   const attachMedia = () => {
-    if (!mediaAttached) {
+    if (!mediaAttached && hlsRef.current) {
       hlsRef.current.attachMedia(audioRef.current);
       setMediaAttached(true);
     }
