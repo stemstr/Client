@@ -1,6 +1,6 @@
 import { Box, Center, FileInput, Group } from "@mantine/core";
 import axios from "axios";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { PlusIcon, PlayIcon, StopIcon } from "../../../icons/StemstrIcon";
 import WaveForm from "../../WaveForm/WaveForm";
@@ -9,8 +9,14 @@ export default function SoundPicker(props) {
   const auth = useSelector((state) => state.auth);
   const [audioBlobURL, setAudioBlobURL] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [waveformData, setWaveformData] = useState(null);
   const audioRef = useRef(null);
   const inputRef = useRef(null);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(null);
+  const playProgress = useMemo(() => {
+    return duration ? currentTime / duration : 0;
+  }, [currentTime, duration]);
 
   const handleAudioChange = async () => {
     props.form.setValues((prev) => ({
@@ -34,6 +40,7 @@ export default function SoundPicker(props) {
         })
         .then((response) => {
           setAudioBlobURL(URL.createObjectURL(props.value));
+          setWaveformData(response.data.waveform);
           props.form.setFieldValue(
             "uploadResponse.streamUrl",
             response.data.stream_url
@@ -71,6 +78,15 @@ export default function SoundPicker(props) {
 
   const handleSelectClick = () => {
     inputRef.current.click();
+  };
+
+  const handleTimeUpdate = () => {
+    const { currentTime } = audioRef.current;
+    setCurrentTime(currentTime);
+  };
+
+  const handleCanPlay = () => {
+    setDuration(audioRef.current.duration);
   };
 
   useEffect(() => {
@@ -134,9 +150,15 @@ export default function SoundPicker(props) {
           </Center>
         )}
         {props.value && (
-          <audio ref={audioRef} src={audioBlobURL} onEnded={handleAudioEnded} />
+          <audio
+            ref={audioRef}
+            src={audioBlobURL}
+            onEnded={handleAudioEnded}
+            onCanPlay={handleCanPlay}
+            onTimeUpdate={handleTimeUpdate}
+          />
         )}
-        <WaveForm data={props.value} />
+        <WaveForm data={waveformData} playProgress={playProgress} />
       </Group>
     </>
   );

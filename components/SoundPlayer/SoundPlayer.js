@@ -1,5 +1,6 @@
-import { Box, Center, Group, Stack, Text } from "@mantine/core";
-import { useMemo, useRef, useState } from "react";
+import { Center, Group, Stack, Text } from "@mantine/core";
+import axios from "axios";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { PlayIcon, StopIcon } from "../../icons/StemstrIcon";
 import WaveForm from "../WaveForm/WaveForm";
 import useStyles from "./SoundPlayer.styles";
@@ -19,6 +20,19 @@ export default function SoundPlayer({ event, ...rest }) {
     return downloadUrlTag ? downloadUrlTag[1] : null;
   }, [event]);
   const { classes } = useStyles();
+  const [waveformData, setWaveformData] = useState([]);
+
+  useEffect(() => {
+    if (downloadUrl) {
+      let hash = downloadUrl?.slice(downloadUrl.lastIndexOf("/") + 1);
+      axios
+        .get(`${process.env.NEXT_PUBLIC_STEMSTR_API}/metadata/${hash}`)
+        .then((response) => {
+          // console.log(response.data.waveform);
+          setWaveformData(response.data.waveform);
+        });
+    }
+  }, [event]);
 
   const handleTimeUpdate = () => {
     const { currentTime } = audioRef.current;
@@ -83,7 +97,7 @@ export default function SoundPlayer({ event, ...rest }) {
             />
           )}
 
-          <WaveForm data={true} playProgress={playProgress} />
+          <WaveForm data={waveformData} playProgress={playProgress} />
         </Group>
         <Group position="apart">
           <Text fz="xs" c="white">
