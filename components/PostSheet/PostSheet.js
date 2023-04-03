@@ -83,6 +83,11 @@ export default function PostSheet() {
     }
   };
 
+  const onDrop = (e) => {
+    e.preventDefault();
+    form.setFieldValue("file", e.dataTransfer.files[0]);
+  };
+
   return (
     <Drawer
       opened={opened}
@@ -91,6 +96,7 @@ export default function PostSheet() {
       title="Share"
       padding="md"
       size="full"
+      onDrop={onDrop}
       styles={(theme) => ({
         header: {
           paddingTop: 8,
@@ -111,6 +117,7 @@ export default function PostSheet() {
           paddingTop: 24,
           maxWidth: 600,
           margin: "auto",
+          overflowY: "scroll",
         },
       })}
     >
