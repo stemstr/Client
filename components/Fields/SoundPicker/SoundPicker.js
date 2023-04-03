@@ -1,11 +1,11 @@
-import { Box, Center, FileInput, Group } from "@mantine/core";
+import { Box, Center, FileInput, Group, Text } from "@mantine/core";
 import axios from "axios";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { PlusIcon, PlayIcon, StopIcon } from "../../../icons/StemstrIcon";
 import WaveForm from "../../WaveForm/WaveForm";
 
-export default function SoundPicker(props) {
+export default function SoundPicker({ form, isDragging, ...rest }) {
   const auth = useSelector((state) => state.auth);
   const [audioBlobURL, setAudioBlobURL] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -19,19 +19,19 @@ export default function SoundPicker(props) {
   }, [currentTime, duration]);
 
   const handleAudioChange = async () => {
-    props.form.setValues((prev) => ({
+    form.setValues((prev) => ({
       ...prev,
       "uploadResponse.streamUrl": null,
       "uploadResponse.downloadUrl": null,
     }));
     setIsPlaying(false);
-    if (props.value) {
-      let sum = await calculateHash(props.value);
+    if (rest.value) {
+      let sum = await calculateHash(rest.value);
       const formData = new FormData();
       formData.append("pk", auth.user.pk);
       formData.append("sum", sum);
-      formData.append("filename", props.value.name);
-      formData.append("file", props.value);
+      formData.append("filename", rest.value.name);
+      formData.append("file", rest.value);
       axios
         .post(`${process.env.NEXT_PUBLIC_STEMSTR_API}/upload`, formData, {
           headers: {
@@ -39,23 +39,29 @@ export default function SoundPicker(props) {
           },
         })
         .then((response) => {
-          setAudioBlobURL(URL.createObjectURL(props.value));
+          setAudioBlobURL(URL.createObjectURL(rest.value));
           setWaveformData(response.data.waveform);
-          props.form.setFieldValue(
+          form.setFieldValue(
             "uploadResponse.streamUrl",
             response.data.stream_url
           );
-          props.form.setFieldValue(
+          form.setFieldValue(
             "uploadResponse.downloadUrl",
             response.data.download_url
           );
         })
         .catch((error) => {
-          props.onChange(null);
+          rest.onChange(null);
           console.error(error);
         });
     }
   };
+
+  useEffect(() => {
+    if (!rest.value) {
+      setWaveformData(null);
+    }
+  }, [rest.value]);
 
   const handlePlayClick = () => {
     if (audioRef.current && !isPlaying) {
@@ -91,7 +97,7 @@ export default function SoundPicker(props) {
 
   useEffect(() => {
     handleAudioChange();
-  }, [props.value]);
+  }, [rest.value]);
 
   return (
     <>
@@ -104,61 +110,71 @@ export default function SoundPicker(props) {
           accept="audio/*"
           ref={inputRef}
           style={{ display: "none" }}
-          {...props}
+          {...rest}
         />
       </Box>
       <Group
+        position={rest.value ? null : "center"}
         sx={(theme) => ({
-          background:
-            "linear-gradient(180deg, rgba(44, 44, 44, 0) 0%, rgba(134, 90, 226, 0.4) 100%);",
+          background: isDragging
+            ? "linear-gradient(180deg, #383864 0%, rgba(71, 47, 111, 0.21) 100%)"
+            : "linear-gradient(180deg, rgba(44, 44, 44, 0) 0%, rgba(134, 90, 226, 0.4) 100%);",
           padding: "14px 16px",
           borderRadius: 8,
           border: `1px solid rgba(187, 134, 252, 0.4)`,
+          height: 96,
         })}
       >
-        {props.value ? (
-          <Center
-            onClick={isPlaying ? handlePauseClick : handlePlayClick}
-            sx={(theme) => ({
-              width: 36,
-              height: 36,
-              backgroundColor: theme.colors.purple[4],
-              borderRadius: theme.radius.xl,
-              color: theme.white,
-              cursor: "pointer",
-            })}
-          >
-            {isPlaying ? (
-              <StopIcon width={16} height={16} />
-            ) : (
-              <PlayIcon width={16} height={16} />
-            )}
-          </Center>
+        {rest.value ? (
+          <>
+            <Center
+              onClick={isPlaying ? handlePauseClick : handlePlayClick}
+              sx={(theme) => ({
+                width: 36,
+                height: 36,
+                backgroundColor: theme.colors.purple[4],
+                borderRadius: theme.radius.xl,
+                color: theme.white,
+                cursor: "pointer",
+              })}
+            >
+              {isPlaying ? (
+                <StopIcon width={16} height={16} />
+              ) : (
+                <PlayIcon width={16} height={16} />
+              )}
+            </Center>
+
+            <audio
+              ref={audioRef}
+              src={audioBlobURL}
+              onEnded={handleAudioEnded}
+              onCanPlay={handleCanPlay}
+              onTimeUpdate={handleTimeUpdate}
+            />
+            <WaveForm data={waveformData} playProgress={playProgress} />
+          </>
         ) : (
           <Center
             onClick={handleSelectClick}
             sx={(theme) => ({
-              width: 36,
-              height: 36,
+              // height: 28,
+              padding: `4px 8px`,
               backgroundColor: theme.colors.purple[4],
               borderRadius: theme.radius.xl,
               color: theme.white,
               cursor: "pointer",
+              color: theme.colors.purple[5],
+              border: `1px solid ${theme.colors.purple[5]}`,
+              background: `linear-gradient(135deg, #F9F5FF 0%, #A17BF0 100%)`,
             })}
           >
-            <PlusIcon width={20} height={20} />
+            <PlusIcon width={16} height={16} />
+            <Text fz="xs" ml={2}>
+              {isDragging ? "Drop sound" : "Add sound"}
+            </Text>
           </Center>
         )}
-        {props.value && (
-          <audio
-            ref={audioRef}
-            src={audioBlobURL}
-            onEnded={handleAudioEnded}
-            onCanPlay={handleCanPlay}
-            onTimeUpdate={handleTimeUpdate}
-          />
-        )}
-        <WaveForm data={waveformData} playProgress={playProgress} />
       </Group>
     </>
   );

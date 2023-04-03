@@ -8,6 +8,7 @@ import TagsFieldGroup from "../FieldGroups/TagsFieldGroup";
 import ShareAcrossField from "../ShareAcrossField/ShareAcrossField";
 import { parseHashtags } from "../Fields/TagsField/TagsField";
 import useNostr from "../../nostr/hooks/useNostr";
+import { useState } from "react";
 
 export default function PostSheet() {
   const { publish, signEvent } = useNostr();
@@ -16,6 +17,7 @@ export default function PostSheet() {
   const relays = useSelector((state) => state.relays);
   const opened = useSelector((state) => state.sheets[sheetKey]);
   const dispatch = useDispatch();
+  const [isDragging, setIsDragging] = useState(false);
   const form = useForm({
     initialValues: {
       file: null,
@@ -86,6 +88,20 @@ export default function PostSheet() {
   const onDrop = (e) => {
     e.preventDefault();
     form.setFieldValue("file", e.dataTransfer.files[0]);
+    setIsDragging(false);
+  };
+
+  const onDragOver = (e) => {
+    e.preventDefault();
+    form.setFieldValue("file", null);
+    setIsDragging(true);
+  };
+
+  const onDragLeave = (e) => {
+    e.preventDefault();
+    if (e.relatedTarget === null) {
+      setIsDragging(false);
+    }
   };
 
   return (
@@ -97,6 +113,8 @@ export default function PostSheet() {
       padding="md"
       size="full"
       onDrop={onDrop}
+      onDragOver={onDragOver}
+      onDragLeave={onDragLeave}
       styles={(theme) => ({
         header: {
           paddingTop: 8,
@@ -123,7 +141,11 @@ export default function PostSheet() {
     >
       <form onSubmit={form.onSubmit(handleSubmit)}>
         <Stack spacing={28}>
-          <SoundFieldGroup form={form} {...form.getInputProps("file")} />
+          <SoundFieldGroup
+            form={form}
+            isDragging={isDragging}
+            {...form.getInputProps("file")}
+          />
           <CommentFieldGroup {...form.getInputProps("comment")} />
           <TagsFieldGroup {...form.getInputProps("tags")} />
           <ShareAcrossField {...form.getInputProps("shareAcross")} />
