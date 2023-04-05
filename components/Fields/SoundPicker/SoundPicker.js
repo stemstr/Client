@@ -11,6 +11,7 @@ export default function SoundPicker({ form, isDragging, ...rest }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [waveformData, setWaveformData] = useState(null);
   const audioRef = useRef(null);
+  const audioTimeUpdateTimeoutRef = useRef();
   const inputRef = useRef(null);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(null);
@@ -86,14 +87,28 @@ export default function SoundPicker({ form, isDragging, ...rest }) {
     inputRef.current.click();
   };
 
-  const handleTimeUpdate = () => {
-    const { currentTime } = audioRef.current;
-    setCurrentTime(currentTime);
-  };
-
   const handleCanPlay = () => {
     setDuration(audioRef.current.duration);
+    trackAudioTime();
   };
+
+  const trackAudioTime = () => {
+    const { currentTime } = audioRef.current;
+    setCurrentTime(currentTime);
+
+    const frameRate = 30;
+    const interval = 1000 / frameRate; // interval in ms to achieve 30fps
+    audioTimeUpdateTimeoutRef.current = setTimeout(trackAudioTime, interval);
+  };
+
+  useEffect(() => {
+    return () => {
+      // Clear the timeout when the component unmounts
+      if (audioTimeUpdateTimeoutRef.current) {
+        clearTimeout(audioTimeUpdateTimeoutRef.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     handleAudioChange();
@@ -150,7 +165,6 @@ export default function SoundPicker({ form, isDragging, ...rest }) {
               src={audioBlobURL}
               onEnded={handleAudioEnded}
               onCanPlay={handleCanPlay}
-              onTimeUpdate={handleTimeUpdate}
             />
             <WaveForm data={waveformData} playProgress={playProgress} />
           </>

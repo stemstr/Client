@@ -8,6 +8,7 @@ import Hls from "hls.js";
 
 export default function SoundPlayer({ event, ...rest }) {
   const audioRef = useRef();
+  const audioTimeUpdateTimeoutRef = useRef();
   const hlsRef = useRef(null);
   const [mediaAttached, setMediaAttached] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
@@ -60,11 +61,6 @@ export default function SoundPlayer({ event, ...rest }) {
     };
   }, [event]);
 
-  const handleTimeUpdate = () => {
-    const { currentTime } = audioRef.current;
-    setCurrentTime(currentTime);
-  };
-
   const handlePlayClick = () => {
     if (audioRef.current && !isPlaying) {
       attachMedia();
@@ -88,7 +84,26 @@ export default function SoundPlayer({ event, ...rest }) {
 
   const handleCanPlay = () => {
     setDuration(audioRef.current.duration);
+    trackAudioTime();
   };
+
+  const trackAudioTime = () => {
+    const { currentTime } = audioRef.current;
+    setCurrentTime(currentTime);
+
+    const frameRate = 30;
+    const interval = 1000 / frameRate; // interval in ms to achieve 30fps
+    audioTimeUpdateTimeoutRef.current = setTimeout(trackAudioTime, interval);
+  };
+
+  useEffect(() => {
+    return () => {
+      // Clear the timeout when the component unmounts
+      if (audioTimeUpdateTimeoutRef.current) {
+        clearTimeout(audioTimeUpdateTimeoutRef.current);
+      }
+    };
+  }, []);
 
   const attachMedia = () => {
     if (!mediaAttached && hlsRef.current) {
@@ -124,7 +139,6 @@ export default function SoundPlayer({ event, ...rest }) {
             ref={audioRef}
             onCanPlay={handleCanPlay}
             onEnded={handleAudioEnded}
-            onTimeUpdate={handleTimeUpdate}
           />
 
           <WaveForm data={waveformData} playProgress={playProgress} />
