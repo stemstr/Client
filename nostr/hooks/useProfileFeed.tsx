@@ -14,7 +14,7 @@ export function useProfileFeed({
   const { feed } = useFeed({
     filter: {
       since: startTime.current,
-      kinds: [Kind.Text, 6],
+      kinds: [Kind.Text, 6, 1808],
       authors: [pubkey],
     },
     relayUrls: [process.env.NEXT_PUBLIC_STEMSTR_RELAY as string],

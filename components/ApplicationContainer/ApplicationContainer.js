@@ -1,6 +1,7 @@
 import { AppShell } from "@mantine/core";
 import BottomNavigation from "../BottomNavigation/BottomNavigation";
 import PostSheet from "../PostSheet/PostSheet";
+import FileDropOverlay from "../FileDropOverlay/FileDropOverlay";
 
 export const ApplicationContainer = ({ children }) => {
   return (
@@ -22,6 +23,7 @@ export const ApplicationContainer = ({ children }) => {
     >
       {children}
       <PostSheet />
+      <FileDropOverlay />
     </AppShell>
   );
 };

@@ -1,33 +1,69 @@
-import { Box, Center, Group, Stack, Text } from "@mantine/core";
-import { useMemo, useRef, useState } from "react";
+import { Center, Group, Stack, Text } from "@mantine/core";
+import axios from "axios";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { PlayIcon, StopIcon } from "../../icons/StemstrIcon";
 import WaveForm from "../WaveForm/WaveForm";
 import useStyles from "./SoundPlayer.styles";
+import Hls from "hls.js";
 
 export default function SoundPlayer({ event, ...rest }) {
   const audioRef = useRef();
+  const audioTimeUpdateTimeoutRef = useRef();
+  const hlsRef = useRef(null);
+  const [mediaAttached, setMediaAttached] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(null);
   const playProgress = useMemo(() => {
     return duration ? currentTime / duration : 0;
   }, [currentTime, duration]);
-  const [canDownload, setCanDownload] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const downloadUrl = useMemo(() => {
     const downloadUrlTag =
       event.tags?.find((tag) => tag[0] === "download_url") || null;
     return downloadUrlTag ? downloadUrlTag[1] : null;
   }, [event]);
+  const streamUrl = useMemo(() => {
+    const streamUrlTag =
+      event.tags?.find((tag) => tag[0] === "stream_url") || null;
+    return streamUrlTag ? streamUrlTag[1] : null;
+  }, [event]);
   const { classes } = useStyles();
+  const [waveformData, setWaveformData] = useState([]);
 
-  const handleTimeUpdate = () => {
-    const { currentTime } = audioRef.current;
-    setCurrentTime(currentTime);
-  };
+  useEffect(() => {
+    if (downloadUrl) {
+      let hash = downloadUrl?.slice(downloadUrl.lastIndexOf("/") + 1);
+      axios
+        .get(`${process.env.NEXT_PUBLIC_STEMSTR_API}/metadata/${hash}`)
+        .then((response) => {
+          setWaveformData(response.data.waveform);
+        });
+    }
+    if (streamUrl) {
+      if (Hls.isSupported()) {
+        hlsRef.current = new Hls();
+        hlsRef.current.loadSource(streamUrl);
+        hlsRef.current.on(Hls.Events.MANIFEST_PARSED, () => {
+          // console.log("HLS manifest parsed");
+        });
+      } else if (
+        audioRef.current.canPlayType("application/vnd.apple.mpegurl")
+      ) {
+        audioRef.current.src = streamUrl;
+      } else {
+        console.error("HLS is not supported by this browser");
+      }
+    }
+    return () => {
+      if (hlsRef.current) {
+        hlsRef.current.destroy();
+      }
+    };
+  }, [event]);
 
   const handlePlayClick = () => {
     if (audioRef.current && !isPlaying) {
-      setCanDownload(true);
+      attachMedia();
       setIsPlaying(true);
       audioRef.current.play();
     }
@@ -48,6 +84,32 @@ export default function SoundPlayer({ event, ...rest }) {
 
   const handleCanPlay = () => {
     setDuration(audioRef.current.duration);
+    trackAudioTime();
+  };
+
+  const trackAudioTime = () => {
+    const { currentTime } = audioRef.current;
+    setCurrentTime(currentTime);
+
+    const frameRate = 30;
+    const interval = 1000 / frameRate; // interval in ms to achieve 30fps
+    audioTimeUpdateTimeoutRef.current = setTimeout(trackAudioTime, interval);
+  };
+
+  useEffect(() => {
+    return () => {
+      // Clear the timeout when the component unmounts
+      if (audioTimeUpdateTimeoutRef.current) {
+        clearTimeout(audioTimeUpdateTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  const attachMedia = () => {
+    if (!mediaAttached && hlsRef.current) {
+      hlsRef.current.attachMedia(audioRef.current);
+      setMediaAttached(true);
+    }
   };
 
   return (
@@ -56,7 +118,7 @@ export default function SoundPlayer({ event, ...rest }) {
         <Group>
           <Center
             onClick={isPlaying ? handlePauseClick : handlePlayClick}
-            onMouseOver={() => setCanDownload(true)}
+            onMouseOver={() => attachMedia()}
             sx={(theme) => ({
               width: 36,
               height: 36,
@@ -73,17 +135,13 @@ export default function SoundPlayer({ event, ...rest }) {
             )}
           </Center>
 
-          {canDownload && (
-            <audio
-              ref={audioRef}
-              src={downloadUrl}
-              onCanPlay={handleCanPlay}
-              onEnded={handleAudioEnded}
-              onTimeUpdate={handleTimeUpdate}
-            />
-          )}
+          <audio
+            ref={audioRef}
+            onCanPlay={handleCanPlay}
+            onEnded={handleAudioEnded}
+          />
 
-          <WaveForm data={true} playProgress={playProgress} />
+          <WaveForm data={waveformData} playProgress={playProgress} />
         </Group>
         <Group position="apart">
           <Text fz="xs" c="white">

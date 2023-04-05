@@ -87,6 +87,7 @@ export default function RepostButton({ note }) {
           variant="subtle"
           c="white"
           fz="md"
+          fullWidth
           sx={(theme) => ({
             borderTop: `1px solid ${theme.colors.gray[4]}`,
             maxWidth: 390,

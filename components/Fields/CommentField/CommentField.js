@@ -12,7 +12,6 @@ export default function CommentField(props) {
           border: `1px solid ${theme.colors.gray[4]}`,
           fontSize: theme.fontSizes.md,
           lineHeight: "150%",
-          minHeight: 96,
         },
       })}
       {...props}

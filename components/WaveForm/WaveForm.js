@@ -1,13 +1,6 @@
 import { Box, Group } from "@mantine/core";
-import { useEffect, useRef } from "react";
 
 export default function WaveForm({ data, playProgress = 0 }) {
-  const waveFormData = useRef(null);
-
-  useEffect(() => {
-    if (data) waveFormData.current = generateWaveFormData(64);
-  }, [data]);
-
   return (
     <Group
       grow
@@ -17,13 +10,13 @@ export default function WaveForm({ data, playProgress = 0 }) {
         flexGrow: "1!important",
       })}
     >
-      {waveFormData.current?.map((n, index) => (
+      {data?.map((n, index) => (
         <Box
           key={index}
           sx={(theme) => ({
             height: n,
             backgroundColor:
-              playProgress > index / waveFormData.current.length
+              playProgress > index / data.length
                 ? "#9747FF"
                 : "rgba(134, 90, 226, 0.48)",
             borderRadius: theme.radius.xl,
