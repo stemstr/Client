@@ -4,20 +4,23 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { PlusIcon, PlayIcon, StopIcon } from "../../../icons/StemstrIcon";
 import WaveForm from "../../WaveForm/WaveForm";
+import Hls from "hls.js";
 
 export default function SoundPicker({ form, isDragging, ...rest }) {
   const auth = useSelector((state) => state.auth);
-  const [audioBlobURL, setAudioBlobURL] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [waveformData, setWaveformData] = useState(null);
   const audioRef = useRef(null);
   const audioTimeUpdateTimeoutRef = useRef();
+  const hlsRef = useRef(null);
   const inputRef = useRef(null);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(null);
   const playProgress = useMemo(() => {
     return duration ? currentTime / duration : 0;
   }, [currentTime, duration]);
+  const [streamUrl, setStreamUrl] = useState(null);
+  const [mediaAttached, setMediaAttached] = useState(false);
 
   const handleAudioChange = async () => {
     form.setValues((prev) => ({
@@ -40,7 +43,7 @@ export default function SoundPicker({ form, isDragging, ...rest }) {
           },
         })
         .then((response) => {
-          setAudioBlobURL(URL.createObjectURL(rest.value));
+          setStreamUrl(response.data.stream_url);
           setWaveformData(response.data.waveform);
           form.setFieldValue(
             "uploadResponse.streamUrl",
@@ -59,6 +62,37 @@ export default function SoundPicker({ form, isDragging, ...rest }) {
   };
 
   useEffect(() => {
+    if (streamUrl) {
+      if (Hls.isSupported()) {
+        hlsRef.current = new Hls();
+        hlsRef.current.loadSource(streamUrl);
+        hlsRef.current.on(Hls.Events.MANIFEST_PARSED, () => {
+          // console.log("HLS manifest parsed");
+        });
+      } else if (
+        audioRef.current.canPlayType("application/vnd.apple.mpegurl")
+      ) {
+        audioRef.current.src = streamUrl;
+      } else {
+        console.error("HLS is not supported by this browser");
+      }
+    }
+    return () => {
+      if (hlsRef.current) {
+        hlsRef.current.destroy();
+        setMediaAttached(false);
+      }
+    };
+  }, [streamUrl, rest.value]);
+
+  const attachMedia = () => {
+    if (!mediaAttached && hlsRef.current) {
+      hlsRef.current.attachMedia(audioRef.current);
+      setMediaAttached(true);
+    }
+  };
+
+  useEffect(() => {
     if (!rest.value) {
       setWaveformData(null);
     }
@@ -66,6 +100,7 @@ export default function SoundPicker({ form, isDragging, ...rest }) {
 
   const handlePlayClick = () => {
     if (audioRef.current && !isPlaying) {
+      attachMedia();
       setIsPlaying(true);
       audioRef.current.play();
     }
@@ -142,7 +177,6 @@ export default function SoundPicker({ form, isDragging, ...rest }) {
       >
         <audio
           ref={audioRef}
-          src={audioBlobURL}
           onEnded={handleAudioEnded}
           onCanPlay={handleCanPlay}
         />

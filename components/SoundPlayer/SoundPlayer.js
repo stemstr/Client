@@ -44,7 +44,7 @@ export default function SoundPlayer({ event, ...rest }) {
         hlsRef.current = new Hls();
         hlsRef.current.loadSource(streamUrl);
         hlsRef.current.on(Hls.Events.MANIFEST_PARSED, () => {
-          console.log("HLS manifest parsed");
+          // console.log("HLS manifest parsed");
         });
       } else if (
         audioRef.current.canPlayType("application/vnd.apple.mpegurl")
