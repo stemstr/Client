@@ -140,6 +140,12 @@ export default function SoundPicker({ form, isDragging, ...rest }) {
           height: 96,
         })}
       >
+        <audio
+          ref={audioRef}
+          src={audioBlobURL}
+          onEnded={handleAudioEnded}
+          onCanPlay={handleCanPlay}
+        />
         {rest.value ? (
           <>
             <Center
@@ -159,13 +165,6 @@ export default function SoundPicker({ form, isDragging, ...rest }) {
                 <PlayIcon width={16} height={16} />
               )}
             </Center>
-
-            <audio
-              ref={audioRef}
-              src={audioBlobURL}
-              onEnded={handleAudioEnded}
-              onCanPlay={handleCanPlay}
-            />
             <WaveForm data={waveformData} playProgress={playProgress} />
           </>
         ) : (
