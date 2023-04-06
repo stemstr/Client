@@ -129,7 +129,7 @@ export default function Note(props) {
               </Chip>
             ))}
         </Group>
-        <Group position="apart">
+        <Group position="apart" sx={{ display: "none" }}>
           <NoteAction sx={{ color: "white" }}>
             <CommentIcon width={18} height={18} /> 12
           </NoteAction>
