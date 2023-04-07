@@ -14,9 +14,6 @@ export default function DownloadSoundButton({
     switch (downloadStatus) {
       case "initial":
         setDownloadStatus("pending");
-        setTimeout(() => {
-          setDownloadStatus("ready");
-        }, 777);
       case "pending":
 
       case "ready":

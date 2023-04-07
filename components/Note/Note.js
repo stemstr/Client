@@ -121,7 +121,11 @@ export default function Note(props) {
             </Center>
           </Group>
         </Group>
-        <SoundPlayer event={note.event} downloadStatus={downloadStatus} />
+        <SoundPlayer
+          event={note.event}
+          downloadStatus={downloadStatus}
+          setDownloadStatus={setDownloadStatus}
+        />
         <Text c="white" sx={{ overflowWrap: "anywhere" }}>
           {note.event.content}
         </Text>

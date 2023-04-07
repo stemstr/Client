@@ -5,9 +5,12 @@ import { ChevronRightIcon, PlayIcon, StopIcon } from "../../icons/StemstrIcon";
 import WaveForm from "../WaveForm/WaveForm";
 import useStyles from "./SoundPlayer.styles";
 import Hls from "hls.js";
-import mime from "mime-types";
 
-export default function SoundPlayer({ event, downloadStatus, ...rest }) {
+export default function SoundPlayer({
+  event,
+  downloadStatus,
+  setDownloadStatus,
+}) {
   const audioRef = useRef();
   const audioTimeUpdateTimeoutRef = useRef();
   const hlsRef = useRef(null);
@@ -24,7 +27,7 @@ export default function SoundPlayer({ event, downloadStatus, ...rest }) {
     return downloadUrlTag ? downloadUrlTag[1] : null;
   }, [event]);
   const [mimeType, setMimeType] = useState("");
-  const [fileExtension, setFileExtension] = useState("");
+  const [fileName, setFileName] = useState("");
   const fileHash = useMemo(() => {
     if (!downloadUrl) return null;
     let url = new URL(downloadUrl);
@@ -43,6 +46,7 @@ export default function SoundPlayer({ event, downloadStatus, ...rest }) {
     img.src = "/img/drag-stem.svg";
     return img;
   }, []);
+  const [blobUrl, setBlobUrl] = useState(null);
 
   useEffect(() => {
     if (downloadUrl) {
@@ -50,8 +54,6 @@ export default function SoundPlayer({ event, downloadStatus, ...rest }) {
         .get(`${process.env.NEXT_PUBLIC_STEMSTR_API}/metadata/${fileHash}`)
         .then((response) => {
           setWaveformData(response.data.waveform);
-          setMimeType(response.data.content_type);
-          setFileExtension(mime.extension(response.data.content_type));
         });
     }
     if (streamUrl) {
@@ -128,9 +130,10 @@ export default function SoundPlayer({ event, downloadStatus, ...rest }) {
   };
 
   const handleDragStart = (event) => {
+    console.log(`${mimeType}:${fileName}:${blobUrl}`);
     event.dataTransfer.setData(
       "DownloadURL",
-      `${mimeType}:${fileHash}.${fileExtension}:${downloadUrl}`
+      `${mimeType}:${fileName}:${blobUrl}`
     );
     event.dataTransfer.setDragImage(
       dragImage,
@@ -138,6 +141,28 @@ export default function SoundPlayer({ event, downloadStatus, ...rest }) {
       dragImage.height / 2
     );
   };
+
+  const downloadAudio = async () => {
+    try {
+      const response = await axios.get(downloadUrl, {
+        responseType: "arraybuffer",
+      });
+      setMimeType(response.headers["content-type"]);
+      setFileName(response.headers["x-download-filename"]);
+      const blob = new Blob([response.data], { type: mimeType });
+      const url = URL.createObjectURL(blob);
+      setBlobUrl(url);
+      setDownloadStatus("ready");
+    } catch (error) {
+      console.error("Error downloading the audio file:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (downloadUrl && downloadStatus === "pending") {
+      downloadAudio();
+    }
+  }, [downloadStatus]);
 
   return (
     downloadUrl && (
