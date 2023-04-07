@@ -10,6 +10,7 @@ import Tags from "./Line icons/Finance & eCommerce/tag-03.svg";
 import Check from "./Line icons/General/check.svg";
 import CheckCircle from "./Line icons/General/check-circle.svg";
 import Copy from "./Line icons/General/copy-03.svg";
+import DownloadCloud from "./Line icons/General/download-cloud-01.svg";
 import Edit from "./Line icons/General/edit-02.svg";
 import Home from "./Line icons/General/home-03.svg";
 import More from "./Line icons/General/dots-vertical.svg";
@@ -261,6 +262,14 @@ export const CameraPlusIcon = (props) => {
   return (
     <StemstrIcon>
       <CameraPlus {...props} />
+    </StemstrIcon>
+  );
+};
+
+export const DownloadCloudIcon = (props) => {
+  return (
+    <StemstrIcon>
+      <DownloadCloud {...props} />
     </StemstrIcon>
   );
 };

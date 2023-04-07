@@ -1,12 +1,16 @@
-import { Center, Group, Stack, Text } from "@mantine/core";
+import { Box, Center, Group, Stack, Text } from "@mantine/core";
 import axios from "axios";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { PlayIcon, StopIcon } from "../../icons/StemstrIcon";
+import { ChevronRightIcon, PlayIcon, StopIcon } from "../../icons/StemstrIcon";
 import WaveForm from "../WaveForm/WaveForm";
 import useStyles from "./SoundPlayer.styles";
 import Hls from "hls.js";
 
-export default function SoundPlayer({ event, ...rest }) {
+export default function SoundPlayer({
+  event,
+  downloadStatus,
+  setDownloadStatus,
+}) {
   const audioRef = useRef();
   const audioTimeUpdateTimeoutRef = useRef();
   const hlsRef = useRef(null);
@@ -22,6 +26,14 @@ export default function SoundPlayer({ event, ...rest }) {
       event.tags?.find((tag) => tag[0] === "download_url") || null;
     return downloadUrlTag ? downloadUrlTag[1] : null;
   }, [event]);
+  const [mimeType, setMimeType] = useState("");
+  const [fileName, setFileName] = useState("");
+  const fileHash = useMemo(() => {
+    if (!downloadUrl) return null;
+    let url = new URL(downloadUrl);
+    return url.pathname.split("/").pop();
+  }, [downloadUrl]);
+  const dragImageRef = useRef(null);
   const streamUrl = useMemo(() => {
     const streamUrlTag =
       event.tags?.find((tag) => tag[0] === "stream_url") || null;
@@ -29,12 +41,17 @@ export default function SoundPlayer({ event, ...rest }) {
   }, [event]);
   const { classes } = useStyles();
   const [waveformData, setWaveformData] = useState([]);
+  const dragImage = useMemo(() => {
+    const img = document.createElement("img");
+    img.src = "/img/drag-stem.svg";
+    return img;
+  }, []);
+  const [blobUrl, setBlobUrl] = useState(null);
 
   useEffect(() => {
     if (downloadUrl) {
-      let hash = downloadUrl?.slice(downloadUrl.lastIndexOf("/") + 1);
       axios
-        .get(`${process.env.NEXT_PUBLIC_STEMSTR_API}/metadata/${hash}`)
+        .get(`${process.env.NEXT_PUBLIC_STEMSTR_API}/metadata/${fileHash}`)
         .then((response) => {
           setWaveformData(response.data.waveform);
         });
@@ -112,46 +129,124 @@ export default function SoundPlayer({ event, ...rest }) {
     }
   };
 
+  const handleDragStart = (event) => {
+    console.log(`${mimeType}:${fileName}:${blobUrl}`);
+    event.dataTransfer.setData(
+      "DownloadURL",
+      `${mimeType}:${fileName}:${blobUrl}`
+    );
+    event.dataTransfer.setDragImage(
+      dragImage,
+      dragImage.width / 2,
+      dragImage.height / 2
+    );
+  };
+
+  const downloadAudio = async () => {
+    try {
+      const response = await axios.get(downloadUrl, {
+        responseType: "arraybuffer",
+      });
+      setMimeType(response.headers["content-type"]);
+      setFileName(response.headers["x-download-filename"]);
+      const blob = new Blob([response.data], { type: mimeType });
+      const url = URL.createObjectURL(blob);
+      setBlobUrl(url);
+      setDownloadStatus("ready");
+    } catch (error) {
+      console.error("Error downloading the audio file:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (downloadUrl && downloadStatus === "pending") {
+      downloadAudio();
+    }
+  }, [downloadStatus]);
+
   return (
     downloadUrl && (
-      <Stack justify="center" spacing={0} className={classes.player}>
-        <Group>
-          <Center
-            onClick={isPlaying ? handlePauseClick : handlePlayClick}
-            onMouseOver={() => attachMedia()}
-            sx={(theme) => ({
-              width: 36,
-              height: 36,
-              backgroundColor: theme.colors.purple[4],
-              borderRadius: theme.radius.xl,
-              color: theme.white,
-              cursor: "pointer",
-            })}
-          >
-            {isPlaying ? (
-              <StopIcon width={16} height={16} />
-            ) : (
-              <PlayIcon width={16} height={16} />
-            )}
-          </Center>
+      <Group spacing={0} className={classes.player}>
+        <Stack justify="center" spacing={0} className={classes.playerSection}>
+          <Group>
+            <Center
+              onClick={isPlaying ? handlePauseClick : handlePlayClick}
+              onMouseOver={() => attachMedia()}
+              sx={(theme) => ({
+                width: 36,
+                height: 36,
+                backgroundColor: theme.colors.purple[4],
+                borderRadius: theme.radius.xl,
+                color: theme.white,
+                cursor: "pointer",
+              })}
+            >
+              {isPlaying ? (
+                <StopIcon width={16} height={16} />
+              ) : (
+                <PlayIcon width={16} height={16} />
+              )}
+            </Center>
 
-          <audio
-            ref={audioRef}
-            onCanPlay={handleCanPlay}
-            onEnded={handleAudioEnded}
-          />
+            <audio
+              ref={audioRef}
+              onCanPlay={handleCanPlay}
+              onEnded={handleAudioEnded}
+            />
 
-          <WaveForm data={waveformData} playProgress={playProgress} />
-        </Group>
-        <Group position="apart">
-          <Text fz="xs" c="white">
-            {getFormattedPlayTime(currentTime)}
-          </Text>
-          <Text fz="xs" c="white">
-            {getFormattedPlayTime(duration)}
-          </Text>
-        </Group>
-      </Stack>
+            <WaveForm data={waveformData} playProgress={playProgress} />
+          </Group>
+          <Group position="apart">
+            <Text fz="xs" c="white">
+              {getFormattedPlayTime(currentTime)}
+            </Text>
+            <Text fz="xs" c="white">
+              {getFormattedPlayTime(duration)}
+            </Text>
+          </Group>
+        </Stack>
+        <Box
+          draggable
+          onDragStart={handleDragStart}
+          className={{
+            [classes.dragHandle]: true,
+            [classes.dragHandleReady]: downloadStatus === "ready",
+          }}
+        >
+          <Box sx={{ display: "none" }}>
+            <img ref={dragImageRef} src="/logo.svg" />
+          </Box>
+          {downloadStatus === "ready" && (
+            <Group
+              spacing={0}
+              position="right"
+              align="center"
+              sx={{ height: "100%", overflowX: "hidden", flexWrap: "nowrap" }}
+            >
+              <Center sx={{ marginRight: -8 }}>
+                <ChevronRightIcon width={14} height={14} />
+              </Center>
+              <Center sx={(theme) => ({ color: theme.white })}>
+                <ChevronRightIcon width={14} height={14} />
+              </Center>
+              <Box
+                sx={(theme) => ({
+                  marginLeft: 6,
+                  height: 24,
+                  borderLeft: `2px solid ${theme.colors.purple[2]}`,
+                })}
+              />
+              <Box
+                sx={(theme) => ({
+                  marginLeft: 2,
+                  height: 24,
+                  borderLeft: `2px solid ${theme.colors.purple[2]}`,
+                })}
+              />
+            </Group>
+          )}
+        </Box>
+      </Group>
     )
   );
 }
