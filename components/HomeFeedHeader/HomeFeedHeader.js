@@ -21,7 +21,6 @@ export default function HomeFeedHeader() {
         Stemstr
       </Text>
       <Group spacing={20}>
-        <SearchIcon />
         <ProfileLink />
       </Group>
     </Box>

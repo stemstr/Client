@@ -43,12 +43,8 @@ export default function BottomNavigation() {
         maw={600}
         mx="auto"
       >
-        <BottomNavigationItem href="/">
-          <HomeIcon />
-        </BottomNavigationItem>
-        <BottomNavigationItem href="/discover">
-          <CompassIcon />
-        </BottomNavigationItem>
+        <BottomNavigationItem />
+        <BottomNavigationItem />
         <BottomNavigationItem>
           <Center
             onClick={openPostSheet}
@@ -65,12 +61,8 @@ export default function BottomNavigation() {
             <PlusIcon />
           </Center>
         </BottomNavigationItem>
-        <BottomNavigationItem href="/collections">
-          <CollectionIcon width={24} height={24} />
-        </BottomNavigationItem>
-        <BottomNavigationItem href="/notifications">
-          <BellIcon width={24} height={24} />
-        </BottomNavigationItem>
+        <BottomNavigationItem />
+        <BottomNavigationItem />
       </Group>
     </Footer>
   );
