@@ -37,6 +37,7 @@ export default function Note(props) {
   const cachedProfile = getCachedProfile(nip19.npubEncode(note.event.pubkey));
   const [userData, setUserData] = useState(cachedProfile);
   const [profileFetched, setProfileFetched] = useState(false);
+  const [downloadStatus, setDownloadStatus] = useState("initial");
   const { data } = useProfile({
     pubkey: note.event.pubkey,
   });
@@ -104,7 +105,11 @@ export default function Note(props) {
             </Text>
           </Group>
           <Group position="right">
-            <DownloadSoundButton href={downloadUrl} />
+            <DownloadSoundButton
+              href={downloadUrl}
+              downloadStatus={downloadStatus}
+              setDownloadStatus={setDownloadStatus}
+            />
             <Center
               sx={(theme) => ({
                 width: 28,
@@ -116,7 +121,7 @@ export default function Note(props) {
             </Center>
           </Group>
         </Group>
-        <SoundPlayer event={note.event} />
+        <SoundPlayer event={note.event} downloadStatus={downloadStatus} />
         <Text c="white" sx={{ overflowWrap: "anywhere" }}>
           {note.event.content}
         </Text>
