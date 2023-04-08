@@ -27,12 +27,10 @@ const FileDropOverlay = () => {
 
     document.body.addEventListener("dragover", onDragOver);
     document.body.addEventListener("drop", onDrop);
-    document.body.addEventListener("dragleave", onDragLeave);
 
     return () => {
       document.body.removeEventListener("dragover", onDragOver);
       document.body.removeEventListener("drop", onDrop);
-      document.body.removeEventListener("dragleave", onDragLeave);
     };
   }, [dispatch, shouldRenderOverlay]);
 
