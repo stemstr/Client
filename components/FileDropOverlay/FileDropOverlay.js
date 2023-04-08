@@ -25,13 +25,6 @@ const FileDropOverlay = () => {
       e.preventDefault();
     };
 
-    const onDragLeave = (e) => {
-      e.preventDefault();
-      if (e.relatedTarget === null) {
-        dispatch(closeSheet(sheetKey));
-      }
-    };
-
     document.body.addEventListener("dragover", onDragOver);
     document.body.addEventListener("drop", onDrop);
     document.body.addEventListener("dragleave", onDragLeave);

@@ -87,14 +87,25 @@ export default function PostSheet() {
 
   const onDrop = (e) => {
     e.preventDefault();
-    form.setFieldValue("file", e.dataTransfer.files[0]);
+    const file = e.dataTransfer.files[0];
+
+    if (file.type.startsWith("audio/")) {
+      form.setFieldValue("file", file);
+    }
+
     setIsDragging(false);
   };
 
   const onDragOver = (e) => {
     e.preventDefault();
-    form.setFieldValue("file", null);
-    setIsDragging(true);
+    const item = e.dataTransfer.items[0];
+
+    if (item && item.kind === "file" && item.type.startsWith("audio/")) {
+      setIsDragging(true);
+      form.setFieldValue("file", null);
+    } else {
+      setIsDragging(false);
+    }
   };
 
   const onDragLeave = (e) => {
