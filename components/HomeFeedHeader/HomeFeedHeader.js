@@ -17,6 +17,7 @@ export default function HomeFeedHeader() {
           fontWeight: 700,
           fontSize: 24,
         })}
+        lh="normal"
       >
         Stemstr
       </Text>

@@ -1,6 +1,7 @@
 import Bell from "./Line icons/Alerts & feedback/bell-02.svg";
 
 import Download from "./Line icons/Arrows/arrow-down.svg";
+import ChevronLeft from "./Line icons/Arrows/chevron-left.svg";
 import ChevronRight from "./Line icons/Arrows/chevron-right.svg";
 
 import Comment from "./Line icons/Communication/message-square-02.svg";
@@ -246,6 +247,14 @@ export const XCloseIcon = (props) => {
   return (
     <StemstrIcon>
       <XClose {...props} />
+    </StemstrIcon>
+  );
+};
+
+export const ChevronLeftIcon = (props) => {
+  return (
+    <StemstrIcon>
+      <ChevronLeft {...props} />
     </StemstrIcon>
   );
 };

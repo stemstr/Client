@@ -20,11 +20,13 @@ import {
   ShareIcon,
   EditIcon,
   VerifiedIcon,
+  ChevronLeftIcon,
 } from "../../icons/StemstrIcon";
 import ProfileActionButton from "../../components/ProfileActionButton/ProfileActionButton";
 import useContactList from "../../nostr/hooks/useContactList";
 import CopyNpub from "../../components/CopyNpub/CopyNpub";
 import ProfileFeed from "../../components/ProfileFeed/ProfileFeed";
+import BackButton from "../../components/BackButton/BackButton";
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -76,9 +78,14 @@ export default function ProfilePage() {
           />
         )}
         <Group position="apart">
-          <Text c="white" fw="bold" fz={24}>
-            Profile
-          </Text>
+          <Group spacing="sm" align="center" c="white">
+            <BackButton defaultUrl="/">
+              <ChevronLeftIcon width={24} height={24} />
+            </BackButton>
+            <Text c="white" fw="bold" fz={24} lh="normal">
+              Profile
+            </Text>
+          </Group>
           <Group spacing={20}>
             <ActionIcon variant="default" color="white">
               <SettingsIcon width={24} height={24} />
