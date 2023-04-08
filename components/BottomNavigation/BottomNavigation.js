@@ -1,6 +1,8 @@
 import { Avatar, Center, Footer, Group, Text } from "@mantine/core";
 import useStyles from "./BottomNavigation.styles";
-import BottomNavigationItem from "../BottomNavigationItem/BottomNavigationItem";
+import BottomNavigationItem, {
+  AuthBottomNavigationItem,
+} from "../BottomNavigationItem/BottomNavigationItem";
 import { selectAuthState } from "../../store/Auth";
 import {
   CompassIcon,
@@ -45,9 +47,8 @@ export default function BottomNavigation() {
       >
         <BottomNavigationItem />
         <BottomNavigationItem />
-        <BottomNavigationItem>
+        <AuthBottomNavigationItem onClick={openPostSheet}>
           <Center
-            onClick={openPostSheet}
             sx={{
               width: "100%",
               height: "100%",
@@ -60,7 +61,7 @@ export default function BottomNavigation() {
           >
             <PlusIcon />
           </Center>
-        </BottomNavigationItem>
+        </AuthBottomNavigationItem>
         <BottomNavigationItem />
         <BottomNavigationItem />
       </Group>

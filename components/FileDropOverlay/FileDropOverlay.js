@@ -1,11 +1,13 @@
 import React, { useCallback, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/router";
 import { openSheet, closeSheet } from "../../store/Sheets";
+import { selectAuthState } from "../../store/Auth";
 
 const FileDropOverlay = () => {
   const dispatch = useDispatch();
   const router = useRouter();
+  const authState = useSelector(selectAuthState);
   const disallowedRoutes = ["/settings"];
   const shouldRenderOverlay = !disallowedRoutes.includes(router.pathname);
   const sheetKey = "postSheet";
@@ -17,7 +19,11 @@ const FileDropOverlay = () => {
       e.preventDefault();
       const items = e.dataTransfer.items;
       if (items.length > 0 && items[0].type.startsWith("audio/")) {
-        dispatch(openSheet(sheetKey));
+        if (authState?.user?.pk) {
+          dispatch(openSheet(sheetKey));
+        } else {
+          router.push("/login");
+        }
       }
     };
 
@@ -32,7 +38,7 @@ const FileDropOverlay = () => {
       document.body.removeEventListener("dragover", onDragOver);
       document.body.removeEventListener("drop", onDrop);
     };
-  }, [dispatch, shouldRenderOverlay]);
+  }, [dispatch, shouldRenderOverlay, authState?.user?.pk]);
 
   return null;
 };
