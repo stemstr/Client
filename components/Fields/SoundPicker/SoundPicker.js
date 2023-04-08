@@ -1,12 +1,16 @@
 import { Box, Center, FileInput, Group, Text } from "@mantine/core";
 import axios from "axios";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { PlusIcon, PlayIcon, StopIcon } from "../../../icons/StemstrIcon";
 import WaveForm from "../../WaveForm/WaveForm";
 import Hls from "hls.js";
+import { useRouter } from "next/router";
+import { closeSheet } from "../../../store/Sheets";
 
 export default function SoundPicker({ form, isDragging, ...rest }) {
+  const router = useRouter();
+  const dispatch = useDispatch();
   const auth = useSelector((state) => state.auth);
   const [isPlaying, setIsPlaying] = useState(false);
   const [waveformData, setWaveformData] = useState(null);
@@ -55,8 +59,21 @@ export default function SoundPicker({ form, isDragging, ...rest }) {
           );
         })
         .catch((error) => {
+          switch (error.response.status) {
+            case 400:
+              alert(error.response.data);
+              break;
+            case 401:
+              dispatch(closeSheet("postSheet"));
+              router.push("/login");
+              break;
+            case 500:
+              alert("Server error. Please try again later.");
+              break;
+            default:
+              break;
+          }
           rest.onChange(null);
-          console.error(error);
         });
     }
   };
