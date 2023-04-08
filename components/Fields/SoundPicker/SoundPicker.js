@@ -39,51 +39,58 @@ export default function SoundPicker({
     }));
     setIsPlaying(false);
     if (rest.value) {
-      let sum = await calculateHash(rest.value);
-      const formData = new FormData();
-      formData.append("pk", auth.user.pk);
-      formData.append("sum", sum);
-      formData.append("filename", rest.value.name);
-      formData.append("file", rest.value);
-      setIsUploading(true);
-      axios
-        .post(`${process.env.NEXT_PUBLIC_STEMSTR_API}/upload`, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
-        .then((response) => {
-          setStreamUrl(response.data.stream_url);
-          setWaveformData(response.data.waveform);
-          form.setFieldValue(
-            "uploadResponse.streamUrl",
-            response.data.stream_url
-          );
-          form.setFieldValue(
-            "uploadResponse.downloadUrl",
-            response.data.download_url
-          );
-        })
-        .catch((error) => {
-          switch (error.response.status) {
-            case 400:
-              alert(error.response.data);
-              break;
-            case 401:
-              dispatch(closeSheet("postSheet"));
-              router.push("/login");
-              break;
-            case 500:
-              alert("Server error. Please try again later.");
-              break;
-            default:
-              break;
-          }
-          rest.onChange(null);
-        })
-        .finally(() => {
-          setIsUploading(false);
-        });
+      const maxFileSizeMB = 100;
+      const maxFileSize = 1024 * 1024 * maxFileSizeMB;
+      if (rest.value.size > maxFileSize) {
+        alert(`File too big (Max ${maxFileSizeMB}MB)`);
+        rest.onChange(null);
+      } else {
+        let sum = await calculateHash(rest.value);
+        const formData = new FormData();
+        formData.append("pk", auth.user.pk);
+        formData.append("sum", sum);
+        formData.append("filename", rest.value.name);
+        formData.append("file", rest.value);
+        setIsUploading(true);
+        axios
+          .post(`${process.env.NEXT_PUBLIC_STEMSTR_API}/upload`, formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          })
+          .then((response) => {
+            setStreamUrl(response.data.stream_url);
+            setWaveformData(response.data.waveform);
+            form.setFieldValue(
+              "uploadResponse.streamUrl",
+              response.data.stream_url
+            );
+            form.setFieldValue(
+              "uploadResponse.downloadUrl",
+              response.data.download_url
+            );
+          })
+          .catch((error) => {
+            switch (error.response.status) {
+              case 400:
+                alert(error.response.data);
+                break;
+              case 401:
+                dispatch(closeSheet("postSheet"));
+                router.push("/login");
+                break;
+              case 500:
+                alert("Server error. Please try again later.");
+                break;
+              default:
+                break;
+            }
+            rest.onChange(null);
+          })
+          .finally(() => {
+            setIsUploading(false);
+          });
+      }
     }
   };
 
