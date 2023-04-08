@@ -18,6 +18,7 @@ export default function PostSheet() {
   const opened = useSelector((state) => state.sheets[sheetKey]);
   const dispatch = useDispatch();
   const [isDragging, setIsDragging] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const form = useForm({
     initialValues: {
       file: null,
@@ -155,12 +156,15 @@ export default function PostSheet() {
           <SoundFieldGroup
             form={form}
             isDragging={isDragging}
+            setIsUploading={setIsUploading}
             {...form.getInputProps("file")}
           />
           <CommentFieldGroup {...form.getInputProps("comment")} />
           <TagsFieldGroup {...form.getInputProps("tags")} />
           <ShareAcrossField {...form.getInputProps("shareAcross")} />
-          <Button type="submit">Share</Button>
+          <Button disabled={isUploading} type="submit">
+            Share
+          </Button>
         </Stack>
       </form>
     </Drawer>

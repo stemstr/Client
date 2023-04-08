@@ -8,7 +8,12 @@ import Hls from "hls.js";
 import { useRouter } from "next/router";
 import { closeSheet } from "../../../store/Sheets";
 
-export default function SoundPicker({ form, isDragging, ...rest }) {
+export default function SoundPicker({
+  form,
+  isDragging,
+  setIsUploading,
+  ...rest
+}) {
   const router = useRouter();
   const dispatch = useDispatch();
   const auth = useSelector((state) => state.auth);
@@ -40,6 +45,7 @@ export default function SoundPicker({ form, isDragging, ...rest }) {
       formData.append("sum", sum);
       formData.append("filename", rest.value.name);
       formData.append("file", rest.value);
+      setIsUploading(true);
       axios
         .post(`${process.env.NEXT_PUBLIC_STEMSTR_API}/upload`, formData, {
           headers: {
@@ -74,6 +80,9 @@ export default function SoundPicker({ form, isDragging, ...rest }) {
               break;
           }
           rest.onChange(null);
+        })
+        .finally(() => {
+          setIsUploading(false);
         });
     }
   };
