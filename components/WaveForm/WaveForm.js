@@ -88,18 +88,6 @@ export default function WaveForm({ data, playProgress = 0 }) {
           <g key={index}>
             <motion.rect
               initial={{ scaleY: 1 }}
-              animate={
-                !data
-                  ? {
-                      scaleY: [1, 0.8, 1],
-                      transition: {
-                        duration: 0.5 + index * 0.05,
-                        repeat: Infinity,
-                        repeatType: "loop",
-                      },
-                    }
-                  : undefined
-              }
               x={bar.x}
               y={bar.y}
               width={bar.filledWidth}
