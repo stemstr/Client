@@ -1,7 +1,9 @@
 import React, { useEffect, useState, useRef } from "react";
+import { motion } from "framer-motion";
 import useResizeObserver from "@react-hook/resize-observer";
 
 export default function WaveForm({ data, playProgress = 0 }) {
+  const [currentData, setCurrentData] = useState(data);
   const [bars, setBars] = useState([]);
   const containerRef = useRef(null);
   const [width, setWidth] = useState(0);
@@ -11,7 +13,15 @@ export default function WaveForm({ data, playProgress = 0 }) {
   });
 
   useEffect(() => {
-    if (!data) {
+    if (data) {
+      setCurrentData(data);
+    } else {
+      setCurrentData(generateWaveFormData(64));
+    }
+  }, [data]);
+
+  useEffect(() => {
+    if (!currentData) {
       return;
     }
 
@@ -20,11 +30,12 @@ export default function WaveForm({ data, playProgress = 0 }) {
     const maxValue = 64;
 
     // Calculate bar width to collectively take up the full width of the SVG
-    const barWidth = (width - (data.length - 1) * spacing) / data.length;
+    const barWidth =
+      (width - (currentData.length - 1) * spacing) / currentData.length;
 
-    const progressIndex = playProgress * data.length;
+    const progressIndex = playProgress * currentData.length;
 
-    const newBars = data.map((n, index) => {
+    const newBars = currentData.map((n, index) => {
       const x = index * (barWidth + spacing);
       const barHeight = (n / maxValue) * height;
       const yOffset = (height - barHeight) / 2;
@@ -50,7 +61,7 @@ export default function WaveForm({ data, playProgress = 0 }) {
     });
 
     setBars(newBars);
-  }, [data, playProgress, width]);
+  }, [currentData, playProgress, width]);
 
   return (
     <div
@@ -75,14 +86,40 @@ export default function WaveForm({ data, playProgress = 0 }) {
       >
         {bars.map((bar, index) => (
           <g key={index}>
-            <rect
+            <motion.rect
+              initial={{ scaleY: 1 }}
+              animate={
+                !data
+                  ? {
+                      scaleY: [1, 0.8, 1],
+                      transition: {
+                        duration: 0.5 + index * 0.05,
+                        repeat: Infinity,
+                        repeatType: "loop",
+                      },
+                    }
+                  : undefined
+              }
               x={bar.x}
               y={bar.y}
               width={bar.filledWidth}
               height={bar.barHeight}
               fill={bar.fillColor}
             />
-            <rect
+            <motion.rect
+              initial={{ scaleY: 1 }}
+              animate={
+                !data
+                  ? {
+                      scaleY: [1, 0.5, 1],
+                      transition: {
+                        duration: 0.5 + index * 0.05,
+                        repeat: Infinity,
+                        repeatType: "loop",
+                      },
+                    }
+                  : undefined
+              }
               x={bar.x + bar.filledWidth}
               y={bar.y}
               width={bar.emptyWidth}

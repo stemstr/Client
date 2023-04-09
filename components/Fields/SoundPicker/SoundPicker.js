@@ -52,6 +52,7 @@ export default function SoundPicker({
         formData.append("filename", rest.value.name);
         formData.append("file", rest.value);
         setIsUploading(true);
+        setWaveformData(null);
         axios
           .post(`${process.env.NEXT_PUBLIC_STEMSTR_API}/upload`, formData, {
             headers: {
