@@ -22,7 +22,7 @@ import {
 } from "../../icons/StemstrIcon";
 import useNostr from "../../nostr/hooks/useNostr";
 import { useProfile } from "../../nostr/hooks/useProfile";
-import { dateToUnix } from "../../nostr/utils";
+import { getRelativeTimeString } from "../../nostr/utils";
 import DownloadSoundButton from "../DownloadSoundButton/DownloadSoundButton";
 import NoteAction from "../NoteAction/NoteAction";
 import SoundPlayer from "../SoundPlayer/SoundPlayer";
@@ -98,10 +98,7 @@ export default function Note(props) {
             </Text>
             <Text size="sm" color="rgba(255, 255, 255, 0.38)">
               ·{" "}
-              {Math.floor(
-                (dateToUnix(new Date()) - note.event.created_at) / 60
-              )}
-              m
+              {getRelativeTimeString(note.event.created_at)}
             </Text>
           </Group>
           <Group position="right">
