@@ -1,26 +1,30 @@
-import { Box, Group } from "@mantine/core";
-import React, { useRef, useEffect } from "react";
+import React, { useEffect, useState, useRef } from "react";
+import useResizeObserver from "@react-hook/resize-observer";
 
 export default function WaveForm({ data, playProgress = 0 }) {
-  const canvasRef = useRef(null);
+  const [bars, setBars] = useState([]);
+  const containerRef = useRef(null);
+  const [width, setWidth] = useState(0);
+
+  useResizeObserver(containerRef, (entry) => {
+    setWidth(entry.contentRect.width);
+  });
 
   useEffect(() => {
-    if (!canvasRef.current || !data) {
+    if (!data) {
       return;
     }
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext("2d");
-    const width = canvas.width;
-    const height = canvas.height;
-    ctx.clearRect(0, 0, width, height);
 
+    const height = 64;
     const spacing = 3; // Adjust the spacing between bars here
     const maxValue = 64;
+
+    // Calculate bar width to collectively take up the full width of the SVG
     const barWidth = (width - (data.length - 1) * spacing) / data.length;
 
     const progressIndex = playProgress * data.length;
 
-    data.forEach((n, index) => {
+    const newBars = data.map((n, index) => {
       const x = index * (barWidth + spacing);
       const barHeight = (n / maxValue) * height;
       const yOffset = (height - barHeight) / 2;
@@ -29,28 +33,66 @@ export default function WaveForm({ data, playProgress = 0 }) {
       const progressInBar = Math.max(0, Math.min(1, progressIndex - index));
 
       // Filled part
-      ctx.fillStyle = "#9747FF";
-      ctx.fillRect(x, y, barWidth * progressInBar, barHeight);
+      const filledWidth = barWidth * progressInBar;
 
       // Empty part
-      ctx.fillStyle = "rgba(134, 90, 226, 0.48)";
-      ctx.fillRect(
-        x + barWidth * progressInBar,
+      const emptyWidth = barWidth * (1 - progressInBar);
+
+      return {
+        x,
         y,
-        barWidth * (1 - progressInBar),
-        barHeight
-      );
+        filledWidth,
+        emptyWidth,
+        barHeight,
+        fillColor: "#9747FF",
+        emptyColor: "rgba(134, 90, 226, 0.48)",
+      };
     });
-  }, [data, playProgress]);
+
+    setBars(newBars);
+  }, [data, playProgress, width]);
 
   return (
-    <canvas
-      ref={canvasRef}
+    <div
+      ref={containerRef}
       style={{
         flexGrow: 1,
         height: 64,
+        minWidth: 0,
+        position: "relative",
       }}
-    />
+    >
+      <svg
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+        }}
+        viewBox={`0 0 ${width} 64`}
+        preserveAspectRatio="none"
+      >
+        {bars.map((bar, index) => (
+          <g key={index}>
+            <rect
+              x={bar.x}
+              y={bar.y}
+              width={bar.filledWidth}
+              height={bar.barHeight}
+              fill={bar.fillColor}
+            />
+            <rect
+              x={bar.x + bar.filledWidth}
+              y={bar.y}
+              width={bar.emptyWidth}
+              height={bar.barHeight}
+              fill={bar.emptyColor}
+            />
+          </g>
+        ))}
+      </svg>
+    </div>
   );
 }
 
