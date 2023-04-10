@@ -6,7 +6,7 @@ export default function WaveForm({ data, playProgress = 0 }) {
   const [currentData, setCurrentData] = useState(data);
   const [bars, setBars] = useState([]);
   const containerRef = useRef(null);
-  const [width, setWidth] = useState(0);
+  const [width, setWidth] = useState(300);
 
   useResizeObserver(containerRef, (entry) => {
     setWidth(entry.contentRect.width);
