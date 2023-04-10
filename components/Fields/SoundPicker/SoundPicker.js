@@ -52,6 +52,7 @@ export default function SoundPicker({
         formData.append("filename", rest.value.name);
         formData.append("file", rest.value);
         setIsUploading(true);
+        setWaveformData(null);
         axios
           .post(`${process.env.NEXT_PUBLIC_STEMSTR_API}/upload`, formData, {
             headers: {
@@ -161,12 +162,14 @@ export default function SoundPicker({
   };
 
   const trackAudioTime = () => {
-    const { currentTime } = audioRef.current;
-    setCurrentTime(currentTime);
+    if (audioRef.current) {
+      const { currentTime } = audioRef.current;
+      setCurrentTime(currentTime);
 
-    const frameRate = 30;
-    const interval = 1000 / frameRate; // interval in ms to achieve 30fps
-    audioTimeUpdateTimeoutRef.current = setTimeout(trackAudioTime, interval);
+      const frameRate = 30;
+      const interval = 1000 / frameRate; // interval in ms to achieve 30fps
+      audioTimeUpdateTimeoutRef.current = setTimeout(trackAudioTime, interval);
+    }
   };
 
   useEffect(() => {

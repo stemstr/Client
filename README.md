@@ -15,7 +15,7 @@ yarn
 3. Start dev server:
 
 ```
-npm run dev
+yarn run dev
 ```
 
 ## npm scripts
