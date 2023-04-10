@@ -149,7 +149,9 @@ export default function SoundPlayer({
       });
       setMimeType(response.headers["content-type"]);
       setFileName(response.headers["x-download-filename"]);
-      const blob = new Blob([response.data], { type: mimeType });
+      const blob = new Blob([response.data], {
+        type: response.headers["content-type"],
+      });
       const url = URL.createObjectURL(blob);
       setBlobUrl(url);
       setDownloadStatus("ready");
