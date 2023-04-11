@@ -6,7 +6,7 @@ export default function HomePage() {
   return (
     <>
       <Head>
-        <title>Stemstr - Home</title>
+        <title>Stemstr - Discover</title>
       </Head>
       {/* <ColorSchemeToggle /> */}
       <HomeFeedHeader />
