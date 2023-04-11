@@ -52,7 +52,7 @@ export default function Login() {
             mb={48}
             lh="normal"
           >
-            The sounds of music
+            Where music gets made
           </Text>
         </Box>
         <Stack
