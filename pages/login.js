@@ -1,5 +1,6 @@
 import { Box, Button, Group, Image, Space, Stack, Text } from "@mantine/core";
 import Head from "next/head";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useDispatch } from "react-redux";
 import LoginForm from "../components/LoginForm/LoginForm";
@@ -8,6 +9,7 @@ import { setNIP07 } from "../store/Auth";
 export default function Login() {
   const router = useRouter();
   const dispatch = useDispatch();
+  const [showExtensionLogin, setShowExtensionLogin] = useState(false)
 
   const handleSecureLogin = () => {
     if (window.nostr) {
@@ -21,6 +23,10 @@ export default function Login() {
         });
     }
   };
+
+  useEffect(() => {
+    setShowExtensionLogin(!!window.nostr);
+  })
 
   return (
     <>
@@ -89,13 +95,17 @@ export default function Login() {
             })}
           >
             <LoginForm />
-            <Space h={24} />
-            <Text fz="xs" c="white" fw={500} mb={8}>
-              Login with Extension ⓘ
-            </Text>
-            <Button onClick={handleSecureLogin} variant="light" fullWidth>
-              Connect
-            </Button>
+            {showExtensionLogin &&
+              <>
+                <Space h={24} /> 
+                <Text fz="xs" c="white" fw={500} mb={8}>
+                  Login with Extension ⓘ
+                </Text>
+                <Button onClick={handleSecureLogin} variant="light" fullWidth>
+                  Connect
+                </Button>
+              </>
+            }
           </Box>
         </Stack>
       </Box>
