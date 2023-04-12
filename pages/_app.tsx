@@ -53,21 +53,39 @@ function App(props: AppProps & { colorScheme: ColorScheme }) {
           name="viewport"
           content="minimum-scale=1, initial-scale=1, width=device-width"
         />
-        <meta name="description" content="A social experience for music producers to connect, collaborate and share amazing music - powered by nostr." />
-        <meta name="keywords" content="music, collaboration, social, production, producers, nostr, decentralized, zaps, bitcoin" />
+        <meta
+          name="description"
+          content="A social experience for music producers to connect, collaborate and share amazing music - powered by nostr."
+        />
+        <meta
+          name="keywords"
+          content="music, collaboration, social, production, producers, nostr, decentralized, zaps, bitcoin"
+        />
 
         <meta property="og:url" content="https://stemstr.app" />
         <meta property="og:type" content="website" />
         <meta property="og:title" content="Stemstr" />
-        <meta property="og:description" content="A social experience for music producers to connect, collaborate and share amazing music - powered by nostr." />
-        <meta property="og:image" content="https://nostr.build/i/nostr.build_bfb0664574164159b287893e2f0b07c4585ff0a2b4725b4da7aa1683f7a8759d.png" />
+        <meta
+          property="og:description"
+          content="A social experience for music producers to connect, collaborate and share amazing music - powered by nostr."
+        />
+        <meta
+          property="og:image"
+          content="https://nostr.build/i/nostr.build_bfb0664574164159b287893e2f0b07c4585ff0a2b4725b4da7aa1683f7a8759d.png"
+        />
 
         <meta name="twitter:card" content="summary_large_image" />
         <meta property="twitter:domain" content="stemstr.app" />
         <meta property="twitter:url" content="https://stemstr.app" />
         <meta name="twitter:title" content="Stemstr" />
-        <meta name="twitter:description" content="A social experience for music producers to connect, collaborate and share amazing music - powered by nostr." />
-        <meta name="twitter:image" content="https://nostr.build/i/nostr.build_bfb0664574164159b287893e2f0b07c4585ff0a2b4725b4da7aa1683f7a8759d.png" />
+        <meta
+          name="twitter:description"
+          content="A social experience for music producers to connect, collaborate and share amazing music - powered by nostr."
+        />
+        <meta
+          name="twitter:image"
+          content="https://nostr.build/i/nostr.build_bfb0664574164159b287893e2f0b07c4585ff0a2b4725b4da7aa1683f7a8759d.png"
+        />
 
         <link rel="shortcut icon" href="/favicon.svg" />
         <link
@@ -77,7 +95,6 @@ function App(props: AppProps & { colorScheme: ColorScheme }) {
           crossOrigin=""
           type="font/woff"
         />
-
       </Head>
 
       <ColorSchemeProvider

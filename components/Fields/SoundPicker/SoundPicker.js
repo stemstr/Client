@@ -193,7 +193,7 @@ export default function SoundPicker({
         }}
       >
         <FileInput
-          accept="audio/*"
+          accept="audio/mp4"
           ref={inputRef}
           style={{ display: "none" }}
           {...rest}

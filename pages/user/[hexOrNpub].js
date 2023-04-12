@@ -8,7 +8,7 @@ import {
   Stack,
   Text,
 } from "@mantine/core";
-import Head from 'next/head'
+import Head from "next/head";
 import { useRouter } from "next/router";
 import { useProfile } from "../../nostr/hooks/useProfile";
 import { useEffect, useMemo } from "react";
@@ -54,7 +54,7 @@ export default function ProfilePage() {
   return (
     <>
       <Head>
-        <title>Stemstr - {userData?.display_name || "Profile"}</title>
+        <title>{`Stemstr - ${userData?.display_name || "Profile"}`}</title>
       </Head>
       <Box
         sx={(theme) => ({

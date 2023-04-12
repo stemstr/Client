@@ -5,7 +5,7 @@ import {
   Kind,
   signEvent,
 } from "nostr-tools";
-import Head from 'next/head'
+import Head from "next/head";
 import { useState } from "react";
 import SignupComplete from "../components/SignupComplete/SignupComplete";
 import SignupForm from "../components/SignupForm/SignupForm";
@@ -39,10 +39,12 @@ export default function Signup() {
 
   return sk ? (
     <SignupComplete sk={sk} />
-  ) : <>
-    <Head>
-      <title>Stemstr - Signup</title>
-    </Head>
-    <SignupForm handleSubmit={handleSubmit} />
-  </>;
+  ) : (
+    <>
+      <Head>
+        <title>Stemstr - Signup</title>
+      </Head>
+      <SignupForm handleSubmit={handleSubmit} />
+    </>
+  );
 }

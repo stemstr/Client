@@ -1,5 +1,5 @@
 import { Box, Button, Group, Image, Space, Stack, Text } from "@mantine/core";
-import Head from 'next/head'
+import Head from "next/head";
 import { useRouter } from "next/router";
 import { useDispatch } from "react-redux";
 import LoginForm from "../components/LoginForm/LoginForm";
