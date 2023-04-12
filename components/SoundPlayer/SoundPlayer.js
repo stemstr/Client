@@ -105,12 +105,14 @@ export default function SoundPlayer({
   };
 
   const trackAudioTime = () => {
-    const { currentTime } = audioRef.current;
-    setCurrentTime(currentTime);
+    if (audioRef.current) {
+      const { currentTime } = audioRef.current;
+      setCurrentTime(currentTime);
 
-    const frameRate = 30;
-    const interval = 1000 / frameRate; // interval in ms to achieve 30fps
-    audioTimeUpdateTimeoutRef.current = setTimeout(trackAudioTime, interval);
+      const frameRate = 30;
+      const interval = 1000 / frameRate; // interval in ms to achieve 30fps
+      audioTimeUpdateTimeoutRef.current = setTimeout(trackAudioTime, interval);
+    }
   };
 
   useEffect(() => {

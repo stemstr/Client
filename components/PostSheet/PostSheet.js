@@ -116,10 +116,15 @@ export default function PostSheet() {
     }
   };
 
+  const handleClose = () => {
+    toggleSheet();
+    form.reset();
+  };
+
   return (
     <Drawer
       opened={opened}
-      onClose={() => toggleSheet()}
+      onClose={handleClose}
       position="bottom"
       title="Share"
       padding="md"

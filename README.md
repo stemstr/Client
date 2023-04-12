@@ -2,6 +2,13 @@
 
 Web client/PWA for stemstr. Stemstr is a Nostr client that facilitates collaboration between music artists/producers.
 
+## Contributing
+
+Things you should become comfortable with:
+
+1. [Next.js](https://nextjs.org/docs/getting-started)
+2. [Mantine Components Framework](https://v5.mantine.dev/pages/getting-started/)
+
 ## Local environment
 
 1. Copy .env into .env.local and set your local environment variables.
@@ -17,6 +24,14 @@ yarn
 ```
 yarn run dev
 ```
+
+or
+
+```
+yarn run dev-https
+```
+
+if you need a secure environment.
 
 ## npm scripts
 

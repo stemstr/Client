@@ -30,6 +30,7 @@ export default function SoundPicker({
   }, [currentTime, duration]);
   const [streamUrl, setStreamUrl] = useState(null);
   const [mediaAttached, setMediaAttached] = useState(false);
+  const [sum, setSum] = useState(null);
 
   const handleAudioChange = async () => {
     form.setValues((prev) => ({
@@ -45,7 +46,6 @@ export default function SoundPicker({
         alert(`File too big (Max ${maxFileSizeMB}MB)`);
         rest.onChange(null);
       } else {
-        let sum = await calculateHash(rest.value);
         const formData = new FormData();
         formData.append("pk", auth.user.pk);
         formData.append("sum", sum);
@@ -185,6 +185,12 @@ export default function SoundPicker({
     handleAudioChange();
   }, [rest.value]);
 
+  const handleChange = async (file) => {
+    const newSum = await calculateHash(file);
+    setSum(newSum);
+    rest.onChange(file);
+  };
+
   return (
     <>
       <Box
@@ -193,10 +199,11 @@ export default function SoundPicker({
         }}
       >
         <FileInput
-          accept="audio/mp4"
+          accept="audio/mp4, audio/m4a, audio/mp3, audio/mpeg, audio/mpeg3, audio/x-mpeg-3, audio/aiff, audio/x-aiff, audio/wave, audio/wav, audio/x-wav"
           ref={inputRef}
           style={{ display: "none" }}
           {...rest}
+          onChange={handleChange}
         />
       </Box>
       <Group

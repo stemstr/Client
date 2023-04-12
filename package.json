@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "dev-https": "next dev | npx local-ssl-proxy --source 3001 --target 3000",
     "build": "next build",
     "analyze": "ANALYZE=true next build",
     "start": "next start",
