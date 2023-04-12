@@ -40,7 +40,7 @@ export default function SoundPicker({
     }));
     setIsPlaying(false);
     if (rest.value) {
-      const sum = await calculateHash(file);
+      const sum = await calculateHash(rest.value);
       const maxFileSizeMB = 100;
       const maxFileSize = 1024 * 1024 * maxFileSizeMB;
       if (rest.value.size > maxFileSize) {
