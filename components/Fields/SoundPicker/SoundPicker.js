@@ -30,7 +30,7 @@ export default function SoundPicker({
   }, [currentTime, duration]);
   const [streamUrl, setStreamUrl] = useState(null);
   const [mediaAttached, setMediaAttached] = useState(false);
-  const [sum, setSum] = useState(null);
+  //const [sum, setSum] = useState(null);
 
   const handleAudioChange = async () => {
     form.setValues((prev) => ({
@@ -40,6 +40,7 @@ export default function SoundPicker({
     }));
     setIsPlaying(false);
     if (rest.value) {
+      const sum = await calculateHash(file);
       const maxFileSizeMB = 100;
       const maxFileSize = 1024 * 1024 * maxFileSizeMB;
       if (rest.value.size > maxFileSize) {
@@ -203,7 +204,7 @@ export default function SoundPicker({
           ref={inputRef}
           style={{ display: "none" }}
           {...rest}
-          onChange={handleChange}
+          //onChange={handleChange}
         />
       </Box>
       <Group
