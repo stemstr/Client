@@ -33,7 +33,7 @@ yarn run dev-https
 
 if you need a secure environment.
 
-## npm scripts
+## scripts
 
 ### Build and dev scripts
 
