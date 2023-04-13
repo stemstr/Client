@@ -43,13 +43,8 @@ export default function Login() {
       <Head>
         <title>Stemstr - Login</title>
       </Head>
-      <Box
-        sx={{
-          marginTop: 48,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-        }}
+      <Stack
+        spacing={0} align="center" sx={{ marginTop: 48 }}
       >
         <Box
           sx={{
@@ -152,7 +147,7 @@ export default function Login() {
             )}
           </Box>
         </Stack>
-      </Box>
+      </Stack>
     </>
   );
 }
