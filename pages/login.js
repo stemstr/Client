@@ -1,4 +1,14 @@
-import { Box, Button, Group, Image, Space, Stack, Text } from "@mantine/core";
+import {
+  MediaQuery,
+  Box,
+  Button,
+  Flex,
+  Group,
+  Image,
+  Space,
+  Stack,
+  Text,
+} from "@mantine/core";
 import Head from "next/head";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
@@ -9,7 +19,7 @@ import { setNIP07 } from "../store/Auth";
 export default function Login() {
   const router = useRouter();
   const dispatch = useDispatch();
-  const [showExtensionLogin, setShowExtensionLogin] = useState(false)
+  const [showExtensionLogin, setShowExtensionLogin] = useState(false);
 
   const handleSecureLogin = () => {
     if (window.nostr) {
@@ -26,41 +36,70 @@ export default function Login() {
 
   useEffect(() => {
     setShowExtensionLogin(!!window.nostr);
-  })
+  });
 
   return (
     <>
       <Head>
         <title>Stemstr - Login</title>
       </Head>
-      <Box
-        sx={{
-          marginTop: 48,
-        }}
+      <Stack
+        spacing={0} align="center" sx={{ marginTop: 48 }}
       >
-        <Image
-          src="/logo.svg"
-          alt="stemstr"
-          width={66}
-          height={66}
-          sx={{ margin: "auto", marginBottom: 16 }}
-        />
-        <Text fz={32} fw={700} c="gray.0" ta="center" lh="normal">
-          Stemstr
-        </Text>
-        <Box sx={{ textAlign: "center" }}>
-          <Text
-            variant="gradient"
-            gradient={{ from: "#F9F5FF", to: "#A17BF0", deg: 135 }}
-            display="inline-block"
-            fz="xl"
-            ta="center"
-            mb={48}
-            lh="normal"
-          >
-            Where music gets made
-          </Text>
+        <Box
+          sx={{
+            "@media (max-width: 480px)": {
+              display: "flex",
+              justifyContent: "center",
+              maxWidth: 348,
+              marginBottom: "20px",
+            },
+          }}
+        >
+          <Image
+            src="/logo.svg"
+            alt="stemstr"
+            width={66}
+            height={66}
+            sx={{
+              margin: "auto",
+              marginBottom: 16,
+              "@media (max-width: 480px)": {
+                marginRight: "10px",
+              },
+            }}
+          />
+          <Box>
+            <MediaQuery
+              query="(max-width: 480px)"
+              styles={{ textAlign: "left" }}
+            >
+              <Text fz={32} fw={700} c="gray.0" ta="center" lh="normal">
+                Stemstr
+              </Text>
+            </MediaQuery>
+
+            <Box sx={{ textAlign: "center" }}>
+              <Text
+                variant="gradient"
+                gradient={{ from: "#F9F5FF", to: "#A17BF0", deg: 135 }}
+                display="inline-block"
+                fz="xl"
+                ta="center"
+                mb={48}
+                lh="normal"
+                sx={{
+                  "@media (max-width: 480px)": {
+                    marginBottom: "10px",
+                  },
+                }}
+              >
+                Where music gets made
+              </Text>
+            </Box>
+          </Box>
         </Box>
+
         <Stack
           sx={{
             maxWidth: 348,
@@ -95,9 +134,9 @@ export default function Login() {
             })}
           >
             <LoginForm />
-            {showExtensionLogin &&
+            {showExtensionLogin && (
               <>
-                <Space h={24} /> 
+                <Space h={24} />
                 <Text fz="xs" c="white" fw={500} mb={8}>
                   Login with Extension ⓘ
                 </Text>
@@ -105,10 +144,10 @@ export default function Login() {
                   Connect
                 </Button>
               </>
-            }
+            )}
           </Box>
         </Stack>
-      </Box>
+      </Stack>
     </>
   );
 }
