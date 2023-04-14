@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/router";
 import { openSheet, closeSheet } from "../../store/Sheets";
 import { selectAuthState } from "../../store/Auth";
+import { acceptedMimeTypes } from "../../utils/media";
 
 const FileDropOverlay = () => {
   const dispatch = useDispatch();
@@ -18,7 +19,7 @@ const FileDropOverlay = () => {
     const onDragOver = (e) => {
       e.preventDefault();
       const items = e.dataTransfer.items;
-      if (items.length > 0 && items[0].type.startsWith("audio/")) {
+      if (items.length > 0 && acceptedMimeTypes.includes(items[0].type)) {
         if (authState?.user?.pk) {
           dispatch(openSheet(sheetKey));
         } else {

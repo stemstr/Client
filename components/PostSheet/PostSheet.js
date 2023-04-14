@@ -1,4 +1,4 @@
-import { Button, Drawer, Stack } from "@mantine/core";
+import { Box, Button, Drawer, Stack } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useDispatch, useSelector } from "react-redux";
 import { closeSheet, openSheet } from "../../store/Sheets";
@@ -9,6 +9,7 @@ import ShareAcrossField from "../ShareAcrossField/ShareAcrossField";
 import { parseHashtags } from "../Fields/TagsField/TagsField";
 import useNostr from "../../nostr/hooks/useNostr";
 import { useState } from "react";
+import { acceptedMimeTypes } from "../../utils/media";
 
 export default function PostSheet() {
   const { publish, signEvent } = useNostr();
@@ -90,7 +91,7 @@ export default function PostSheet() {
     e.preventDefault();
     const file = e.dataTransfer.files[0];
 
-    if (file.type.startsWith("audio/")) {
+    if (acceptedMimeTypes.includes(file.type)) {
       form.setFieldValue("file", file);
     }
 
@@ -101,7 +102,7 @@ export default function PostSheet() {
     e.preventDefault();
     const item = e.dataTransfer.items[0];
 
-    if (item && item.kind === "file" && item.type.startsWith("audio/")) {
+    if (item && item.kind === "file" && acceptedMimeTypes.includes(item.type)) {
       setIsDragging(true);
       form.setFieldValue("file", null);
     } else {
@@ -126,19 +127,31 @@ export default function PostSheet() {
       opened={opened}
       onClose={handleClose}
       position="bottom"
-      title="Share"
-      padding="md"
-      size="full"
+      title={isDragging ? "Drop to proccess sound" : "Share"}
+      size="75%"
       onDrop={onDrop}
       onDragOver={onDragOver}
       onDragLeave={onDragLeave}
+      withCloseButton={false}
       styles={(theme) => ({
+        overlay: {
+          backgroundColor: "rgba(44, 44, 44, 0.2)!important",
+          backdropFilter: "blur(12px)",
+          opacity: "1!important",
+        },
         header: {
-          paddingTop: 8,
+          paddingTop: theme.spacing.lg,
+          paddingBottom: theme.spacing.lg,
+          backgroundColor: theme.colors.dark[7],
           color: theme.white,
           fontSize: 24,
           fontWeight: 700,
-          marginBottom: 40,
+          marginBottom: theme.spacing.md,
+        },
+        title: {
+          textAlign: "center",
+          width: "100%",
+          margin: 0,
         },
         closeButton: {
           color: theme.white,
@@ -149,29 +162,37 @@ export default function PostSheet() {
         },
         drawer: {
           backgroundColor: theme.colors.dark[8],
-          paddingTop: 24,
+          paddingTop: "0!important",
+          borderTopLeftRadius: 20,
+          borderTopRightRadius: 20,
           maxWidth: 600,
           margin: "auto",
           overflowY: "scroll",
         },
       })}
     >
-      <form onSubmit={form.onSubmit(handleSubmit)}>
-        <Stack spacing={28}>
-          <SoundFieldGroup
-            form={form}
-            isDragging={isDragging}
-            setIsUploading={setIsUploading}
-            {...form.getInputProps("file")}
-          />
-          <CommentFieldGroup {...form.getInputProps("comment")} />
-          <TagsFieldGroup {...form.getInputProps("tags")} />
-          <ShareAcrossField {...form.getInputProps("shareAcross")} />
-          <Button disabled={isUploading} type="submit">
-            Share
-          </Button>
-        </Stack>
-      </form>
+      <Box pl="md" pr="md" pb="md">
+        <form onSubmit={form.onSubmit(handleSubmit)}>
+          <Stack spacing={28}>
+            <SoundFieldGroup
+              form={form}
+              isDragging={isDragging}
+              isUploading={isUploading}
+              setIsUploading={setIsUploading}
+              {...form.getInputProps("file")}
+            />
+            <CommentFieldGroup
+              data-autofocus
+              {...form.getInputProps("comment")}
+            />
+            <TagsFieldGroup {...form.getInputProps("tags")} />
+            {/* <ShareAcrossField {...form.getInputProps("shareAcross")} /> */}
+            <Button disabled={isUploading} type="submit">
+              Share
+            </Button>
+          </Stack>
+        </form>
+      </Box>
     </Drawer>
   );
 }

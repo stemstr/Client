@@ -179,7 +179,7 @@ export default function SoundPlayer({
               sx={(theme) => ({
                 width: 36,
                 height: 36,
-                backgroundColor: theme.colors.purple[4],
+                backgroundColor: theme.colors.purple[5],
                 borderRadius: theme.radius.xl,
                 color: theme.white,
                 cursor: "pointer",
