@@ -37,6 +37,7 @@ export default function SoundPicker({
   }, [currentTime, duration]);
   const [streamUrl, setStreamUrl] = useState(null);
   const [mediaAttached, setMediaAttached] = useState(false);
+  const [soundPickerFocused, setSoundPickerFocused] = useState(false);
 
   const handleAudioChange = async () => {
     form.setValues((prev) => ({
@@ -199,14 +200,17 @@ export default function SoundPicker({
     <>
       <Box
         sx={{
-          display: "none",
+          opacity: 0,
+          width: 0,
+          height: 0,
         }}
       >
         <FileInput
           accept={acceptedMimeTypes.join(", ")}
           ref={inputRef}
-          style={{ display: "none" }}
           {...rest}
+          onFocus={() => setSoundPickerFocused(true)}
+          onBlur={() => setSoundPickerFocused(false)}
         />
       </Box>
       <Group
@@ -217,7 +221,10 @@ export default function SoundPicker({
             : "linear-gradient(180deg, rgba(44, 44, 44, 0) 0%, rgba(134, 90, 226, 0.4) 100%);",
           padding: "14px 16px",
           borderRadius: 8,
-          border: `1px solid rgba(187, 134, 252, 0.4)`,
+          border: "1px solid",
+          borderColor: soundPickerFocused
+            ? theme.colors.purple[5]
+            : "rgba(187, 134, 252, 0.4)",
           height: 96,
           transition: "gap .5s ease",
         })}
