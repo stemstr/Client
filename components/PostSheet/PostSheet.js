@@ -1,4 +1,4 @@
-import { Button, Drawer, Stack } from "@mantine/core";
+import { Box, Button, Drawer, Stack } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useDispatch, useSelector } from "react-redux";
 import { closeSheet, openSheet } from "../../store/Sheets";
@@ -126,19 +126,31 @@ export default function PostSheet() {
       opened={opened}
       onClose={handleClose}
       position="bottom"
-      title="Share"
-      padding="md"
-      size="full"
+      title={isDragging ? "Drop to proccess sound" : "Share"}
+      size="75%"
       onDrop={onDrop}
       onDragOver={onDragOver}
       onDragLeave={onDragLeave}
+      withCloseButton={false}
       styles={(theme) => ({
+        overlay: {
+          backgroundColor: "rgba(44, 44, 44, 0.2)!important",
+          backdropFilter: "blur(12px)",
+          opacity: "1!important",
+        },
         header: {
-          paddingTop: 8,
+          paddingTop: theme.spacing.lg,
+          paddingBottom: theme.spacing.lg,
+          backgroundColor: theme.colors.dark[7],
           color: theme.white,
           fontSize: 24,
           fontWeight: 700,
-          marginBottom: 40,
+          marginBottom: theme.spacing.md,
+        },
+        title: {
+          textAlign: "center",
+          width: "100%",
+          margin: 0,
         },
         closeButton: {
           color: theme.white,
@@ -149,32 +161,36 @@ export default function PostSheet() {
         },
         drawer: {
           backgroundColor: theme.colors.dark[8],
-          paddingTop: 24,
+          paddingTop: "0!important",
+          borderTopLeftRadius: 20,
+          borderTopRightRadius: 20,
           maxWidth: 600,
           margin: "auto",
           overflowY: "scroll",
         },
       })}
     >
-      <form onSubmit={form.onSubmit(handleSubmit)}>
-        <Stack spacing={28}>
-          <SoundFieldGroup
-            form={form}
-            isDragging={isDragging}
-            setIsUploading={setIsUploading}
-            {...form.getInputProps("file")}
-          />
-          <CommentFieldGroup
-            data-autofocus
-            {...form.getInputProps("comment")}
-          />
-          <TagsFieldGroup {...form.getInputProps("tags")} />
-          <ShareAcrossField {...form.getInputProps("shareAcross")} />
-          <Button disabled={isUploading} type="submit">
-            Share
-          </Button>
-        </Stack>
-      </form>
+      <Box pl="md" pr="md" pb="md">
+        <form onSubmit={form.onSubmit(handleSubmit)}>
+          <Stack spacing={28}>
+            <SoundFieldGroup
+              form={form}
+              isDragging={isDragging}
+              setIsUploading={setIsUploading}
+              {...form.getInputProps("file")}
+            />
+            <CommentFieldGroup
+              data-autofocus
+              {...form.getInputProps("comment")}
+            />
+            <TagsFieldGroup {...form.getInputProps("tags")} />
+            <ShareAcrossField {...form.getInputProps("shareAcross")} />
+            <Button disabled={isUploading} type="submit">
+              Share
+            </Button>
+          </Stack>
+        </form>
+      </Box>
     </Drawer>
   );
 }
