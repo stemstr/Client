@@ -34,3 +34,18 @@ export function uploadImage(file: File): Promise<string> {
     }
   });
 }
+
+export const acceptedMimeTypes: string[] = [
+  "audio/aiff",
+  "audio/m4a",
+  "audio/mp3",
+  "audio/mp4",
+  "audio/mpeg",
+  "audio/mpeg3",
+  "audio/ogg",
+  "audio/wav",
+  "audio/wave",
+  "audio/x-aiff",
+  "audio/x-mpeg-3",
+  "audio/x-wav",
+];

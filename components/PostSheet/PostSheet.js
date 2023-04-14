@@ -9,6 +9,7 @@ import ShareAcrossField from "../ShareAcrossField/ShareAcrossField";
 import { parseHashtags } from "../Fields/TagsField/TagsField";
 import useNostr from "../../nostr/hooks/useNostr";
 import { useState } from "react";
+import { acceptedMimeTypes } from "../../utils/media";
 
 export default function PostSheet() {
   const { publish, signEvent } = useNostr();
@@ -90,7 +91,7 @@ export default function PostSheet() {
     e.preventDefault();
     const file = e.dataTransfer.files[0];
 
-    if (file.type.startsWith("audio/")) {
+    if (acceptedMimeTypes.includes(file.type)) {
       form.setFieldValue("file", file);
     }
 
@@ -101,7 +102,7 @@ export default function PostSheet() {
     e.preventDefault();
     const item = e.dataTransfer.items[0];
 
-    if (item && item.kind === "file" && item.type.startsWith("audio/")) {
+    if (item && item.kind === "file" && acceptedMimeTypes.includes(item.type)) {
       setIsDragging(true);
       form.setFieldValue("file", null);
     } else {

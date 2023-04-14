@@ -12,6 +12,7 @@ import WaveForm from "../../WaveForm/WaveForm";
 import Hls from "hls.js";
 import { useRouter } from "next/router";
 import { closeSheet } from "../../../store/Sheets";
+import { acceptedMimeTypes } from "../../../utils/media";
 
 export default function SoundPicker({
   form,
@@ -202,7 +203,7 @@ export default function SoundPicker({
         }}
       >
         <FileInput
-          accept="audio/mp4, audio/m4a, audio/mp3, audio/mpeg, audio/mpeg3, audio/x-mpeg-3, audio/aiff, audio/x-aiff, audio/wave, audio/wav, audio/x-wav"
+          accept={acceptedMimeTypes.join(", ")}
           ref={inputRef}
           style={{ display: "none" }}
           {...rest}
