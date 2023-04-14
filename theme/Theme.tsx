@@ -24,7 +24,7 @@ const stemstrTheme: MantineThemeOverride = {
       "#BFAAEA", // purple.4
       "#865AE2", // purple.5
       "#865AE2", // purple.6
-      "#865AE2", // purple.7
+      "#763AF4", // purple.7
       "#41355C", // purple.8
       "#41355C", // purple.9
     ],
@@ -121,6 +121,14 @@ const stemstrTheme: MantineThemeOverride = {
               ? theme.colors.gray[6]
               : undefined,
           color: params.variant === "light" ? theme.white : undefined,
+          "&hover": {
+            backgroundColor:
+              params.variant === "default" ? theme.colors.purple[7] : undefined,
+          },
+          ":disabled": {
+            backgroundColor:
+              params.variant === "default" ? theme.colors.gray[4] : undefined,
+          },
         },
         label: {
           fontWeight: 500,
