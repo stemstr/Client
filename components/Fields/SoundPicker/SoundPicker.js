@@ -2,7 +2,12 @@ import { Box, Center, FileInput, Group, Text } from "@mantine/core";
 import axios from "axios";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { PlusIcon, PlayIcon, StopIcon } from "../../../icons/StemstrIcon";
+import {
+  PlusIcon,
+  PlayIcon,
+  StopIcon,
+  CompassIcon,
+} from "../../../icons/StemstrIcon";
 import WaveForm from "../../WaveForm/WaveForm";
 import Hls from "hls.js";
 import { useRouter } from "next/router";
@@ -11,6 +16,7 @@ import { closeSheet } from "../../../store/Sheets";
 export default function SoundPicker({
   form,
   isDragging,
+  isUploading,
   setIsUploading,
   ...rest
 }) {
@@ -96,6 +102,9 @@ export default function SoundPicker({
   };
 
   useEffect(() => {
+    if (!rest.value) {
+      setStreamUrl(null);
+    }
     if (streamUrl) {
       if (Hls.isSupported()) {
         hlsRef.current = new Hls();
@@ -200,7 +209,7 @@ export default function SoundPicker({
         />
       </Box>
       <Group
-        position={rest.value ? null : "center"}
+        spacing={(isUploading || !rest.value) && 0}
         sx={(theme) => ({
           background: isDragging
             ? "linear-gradient(180deg, #383864 0%, rgba(71, 47, 111, 0.21) 100%)"
@@ -209,6 +218,7 @@ export default function SoundPicker({
           borderRadius: 8,
           border: `1px solid rgba(187, 134, 252, 0.4)`,
           height: 96,
+          transition: "gap .5s ease",
         })}
       >
         <audio
@@ -216,47 +226,63 @@ export default function SoundPicker({
           onEnded={handleAudioEnded}
           onCanPlay={handleCanPlay}
         />
-        {rest.value ? (
-          <>
-            <Center
-              onClick={isPlaying ? handlePauseClick : handlePlayClick}
-              sx={(theme) => ({
-                width: 36,
-                height: 36,
-                backgroundColor: theme.colors.purple[5],
-                borderRadius: theme.radius.xl,
-                color: theme.white,
-                cursor: "pointer",
-              })}
-            >
-              {isPlaying ? (
-                <StopIcon width={16} height={16} />
-              ) : (
-                <PlayIcon width={16} height={16} />
-              )}
-            </Center>
-            <WaveForm data={waveformData} playProgress={playProgress} />
-          </>
-        ) : (
+        {(isUploading || streamUrl) && (
           <Center
-            onClick={handleSelectClick}
+            onClick={isPlaying ? handlePauseClick : handlePlayClick}
             sx={(theme) => ({
-              // height: 28,
-              padding: `4px 8px`,
-              backgroundColor: theme.colors.purple[4],
+              opacity: !!streamUrl,
+              width: isUploading || !rest.value ? 0 : 36,
+              height: 36,
+              backgroundColor: theme.colors.purple[5],
               borderRadius: theme.radius.xl,
               color: theme.white,
               cursor: "pointer",
-              color: theme.colors.purple[5],
-              border: `1px solid ${theme.colors.purple[5]}`,
-              background: `linear-gradient(135deg, #F9F5FF 0%, #A17BF0 100%)`,
+              transition: "width .5s ease, opacity .5s ease",
             })}
           >
-            <PlusIcon width={16} height={16} />
-            <Text fz="xs" ml={2}>
-              {isDragging ? "Drop sound" : "Add sound"}
-            </Text>
+            {isPlaying ? (
+              <StopIcon width={16} height={16} />
+            ) : (
+              <PlayIcon width={16} height={16} />
+            )}
           </Center>
+        )}
+        {rest.value && (
+          <WaveForm data={waveformData} playProgress={playProgress} />
+        )}
+        {(isUploading || !rest.value) && (
+          <Group
+            position="center"
+            sx={{ position: "absolute", left: 0, right: 0 }}
+          >
+            <Center
+              onClick={!isUploading ? handleSelectClick : () => {}}
+              sx={(theme) => ({
+                padding: `4px 8px`,
+                backgroundColor: theme.colors.purple[4],
+                borderRadius: theme.radius.xl,
+                color: theme.white,
+                cursor: !isUploading && "pointer",
+                color: theme.colors.purple[5],
+                border: `1px solid ${theme.colors.purple[5]}`,
+                background: `linear-gradient(135deg, #F9F5FF 0%, #A17BF0 100%)`,
+              })}
+            >
+              {isUploading ? (
+                <CompassIcon color="white" width={16} height={16} />
+              ) : (
+                <PlusIcon width={16} height={16} />
+              )}
+
+              <Text fz="xs" ml={2}>
+                {isUploading
+                  ? "Processing sound"
+                  : isDragging
+                  ? "Drop sound"
+                  : "Add sound"}
+              </Text>
+            </Center>
+          </Group>
         )}
       </Group>
     </>

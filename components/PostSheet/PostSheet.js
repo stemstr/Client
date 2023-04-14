@@ -176,6 +176,7 @@ export default function PostSheet() {
             <SoundFieldGroup
               form={form}
               isDragging={isDragging}
+              isUploading={isUploading}
               setIsUploading={setIsUploading}
               {...form.getInputProps("file")}
             />
