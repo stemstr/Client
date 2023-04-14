@@ -4,6 +4,8 @@ export default function CommentField(props) {
   return (
     <Textarea
       placeholder="Tell ‘em bout it"
+      minRows={1}
+      autosize
       styles={(theme) => ({
         input: {
           backgroundColor: theme.colors.dark[7],
