@@ -1,9 +1,10 @@
-import { Avatar, Center, Footer, Group, Text } from "@mantine/core";
-import useStyles from "./BottomNavigation.styles";
-import BottomNavigationItem, {
-  AuthBottomNavigationItem,
-} from "../BottomNavigationItem/BottomNavigationItem";
-import { selectAuthState } from "../../store/Auth";
+import { Center, Footer, Group } from "@mantine/core";
+import { useDispatch } from "react-redux";
+import { useRouter } from "next/router";
+
+import { Route } from "enums";
+import { openSheet } from "store/Sheets";
+
 import {
   CompassIcon,
   HomeIcon,
@@ -11,18 +12,23 @@ import {
   PlusIcon,
   CollectionIcon,
   BellIcon,
-} from "../../icons/StemstrIcon";
-import { useDispatch, useSelector } from "react-redux";
-import { openSheet } from "../../store/Sheets";
+} from "icons/StemstrIcon";
+import BottomNavigationItem, {
+  AuthBottomNavigationItem,
+} from "components/BottomNavigationItem/BottomNavigationItem";
+
+import useStyles from "./BottomNavigation.styles";
 
 export default function BottomNavigation() {
   const { classes } = useStyles();
-  const authState = useSelector(selectAuthState);
+  const { pathname } = useRouter();
   const dispatch = useDispatch();
 
   const openPostSheet = () => {
     dispatch(openSheet("postSheet"));
   };
+
+  if (pathname === Route.Login || pathname === Route.Signup) return null;
 
   return (
     <Footer
