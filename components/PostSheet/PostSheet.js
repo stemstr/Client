@@ -185,7 +185,7 @@ export default function PostSheet() {
               {...form.getInputProps("comment")}
             />
             <TagsFieldGroup {...form.getInputProps("tags")} />
-            <ShareAcrossField {...form.getInputProps("shareAcross")} />
+            {/* <ShareAcrossField {...form.getInputProps("shareAcross")} /> */}
             <Button disabled={isUploading} type="submit">
               Share
             </Button>
