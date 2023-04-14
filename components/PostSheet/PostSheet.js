@@ -164,7 +164,10 @@ export default function PostSheet() {
             setIsUploading={setIsUploading}
             {...form.getInputProps("file")}
           />
-          <CommentFieldGroup {...form.getInputProps("comment")} />
+          <CommentFieldGroup
+            data-autofocus
+            {...form.getInputProps("comment")}
+          />
           <TagsFieldGroup {...form.getInputProps("tags")} />
           <ShareAcrossField {...form.getInputProps("shareAcross")} />
           <Button disabled={isUploading} type="submit">
