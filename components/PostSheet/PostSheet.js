@@ -128,7 +128,7 @@ export default function PostSheet() {
       onClose={handleClose}
       position="bottom"
       title={isDragging ? "Drop to proccess sound" : "Share"}
-      size="75%"
+      size="80%"
       onDrop={onDrop}
       onDragOver={onDragOver}
       onDragLeave={onDragLeave}
