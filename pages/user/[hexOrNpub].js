@@ -28,6 +28,7 @@ import useContactList from "../../nostr/hooks/useContactList";
 import CopyNpub from "../../components/CopyNpub/CopyNpub";
 import ProfileFeed from "../../components/ProfileFeed/ProfileFeed";
 import BackButton from "../../components/BackButton/BackButton";
+import { Route } from "../../enums/routes";
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -48,7 +49,7 @@ export default function ProfilePage() {
 
   const handleLogout = () => {
     dispatch(logout());
-    router.push("/login");
+    router.push(Route.Login);
   };
 
   return (

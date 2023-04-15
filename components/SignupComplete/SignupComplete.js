@@ -11,6 +11,7 @@ import {
 } from "../../icons/StemstrIcon";
 import { abbreviateKey } from "../../nostr/utils";
 import { setSK } from "../../store/Auth";
+import { Route } from "../../enums/routes";
 
 export default function SignupComplete({ sk }) {
   const dispatch = useDispatch();
@@ -133,7 +134,7 @@ export default function SignupComplete({ sk }) {
           )}
         </CopyButton>
       </Stack>
-      <Button onClick={() => router.push(`/`)} fullWidth>
+      <Button onClick={() => router.push(Route.Home)} fullWidth>
         Private key secured 🫡 Let’s go!{" "}
         <ChevronRightIcon width={16} height={16} />
       </Button>

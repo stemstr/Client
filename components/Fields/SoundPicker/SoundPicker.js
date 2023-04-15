@@ -13,6 +13,7 @@ import Hls from "hls.js";
 import { useRouter } from "next/router";
 import { closeSheet } from "../../../store/Sheets";
 import { acceptedMimeTypes } from "../../../utils/media";
+import { Route } from "../../../enums";
 
 export default function SoundPicker({
   form,
@@ -86,7 +87,7 @@ export default function SoundPicker({
                 break;
               case 401:
                 dispatch(closeSheet("postSheet"));
-                router.push("/login");
+                router.push(Route.Login);
                 break;
               case 500:
                 alert("Server error. Please try again later.");

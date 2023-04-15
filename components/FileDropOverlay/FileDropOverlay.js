@@ -4,12 +4,13 @@ import { useRouter } from "next/router";
 import { openSheet, closeSheet } from "../../store/Sheets";
 import { selectAuthState } from "../../store/Auth";
 import { acceptedMimeTypes } from "../../utils/media";
+import { Route } from "../../enums";
 
 const FileDropOverlay = () => {
   const dispatch = useDispatch();
   const router = useRouter();
   const authState = useSelector(selectAuthState);
-  const disallowedRoutes = ["/settings"];
+  const disallowedRoutes = [Route.Settings];
   const shouldRenderOverlay = !disallowedRoutes.includes(router.pathname);
   const sheetKey = "postSheet";
 
@@ -23,7 +24,7 @@ const FileDropOverlay = () => {
         if (authState?.user?.pk) {
           dispatch(openSheet(sheetKey));
         } else {
-          router.push("/login");
+          router.push(Route.Login);
         }
       }
     };

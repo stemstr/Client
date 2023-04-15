@@ -1,5 +1,6 @@
 import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
+import { Route } from "../../enums/routes";
 import { selectAuthState } from "../../store/Auth";
 
 const requireAuth = (WrappedComponent) => {
@@ -10,7 +11,7 @@ const requireAuth = (WrappedComponent) => {
     const handleClick = (e) => {
       e.preventDefault();
       if (!authState?.user?.pk) {
-        router.push("/login");
+        router.push(Route.Login);
       } else {
         props.onClick();
       }

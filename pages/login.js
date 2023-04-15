@@ -15,6 +15,7 @@ import { useRouter } from "next/router";
 import { useDispatch } from "react-redux";
 import LoginForm from "../components/LoginForm/LoginForm";
 import { setNIP07 } from "../store/Auth";
+import { Route } from "../enums/routes";
 
 export default function Login() {
   const router = useRouter();
@@ -43,9 +44,7 @@ export default function Login() {
       <Head>
         <title>Stemstr - Login</title>
       </Head>
-      <Stack
-        spacing={0} align="center" sx={{ marginTop: 48 }}
-      >
+      <Stack spacing={0} align="center" sx={{ marginTop: 48 }}>
         <Box
           sx={{
             "@media (max-width: 480px)": {
@@ -121,7 +120,7 @@ export default function Login() {
             </Text>
             <Group grow>
               <Button variant="light">Learn more</Button>
-              <Button onClick={() => router.push(`/signup`)} fullWidth>
+              <Button onClick={() => router.push(Route.Signup)} fullWidth>
                 Sign me up
               </Button>
             </Group>
