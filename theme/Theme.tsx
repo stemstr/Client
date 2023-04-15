@@ -15,6 +15,13 @@ declare module "@mantine/core" {
 }
 
 const stemstrTheme: MantineThemeOverride = {
+  breakpoints: {
+    xs: 480,
+    sm: 768,
+    md: 992,
+    lg: 1200,
+    xl: 1400,
+  },
   colors: {
     purple: [
       "#EAE2FC", // purple.0
