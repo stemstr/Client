@@ -17,6 +17,7 @@ export interface Metadata {
   lud06?: string;
   lud16?: string;
   nip05?: string;
+  created_at: number;
 }
 
 const QUEUE_DEBOUNCE_DURATION = 100;
@@ -94,14 +95,23 @@ export function useProfile({
   onEvent((rawMetadata) => {
     try {
       const metadata: Metadata = JSON.parse(rawMetadata.content);
+      metadata.created_at = rawMetadata.created_at;
       const metaPubkey = rawMetadata.pubkey;
 
       if (metadata) {
         setFetchedProfiles((_profiles: Record<string, Metadata>) => {
-          return {
-            ..._profiles,
-            [metaPubkey]: metadata,
-          };
+          const existingProfile = _profiles[metaPubkey];
+          if (
+            !existingProfile ||
+            metadata.created_at > existingProfile.created_at
+          ) {
+            return {
+              ..._profiles,
+              [metaPubkey]: metadata,
+            };
+          } else {
+            return _profiles;
+          }
         });
       }
     } catch (err) {
