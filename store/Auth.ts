@@ -22,7 +22,9 @@ const initialState: AuthState = {
   user: {
     pk: "",
     npub: "",
-    metadata: {},
+    metadata: {
+      created_at: 0,
+    },
   },
 };
 
