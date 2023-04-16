@@ -85,6 +85,8 @@ export function useProfile({
   });
 
   onSubscribe(() => {
+    return; // This fixes the profiles not loading issue, but I'm leaving this code here for reference because I'm not sure what the long term consequences of removing it will be
+
     // Reset list
     // (We've already opened a subscription to these pubkeys now)
     setRequestedPubkeys((_pubkeys) => {
