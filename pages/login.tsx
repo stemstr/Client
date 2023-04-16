@@ -1,37 +1,39 @@
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import Head from "next/head";
+import { useRouter } from "next/router";
 import {
-  MediaQuery,
+  Flex,
   Box,
   Button,
-  Flex,
   Group,
   Image,
   Space,
   Stack,
   Text,
 } from "@mantine/core";
-import Head from "next/head";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
-import { useDispatch } from "react-redux";
-import LoginForm from "../components/LoginForm/LoginForm";
-import { setNIP07 } from "../store/Auth";
-import { Route } from "../enums/routes";
+
+import { Route } from "enums";
+
+import { setNIP07 } from "store/Auth";
+import LoginForm from "components/LoginForm/LoginForm";
+
+const LEARN_MORE_URL = "https://www.stemstr.app/";
 
 export default function Login() {
   const router = useRouter();
   const dispatch = useDispatch();
+
   const [showExtensionLogin, setShowExtensionLogin] = useState(false);
 
-  const handleSecureLogin = () => {
+  const handleSecureLogin = async () => {
     if (window.nostr) {
-      window.nostr
-        .getPublicKey()
-        .then((pk) => {
-          dispatch(setNIP07(pk));
-        })
-        .catch((err) => {
-          console.error(err);
-        });
+      try {
+        const pk = await window.nostr.getPublicKey();
+        dispatch(setNIP07(pk));
+      } catch (err) {
+        console.error(err);
+      }
     }
   };
 
@@ -45,64 +47,58 @@ export default function Login() {
         <title>Stemstr - Login</title>
       </Head>
       <Stack spacing={0} align="center" sx={{ marginTop: 48 }}>
-        <Box
-          sx={{
-            "@media (max-width: 480px)": {
-              display: "flex",
-              justifyContent: "center",
-              maxWidth: 348,
-              marginBottom: "20px",
+        <Flex
+          sx={(theme) => ({
+            alignItems: "center",
+            flexDirection: "row",
+            marginBottom: 30,
+            [theme.fn.largerThan("xs")]: {
+              flexDirection: "column",
+              marginBottom: 48,
             },
-          }}
+          })}
         >
           <Image
             src="/logo.svg"
             alt="stemstr"
             width={66}
             height={66}
-            sx={{
-              margin: "auto",
-              marginBottom: 16,
-              "@media (max-width: 480px)": {
-                marginRight: "10px",
+            sx={(theme) => ({
+              marginRight: 10,
+              [theme.fn.largerThan("xs")]: {
+                marginRight: 0,
+                marginBottom: 16,
               },
-            }}
+            })}
           />
-          <Box>
-            <MediaQuery
-              query="(max-width: 480px)"
-              styles={{ textAlign: "left" }}
-            >
-              <Text fz={32} fw={700} c="gray.0" ta="center" lh="normal">
-                Stemstr
-              </Text>
-            </MediaQuery>
+          <Flex
+            sx={(theme) => ({
+              flexDirection: "column",
+              alignItems: "left",
+              [theme.fn.largerThan("xs")]: {
+                alignItems: "center",
+              },
+            })}
+          >
+            <Text fz={32} fw={700} c="gray.0" lh="normal">
+              Stemstr
+            </Text>
 
-            <Box sx={{ textAlign: "center" }}>
-              <Text
-                variant="gradient"
-                gradient={{ from: "#F9F5FF", to: "#A17BF0", deg: 135 }}
-                display="inline-block"
-                fz="xl"
-                ta="center"
-                mb={48}
-                lh="normal"
-                sx={{
-                  "@media (max-width: 480px)": {
-                    marginBottom: "10px",
-                  },
-                }}
-              >
-                Where music gets made
-              </Text>
-            </Box>
-          </Box>
-        </Box>
+            <Text
+              variant="gradient"
+              gradient={{ from: "#F9F5FF", to: "#A17BF0", deg: 135 }}
+              fz="xl"
+              lh="normal"
+            >
+              Where music gets made
+            </Text>
+          </Flex>
+        </Flex>
 
         <Stack
           sx={{
-            maxWidth: 348,
-            margin: "auto",
+            width: "100%",
+            maxWidth: 342,
           }}
         >
           <Box
@@ -119,7 +115,12 @@ export default function Login() {
               Ready to get started?
             </Text>
             <Group grow>
-              <Button variant="light">Learn more</Button>
+              <Button
+                onClick={() => window.location.assign(LEARN_MORE_URL)}
+                variant="light"
+              >
+                Learn more
+              </Button>
               <Button onClick={() => router.push(Route.Signup)} fullWidth>
                 Sign me up
               </Button>
