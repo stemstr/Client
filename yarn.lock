@@ -2679,17 +2679,12 @@
   resolved "https://registry.yarnpkg.com/@noble/hashes/-/hashes-1.0.0.tgz#d5e38bfbdaba174805a4e649f13be9a9ed3351ae"
   integrity sha512-DZVbtY62kc3kkBtMHqwCOfXrT/hnoORy5BJ4+HU1IR59X0KWAOqsfzQPcUl/lQLlG7qXbe/fZ3r/emxtAl+sqg==
 
-"@noble/hashes@^0.5.7":
-  version "0.5.9"
-  resolved "https://registry.npmjs.org/@noble/hashes/-/hashes-0.5.9.tgz"
-  integrity sha512-7lN1Qh6d8DUGmfN36XRsbN/WcGIPNtTGhkw26vWId/DlCIGsYJJootTtPGghTLcn/AaXPx2Q0b3cacrwXa7OVw==
-
 "@noble/hashes@~1.2.0":
   version "1.2.0"
   resolved "https://registry.npmjs.org/@noble/hashes/-/hashes-1.2.0.tgz"
   integrity sha512-FZfhjEDbT5GRswV3C6uvLPHMiVD6lQBmpoX5+eSiPaMTXte/IKqI5dykDxzZB/WBeK/CDuQRBWarPdi3FNY2zQ==
 
-"@noble/secp256k1@^1.7.0", "@noble/secp256k1@^1.7.1", "@noble/secp256k1@~1.7.0":
+"@noble/secp256k1@^1.7.1", "@noble/secp256k1@~1.7.0":
   version "1.7.1"
   resolved "https://registry.npmjs.org/@noble/secp256k1/-/secp256k1-1.7.1.tgz"
   integrity sha512-hOUk6AyBFmqVrv7k5WAw/LpszxVbj9gGN4JRkIX52fdFAj1UA61KXmZDvqVEm+pOyec3+fIeZB02LYa/pWOArw==
@@ -2880,7 +2875,7 @@
   resolved "https://registry.npmjs.org/@scure/base/-/base-1.1.1.tgz"
   integrity sha512-ZxOhsSyxYwLJj3pLZCefNitxsj093tb2vq90mp2txoYeBqbcjDjqFhyM8eUjq/uFm6zJ+mUuqxlS2FkuSY1MTA==
 
-"@scure/bip32@^1.1.1", "@scure/bip32@^1.1.5":
+"@scure/bip32@^1.1.5":
   version "1.1.5"
   resolved "https://registry.npmjs.org/@scure/bip32/-/bip32-1.1.5.tgz"
   integrity sha512-XyNh1rB0SkEqd3tXcXMi+Xe1fvg+kUIcoRIEujP1Jgv7DqW2r9lg3Ah0NkFaCs9sTkQAQA8kw7xiRXzENi9Rtw==
@@ -2889,7 +2884,7 @@
     "@noble/secp256k1" "~1.7.0"
     "@scure/base" "~1.1.0"
 
-"@scure/bip39@^1.1.0", "@scure/bip39@^1.1.1":
+"@scure/bip39@^1.1.1":
   version "1.1.1"
   resolved "https://registry.npmjs.org/@scure/bip39/-/bip39-1.1.1.tgz"
   integrity sha512-t+wDck2rVkh65Hmv280fYdVdY25J9YeEUIgn2LG1WM6gxFkGzcksoDiUkWVpVp3Oex9xGC68JU2dSbUfwZ2jPg==
@@ -9346,10 +9341,10 @@ jest@^29.5.0:
     import-local "^3.0.2"
     jest-cli "^29.5.0"
 
-jotai@^1.12.1:
-  version "1.13.1"
-  resolved "https://registry.npmjs.org/jotai/-/jotai-1.13.1.tgz"
-  integrity sha512-RUmH1S4vLsG3V6fbGlKzGJnLrDcC/HNb5gH2AeA9DzuJknoVxSGvvg8OBB7lke+gDc4oXmdVsaKn/xDUhWZ0vw==
+jotai@^2.0.4:
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/jotai/-/jotai-2.0.4.tgz#084accf703e3da768e0dbbeeec740545adca67ca"
+  integrity sha512-XkR1Jtm4a2iKV/7fdB3rNHjJz8FkkDMVczqiAok7lt8W4F69l/ZQkPGWSEV+hJOJXRn27k6XYKOoKEQIwBuAMA==
 
 joycon@^3.0.1:
   version "3.1.1"
@@ -10286,25 +10281,6 @@ normalize-range@^0.1.2:
   version "0.1.2"
   resolved "https://registry.npmjs.org/normalize-range/-/normalize-range-0.1.2.tgz"
   integrity sha1-LRDAa9/TEuqXd2laTShDlFa3WUI=
-
-nostr-react@^0.6.4:
-  version "0.6.4"
-  resolved "https://registry.npmjs.org/nostr-react/-/nostr-react-0.6.4.tgz"
-  integrity sha512-esRgmhTP5kPQ8ufs8cFAQxxJtMmzuba/k2QfXevG/ejHP3IMa41pb82qi8V0aPzY3KJ0Nr54x0OSa39d2InKzA==
-  dependencies:
-    jotai "^1.12.1"
-    nostr-tools "^1.1.0"
-
-nostr-tools@^1.1.0:
-  version "1.2.1"
-  resolved "https://registry.npmjs.org/nostr-tools/-/nostr-tools-1.2.1.tgz"
-  integrity sha512-SL0sst29mrQ7oUPGQn+NMH4yuTe69a8S4bliNpYB2IG0fDl3Cx+xSLnuCTb4nZiNalatYsA5l+751wQiDGA3+A==
-  dependencies:
-    "@noble/hashes" "^0.5.7"
-    "@noble/secp256k1" "^1.7.0"
-    "@scure/base" "^1.1.1"
-    "@scure/bip32" "^1.1.1"
-    "@scure/bip39" "^1.1.0"
 
 nostr-tools@^1.6.0:
   version "1.6.0"
