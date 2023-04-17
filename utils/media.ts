@@ -53,7 +53,6 @@ export const acceptedMimeTypes: string[] = [
   "audio/vorbis",
   "audio/wav",
   "audio/wave",
-  "audio/webm",
   "audio/x-aif",
   "audio/x-aifc",
   "audio/x-aiff",
