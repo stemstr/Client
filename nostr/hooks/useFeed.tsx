@@ -21,7 +21,7 @@ export function useFeed({
     filter,
     relayUrls,
   });
-  const [debouncedFeed] = useDebouncedValue(feed, 50);
+  const [debouncedFeed] = useDebouncedValue(feed, 50, { leading: true });
 
   return {
     feed: debouncedFeed,
