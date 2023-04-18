@@ -1,4 +1,5 @@
-import { Center } from "@mantine/core";
+import { Anchor, Center } from "@mantine/core";
+import useFeatureDetection, { FeatureName } from "hooks/useFeatureDetection";
 import {
   DownloadIcon,
   CheckIcon,
@@ -10,6 +11,10 @@ export default function DownloadSoundButton({
   downloadStatus,
   setDownloadStatus,
 }) {
+  const dragToDownloadSupported = useFeatureDetection(
+    FeatureName.DragToDownload
+  );
+
   const handleClick = () => {
     switch (downloadStatus) {
       case "initial":
@@ -38,7 +43,7 @@ export default function DownloadSoundButton({
 
   const buttonElement = href && (
     <Center
-      onClick={handleClick}
+      onClick={dragToDownloadSupported ? handleClick : undefined}
       sx={(theme) => ({
         width: 28,
         height: 28,
@@ -66,10 +71,10 @@ export default function DownloadSoundButton({
     </Center>
   );
 
-  return downloadStatus === "ready" && href ? (
-    <a href={href} download>
+  return (downloadStatus === "ready" && href) || !dragToDownloadSupported ? (
+    <Anchor href={href} download>
       {buttonElement}
-    </a>
+    </Anchor>
   ) : (
     buttonElement
   );
