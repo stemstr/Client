@@ -1,4 +1,4 @@
-import { Center, Footer, Group } from "@mantine/core";
+import { Center, Footer, Group, MediaQuery } from "@mantine/core";
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/router";
 
@@ -32,8 +32,11 @@ export default function BottomNavigation() {
 
   return (
     <Footer
-      height={88}
-      p="md"
+      height={{
+        base: 64,
+        xs: 96,
+      }}
+      p="0 16px"
       styles={{
         root: {
           width: "100%",
@@ -53,7 +56,7 @@ export default function BottomNavigation() {
       >
         <BottomNavigationItem />
         <BottomNavigationItem />
-        <AuthBottomNavigationItem onClick={openPostSheet}>
+        <AuthBottomNavigationItem onClick={openPostSheet} middleButton>
           <Center
             sx={{
               width: "100%",
@@ -65,7 +68,12 @@ export default function BottomNavigation() {
               cursor: "pointer",
             }}
           >
-            <PlusIcon />
+            <MediaQuery smallerThan="xs" styles={{ display: "none" }}>
+              <PlusIcon width={34} height={34} />
+            </MediaQuery>
+            <MediaQuery largerThan="xs" styles={{ display: "none" }}>
+              <PlusIcon width={16} height={16} />
+            </MediaQuery>
           </Center>
         </AuthBottomNavigationItem>
         <BottomNavigationItem />

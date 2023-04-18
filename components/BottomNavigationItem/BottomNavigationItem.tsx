@@ -8,17 +8,32 @@ import useStyles from "./BottomNavigationItem.styles";
 
 interface BottomNavigationItemProps extends BoxProps {
   href?: string;
+  middleButton?: boolean;
 }
 
 const BottomNavigationItem = ({
   children,
+  middleButton = false,
   href,
   ...rest
 }: React.PropsWithChildren<BottomNavigationItemProps>) => {
   const { pathname } = useRouter();
   const { classes } = useStyles();
 
-  const inner = <Center style={{ width: 36, height: 36 }}>{children}</Center>;
+  const inner = (
+    <Center
+      sx={(theme) => ({
+        width: 32,
+        height: 32,
+        [`${theme.fn.largerThan("xs")}`]: {
+          width: middleButton ? 66 : 32,
+          height: middleButton ? 66 : 32,
+        },
+      })}
+    >
+      {children}
+    </Center>
+  );
 
   return (
     <Box
