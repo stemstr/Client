@@ -97,8 +97,7 @@ export default function Note(props) {
               {userData?.name ? `@${userData.name}` : ""}
             </Text>
             <Text size="sm" color="rgba(255, 255, 255, 0.38)">
-              ·{" "}
-              {getRelativeTimeString(note.event.created_at)}
+              · {getRelativeTimeString(note.event.created_at)}
             </Text>
           </Group>
           <Group position="right">
