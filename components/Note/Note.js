@@ -28,6 +28,7 @@ import NoteAction from "../NoteAction/NoteAction";
 import SoundPlayer from "../SoundPlayer/SoundPlayer";
 import RepostButton from "../RepostButton/RepostButton";
 import useStyles from "./Note.styles";
+import { Route } from "enums";
 
 export default function Note(props) {
   const { note } = props;
@@ -134,17 +135,33 @@ export default function Note(props) {
               </Chip>
             ))}
         </Group>
-        <Group position="apart" sx={{ display: "none" }}>
-          <NoteAction sx={{ color: "white" }}>
-            <CommentIcon width={18} height={18} /> 12
-          </NoteAction>
-          <RepostButton note={note} />
+        <Group position="apart">
           <NoteAction>
+            <Anchor
+              component={Link}
+              href={`${Route.Thread}/${note.event.id}`}
+              sx={{
+                color: "white",
+                ":hover": {
+                  textDecoration: "none",
+                },
+              }}
+            >
+              <Group position="center" spacing={6}>
+                <CommentIcon width={18} height={18} />{" "}
+                <Text lh="normal" c="gray.1">
+                  {note.replies.length}
+                </Text>
+              </Group>
+            </Anchor>
+          </NoteAction>
+          {/* <RepostButton note={note} /> */}
+          {/* <NoteAction>
             <ShakaIcon onClick={handleClickShaka} width={18} height={18} /> 0
-          </NoteAction>
-          <NoteAction>
+          </NoteAction> */}
+          {/* <NoteAction>
             <ZapIcon width={18} height={18} /> 4
-          </NoteAction>
+          </NoteAction> */}
         </Group>
       </Stack>
     </Box>
