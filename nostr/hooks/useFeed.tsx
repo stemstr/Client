@@ -1,3 +1,4 @@
+import { useDebouncedValue } from "@mantine/hooks";
 import { Filter, Event } from "nostr-tools";
 import useNostrEvents from "./useNostrEvents";
 
@@ -20,8 +21,9 @@ export function useFeed({
     filter,
     relayUrls,
   });
+  const [debouncedFeed] = useDebouncedValue(feed, 50, { leading: true });
 
   return {
-    feed,
+    feed: debouncedFeed,
   };
 }

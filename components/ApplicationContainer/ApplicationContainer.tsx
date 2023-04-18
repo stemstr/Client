@@ -8,7 +8,6 @@ export const ApplicationContainer = ({
   children,
 }: React.PropsWithChildren<{}>) => (
   <AppShell
-    // padding={0}
     styles={{
       root: {
         width: "100%",
@@ -18,6 +17,7 @@ export const ApplicationContainer = ({
       },
       main: {
         width: "100%",
+        height: "100vh",
       },
     }}
     fixed
