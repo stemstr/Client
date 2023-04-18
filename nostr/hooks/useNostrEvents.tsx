@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Relay, Event as NostrEvent, Sub, Filter } from "nostr-tools";
 import { uniqBy, log } from "../utils";
 import useNostr from "./useNostr";
@@ -106,7 +106,10 @@ export default function useNostrEvents({
   }, [connectedRelays, filterBase64, enabled]);
 
   const uniqEvents = events.length > 0 ? uniqBy(events, "id") : [];
-  const sortedEvents = uniqEvents.sort((a, b) => b.created_at - a.created_at);
+  const sortedEvents = useMemo(
+    () => uniqEvents.sort((a, b) => b.created_at - a.created_at),
+    [uniqEvents.length]
+  );
 
   return {
     isLoading: isLoading || isLoadingProvider,
