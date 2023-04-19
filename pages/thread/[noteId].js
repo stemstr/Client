@@ -29,7 +29,7 @@ export default function ThreadPage() {
           </Text>
         </Group>
       </Group>
-      {targetNote && <Note key={targetNote.id} note={targetNote} />}
+      {targetNote && <Note key={targetNote.event.id} note={targetNote} />}
       {thread.map(
         (note) =>
           note.event.id !== targetNote.event.id && (
