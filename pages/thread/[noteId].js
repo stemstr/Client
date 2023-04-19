@@ -11,11 +11,13 @@ export default function ThreadPage() {
   const router = useRouter();
   const { noteId } = router.query;
   const { hex, bech32 } = useMemo(() => getNoteIds(noteId), [noteId]);
-  const { targetNote, genesisNote, thread } = useThread({ noteId: hex });
+  const { targetNote, genesisNote, thread, targetThread } = useThread({
+    noteId: hex,
+  });
 
   useEffect(() => {
-    // console.log(thread);
-  }, [thread.length]);
+    console.log(targetThread);
+  }, [targetThread]);
 
   return (
     <>
@@ -29,13 +31,20 @@ export default function ThreadPage() {
           </Text>
         </Group>
       </Group>
-      {targetNote && <Note key={targetNote.event.id} note={targetNote} />}
-      {thread.map(
-        (note) =>
-          note.event.id !== targetNote.event.id && (
-            <Note key={note.event.id} note={note} />
-          )
-      )}
+      {targetThread && <NoteTree noteTreeNode={targetThread} />}
     </>
   );
 }
+
+const NoteTree = ({ noteTreeNode }) => {
+  if (!noteTreeNode) return null;
+
+  return (
+    <>
+      <Note key={noteTreeNode.event.id} note={noteTreeNode} />
+      {noteTreeNode.children.map((childNode) => (
+        <NoteTree key={childNode.event.id} noteTreeNode={childNode} />
+      ))}
+    </>
+  );
+};
