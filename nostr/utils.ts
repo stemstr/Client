@@ -31,6 +31,22 @@ export const log = (
   console[type](...args);
 };
 
+export const getNoteIds = (noteId: string): { hex: string; bech32: string } => {
+  // TODO: Error handling, etc.
+  const ids = { hex: "", bech32: "" };
+  if (noteId.startsWith("note")) {
+    ids.bech32 = noteId;
+    let { type, data } = nip19.decode(noteId);
+    if (typeof data === "string") {
+      ids.hex = data;
+    }
+  } else {
+    ids.hex = noteId;
+    ids.bech32 = nip19.noteEncode(noteId);
+  }
+  return ids;
+};
+
 export const getPublicKeys = (
   hexOrNpub: string
 ): { pk: string; npub: string } => {
@@ -66,24 +82,24 @@ export const getRelativeTimeString = (timestamp: number) => {
   const nowInSeconds = Math.floor(Date.now() / 1000);
   const diffInSeconds = nowInSeconds - timestamp;
 
-  const rtf = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });
+  const rtf = new Intl.RelativeTimeFormat("en", { numeric: "auto" });
 
   if (diffInSeconds < 60) {
-    return rtf.format(-diffInSeconds, 'second');
+    return rtf.format(-diffInSeconds, "second");
   } else if (diffInSeconds < 3600) {
     const minutes = Math.floor(diffInSeconds / 60);
-    return rtf.format(-minutes, 'minute');
+    return rtf.format(-minutes, "minute");
   } else if (diffInSeconds < 86400) {
     const hours = Math.floor(diffInSeconds / 3600);
-    return rtf.format(-hours, 'hour');
-  } else if (diffInSeconds < 604800){
+    return rtf.format(-hours, "hour");
+  } else if (diffInSeconds < 604800) {
     const days = Math.floor(diffInSeconds / 86400);
-    return rtf.format(-days, 'day');
-  } else if (diffInSeconds < 2628288){
+    return rtf.format(-days, "day");
+  } else if (diffInSeconds < 2628288) {
     const weeks = Math.floor(diffInSeconds / 604800);
-    return rtf.format(-weeks, 'week');
+    return rtf.format(-weeks, "week");
   } else {
     const months = Math.floor(diffInSeconds / 2628288);
-    return rtf.format(-months, 'month');
+    return rtf.format(-months, "month");
   }
-}
+};

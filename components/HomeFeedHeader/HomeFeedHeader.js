@@ -8,7 +8,14 @@ export default function HomeFeedHeader() {
       component={Group}
       position="apart"
       sx={(theme) => ({
-        marginBottom: theme.spacing.md,
+        backgroundColor: theme.colors.dark[7],
+        paddingTop: theme.spacing.md,
+        paddingBottom: theme.spacing.md,
+        [theme.fn.largerThan("xs")]: {
+          position: "sticky",
+          top: 0,
+          zIndex: 1,
+        },
       })}
     >
       <Text

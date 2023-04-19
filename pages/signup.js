@@ -10,6 +10,7 @@ import { useState } from "react";
 import SignupComplete from "../components/SignupComplete/SignupComplete";
 import SignupForm from "../components/SignupForm/SignupForm";
 import useNostr from "../nostr/hooks/useNostr";
+import { Box } from "@mantine/core";
 
 export default function Signup() {
   const { publish } = useNostr();
@@ -38,13 +39,17 @@ export default function Signup() {
   };
 
   return sk ? (
-    <SignupComplete sk={sk} />
+    <Box pl="md" pr="md">
+      <SignupComplete sk={sk} />
+    </Box>
   ) : (
     <>
       <Head>
         <title>Stemstr - Signup</title>
       </Head>
-      <SignupForm handleSubmit={handleSubmit} />
+      <Box pl="md" pr="md">
+        <SignupForm handleSubmit={handleSubmit} />
+      </Box>
     </>
   );
 }

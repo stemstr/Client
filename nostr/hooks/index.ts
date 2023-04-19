@@ -5,3 +5,4 @@ export { default as useNostr } from "./useNostr";
 export { default as useNostrEvents } from "./useNostrEvents";
 export * from "./useProfile";
 export * from "./useProfileFeed";
+export * from "./useThread";
