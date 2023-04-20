@@ -66,24 +66,32 @@ export const getRelativeTimeString = (timestamp: number) => {
   const nowInSeconds = Math.floor(Date.now() / 1000);
   const diffInSeconds = nowInSeconds - timestamp;
 
-  const rtf = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });
+  const rtf = new Intl.RelativeTimeFormat("en", { numeric: "auto" });
 
+  let parts: any[];
   if (diffInSeconds < 60) {
-    return rtf.format(-diffInSeconds, 'second');
+    parts = rtf.formatToParts(-diffInSeconds, "second");
   } else if (diffInSeconds < 3600) {
     const minutes = Math.floor(diffInSeconds / 60);
-    return rtf.format(-minutes, 'minute');
+    parts = rtf.formatToParts(-minutes, "minute");
   } else if (diffInSeconds < 86400) {
     const hours = Math.floor(diffInSeconds / 3600);
-    return rtf.format(-hours, 'hour');
-  } else if (diffInSeconds < 604800){
+    parts = rtf.formatToParts(-hours, "hour");
+  } else if (diffInSeconds < 604800) {
     const days = Math.floor(diffInSeconds / 86400);
-    return rtf.format(-days, 'day');
-  } else if (diffInSeconds < 2628288){
+    parts = rtf.formatToParts(-days, "day");
+  } else if (diffInSeconds < 2628288) {
     const weeks = Math.floor(diffInSeconds / 604800);
-    return rtf.format(-weeks, 'week');
+    parts = rtf.formatToParts(-weeks, "week");
   } else {
     const months = Math.floor(diffInSeconds / 2628288);
-    return rtf.format(-months, 'month');
+    parts = rtf.formatToParts(-months, "month");
   }
-}
+
+  const v = parts.find((part) => part.type === "integer");
+  if (!v) {
+    return;
+  }
+
+  return `${v.value}${v.unit.substring(0, 1)}`;
+};
