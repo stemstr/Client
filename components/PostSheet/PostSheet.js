@@ -57,9 +57,14 @@ export default function PostSheet() {
       signEvent(event).then((event) => {
         if (event) {
           console.log(event);
-          publish(event, [process.env.NEXT_PUBLIC_STEMSTR_RELAY]);
-          form.reset();
-          dispatch(closeSheet(sheetKey));
+          publish(event, [process.env.NEXT_PUBLIC_STEMSTR_RELAY]).forEach(
+            (pub) => {
+              pub.on("ok", () => {
+                form.reset();
+                dispatch(closeSheet(sheetKey));
+              });
+            }
+          );
         }
       });
     } else {
@@ -71,9 +76,14 @@ export default function PostSheet() {
       };
       signEvent(event).then((event) => {
         if (event) {
-          publish(event, [process.env.NEXT_PUBLIC_STEMSTR_RELAY]);
-          form.reset();
-          dispatch(closeSheet(sheetKey));
+          publish(event, [process.env.NEXT_PUBLIC_STEMSTR_RELAY]).forEach(
+            (pub) => {
+              pub.on("ok", () => {
+                form.reset();
+                dispatch(closeSheet(sheetKey));
+              });
+            }
+          );
         }
       });
     }
