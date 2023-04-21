@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Relay, Event as NostrEvent, Sub, Filter } from "nostr-tools";
 import { uniqBy, log } from "../utils";
 import useNostr from "./useNostr";
@@ -11,10 +11,12 @@ export default function useNostrEvents({
   filter,
   enabled = true,
   relayUrls,
+  debounceTime = 1000,
 }: {
   filter: Filter;
   enabled?: boolean;
   relayUrls?: string[];
+  debounceTime?: number;
 }) {
   const {
     isLoading: isLoadingProvider,
@@ -47,6 +49,23 @@ export default function useNostrEvents({
     return sub.unsub();
   };
 
+  const eventBatch = useRef<NostrEvent[]>([]);
+
+  const processEventBatch = useCallback(() => {
+    if (eventBatch.current.length) {
+      setEvents((_events) => {
+        const newEvents = uniqBy([...eventBatch.current, ..._events], "id");
+        eventBatch.current = [];
+        return newEvents;
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    const debounceId = setInterval(processEventBatch, debounceTime);
+    return () => clearInterval(debounceId);
+  }, [debounceTime, processEventBatch]);
+
   const subscribe = useCallback((relay: Relay, filter: Filter) => {
     log(
       debug,
@@ -67,9 +86,7 @@ export default function useNostrEvents({
     sub.on("event", (event: NostrEvent) => {
       log(debug, "info", `⬇️ nostr (${relay.url}): Received event:`, event);
       onEventCallback?.(event);
-      setEvents((_events) => {
-        return [event, ..._events];
-      });
+      eventBatch.current.push(event);
     });
 
     sub.on("eose", () => {

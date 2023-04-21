@@ -12,6 +12,7 @@ import {
   Event as NostrEvent,
   relayInit,
   getEventHash,
+  Pub,
 } from "nostr-tools";
 import { uniqBy, log } from "./utils";
 import { relaysSlice } from "../store/Relays";
@@ -114,7 +115,7 @@ export default function NostrProvider({
     }
   }, []);
 
-  const publish = (event: NostrEvent, relayUrls?: string[]) => {
+  const publish = (event: NostrEvent, relayUrls?: string[]): Pub[] => {
     return connectedRelays
       .filter(
         (relay) => relayUrls === undefined || relayUrls?.includes(relay.url)
