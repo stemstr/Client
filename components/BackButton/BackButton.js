@@ -3,16 +3,19 @@ import { useRouter } from "next/router";
 import { Route } from "../../enums/routes";
 import useReferrer from "../../hooks/useReferrer";
 
-const BackButton = ({ defaultUrl, children }) => {
+const BackButton = ({ defaultUrl, url, children }) => {
   const router = useRouter();
   const { isFromSameOrigin } = useReferrer();
 
-  if (!defaultUrl && !isFromSameOrigin) return null;
+  if (!defaultUrl && !url && !isFromSameOrigin) return null;
 
   const handleBackClick = () => {
+    if (url) {
+      return router.push(url);
+    }
     if (isFromSameOrigin && router.pathname !== Route.Login) {
       // Navigate backward in the browser history
-      router.back();
+      return router.back();
     } else {
       // Navigate to the defaultUrl
       router.push(defaultUrl);

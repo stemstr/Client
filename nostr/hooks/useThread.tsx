@@ -1,6 +1,6 @@
 import { Kind, Event } from "nostr-tools";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { dateToUnix, uniqBy } from "../utils";
+import { useEffect, useMemo, useState } from "react";
+import { usesDepecratedETagSchema } from "../utils";
 import { Note, useFeed } from "./useFeed";
 
 interface NoteTreeNode extends Note {
@@ -65,7 +65,7 @@ export function useThread({
     const targetNote =
       threadNotes.find((note) => note.event.id === noteId) || null;
     return targetNote;
-  }, [threadNotes.length]);
+  }, [threadNotes.length, noteId]);
 
   const thread = useMemo<NoteTreeNode | null>(
     () => buildTree(threadNotes),
@@ -78,6 +78,10 @@ export function useThread({
   );
 
   useEffect(() => {
+    setNoteIds([noteId]);
+  }, [noteId]);
+
+  useEffect(() => {
     const threadIds = threadEvents
       .map((event) => event.tags.filter((t) => t[0] === "e").map((t) => t[1]))
       .flat(); // TODO: change to tags
@@ -85,7 +89,6 @@ export function useThread({
     setNoteIds((prevNoteIds) => [
       ...new Set([...prevNoteIds, ...threadIds, ...searchIds]),
     ]);
-    // console.log(threadEvents);
   }, [threadEvents.length, searchEvents.length]);
 
   return {
@@ -109,11 +112,13 @@ function buildTree(notes: Note[]): NoteTreeNode | null {
     node.children.sort((a, b) => a.event.created_at - b.event.created_at);
     node.children.forEach((child) => sortChildrenByCreatedAt(child));
   }
-
+  let parentEventTag = null;
   noteMap.forEach((node, nodeId) => {
-    const parentEventTag = node.event.tags
-      .filter((tag) => tag[0] === "e")
-      .pop();
+    if (usesDepecratedETagSchema(node.event)) {
+      parentEventTag = node.event.tags.filter((tag) => tag[0] === "e").pop();
+    } else {
+      parentEventTag = node.event.tags.find((tag) => tag[2] === "reply");
+    }
     const parentEventId = parentEventTag ? parentEventTag[1] : undefined;
     if (parentEventId === undefined) {
       rootNode = node;

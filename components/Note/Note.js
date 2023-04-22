@@ -31,8 +31,7 @@ import useStyles from "./Note.styles";
 import { Route } from "enums";
 
 export default function Note(props) {
-  const { note } = props;
-  const { classes } = useStyles();
+  const { note, type } = props;
   const { publish, signEvent } = useNostr();
   const auth = useSelector((state) => state.auth);
   const cachedProfile = getCachedProfile(nip19.npubEncode(note.event.pubkey));
@@ -76,94 +75,116 @@ export default function Note(props) {
   }, [data, setUserData]);
 
   return (
-    <Box className={classes.box}>
-      <Stack>
-        <Group position="apart">
-          <Group spacing={6}>
-            <Anchor component={Link} href={`/user/${note.event.pubkey}`}>
-              <Avatar
-                src={userData?.picture}
-                alt={userData?.name}
-                size={42}
-                radius="50%"
-              />
-            </Anchor>
-            <Text size="lg" color="white">
-              {userData?.display_name
-                ? userData.display_name
-                : `@${note.event.pubkey.substring(0, 5)}...`}
-            </Text>
-            <VerifiedIcon width={14} height={14} />
-            <Text size="xs" color="rgba(255, 255, 255, 0.74)">
-              {userData?.name ? `@${userData.name}` : ""}
-            </Text>
-            <Text size="sm" color="rgba(255, 255, 255, 0.38)">
-              · {getRelativeTimeString(note.event.created_at)}
-            </Text>
-          </Group>
-          <Group position="right">
-            <DownloadSoundButton
-              href={downloadUrl}
-              downloadStatus={downloadStatus}
-              setDownloadStatus={setDownloadStatus}
+    <Stack>
+      <Group position="apart">
+        <Group spacing={6}>
+          <Anchor component={Link} href={`/user/${note.event.pubkey}`}>
+            <Avatar
+              src={userData?.picture}
+              alt={userData?.name}
+              size={42}
+              radius="50%"
             />
-            <Center
-              sx={(theme) => ({
-                width: 28,
-                height: 28,
-                color: theme.colors.gray[2],
-              })}
-            >
-              <MoreIcon width={24} height={24} />
-            </Center>
+          </Anchor>
+          <Text size="lg" color="white">
+            {userData?.display_name
+              ? userData.display_name
+              : `@${note.event.pubkey.substring(0, 5)}...`}
+          </Text>
+          <VerifiedIcon width={14} height={14} />
+          <Text size="xs" color="rgba(255, 255, 255, 0.74)">
+            {userData?.name ? `@${userData.name}` : ""}
+          </Text>
+          <Text size="sm" color="rgba(255, 255, 255, 0.38)">
+            · {getRelativeTimeString(note.event.created_at)}
+          </Text>
+        </Group>
+        <Group position="right">
+          <DownloadSoundButton
+            href={downloadUrl}
+            downloadStatus={downloadStatus}
+            setDownloadStatus={setDownloadStatus}
+          />
+          <Center
+            sx={(theme) => ({
+              width: 28,
+              height: 28,
+              color: theme.colors.gray[2],
+            })}
+          >
+            <MoreIcon width={24} height={24} />
+          </Center>
+        </Group>
+      </Group>
+      <Group noWrap>
+        {type === "parent" && (
+          <Box
+            pl="md"
+            mr="md"
+            sx={(theme) => ({
+              alignSelf: "stretch",
+              borderRight: `1px solid ${theme.colors.gray[4]}`,
+            })}
+          />
+        )}
+        <Stack>
+          <SoundPlayer
+            event={note.event}
+            downloadStatus={downloadStatus}
+            setDownloadStatus={setDownloadStatus}
+          />
+          <Text c="white" sx={{ overflowWrap: "anywhere" }}>
+            {note.event.content}
+          </Text>
+          <Group position="left">
+            {note.event?.tags
+              ?.filter((tag) => tag[0] == "t")
+              .map((tag, index) => (
+                <Chip radius="md" key={index}>
+                  #{tag[1]}
+                </Chip>
+              ))}
           </Group>
-        </Group>
-        <SoundPlayer
-          event={note.event}
-          downloadStatus={downloadStatus}
-          setDownloadStatus={setDownloadStatus}
-        />
-        <Text c="white" sx={{ overflowWrap: "anywhere" }}>
-          {note.event.content}
-        </Text>
-        <Group position="left">
-          {note.event?.tags
-            ?.filter((tag) => tag[0] == "t")
-            .map((tag, index) => (
-              <Chip radius="md" key={index}>
-                #{tag[1]}
-              </Chip>
-            ))}
-        </Group>
-        <Group position="apart">
-          <NoteAction>
-            <Anchor
-              component={Link}
-              href={`${Route.Thread}/${note.event.id}`}
-              sx={{
-                color: "white",
-                ":hover": {
-                  textDecoration: "none",
-                },
-              }}
-            >
-              <Group position="center" spacing={6}>
-                <CommentIcon width={18} height={18} />{" "}
-                <Text lh="normal" c="gray.1">
-                  {note.replies.length}
-                </Text>
-              </Group>
-            </Anchor>
-          </NoteAction>
-          {/* <RepostButton note={note} /> */}
-          {/* <NoteAction>
+          <Group position="apart">
+            <NoteAction>
+              <Anchor
+                component={Link}
+                href={`${Route.Thread}/${note.event.id}`}
+                sx={{
+                  color: "white",
+                  ":hover": {
+                    textDecoration: "none",
+                  },
+                }}
+              >
+                <Group position="center" spacing={6}>
+                  <CommentIcon width={18} height={18} />{" "}
+                  <Text lh="normal" c="gray.1">
+                    {note.replies.length}
+                  </Text>
+                </Group>
+              </Anchor>
+            </NoteAction>
+            {/* <RepostButton note={note} /> */}
+            {/* <NoteAction>
             <ShakaIcon onClick={handleClickShaka} width={18} height={18} /> 0
           </NoteAction> */}
-          {/* <NoteAction>
+            {/* <NoteAction>
             <ZapIcon width={18} height={18} /> 4
           </NoteAction> */}
-        </Group>
-      </Stack>
+          </Group>
+        </Stack>
+      </Group>
+    </Stack>
+  );
+}
+
+export function FeedNote(props) {
+  const { classes } = useStyles();
+
+  return (
+    <Box className={classes.box}>
+      <Note {...props} />
     </Box>
   );
 }

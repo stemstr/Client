@@ -1,4 +1,4 @@
-import { nip19 } from "nostr-tools";
+import { Event, nip19 } from "nostr-tools";
 
 export const uniqBy = <T>(arr: T[], key: keyof T): T[] => {
   return Object.values(
@@ -76,6 +76,14 @@ export const isHexPubkey = (hexOrNpub: string): boolean => {
 
 export const abbreviateKey = (key: string): string => {
   return `${key.slice(0, 12)}...${key.slice(-12)}`;
+};
+
+export const usesDepecratedETagSchema = (event: Event) => {
+  const tag = event.tags.find((t) => t[0] === "e");
+  if (tag && tag[2] !== undefined) {
+    return false;
+  }
+  return !!tag;
 };
 
 export const getRelativeTimeString = (timestamp: number) => {

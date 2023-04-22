@@ -1,5 +1,5 @@
 import { Stack } from "@mantine/core";
-import Note from "../Note/Note";
+import { FeedNote } from "../Note/Note";
 import { useProfileFeed } from "../../nostr/hooks/useProfileFeed";
 
 export default function ProfileFeed({ pubkey }) {
@@ -10,7 +10,7 @@ export default function ProfileFeed({ pubkey }) {
   return notes.length > 0 ? (
     <Stack>
       {notes.map((note) => (
-        <Note key={note.event.id} note={note} />
+        <FeedNote key={note.event.id} note={note} />
       ))}
     </Stack>
   ) : (

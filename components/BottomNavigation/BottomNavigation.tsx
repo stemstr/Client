@@ -28,7 +28,12 @@ export default function BottomNavigation() {
     dispatch(openSheet("postSheet"));
   };
 
-  if (pathname === Route.Login || pathname === Route.Signup) return null;
+  if (
+    pathname === Route.Login ||
+    pathname === Route.Signup ||
+    pathname.includes(Route.Thread)
+  )
+    return null;
 
   return (
     <Footer
