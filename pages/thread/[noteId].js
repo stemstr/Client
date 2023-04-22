@@ -24,7 +24,7 @@ export default function ThreadPage() {
             <ChevronLeftIcon width={24} height={24} />
           </BackButton>
           <Text c="white" fw="bold" fz={24} lh="normal">
-            Thread
+            Replies
           </Text>
         </Group>
       </Group>
