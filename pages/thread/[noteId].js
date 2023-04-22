@@ -60,7 +60,12 @@ const NoteTree = ({
     return childType;
   }, [noteTreeNode.children.length, type, targetNote?.event.id]);
 
-  if (type === "parent" && !isAncestorOf(noteTreeNode, targetNote)) return null;
+  if (
+    type === "parent" &&
+    !isAncestorOf(noteTreeNode, targetNote) &&
+    nodeDepth !== 0
+  )
+    return null;
 
   return (
     <>
@@ -97,7 +102,7 @@ function isAncestorOf(ancestorNode, targetNode) {
   if (usesDepecratedETagSchema(targetNode.event)) {
     parentEventTag = targetNode.event.tags.filter((t) => t[0] === "e").pop();
   } else {
-    parentEventTag = node.event.tags.find((tag) => tag[2] === "reply");
+    parentEventTag = targetNode.event.tags.find((tag) => tag[2] === "reply");
   }
   const parentEventId = parentEventTag ? parentEventTag[1] : undefined;
 
