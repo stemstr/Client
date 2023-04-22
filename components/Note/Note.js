@@ -127,7 +127,7 @@ export default function Note(props) {
             })}
           />
         )}
-        <Stack>
+        <Stack sx={{ flexGrow: 1 }}>
           <SoundPlayer
             event={note.event}
             downloadStatus={downloadStatus}
