@@ -102,7 +102,9 @@ function isAncestorOf(ancestorNode, targetNode) {
   if (usesDepecratedETagSchema(targetNode.event)) {
     parentEventTag = targetNode.event.tags.filter((t) => t[0] === "e").pop();
   } else {
-    parentEventTag = targetNode.event.tags.find((tag) => tag[2] === "reply");
+    parentEventTag = targetNode.event.tags.find(
+      (t) => t[0] === "e" && t[2] === "reply"
+    );
   }
   const parentEventId = parentEventTag ? parentEventTag[1] : undefined;
 

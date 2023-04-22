@@ -15,7 +15,7 @@ export function useThread({
   relayUrls?: string[];
 }): {
   targetNote: Note | null;
-  genesisNote: Note | null;
+  rootNote: Note | null;
   thread: NoteTreeNode | null;
   targetThread: NoteTreeNode | null;
 } {
@@ -53,22 +53,40 @@ export function useThread({
     return notes;
   }, [threadEvents.length]);
 
-  const genesisNote = useMemo<Note | null>(() => {
-    const genesisNote =
-      threadNotes.find(
-        (note) => !note.event.tags.find((tag) => tag[0] === "e")
-      ) || null;
-    return genesisNote;
-  }, [threadNotes.length]);
-
   const targetNote = useMemo<Note | null>(() => {
     const targetNote =
       threadNotes.find((note) => note.event.id === noteId) || null;
     return targetNote;
   }, [threadNotes.length, noteId]);
 
+  const [rootNoteEventId, setRootNoteEventId] = useState<string | undefined>();
+
+  const rootNote = useMemo<Note | null>(() => {
+    let rootNoteEventId: string | undefined;
+    [targetNote].forEach((note) => {
+      let rootTag;
+      if (usesDepecratedETagSchema(targetNote?.event)) {
+        rootTag = targetNote?.event.tags.find((t) => t[0] === "e");
+      } else {
+        rootTag = targetNote?.event.tags.find(
+          (t) => t[0] === "e" && t[2] === "root"
+        );
+      }
+      if (rootTag) {
+        rootNoteEventId = rootTag[1];
+        return;
+      } else {
+        rootNoteEventId = targetNote?.event.id;
+      }
+    });
+    setRootNoteEventId(rootNoteEventId);
+    const rootNote =
+      threadNotes.find((note) => note.event.id === rootNoteEventId) || null;
+    return rootNote;
+  }, [threadNotes.length]);
+
   const thread = useMemo<NoteTreeNode | null>(
-    () => buildTree(threadNotes),
+    () => buildTree(threadNotes, rootNoteEventId),
     [threadNotes.length]
   );
 
@@ -93,13 +111,16 @@ export function useThread({
 
   return {
     targetNote,
-    genesisNote,
+    rootNote,
     thread,
     targetThread,
   };
 }
 
-function buildTree(notes: Note[]): NoteTreeNode | null {
+function buildTree(
+  notes: Note[],
+  rootNoteId: string | undefined
+): NoteTreeNode | null {
   const noteMap = new Map<string, NoteTreeNode>();
 
   notes.forEach((note) => {
@@ -120,9 +141,9 @@ function buildTree(notes: Note[]): NoteTreeNode | null {
       parentEventTag = node.event.tags.find((tag) => tag[2] === "reply");
     }
     const parentEventId = parentEventTag ? parentEventTag[1] : undefined;
-    if (parentEventId === undefined) {
+    if (rootNoteId === node.event.id) {
       rootNode = node;
-    } else {
+    } else if (parentEventId) {
       const parentNode = noteMap.get(parentEventId);
       if (parentNode) {
         parentNode.children.push(node);

@@ -78,7 +78,8 @@ export const abbreviateKey = (key: string): string => {
   return `${key.slice(0, 12)}...${key.slice(-12)}`;
 };
 
-export const usesDepecratedETagSchema = (event: Event) => {
+export const usesDepecratedETagSchema = (event: Event | undefined) => {
+  if (!event) return false;
   const tag = event.tags.find((t) => t[0] === "e");
   if (tag && tag[2] !== undefined) {
     return false;
