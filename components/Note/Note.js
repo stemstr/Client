@@ -11,7 +11,7 @@ import {
 import Link from "next/link";
 import { Kind, nip19 } from "nostr-tools";
 import { useEffect, useMemo, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { cacheProfile, getCachedProfile } from "../../cache/cache";
 import {
   CommentIcon,
@@ -29,9 +29,13 @@ import SoundPlayer from "../SoundPlayer/SoundPlayer";
 import RepostButton from "../RepostButton/RepostButton";
 import useStyles from "./Note.styles";
 import { Route } from "enums";
+import { useRouter } from "next/router";
+import { openSheet } from "store/Sheets";
 
 export default function Note(props) {
   const { note, type } = props;
+  const router = useRouter();
+  const dispatch = useDispatch();
   const { publish, signEvent } = useNostr();
   const auth = useSelector((state) => state.auth);
   const cachedProfile = getCachedProfile(nip19.npubEncode(note.event.pubkey));
@@ -66,6 +70,15 @@ export default function Note(props) {
     });
   };
 
+  const handleClickComment = (e) => {
+    e.stopPropagation();
+    dispatch(openSheet({ sheetKey: "postSheet", replyingTo: note.event }));
+  };
+
+  const handleClick = () => {
+    router.push(`/thread/${note.event.id}`);
+  };
+
   useEffect(() => {
     if (!profileFetched && data) {
       setProfileFetched(true);
@@ -75,7 +88,7 @@ export default function Note(props) {
   }, [data, setUserData]);
 
   return (
-    <Stack>
+    <Stack onClick={handleClick} sx={{ cursor: "pointer" }}>
       <Group position="apart">
         <Group spacing={6}>
           <Anchor component={Link} href={`/user/${note.event.pubkey}`}>
@@ -146,24 +159,13 @@ export default function Note(props) {
               ))}
           </Group>
           <Group position="apart">
-            <NoteAction>
-              <Anchor
-                component={Link}
-                href={`${Route.Thread}/${note.event.id}`}
-                sx={{
-                  color: "white",
-                  ":hover": {
-                    textDecoration: "none",
-                  },
-                }}
-              >
-                <Group position="center" spacing={6}>
-                  <CommentIcon width={18} height={18} />{" "}
-                  <Text lh="normal" c="gray.1">
-                    {note.replies.length}
-                  </Text>
-                </Group>
-              </Anchor>
+            <NoteAction onClick={handleClickComment}>
+              <Group position="center" spacing={6}>
+                <CommentIcon width={18} height={18} />{" "}
+                <Text lh="normal" c="gray.1">
+                  {note.replies.length}
+                </Text>
+              </Group>
             </NoteAction>
             {/* <RepostButton note={note} /> */}
             {/* <NoteAction>

@@ -69,7 +69,7 @@ export function useThread({
         rootTag = targetNote?.event.tags.find((t) => t[0] === "e");
       } else {
         rootTag = targetNote?.event.tags.find(
-          (t) => t[0] === "e" && t[2] === "root"
+          (t) => t[0] === "e" && t[3] === "root"
         );
       }
       if (rootTag) {
@@ -87,7 +87,7 @@ export function useThread({
 
   const thread = useMemo<NoteTreeNode | null>(
     () => buildTree(threadNotes, rootNoteEventId),
-    [threadNotes.length]
+    [threadNotes.length, rootNoteEventId]
   );
 
   const targetThread = useMemo<NoteTreeNode | null>(
@@ -138,7 +138,10 @@ function buildTree(
     if (usesDepecratedETagSchema(node.event)) {
       parentEventTag = node.event.tags.filter((tag) => tag[0] === "e").pop();
     } else {
-      parentEventTag = node.event.tags.find((tag) => tag[2] === "reply");
+      parentEventTag = node.event.tags.find((tag) => tag[3] === "reply");
+      if (!parentEventTag) {
+        parentEventTag = node.event.tags.find((tag) => tag[3] === "root");
+      }
     }
     const parentEventId = parentEventTag ? parentEventTag[1] : undefined;
     if (rootNoteId === node.event.id) {

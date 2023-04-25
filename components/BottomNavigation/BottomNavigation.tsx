@@ -25,7 +25,7 @@ export default function BottomNavigation() {
   const dispatch = useDispatch();
 
   const openPostSheet = () => {
-    dispatch(openSheet("postSheet"));
+    dispatch(openSheet({ sheetKey: "postSheet" }));
   };
 
   if (

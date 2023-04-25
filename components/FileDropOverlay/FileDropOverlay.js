@@ -13,6 +13,7 @@ const FileDropOverlay = () => {
   const disallowedRoutes = [Route.Settings];
   const shouldRenderOverlay = !disallowedRoutes.includes(router.pathname);
   const sheetKey = "postSheet";
+  const postSheetState = useSelector((state) => state.sheets[sheetKey]);
 
   useEffect(() => {
     if (!shouldRenderOverlay) return;
@@ -22,7 +23,9 @@ const FileDropOverlay = () => {
       const items = e.dataTransfer.items;
       if (items.length > 0 && acceptedMimeTypes.includes(items[0].type)) {
         if (authState?.user?.pk) {
-          dispatch(openSheet(sheetKey));
+          if (!postSheetState.isOpen) {
+            dispatch(openSheet({ sheetKey }));
+          }
         } else {
           router.push(Route.Login);
         }
@@ -40,7 +43,7 @@ const FileDropOverlay = () => {
       document.body.removeEventListener("dragover", onDragOver);
       document.body.removeEventListener("drop", onDrop);
     };
-  }, [dispatch, shouldRenderOverlay, authState?.user?.pk]);
+  }, [dispatch, shouldRenderOverlay, authState?.user?.pk, postSheetState]);
 
   return null;
 };

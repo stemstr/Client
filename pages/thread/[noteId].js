@@ -74,7 +74,7 @@ const NoteTree = ({
           backgroundColor:
             (nodeDepth === 0 || type === "focus") && theme.colors.dark[8],
           padding: theme.spacing.md,
-          borderTop:
+          borderBottom:
             type === "child" ? `1px solid ${theme.colors.gray[4]}` : undefined,
         })}
       >
@@ -103,7 +103,7 @@ function isAncestorOf(ancestorNode, targetNode) {
     parentEventTag = targetNode.event.tags.filter((t) => t[0] === "e").pop();
   } else {
     parentEventTag = targetNode.event.tags.find(
-      (t) => t[0] === "e" && t[2] === "reply"
+      (t) => t[0] === "e" && t[3] === "reply"
     );
   }
   const parentEventId = parentEventTag ? parentEventTag[1] : undefined;
