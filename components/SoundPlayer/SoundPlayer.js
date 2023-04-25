@@ -2,15 +2,12 @@ import { Box, Center, Group, Stack, Text } from "@mantine/core";
 import axios from "axios";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ChevronRightIcon, PlayIcon, StopIcon } from "../../icons/StemstrIcon";
+import withStopClickPropagation from "../../utils/hoc/withStopClickPropagation";
 import WaveForm from "../WaveForm/WaveForm";
 import useStyles from "./SoundPlayer.styles";
 import Hls from "hls.js";
 
-export default function SoundPlayer({
-  event,
-  downloadStatus,
-  setDownloadStatus,
-}) {
+const SoundPlayer = ({ event, downloadStatus, setDownloadStatus }) => {
   const audioRef = useRef();
   const audioTimeUpdateTimeoutRef = useRef();
   const hlsRef = useRef(null);
@@ -253,7 +250,9 @@ export default function SoundPlayer({
       </Group>
     )
   );
-}
+};
+
+export default withStopClickPropagation(SoundPlayer);
 
 function getFormattedPlayTime(time) {
   if (time === null) return "-:--";
