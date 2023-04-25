@@ -20,7 +20,7 @@ export default function ThreadPage() {
     <>
       <Group position="left" p="md" bg="dark.8">
         <Group spacing="sm" align="center" c="white">
-          <BackButton url={Route.Home}>
+          <BackButton defaultUrl={Route.Home}>
             <ChevronLeftIcon width={24} height={24} />
           </BackButton>
           <Text c="white" fw="bold" fz={24} lh="normal">
