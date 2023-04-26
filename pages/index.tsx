@@ -10,7 +10,7 @@ export default function HomePage() {
         <title>Stemstr - Discover</title>
       </Head>
       {/* <ColorSchemeToggle /> */}
-      <Stack spacing={0} pl="md" pr="md" h="100%">
+      <Stack spacing={0} pl="md" pr="md">
         <HomeFeedHeader />
         <HomeFeed />
       </Stack>
