@@ -9,7 +9,7 @@ const NoteActionComment = ({ onClick, note }) => {
       <Group position="center" spacing={6}>
         <CommentIcon width={18} height={18} />{" "}
         <Text lh="normal" c="gray.1">
-          {note.replies.length}
+          {note.replies.length ? note.replies.length : ""}
         </Text>
       </Group>
     </NoteAction>
