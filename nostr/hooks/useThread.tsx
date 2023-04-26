@@ -34,9 +34,20 @@ export function useThread({
     },
   });
 
+  const { feed: related } = useFeed({
+    filter: {
+      kinds: [Kind.Text, Kind.Reaction, Kind.Zap],
+      "#e": threadEvents.map((event) => event.id),
+    },
+  });
+
   const threadNotes = useMemo<Note[]>(() => {
     const notes: Note[] = threadEvents.map((event) => {
-      const replies: Event[] = [];
+      const replies: Event[] = related.filter(
+        (ev) =>
+          ev.kind === Kind.Text &&
+          ev.tags.some((tag) => tag[0] === "e" && tag[1] === event.id)
+      );
       const reactions: Event[] = [];
       const reposts: Event[] = [];
       const zaps: Event[] = [];
