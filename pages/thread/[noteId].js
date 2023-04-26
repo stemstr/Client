@@ -76,6 +76,10 @@ const NoteTree = ({
           padding: theme.spacing.md,
           borderBottom:
             type === "child" ? `1px solid ${theme.colors.gray[4]}` : undefined,
+          transition: "background-color .5s ease",
+          "&:hover": {
+            backgroundColor: theme.colors.gray[6],
+          },
         })}
       >
         <Note key={noteTreeNode.event.id} note={noteTreeNode} type={type} />

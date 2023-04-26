@@ -17,6 +17,7 @@ import { openSheet } from "store/Sheets";
 
 export default function Note(props) {
   const { note, type } = props;
+  const { classes } = useStyles();
   const router = useRouter();
   const dispatch = useDispatch();
   const { publish, signEvent } = useNostr();
@@ -98,7 +99,7 @@ export default function Note(props) {
           <Text c="white" sx={{ overflowWrap: "anywhere" }}>
             {note.event.content}
           </Text>
-          <NoteTags note={note} />
+          <NoteTags note={note} classes={classes} />
           <Group position="apart">
             <NoteAction onClick={handleClickComment}>
               <Group position="center" spacing={6}>
