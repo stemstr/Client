@@ -8,6 +8,7 @@ export const ApplicationContainer = ({
   children,
 }: React.PropsWithChildren<{}>) => (
   <AppShell
+    padding={0}
     styles={{
       root: {
         width: "100%",

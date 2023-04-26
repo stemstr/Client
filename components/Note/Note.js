@@ -1,37 +1,26 @@
-import {
-  Anchor,
-  Avatar,
-  Box,
-  Center,
-  Chip,
-  Group,
-  Stack,
-  Text,
-} from "@mantine/core";
-import Link from "next/link";
+import { Box, Group, Stack, Text } from "@mantine/core";
 import { Kind, nip19 } from "nostr-tools";
 import { useEffect, useMemo, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { cacheProfile, getCachedProfile } from "../../cache/cache";
-import {
-  CommentIcon,
-  MoreIcon,
-  ShakaIcon,
-  VerifiedIcon,
-  ZapIcon,
-} from "../../icons/StemstrIcon";
+import { CommentIcon, ShakaIcon, ZapIcon } from "../../icons/StemstrIcon";
 import useNostr from "../../nostr/hooks/useNostr";
 import { useProfile } from "../../nostr/hooks/useProfile";
-import { getRelativeTimeString } from "../../nostr/utils";
-import DownloadSoundButton from "../DownloadSoundButton/DownloadSoundButton";
+import NoteTags from "../NoteTags/NoteTags";
+import NoteHeader from "../NoteHeader/NoteHeader";
 import NoteAction from "../NoteAction/NoteAction";
+import NoteActionComment from "../NoteAction/NoteActionComment";
 import SoundPlayer from "../SoundPlayer/SoundPlayer";
 import RepostButton from "../RepostButton/RepostButton";
 import useStyles from "./Note.styles";
+import { useRouter } from "next/router";
+import { openSheet } from "store/Sheets";
 
 export default function Note(props) {
-  const { note } = props;
+  const { note, type } = props;
   const { classes } = useStyles();
+  const router = useRouter();
+  const dispatch = useDispatch();
   const { publish, signEvent } = useNostr();
   const auth = useSelector((state) => state.auth);
   const cachedProfile = getCachedProfile(nip19.npubEncode(note.event.pubkey));
@@ -66,6 +55,14 @@ export default function Note(props) {
     });
   };
 
+  const handleClickComment = (e) => {
+    dispatch(openSheet({ sheetKey: "postSheet", replyingTo: note.event }));
+  };
+
+  const handleClick = () => {
+    router.push(`/thread/${note.event.id}`);
+  };
+
   useEffect(() => {
     if (!profileFetched && data) {
       setProfileFetched(true);
@@ -75,78 +72,57 @@ export default function Note(props) {
   }, [data, setUserData]);
 
   return (
-    <Box className={classes.box}>
-      <Stack>
-        <Group position="apart">
-          <Group spacing={6}>
-            <Anchor component={Link} href={`/user/${note.event.pubkey}`}>
-              <Avatar
-                src={userData?.picture}
-                alt={userData?.name}
-                size={42}
-                radius="50%"
-              />
-            </Anchor>
-            <Text size="lg" color="white">
-              {userData?.display_name
-                ? userData.display_name
-                : `@${note.event.pubkey.substring(0, 5)}...`}
-            </Text>
-            <VerifiedIcon width={14} height={14} />
-            <Text size="xs" color="rgba(255, 255, 255, 0.74)">
-              {userData?.name ? `@${userData.name}` : ""}
-            </Text>
-            <Text size="sm" color="rgba(255, 255, 255, 0.38)">
-              · {getRelativeTimeString(note.event.created_at)}
-            </Text>
-          </Group>
-          <Group position="right">
-            <DownloadSoundButton
-              href={downloadUrl}
-              downloadStatus={downloadStatus}
-              setDownloadStatus={setDownloadStatus}
-            />
-            <Center
-              sx={(theme) => ({
-                width: 28,
-                height: 28,
-                color: theme.colors.gray[2],
-              })}
-            >
-              <MoreIcon width={24} height={24} />
-            </Center>
-          </Group>
-        </Group>
-        <SoundPlayer
-          event={note.event}
-          downloadStatus={downloadStatus}
-          setDownloadStatus={setDownloadStatus}
-        />
-        <Text c="white" sx={{ overflowWrap: "anywhere" }}>
-          {note.event.content}
-        </Text>
-        <Group position="left">
-          {note.event?.tags
-            ?.filter((tag) => tag[0] == "t")
-            .map((tag, index) => (
-              <Chip radius="md" key={index}>
-                #{tag[1]}
-              </Chip>
-            ))}
-        </Group>
-        <Group position="apart" sx={{ display: "none" }}>
-          <NoteAction sx={{ color: "white" }}>
-            <CommentIcon width={18} height={18} /> 12
-          </NoteAction>
-          <RepostButton note={note} />
-          <NoteAction>
+    <Stack onClick={handleClick} sx={{ cursor: "pointer" }}>
+      <NoteHeader
+        note={note}
+        userData={userData}
+        downloadUrl={downloadUrl}
+        downloadStatus={downloadStatus}
+        setDownloadStatus={setDownloadStatus}
+      />
+      <Group noWrap>
+        {type === "parent" && (
+          <Box
+            pl="md"
+            mr="md"
+            sx={(theme) => ({
+              alignSelf: "stretch",
+              borderRight: `1px solid ${theme.colors.gray[4]}`,
+            })}
+          />
+        )}
+        <Stack sx={{ flexGrow: 1 }}>
+          <SoundPlayer
+            event={note.event}
+            downloadStatus={downloadStatus}
+            setDownloadStatus={setDownloadStatus}
+          />
+          <Text c="white" sx={{ overflowWrap: "anywhere" }}>
+            {note.event.content}
+          </Text>
+          <NoteTags note={note} classes={classes} />
+          <Group position="apart">
+            <NoteActionComment note={note} onClick={handleClickComment} />
+            {/* <RepostButton note={note} /> */}
+            {/* <NoteAction>
             <ShakaIcon onClick={handleClickShaka} width={18} height={18} /> 0
-          </NoteAction>
-          <NoteAction>
+          </NoteAction> */}
+            {/* <NoteAction>
             <ZapIcon width={18} height={18} /> 4
-          </NoteAction>
-        </Group>
-      </Stack>
+          </NoteAction> */}
+          </Group>
+        </Stack>
+      </Group>
+    </Stack>
+  );
+}
+
+export function FeedNote(props) {
+  const { classes } = useStyles();
+
+  return (
+    <Box className={classes.box}>
+      <Note {...props} />
     </Box>
   );
 }

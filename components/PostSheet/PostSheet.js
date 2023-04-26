@@ -10,14 +10,18 @@ import { parseHashtags } from "../Fields/TagsField/TagsField";
 import useNostr from "../../nostr/hooks/useNostr";
 import { useState } from "react";
 import { acceptedMimeTypes } from "../../utils/media";
+import { parseEventTags, useProfile } from "nostr";
 
 export default function PostSheet() {
   const { publish, signEvent } = useNostr();
   const sheetKey = "postSheet";
   const auth = useSelector((state) => state.auth);
   const relays = useSelector((state) => state.relays);
-  const opened = useSelector((state) => state.sheets[sheetKey]);
+  const sheetState = useSelector((state) => state.sheets[sheetKey]);
   const dispatch = useDispatch();
+  const { data: replyingTo } = useProfile({
+    pubkey: sheetState.replyingTo?.pubkey,
+  });
   const [isDragging, setIsDragging] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const form = useForm({
@@ -44,6 +48,24 @@ export default function PostSheet() {
     hashtags.forEach((hashtag) => {
       tags.push(["t", hashtag]);
     });
+    if (sheetState.replyingTo) {
+      const { rootId, replyingToId } = parseEventTags(sheetState.replyingTo);
+      if (rootId) {
+        tags.push(["e", rootId, "", "root"]);
+        tags.push(["e", sheetState.replyingTo.id, "", "reply"]);
+      } else {
+        tags.push(["e", sheetState.replyingTo.id, "", "root"]);
+      }
+      const pTagPKs = [sheetState.replyingTo.pubkey];
+      sheetState.replyingTo.tags.forEach((t) => {
+        if (t[0] === "p") {
+          pTagPKs.push(t[1]);
+        }
+      });
+      Array.from(new Set(pTagPKs)).forEach((pk) => {
+        tags.push(["p", pk]);
+      });
+    }
 
     if (values.uploadResponse.streamUrl && values.uploadResponse.downloadUrl) {
       tags.push(["download_url", values.uploadResponse.downloadUrl]);
@@ -90,10 +112,10 @@ export default function PostSheet() {
   };
 
   const toggleSheet = () => {
-    if (opened) {
+    if (sheetState.isOpen) {
       dispatch(closeSheet(sheetKey));
     } else {
-      dispatch(openSheet(sheetKey));
+      dispatch(openSheet({ sheetKey }));
     }
   };
 
@@ -132,12 +154,18 @@ export default function PostSheet() {
     form.reset();
   };
 
+  let title = isDragging ? "Drop to proccess sound" : "Share";
+  if (sheetState.replyingTo) {
+    title = `Replying to @${replyingTo?.name}`;
+  }
+  if (!sheetState.isOpen) title = "";
+
   return (
     <Drawer
-      opened={opened}
+      opened={sheetState.isOpen}
       onClose={handleClose}
       position="bottom"
-      title={isDragging ? "Drop to proccess sound" : "Share"}
+      title={title}
       size="80%"
       onDrop={onDrop}
       onDragOver={onDragOver}

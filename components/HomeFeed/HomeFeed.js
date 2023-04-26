@@ -1,4 +1,4 @@
-import Note from "../Note/Note";
+import { FeedNote } from "../Note/Note";
 import { ScrollArea, Stack } from "@mantine/core";
 import { useHomeFeed } from "../../nostr/hooks/useHomeFeed";
 
@@ -9,7 +9,7 @@ export default function HomeFeed() {
     <ScrollArea type="never" sx={{ height: "100%" }}>
       <Stack>
         {notes.map((note) => (
-          <Note key={note.event.id} note={note} />
+          <FeedNote key={note.event.id} note={note} />
         ))}
       </Stack>
     </ScrollArea>

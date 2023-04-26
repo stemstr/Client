@@ -46,15 +46,18 @@ function useProfileQueue({ pubkey }: { pubkey: string }) {
     timer = setTimeout(() => {
       setIsReadyToFetch(true);
     }, QUEUE_DEBOUNCE_DURATION);
+    if (pubkey) {
+      setQueuedPubkeys((_pubkeys: string[]) => {
+        // Unique values only:
+        const arr = [..._pubkeys, pubkey]
+          .filter(uniqValues)
+          .filter((_pubkey) => {
+            return !requestedPubkeys.includes(_pubkey);
+          });
 
-    setQueuedPubkeys((_pubkeys: string[]) => {
-      // Unique values only:
-      const arr = [..._pubkeys, pubkey].filter(uniqValues).filter((_pubkey) => {
-        return !requestedPubkeys.includes(_pubkey);
+        return arr;
       });
-
-      return arr;
-    });
+    }
   }, [pubkey, setQueuedPubkeys, alreadyRequested, requestedPubkeys]);
 
   return {
@@ -122,7 +125,7 @@ export function useProfile({
   });
 
   const metadata = fetchedProfiles[pubkey];
-  const npub = nip19.npubEncode(pubkey);
+  const npub = pubkey ? nip19.npubEncode(pubkey) : undefined;
 
   return {
     isLoading,

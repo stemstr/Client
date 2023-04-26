@@ -25,10 +25,15 @@ export default function BottomNavigation() {
   const dispatch = useDispatch();
 
   const openPostSheet = () => {
-    dispatch(openSheet("postSheet"));
+    dispatch(openSheet({ sheetKey: "postSheet" }));
   };
 
-  if (pathname === Route.Login || pathname === Route.Signup) return null;
+  if (
+    pathname === Route.Login ||
+    pathname === Route.Signup ||
+    pathname.includes(Route.Thread)
+  )
+    return null;
 
   return (
     <Footer

@@ -1,6 +1,7 @@
-import { Avatar, Box, Group, Stack, Text } from "@mantine/core";
+import { Box } from "@mantine/core";
+import withStopClickPropagation from "utils/hoc/withStopClickPropagation";
 
-export default function NoteAction({ children, onClick }) {
+const NoteAction = ({ children, onClick }) => {
   return (
     <Box
       onClick={onClick}
@@ -15,4 +16,6 @@ export default function NoteAction({ children, onClick }) {
       {children}
     </Box>
   );
-}
+};
+
+export default withStopClickPropagation(NoteAction);

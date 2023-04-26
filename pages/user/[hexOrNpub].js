@@ -59,7 +59,7 @@ export default function ProfilePage() {
       </Head>
       <Box
         sx={(theme) => ({
-          margin: `-${theme.spacing.md}px -${theme.spacing.md}px 0`,
+          // margin: `-${theme.spacing.md}px -${theme.spacing.md}px 0`,
           padding: `${theme.spacing.md}px ${theme.spacing.md}px 0`,
           height: 200,
         })}
@@ -98,7 +98,7 @@ export default function ProfilePage() {
           </Group>
         </Group>
       </Box>
-      <Group mb="lg" position="apart" mt={-50}>
+      <Group pl="md" pr="md" mb="lg" position="apart" mt={-50}>
         <Avatar
           src={userData?.picture}
           alt={userData?.name}
@@ -120,7 +120,7 @@ export default function ProfilePage() {
           </ProfileActionButton>
         </Group>
       </Group>
-      <Stack spacing={6} mb="xl" c="white">
+      <Stack spacing={6} mb="xl" pl="md" pr="md" c="white">
         <Text size="lg" color="white" fw="bold">
           {userData?.display_name
             ? userData.display_name
@@ -181,12 +181,14 @@ export default function ProfilePage() {
           relays
         </Text>
       </Group>
-      {authState?.user?.npub === npub ? (
-        <Button onClick={handleLogout} mb="md">
-          Logout
-        </Button>
-      ) : null}
-      <ProfileFeed pubkey={pk} />
+      <Box pl="md" pr="md">
+        {authState?.user?.npub === npub ? (
+          <Button onClick={handleLogout} mb="md">
+            Logout
+          </Button>
+        ) : null}
+        <ProfileFeed pubkey={pk} />
+      </Box>
     </>
   );
 }

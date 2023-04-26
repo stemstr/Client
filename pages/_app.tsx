@@ -22,10 +22,10 @@ const relayUrls: string[] = [
   "wss://nostr.milou.lol",
   "wss://nostr.wine",
   // public relays
-  // "wss://relay.damus.io",
-  // "wss://relay.snort.social",
+  "wss://relay.damus.io",
+  "wss://relay.snort.social",
   "wss://nos.lol",
-  // "wss://relay.current.fyi",
+  "wss://relay.current.fyi",
 ];
 if (process.env.NEXT_PUBLIC_STEMSTR_RELAY)
   relayUrls.push(process.env.NEXT_PUBLIC_STEMSTR_RELAY);
