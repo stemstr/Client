@@ -9,6 +9,7 @@ import { useProfile } from "../../nostr/hooks/useProfile";
 import NoteTags from "../NoteTags/NoteTags";
 import NoteHeader from "../NoteHeader/NoteHeader";
 import NoteAction from "../NoteAction/NoteAction";
+import NoteActionComment from "../NoteAction/NoteActionComment";
 import SoundPlayer from "../SoundPlayer/SoundPlayer";
 import RepostButton from "../RepostButton/RepostButton";
 import useStyles from "./Note.styles";
@@ -101,14 +102,7 @@ export default function Note(props) {
           </Text>
           <NoteTags note={note} classes={classes} />
           <Group position="apart">
-            <NoteAction onClick={handleClickComment}>
-              <Group position="center" spacing={6}>
-                <CommentIcon width={18} height={18} />{" "}
-                <Text lh="normal" c="gray.1">
-                  {note.replies.length}
-                </Text>
-              </Group>
-            </NoteAction>
+            <NoteActionComment note={note} onClick={handleClickComment} />
             {/* <RepostButton note={note} /> */}
             {/* <NoteAction>
             <ShakaIcon onClick={handleClickShaka} width={18} height={18} /> 0
