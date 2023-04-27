@@ -136,36 +136,36 @@ export const parseEventTags = (event: Event) => {
   return result;
 };
 
-export const getRelativeTimeString = (timestamp: number) => {
-  const nowInSeconds = Math.floor(Date.now() / 1000);
-  const diffInSeconds = nowInSeconds - timestamp;
+export const getRelativeTimeString = (unixTime: number) => {
+  const currentTime = Math.floor(Date.now() / 1000);
+  const differenceInSeconds = currentTime - unixTime;
 
-  const rtf = new Intl.RelativeTimeFormat("en", { numeric: "auto" });
+  const secondsInMinute = 60;
+  const secondsInHour = secondsInMinute * 60;
+  const secondsInDay = secondsInHour * 24;
+  const secondsInWeek = secondsInDay * 7;
+  const secondsInMonth = secondsInDay * 30; // Approximation
+  const secondsInYear = secondsInDay * 365; // Approximation
 
-  let parts: any[];
-  if (diffInSeconds < 60) {
-    parts = rtf.formatToParts(-diffInSeconds, "second");
-  } else if (diffInSeconds < 3600) {
-    const minutes = Math.floor(diffInSeconds / 60);
-    parts = rtf.formatToParts(-minutes, "minute");
-  } else if (diffInSeconds < 86400) {
-    const hours = Math.floor(diffInSeconds / 3600);
-    parts = rtf.formatToParts(-hours, "hour");
-  } else if (diffInSeconds < 604800) {
-    const days = Math.floor(diffInSeconds / 86400);
-    parts = rtf.formatToParts(-days, "day");
-  } else if (diffInSeconds < 2628288) {
-    const weeks = Math.floor(diffInSeconds / 604800);
-    parts = rtf.formatToParts(-weeks, "week");
+  if (differenceInSeconds < secondsInMinute) {
+    return `${differenceInSeconds}s`;
+  } else if (differenceInSeconds < secondsInHour) {
+    const minutes = Math.floor(differenceInSeconds / secondsInMinute);
+    return `${minutes}m`;
+  } else if (differenceInSeconds < secondsInDay) {
+    const hours = Math.floor(differenceInSeconds / secondsInHour);
+    return `${hours}h`;
+  } else if (differenceInSeconds < secondsInWeek) {
+    const days = Math.floor(differenceInSeconds / secondsInDay);
+    return `${days}d`;
+  } else if (differenceInSeconds < secondsInMonth) {
+    const weeks = Math.floor(differenceInSeconds / secondsInWeek);
+    return `${weeks}w`;
+  } else if (differenceInSeconds < secondsInYear) {
+    const months = Math.floor(differenceInSeconds / secondsInMonth);
+    return `${months}mo`;
   } else {
-    const months = Math.floor(diffInSeconds / 2628288);
-    parts = rtf.formatToParts(-months, "month");
+    const years = Math.floor(differenceInSeconds / secondsInYear);
+    return `${years}y`;
   }
-
-  const v = parts.find((part) => part.type === "integer");
-  if (!v) {
-    return;
-  }
-
-  return `${v.value}${v.unit.substring(0, 1)}`;
 };
