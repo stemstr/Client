@@ -1,7 +1,13 @@
-import { Anchor, Center } from "@mantine/core";
-import Link from "next/link";
+import { Center } from "@mantine/core";
 
-export default function ProfileActionButton({ children, onClick }) {
+interface ProfileActionButtonProps {
+  onClick?: () => void;
+}
+
+export default function ProfileActionButton({
+  children,
+  onClick,
+}: React.PropsWithChildren<ProfileActionButtonProps>) {
   return (
     <Center
       sx={(theme) => ({

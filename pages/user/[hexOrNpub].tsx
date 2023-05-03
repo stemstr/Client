@@ -1,3 +1,4 @@
+import { useEffect, useMemo } from "react";
 import {
   ActionIcon,
   Avatar,
@@ -10,11 +11,17 @@ import {
 } from "@mantine/core";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useProfile } from "../../nostr/hooks/useProfile";
-import { useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { selectAuthState, reset as logout } from "../../store/Auth";
-import { getPublicKeys } from "../../nostr/utils";
+
+import { selectAuthState, reset as logout } from "store/Auth";
+import { Route } from "enums/routes";
+import { useProfile } from "nostr/hooks/useProfile";
+import { getPublicKeys } from "nostr/utils";
+import useContactList from "nostr/hooks/useContactList";
+import ProfileActionButton from "components/ProfileActionButton/ProfileActionButton";
+import CopyNpub from "components/CopyNpub/CopyNpub";
+import ProfileFeed from "components/ProfileFeed/ProfileFeed";
+import BackButton from "components/BackButton/BackButton";
 import {
   SettingsIcon,
   ZapIcon,
@@ -22,19 +29,16 @@ import {
   EditIcon,
   VerifiedIcon,
   ChevronLeftIcon,
-} from "../../icons/StemstrIcon";
-import ProfileActionButton from "../../components/ProfileActionButton/ProfileActionButton";
-import useContactList from "../../nostr/hooks/useContactList";
-import CopyNpub from "../../components/CopyNpub/CopyNpub";
-import ProfileFeed from "../../components/ProfileFeed/ProfileFeed";
-import BackButton from "../../components/BackButton/BackButton";
-import { Route } from "../../enums/routes";
+} from "icons/StemstrIcon";
 
 export default function ProfilePage() {
   const router = useRouter();
   const dispatch = useDispatch();
   const { hexOrNpub } = router.query;
-  const { pk, npub } = useMemo(() => getPublicKeys(hexOrNpub), [hexOrNpub]);
+  const { pk, npub } = useMemo(
+    () => getPublicKeys(hexOrNpub as string),
+    [hexOrNpub]
+  );
   const authState = useSelector(selectAuthState);
   const { data: userData, nip05 } = useProfile({
     pubkey: pk,
@@ -42,10 +46,6 @@ export default function ProfilePage() {
   const { contactList, relayList } = useContactList({
     pubkey: pk,
   });
-
-  useEffect(() => {
-    // console.log(userData);
-  }, [userData]);
 
   const handleLogout = () => {
     dispatch(logout());
@@ -59,7 +59,6 @@ export default function ProfilePage() {
       </Head>
       <Box
         sx={(theme) => ({
-          // margin: `-${theme.spacing.md}px -${theme.spacing.md}px 0`,
           padding: `${theme.spacing.md}px ${theme.spacing.md}px 0`,
           height: 200,
         })}
@@ -84,7 +83,7 @@ export default function ProfilePage() {
         )}
         <Group position="apart">
           <Group spacing="sm" align="center" c="white">
-            <BackButton defaultUrl="/">
+            <BackButton defaultUrl={Route.Home}>
               <ChevronLeftIcon width={24} height={24} />
             </BackButton>
             <Text c="white" fw="bold" fz={24} lh="normal">
@@ -103,7 +102,7 @@ export default function ProfilePage() {
           src={userData?.picture}
           alt={userData?.name}
           size={100}
-          radius="50%"
+          radius={50}
         />
         <Group>
           <ProfileActionButton>
@@ -124,7 +123,7 @@ export default function ProfilePage() {
         <Text size="lg" color="white" fw="bold">
           {userData?.display_name
             ? userData.display_name
-            : `@${userData?.pk?.substring(0, 5)}...`}
+            : `@${pk.substring(0, 5)}...`}
         </Text>
         <Group spacing={4}>
           <Text size="sm">{userData?.name && `@${userData.name}`}</Text>
@@ -149,8 +148,6 @@ export default function ProfilePage() {
         sx={(theme) => ({
           paddingTop: theme.spacing.sm,
           paddingBottom: theme.spacing.sm,
-          marginLeft: -theme.spacing.md,
-          marginRight: -theme.spacing.md,
           marginBottom: theme.spacing.md,
           borderTopWidth: 1,
           borderBottomWidth: 1,
@@ -160,22 +157,26 @@ export default function ProfilePage() {
           borderColor: theme.fn.rgba(theme.colors.gray[0], 0.1),
           fontSize: 14,
           color: theme.white,
+          [theme.fn.largerThan("sm")]: {
+            marginLeft: -theme.spacing.md,
+            marginRight: -theme.spacing.md,
+          },
         })}
       >
         <Text>
-          <Text span fw="700">
+          <Text span fw={700}>
             {contactList ? contactList.tags.length : 0}
           </Text>{" "}
           following
         </Text>
         <Text>
-          <Text span fw="700">
+          <Text span fw={700}>
             ?
           </Text>{" "}
           followers
         </Text>
         <Text>
-          <Text span fw="700">
+          <Text span fw={700}>
             {Object.keys(relayList).length}
           </Text>{" "}
           relays

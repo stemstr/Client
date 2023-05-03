@@ -1,9 +1,19 @@
 import { Center } from "@mantine/core";
 import { useRouter } from "next/router";
-import { Route } from "../../enums/routes";
-import useReferrer from "../../hooks/useReferrer";
 
-const BackButton = ({ defaultUrl, url, children }) => {
+import { Route } from "enums/routes";
+import useReferrer from "hooks/useReferrer";
+
+interface BackButtonProps {
+  defaultUrl: string;
+  url?: string;
+}
+
+const BackButton = ({
+  defaultUrl,
+  url,
+  children,
+}: React.PropsWithChildren<BackButtonProps>) => {
   const router = useRouter();
   const { isFromSameOrigin } = useReferrer();
 
