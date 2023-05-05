@@ -15,23 +15,33 @@ const NoteHeader = ({
   return (
     <Group position="apart">
       <Group spacing={6}>
-        <Anchor component={Link} href={`/user/${note.event.pubkey}`}>
-          <Avatar
-            src={userData?.picture}
-            alt={userData?.name}
-            size={42}
-            radius="50%"
-          />
+        <Anchor
+          component={Link}
+          href={`/user/${note.event.pubkey}`}
+          sx={{
+            ":hover": {
+              textDecoration: "none",
+            },
+          }}
+        >
+          <Group spacing={6}>
+            <Avatar
+              src={userData?.picture}
+              alt={userData?.name}
+              size={42}
+              radius="50%"
+            />
+            <Text size="lg" color="white">
+              {userData?.display_name
+                ? userData.display_name
+                : `@${note.event.pubkey.substring(0, 5)}...`}
+            </Text>
+            <VerifiedIcon width={14} height={14} />
+            <Text size="xs" color="rgba(255, 255, 255, 0.74)">
+              {userData?.name ? `@${userData.name}` : ""}
+            </Text>
+          </Group>
         </Anchor>
-        <Text size="lg" color="white">
-          {userData?.display_name
-            ? userData.display_name
-            : `@${note.event.pubkey.substring(0, 5)}...`}
-        </Text>
-        <VerifiedIcon width={14} height={14} />
-        <Text size="xs" color="rgba(255, 255, 255, 0.74)">
-          {userData?.name ? `@${userData.name}` : ""}
-        </Text>
         <Text size="sm" color="rgba(255, 255, 255, 0.38)">
           · {getRelativeTimeString(note.event.created_at)}
         </Text>
