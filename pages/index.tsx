@@ -1,7 +1,7 @@
-import { Box, Stack } from "@mantine/core";
-import Head from "next/head";
-import HomeFeed from "../components/HomeFeed/HomeFeed";
-import HomeFeedHeader from "../components/HomeFeedHeader/HomeFeedHeader";
+import { Box, Stack } from '@mantine/core';
+import Head from 'next/head';
+import HomeFeed from '../components/HomeFeed/HomeFeed';
+import HomeFeedHeader from '../components/HomeFeedHeader/HomeFeedHeader';
 
 export default function HomePage() {
   return (
