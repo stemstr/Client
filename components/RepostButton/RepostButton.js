@@ -3,10 +3,8 @@ import { CheckIcon, RepostIcon } from "../../icons/StemstrIcon";
 import { useDisclosure } from "@mantine/hooks";
 import { Button, Center, Drawer, Group, Stack, Text } from "@mantine/core";
 import { useSelector } from "react-redux";
-import useNostr from "../../nostr/hooks/useNostr";
 
 export default function RepostButton({ note }) {
-  const { publish, signEvent } = useNostr();
   const auth = useSelector((state) => state.auth);
   const [opened, { open, close }] = useDisclosure(false);
 

@@ -10,7 +10,7 @@ const requireAuth = (WrappedComponent) => {
 
     const handleClick = (e) => {
       e.preventDefault();
-      if (!authState?.user?.pk) {
+      if (!authState?.type) {
         router.push(Route.Login);
       } else {
         props.onClick();

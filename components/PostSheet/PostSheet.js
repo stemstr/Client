@@ -7,13 +7,15 @@ import CommentFieldGroup from "../FieldGroups/CommentFieldGroup";
 import TagsFieldGroup from "../FieldGroups/TagsFieldGroup";
 import ShareAcrossField from "../ShareAcrossField/ShareAcrossField";
 import { parseHashtags } from "../Fields/TagsField/TagsField";
-import useNostr from "../../nostr/hooks/useNostr";
 import { useState } from "react";
 import { acceptedMimeTypes } from "../../utils/media";
-import { parseEventTags, useProfile } from "nostr";
+import { parseEventTags } from "../../ndk/utils";
+import { useNDK } from "ndk/NDKProvider";
+import { NDKEvent } from "@nostr-dev-kit/ndk";
+import { useProfile } from "ndk/hooks/useProfile";
 
 export default function PostSheet() {
-  const { publish, signEvent } = useNostr();
+  const { ndk, stemstrRelaySet } = useNDK();
   const sheetKey = "postSheet";
   const auth = useSelector((state) => state.auth);
   const relays = useSelector((state) => state.relays);
@@ -70,43 +72,24 @@ export default function PostSheet() {
     if (values.uploadResponse.streamUrl && values.uploadResponse.downloadUrl) {
       tags.push(["download_url", values.uploadResponse.downloadUrl]);
       tags.push(["stream_url", values.uploadResponse.streamUrl]);
-      let event = {
-        kind: 1808,
-        created_at: created_at,
-        tags: tags,
-        content: `${values.comment}`,
-      };
-      signEvent(event).then((event) => {
-        if (event) {
-          console.log(event);
-          publish(event, [process.env.NEXT_PUBLIC_STEMSTR_RELAY]).forEach(
-            (pub) => {
-              pub.on("ok", () => {
-                form.reset();
-                dispatch(closeSheet(sheetKey));
-              });
-            }
-          );
-        }
+      const event = new NDKEvent(ndk);
+      event.kind = 1808;
+      event.created_at = created_at;
+      event.tags = tags;
+      event.content = values.comment;
+      event.publish(stemstrRelaySet).then(() => {
+        form.reset();
+        dispatch(closeSheet(sheetKey));
       });
     } else {
-      let event = {
-        kind: 1,
-        created_at: created_at,
-        tags: tags,
-        content: `${values.comment}`,
-      };
-      signEvent(event).then((event) => {
-        if (event) {
-          publish(event, [process.env.NEXT_PUBLIC_STEMSTR_RELAY]).forEach(
-            (pub) => {
-              pub.on("ok", () => {
-                form.reset();
-                dispatch(closeSheet(sheetKey));
-              });
-            }
-          );
-        }
+      const event = new NDKEvent(ndk);
+      event.kind = 1;
+      event.created_at = created_at;
+      event.tags = tags;
+      event.content = values.comment;
+      event.publish(stemstrRelaySet).then(() => {
+        form.reset();
+        dispatch(closeSheet(sheetKey));
       });
     }
   };

@@ -23,10 +23,10 @@ export default function LoginForm() {
   };
 
   useEffect(() => {
-    if (authState.user.pk) {
-      router.push(`/user/${authState.user.pk}`);
+    if (authState.pk) {
+      router.push(`/user/${authState.pk}`);
     }
-  }, [authState?.user?.pk]);
+  }, [authState.pk]);
 
   return (
     <form onSubmit={form.onSubmit(handleSubmit)}>
@@ -48,7 +48,6 @@ export default function LoginForm() {
       <Button type="submit" color="green" fullWidth>
         Login with key
       </Button>
-      {/* {authState?.user ? <Text>{JSON.stringify(authState.user)}</Text> : null} */}
     </form>
   );
 }

@@ -1,17 +1,19 @@
 import { Stack } from "@mantine/core";
 import { FeedNote } from "../Note/Note";
-import { useProfileFeed } from "../../nostr/hooks/useProfileFeed";
+import { useProfileFeed } from "ndk/hooks/useProfileFeed";
 
 export default function ProfileFeed({ pubkey }) {
-  const { notes } = useProfileFeed({
+  const feed = useProfileFeed({
     pubkey,
   });
 
-  return notes.length > 0 ? (
+  return feed.length > 0 ? (
     <Stack>
-      {notes.map((note) => (
-        <FeedNote key={note.event.id} note={note} />
-      ))}
+      {feed
+        .filter((note) => !note.event.tags.find((tag) => tag[0] === "e"))
+        .map((note) => (
+          <FeedNote key={note.event.id} note={note} />
+        ))}
     </Stack>
   ) : (
     <></>

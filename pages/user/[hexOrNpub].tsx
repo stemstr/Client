@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import {
   ActionIcon,
   Avatar,
@@ -15,9 +15,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { selectAuthState, reset as logout } from "store/Auth";
 import { Route } from "enums/routes";
-import { useProfile } from "nostr/hooks/useProfile";
-import { getPublicKeys } from "nostr/utils";
-import useContactList from "nostr/hooks/useContactList";
+import { getPublicKeys } from "ndk/utils";
 import ProfileActionButton from "components/ProfileActionButton/ProfileActionButton";
 import CopyNpub from "components/CopyNpub/CopyNpub";
 import ProfileFeed from "components/ProfileFeed/ProfileFeed";
@@ -30,6 +28,7 @@ import {
   VerifiedIcon,
   ChevronLeftIcon,
 } from "icons/StemstrIcon";
+import { useProfile } from "ndk/hooks/useProfile";
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -40,13 +39,9 @@ export default function ProfilePage() {
     [hexOrNpub]
   );
   const authState = useSelector(selectAuthState);
-  const { data: userData, nip05 } = useProfile({
+  const { data: userData } = useProfile({
     pubkey: pk,
   });
-  const { contactList, relayList } = useContactList({
-    pubkey: pk,
-  });
-
   const handleLogout = () => {
     dispatch(logout());
     router.push(Route.Login);
@@ -55,7 +50,7 @@ export default function ProfilePage() {
   return (
     <>
       <Head>
-        <title>{`Stemstr - ${userData?.display_name || "Profile"}`}</title>
+        <title>{`Stemstr - ${userData?.displayName || "Profile"}`}</title>
       </Head>
       <Box
         sx={(theme) => ({
@@ -99,7 +94,7 @@ export default function ProfilePage() {
       </Box>
       <Group pl="md" pr="md" mb="lg" position="apart" mt={-50}>
         <Avatar
-          src={userData?.picture}
+          src={userData?.image}
           alt={userData?.name}
           size={100}
           radius={50}
@@ -121,13 +116,13 @@ export default function ProfilePage() {
       </Group>
       <Stack spacing={6} mb="xl" pl="md" pr="md" c="white">
         <Text size="lg" color="white" fw="bold">
-          {userData?.display_name
-            ? userData.display_name
+          {userData?.displayName
+            ? userData.displayName
             : `@${pk.substring(0, 5)}...`}
         </Text>
         <Group spacing={4}>
           <Text size="sm">{userData?.name && `@${userData.name}`}</Text>
-          {nip05 && (
+          {/* {nip05 && (
             <>
               <VerifiedIcon width={14} height={14} />
               <Text size="sm" color="purple.2">
@@ -135,7 +130,7 @@ export default function ProfilePage() {
                   userData.nip05.slice(userData.nip05.indexOf("@") + 1)}
               </Text>
             </>
-          )}
+          )} */}
         </Group>
         <Text size="sm" mb={8} sx={{ whiteSpace: "pre-wrap" }}>
           {userData?.about}
@@ -165,7 +160,7 @@ export default function ProfilePage() {
       >
         <Text>
           <Text span fw={700}>
-            {contactList ? contactList.tags.length : 0}
+            0
           </Text>{" "}
           following
         </Text>
@@ -177,13 +172,13 @@ export default function ProfilePage() {
         </Text>
         <Text>
           <Text span fw={700}>
-            {Object.keys(relayList).length}
+            0
           </Text>{" "}
           relays
         </Text>
       </Group>
       <Box pl="md" pr="md">
-        {authState?.user?.npub === npub ? (
+        {authState?.pk === pk ? (
           <Button onClick={handleLogout} mb="md">
             Logout
           </Button>
