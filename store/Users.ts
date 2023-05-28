@@ -1,13 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { AppState } from "./Store";
 import { HYDRATE } from "next-redux-wrapper";
-import { Metadata } from "../nostr/hooks/useProfile";
+// import { Metadata } from "../ndk/hooks/useProfile";
 
 // Type for User
 export interface User {
   pk?: string; // hex
   npub?: string;
-  metadata?: Metadata;
+  // metadata?: Metadata;
 }
 
 // Type for our state

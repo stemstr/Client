@@ -1,11 +1,9 @@
 import { Box, Group, Stack, Text } from "@mantine/core";
-import { Kind, nip19 } from "nostr-tools";
-import { useEffect, useMemo, useState } from "react";
+import { Kind } from "nostr-tools";
+import React, { useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { cacheProfile, getCachedProfile } from "../../cache/cache";
 import { CommentIcon, ShakaIcon, ZapIcon } from "../../icons/StemstrIcon";
-import useNostr from "../../nostr/hooks/useNostr";
-import { useProfile } from "../../nostr/hooks/useProfile";
+import { useProfile } from "../../ndk/hooks/useProfile";
 import NoteTags from "../NoteTags/NoteTags";
 import NoteHeader from "../NoteHeader/NoteHeader";
 import NoteAction from "../NoteAction/NoteAction";
@@ -16,25 +14,22 @@ import useStyles from "./Note.styles";
 import { useRouter } from "next/router";
 import { openSheet } from "store/Sheets";
 
-export default function Note(props) {
+const Note = (props) => {
   const { note, type } = props;
   const { classes } = useStyles();
   const router = useRouter();
   const dispatch = useDispatch();
-  const { publish, signEvent } = useNostr();
   const auth = useSelector((state) => state.auth);
-  const cachedProfile = getCachedProfile(nip19.npubEncode(note.event.pubkey));
-  const [userData, setUserData] = useState(cachedProfile);
   const [profileFetched, setProfileFetched] = useState(false);
   const [downloadStatus, setDownloadStatus] = useState("initial");
-  const { data } = useProfile({
+  const { data: userData } = useProfile({
     pubkey: note.event.pubkey,
   });
   const downloadUrl = useMemo(() => {
     const downloadUrlTag =
       note.event.tags?.find((tag) => tag[0] === "download_url") || null;
     return downloadUrlTag ? downloadUrlTag[1] : null;
-  }, [note.event]);
+  }, [note]);
 
   const handleClickShaka = () => {
     let created_at = Math.floor(Date.now() / 1000);
@@ -62,14 +57,6 @@ export default function Note(props) {
   const handleClick = () => {
     router.push(`/thread/${note.event.id}`);
   };
-
-  useEffect(() => {
-    if (!profileFetched && data) {
-      setProfileFetched(true);
-      setUserData(data);
-      cacheProfile(data.npub, data);
-    }
-  }, [data, setUserData]);
 
   return (
     <Stack onClick={handleClick} sx={{ cursor: "pointer" }}>
@@ -115,7 +102,9 @@ export default function Note(props) {
       </Group>
     </Stack>
   );
-}
+};
+
+export default Note;
 
 export function FeedNote(props) {
   const { classes } = useStyles();

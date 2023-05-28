@@ -12,17 +12,16 @@ import { NotificationsProvider } from "@mantine/notifications";
 import stemstrTheme from "theme/Theme";
 import { CustomFonts } from "theme/CustomFonts";
 import { ApplicationContainer } from "components/ApplicationContainer/ApplicationContainer";
-import NostrProvider from "nostr/NostrProvider";
+import { NDKProvider } from "ndk/NDKProvider";
 import { reduxWrapper } from "store/Store";
-import NostrStateProvider from "store/NostrStateProvider";
 
 const relayUrls: string[] = [
-  // paid relays
+  // // paid relays
   "wss://eden.nostr.land",
   "wss://puravida.nostr.land",
   "wss://nostr.milou.lol",
   "wss://nostr.wine",
-  // public relays
+  // // public relays
   "wss://relay.damus.io",
   "wss://relay.snort.social",
   "wss://nos.lol",
@@ -111,15 +110,13 @@ function App(props: AppProps & { colorScheme: ColorScheme }) {
           withNormalizeCSS
         >
           <CustomFonts />
-          <NostrProvider relayUrls={relayUrls} debug={false}>
-            <NostrStateProvider>
-              <NotificationsProvider>
-                <ApplicationContainer>
-                  <Component {...pageProps} />
-                </ApplicationContainer>
-              </NotificationsProvider>
-            </NostrStateProvider>
-          </NostrProvider>
+          <NDKProvider explicitRelayUrls={relayUrls}>
+            <NotificationsProvider>
+              <ApplicationContainer>
+                <Component {...pageProps} />
+              </ApplicationContainer>
+            </NotificationsProvider>
+          </NDKProvider>
         </MantineProvider>
       </ColorSchemeProvider>
     </>

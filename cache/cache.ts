@@ -1,8 +1,8 @@
-import { Metadata } from "../nostr/hooks/useProfile";
+// import { Metadata } from "../ndk/hooks/useProfile";
 import { AuthState, setAuthState } from "../store/Auth";
 
 const AUTH_KEY = "stemstr:cachedAuth";
-const PROFILES_KEY = "stemstr:cachedProfiles";
+// const PROFILES_KEY = "stemstr:cachedProfiles";
 
 export const cacheAuthState = (state: AuthState | null) => {
   if (state === null) {
@@ -21,26 +21,26 @@ export const getCachedAuth = () => {
   return auth;
 };
 
-export const getCachedProfile = (npub: string) => {
-  const localStorageData = localStorage.getItem(PROFILES_KEY);
+// export const getCachedProfile = (npub: string) => {
+//   const localStorageData = localStorage.getItem(PROFILES_KEY);
 
-  if (!localStorageData) return null;
+//   if (!localStorageData) return null;
 
-  const cachedProfiles: Record<string, Metadata> = JSON.parse(localStorageData);
+//   const cachedProfiles: Record<string, Metadata> = JSON.parse(localStorageData);
 
-  return cachedProfiles[npub];
-};
+//   return cachedProfiles[npub];
+// };
 
-export const cacheProfile = (npub: string, profile: Metadata) => {
-  const localStorageData = localStorage.getItem(PROFILES_KEY);
+// export const cacheProfile = (npub: string, profile: Metadata) => {
+//   const localStorageData = localStorage.getItem(PROFILES_KEY);
 
-  let cachedProfiles: Record<string, Metadata> = {};
+//   let cachedProfiles: Record<string, Metadata> = {};
 
-  if (localStorageData) {
-    cachedProfiles = JSON.parse(localStorageData);
-  }
+//   if (localStorageData) {
+//     cachedProfiles = JSON.parse(localStorageData);
+//   }
 
-  cachedProfiles[npub] = profile;
+//   cachedProfiles[npub] = profile;
 
-  localStorage.setItem(PROFILES_KEY, JSON.stringify(cachedProfiles));
-};
+//   localStorage.setItem(PROFILES_KEY, JSON.stringify(cachedProfiles));
+// };

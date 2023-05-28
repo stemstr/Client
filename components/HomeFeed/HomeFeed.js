@@ -1,15 +1,17 @@
 import { FeedNote } from "../Note/Note";
-import { ScrollArea, Stack } from "@mantine/core";
-import { useHomeFeed } from "../../nostr/hooks/useHomeFeed";
+import { Stack } from "@mantine/core";
+import { useHomeFeed } from "ndk/hooks/useHomeFeed";
 
 export default function HomeFeed() {
-  const { notes } = useHomeFeed({});
+  const feed = useHomeFeed();
 
   return (
     <Stack>
-      {notes.map((note) => (
-        <FeedNote key={note.event.id} note={note} />
-      ))}
+      {feed
+        .filter((note) => !note.event.tags.find((tag) => tag[0] === "e"))
+        .map((note) => (
+          <FeedNote key={note.event.id} note={note} />
+        ))}
     </Stack>
   );
 }

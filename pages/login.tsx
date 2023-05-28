@@ -17,23 +17,26 @@ import { Route } from "enums";
 
 import { setNIP07 } from "store/Auth";
 import LoginForm from "components/LoginForm/LoginForm";
+import NDK, { NDKNip07Signer } from "@nostr-dev-kit/ndk";
+import { useNDK } from "ndk/NDKProvider";
 
 const LEARN_MORE_URL = "https://www.stemstr.app/";
 
 export default function Login() {
+  const { ndk } = useNDK();
   const router = useRouter();
   const dispatch = useDispatch();
 
   const [showExtensionLogin, setShowExtensionLogin] = useState(false);
 
   const handleSecureLogin = async () => {
-    if (window.nostr) {
-      try {
-        const pk = await window.nostr.getPublicKey();
-        dispatch(setNIP07(pk));
-      } catch (err) {
-        console.error(err);
-      }
+    try {
+      const signer = new NDKNip07Signer();
+      signer?.user().then((user) => {
+        dispatch(setNIP07(user.npub));
+      });
+    } catch (err) {
+      console.error(err);
     }
   };
 

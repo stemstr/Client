@@ -73,7 +73,7 @@ const SoundPlayer = ({ event, downloadStatus, setDownloadStatus }) => {
         hlsRef.current.destroy();
       }
     };
-  }, [event]);
+  }, [event, setWaveformData]);
 
   const handlePlayClick = () => {
     if (audioRef.current && !isPlaying) {

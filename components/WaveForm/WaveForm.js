@@ -18,7 +18,7 @@ export default function WaveForm({ data, playProgress = 0 }) {
     } else {
       setCurrentData(generateWaveFormData(64));
     }
-  }, [data]);
+  }, [data, setCurrentData]);
 
   useEffect(() => {
     if (!currentData) {
@@ -61,7 +61,7 @@ export default function WaveForm({ data, playProgress = 0 }) {
     });
 
     setBars(newBars);
-  }, [currentData, playProgress, width]);
+  }, [currentData, playProgress, width, setBars]);
 
   return (
     <div

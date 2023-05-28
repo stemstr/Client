@@ -129,7 +129,7 @@ export default function SoundPicker({
         setMediaAttached(false);
       }
     };
-  }, [streamUrl, rest.value]);
+  }, [streamUrl, rest.value, setStreamUrl, setMediaAttached]);
 
   const attachMedia = () => {
     if (!mediaAttached && hlsRef.current) {
@@ -142,7 +142,7 @@ export default function SoundPicker({
     if (!rest.value) {
       setWaveformData(null);
     }
-  }, [rest.value]);
+  }, [rest.value, setWaveformData]);
 
   const handlePlayClick = () => {
     if (audioRef.current && !isPlaying) {

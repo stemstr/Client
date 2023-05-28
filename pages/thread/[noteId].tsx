@@ -1,18 +1,20 @@
+import React, { useMemo } from "react";
 import { Box, Group, Text } from "@mantine/core";
 import { useRouter } from "next/router";
-import { useMemo } from "react";
 import BackButton from "../../components/BackButton/BackButton";
 import Note from "../../components/Note/Note";
 import { ChevronLeftIcon } from "../../icons/StemstrIcon";
-import { getNoteIds, usesDepecratedETagSchema } from "../../nostr/utils";
-import { useThread } from "../../nostr";
+import { getNoteIds, usesDepecratedETagSchema } from "../../ndk/utils";
+import { useThread } from "../../ndk/hooks/useThread";
+import { NoteTreeNode } from "../../ndk/types/note";
 import { Route } from "../../enums/routes";
+import { NDKEvent } from "@nostr-dev-kit/ndk";
 
 export default function ThreadPage() {
   const router = useRouter();
   const { noteId } = router.query;
-  const { hex, bech32 } = useMemo(() => getNoteIds(noteId), [noteId]);
-  const { targetNote, thread } = useThread({
+  const { hex, bech32 } = useMemo(() => getNoteIds(noteId as string), [noteId]);
+  const { thread, targetEvent } = useThread({
     noteId: hex,
   });
 
@@ -28,41 +30,49 @@ export default function ThreadPage() {
           </Text>
         </Group>
       </Group>
-      {thread && <NoteTree noteTreeNode={thread} targetNote={targetNote} />}
+      {thread && targetEvent && (
+        <NoteTree noteTreeNode={thread} targetEvent={targetEvent} />
+      )}
     </>
   );
 }
+type NoteTreeNodeType = "parent" | "focus" | "child" | null;
 
 const NoteTree = ({
   noteTreeNode,
-  targetNote,
+  targetEvent,
   nodeDepth = 0,
   type = "parent",
+}: {
+  noteTreeNode: NoteTreeNode;
+  targetEvent: NDKEvent;
+  nodeDepth?: number;
+  type?: NoteTreeNodeType;
 }) => {
   if (!noteTreeNode || !type) return null;
 
-  if (type === "parent" && noteTreeNode.event.id === targetNote?.event.id)
+  if (type === "parent" && noteTreeNode.note.event.id === targetEvent?.id)
     type = "focus";
 
-  if (type === "focus" && noteTreeNode.event.id !== targetNote?.event.id)
+  if (type === "focus" && noteTreeNode.note.event.id !== targetEvent?.id)
     return null;
 
   const childType = useMemo(() => {
-    let childType = "parent";
+    let childType: NoteTreeNodeType = "parent";
     if (type === "child") childType = null;
     if (type === "focus") childType = "child";
     if (
       noteTreeNode.children.find(
-        (childNode) => childNode.event.id === targetNote?.event.id
+        (childNode) => childNode.note.event.id === targetEvent?.id
       )
     )
       childType = "focus";
     return childType;
-  }, [noteTreeNode.children.length, type, targetNote?.event.id]);
+  }, [noteTreeNode.children.length, type, targetEvent?.id]);
 
   if (
     type === "parent" &&
-    !isAncestorOf(noteTreeNode, targetNote) &&
+    !isAncestorOf(noteTreeNode, targetEvent) &&
     nodeDepth !== 0
   )
     return null;
@@ -72,7 +82,9 @@ const NoteTree = ({
       <Box
         sx={(theme) => ({
           backgroundColor:
-            (nodeDepth === 0 || type === "focus") && theme.colors.dark[8],
+            nodeDepth === 0 || type === "focus"
+              ? theme.colors.dark[8]
+              : undefined,
           padding: theme.spacing.md,
           borderBottom:
             type === "child" ? `1px solid ${theme.colors.gray[4]}` : undefined,
@@ -82,13 +94,17 @@ const NoteTree = ({
           },
         })}
       >
-        <Note key={noteTreeNode.event.id} note={noteTreeNode} type={type} />
+        <Note
+          key={noteTreeNode.note.event.id}
+          note={noteTreeNode.note}
+          type={type}
+        />
       </Box>
       {noteTreeNode.children.map((childNode) => (
         <NoteTree
-          key={childNode.event.id}
+          key={childNode.note.event.id}
           noteTreeNode={childNode}
-          targetNote={targetNote}
+          targetEvent={targetEvent}
           nodeDepth={nodeDepth + 1}
           type={childType}
         />
@@ -97,27 +113,27 @@ const NoteTree = ({
   );
 };
 
-function isAncestorOf(ancestorNode, targetNode) {
-  if (!ancestorNode || !targetNode || !ancestorNode.children) {
+function isAncestorOf(ancestorNode: NoteTreeNode, targetEvent: NDKEvent) {
+  if (!ancestorNode || !targetEvent || !ancestorNode.children) {
     return false;
   }
 
   let parentEventTag = null;
-  if (usesDepecratedETagSchema(targetNode.event)) {
-    parentEventTag = targetNode.event.tags.filter((t) => t[0] === "e").pop();
+  if (usesDepecratedETagSchema(targetEvent)) {
+    parentEventTag = targetEvent.tags.filter((t) => t[0] === "e").pop();
   } else {
-    parentEventTag = targetNode.event.tags.find(
+    parentEventTag = targetEvent.tags.find(
       (t) => t[0] === "e" && t[3] === "reply"
     );
   }
   const parentEventId = parentEventTag ? parentEventTag[1] : undefined;
 
-  if (parentEventId === ancestorNode.event.id) {
+  if (parentEventId === ancestorNode.note.event.id) {
     return true;
   }
 
   for (const childNode of ancestorNode.children) {
-    if (isAncestorOf(childNode, targetNode)) {
+    if (isAncestorOf(childNode, targetEvent)) {
       return true;
     }
   }

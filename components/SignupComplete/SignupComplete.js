@@ -9,7 +9,7 @@ import {
   CopyIcon,
   KeyIcon,
 } from "../../icons/StemstrIcon";
-import { abbreviateKey } from "../../nostr/utils";
+import { abbreviateKey } from "../../ndk/utils";
 import { setSK } from "../../store/Auth";
 import { Route } from "../../enums/routes";
 

@@ -3,7 +3,7 @@ import { MoreIcon, VerifiedIcon } from "../../icons/StemstrIcon";
 import DownloadSoundButton from "../DownloadSoundButton/DownloadSoundButton";
 import Link from "next/link";
 import withStopClickPropagation from "../../utils/hoc/withStopClickPropagation";
-import { getRelativeTimeString } from "nostr";
+import { getRelativeTimeString } from "../../ndk/utils";
 
 const NoteHeader = ({
   note,
@@ -26,14 +26,14 @@ const NoteHeader = ({
         >
           <Group spacing={6}>
             <Avatar
-              src={userData?.picture}
+              src={userData?.image}
               alt={userData?.name}
               size={42}
               radius="50%"
             />
             <Text size="lg" color="white">
-              {userData?.display_name
-                ? userData.display_name
+              {userData?.displayName
+                ? userData.displayName
                 : `@${note.event.pubkey.substring(0, 5)}...`}
             </Text>
             <VerifiedIcon width={14} height={14} />

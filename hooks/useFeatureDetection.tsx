@@ -14,7 +14,7 @@ const useFeatureDetection = (feature: FeatureName): boolean => {
         setIsSupported(isDesktop && isChrome);
         break;
     }
-  }, []);
+  }, [setIsSupported]);
 
   return isSupported;
 };
