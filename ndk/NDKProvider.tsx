@@ -41,8 +41,12 @@ const NDKProvider = ({
     const initNDK = async () => {
       const ndkInstance = new NDK({ explicitRelayUrls });
 
-      // Connect to the relays
-      await ndkInstance.connect();
+      try {
+        // Connect to the relays
+        await ndkInstance.connect();
+      } catch (error) {
+        console.error(error);
+      }
 
       // Set the NDK instance in the state
       setNDK(ndkInstance);
