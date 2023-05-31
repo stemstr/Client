@@ -2857,6 +2857,11 @@
   resolved "https://registry.npmjs.org/@noble/secp256k1/-/secp256k1-1.7.1.tgz"
   integrity sha512-hOUk6AyBFmqVrv7k5WAw/LpszxVbj9gGN4JRkIX52fdFAj1UA61KXmZDvqVEm+pOyec3+fIeZB02LYa/pWOArw==
 
+"@noble/secp256k1@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@noble/secp256k1/-/secp256k1-2.0.0.tgz#c214269d45e0233ad6a8ae5104655453636e253d"
+  integrity sha512-rUGBd95e2a45rlmFTqQJYEFA4/gdIARFfuTuTqLglz0PZ6AKyzyXsEZZq7UZn8hZsvaBgpCzKKBJizT2cJERXw==
+
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"
   resolved "https://registry.npmjs.org/@nodelib/fs.scandir/-/fs.scandir-2.1.5.tgz"
@@ -2883,11 +2888,12 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@nostr-dev-kit/ndk@^0.3.141":
-  version "0.3.141"
-  resolved "https://registry.yarnpkg.com/@nostr-dev-kit/ndk/-/ndk-0.3.141.tgz#cee9784c4cb7d3506dc193d7d763cb3525d4413e"
-  integrity sha512-LEtiC61CWteItp+A6tx1xiPqEtIk53/iPH1CWCDUsx1scz6ajPjpN8fe0/ZKTiOVfBpT/0EGfvuxab4yT0bY/Q==
+"@nostr-dev-kit/ndk@^0.3.27":
+  version "0.3.27"
+  resolved "https://registry.yarnpkg.com/@nostr-dev-kit/ndk/-/ndk-0.3.27.tgz#255407830b194269801b81bc7cb03ea1f706135a"
+  integrity sha512-0gkSse73jhVSvT+uuyPyIOiM6I6IrbkjCZ6YQvoXgz964g+HrcOl71BYL3bAyHdnvggclSkIh9NCsKPLeS/xAQ==
   dependencies:
+    "@noble/secp256k1" "^2.0.0"
     "@scure/base" "^1.1.1"
     "@typescript-eslint/eslint-plugin" "^5.57.0"
     "@typescript-eslint/parser" "^5.57.0"
@@ -2901,7 +2907,7 @@
     eventemitter3 "^5.0.0"
     light-bolt11-decoder "^3.0.0"
     node-fetch "^3.3.1"
-    nostr-tools "^1.8.1"
+    nostr-tools "^1.11.1"
     tsd "^0.28.1"
     typedoc "^0.24.6"
     utf8-buffer "^1.0.0"
@@ -11190,6 +11196,17 @@ normalize-range@^0.1.2:
   resolved "https://registry.npmjs.org/normalize-range/-/normalize-range-0.1.2.tgz"
   integrity sha1-LRDAa9/TEuqXd2laTShDlFa3WUI=
 
+nostr-tools@^1.11.1:
+  version "1.11.1"
+  resolved "https://registry.yarnpkg.com/nostr-tools/-/nostr-tools-1.11.1.tgz#7f479f86dc25ef4625747a33f8430f464aa225e5"
+  integrity sha512-b8BpCiD3wxjBZwrn0wc+CkVj6/7s4sQxp+Az7UkCG80mJu7xTspZsOoUP/geBNwZVYETzEwj+CPBvW8WIP8mBQ==
+  dependencies:
+    "@noble/curves" "1.0.0"
+    "@noble/hashes" "1.3.0"
+    "@scure/base" "1.1.1"
+    "@scure/bip32" "1.3.0"
+    "@scure/bip39" "1.2.0"
+
 nostr-tools@^1.6.0:
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/nostr-tools/-/nostr-tools-1.6.0.tgz#4052fe717a378982c8ce56d39986089abacfc6d3"
@@ -11201,17 +11218,6 @@ nostr-tools@^1.6.0:
     "@scure/bip32" "^1.1.5"
     "@scure/bip39" "^1.1.1"
     prettier "^2.8.4"
-
-nostr-tools@^1.8.1:
-  version "1.11.1"
-  resolved "https://registry.yarnpkg.com/nostr-tools/-/nostr-tools-1.11.1.tgz#7f479f86dc25ef4625747a33f8430f464aa225e5"
-  integrity sha512-b8BpCiD3wxjBZwrn0wc+CkVj6/7s4sQxp+Az7UkCG80mJu7xTspZsOoUP/geBNwZVYETzEwj+CPBvW8WIP8mBQ==
-  dependencies:
-    "@noble/curves" "1.0.0"
-    "@noble/hashes" "1.3.0"
-    "@scure/base" "1.1.1"
-    "@scure/bip32" "1.3.0"
-    "@scure/bip39" "1.2.0"
 
 npm-run-all@^4.1.5:
   version "4.1.5"
