@@ -1,9 +1,80 @@
-import { Anchor, Avatar, Center, Group, Text } from "@mantine/core";
+import { Anchor, Avatar, Center, Group, Text, Stack } from "@mantine/core";
+import { useMediaQuery } from "@mantine/hooks";
 import { MoreIcon, VerifiedIcon } from "../../icons/StemstrIcon";
 import DownloadSoundButton from "../DownloadSoundButton/DownloadSoundButton";
 import Link from "next/link";
 import withStopClickPropagation from "../../utils/hoc/withStopClickPropagation";
 import { getRelativeTimeString } from "../../ndk/utils";
+
+const UserDetailsAnchorWrapper = ({ note, children }) => (
+  <Anchor
+    component={Link}
+    href={`/user/${note.event.pubkey}`}
+    sx={{
+      ":hover": {
+        textDecoration: "none",
+      },
+    }}
+  >
+    {children}
+  </Anchor>
+);
+
+const UserDetailsAvatar = ({ userData }) => (
+  <Avatar src={userData?.image} alt={userData?.name} size={42} radius="50%" />
+);
+
+const UserDetailsDisplayName = ({ note, userData, ...rest }) => (
+  <Text color="white" {...rest}>
+    {userData?.displayName
+      ? userData.displayName
+      : `@${note.event.pubkey.substring(0, 5)}...`}
+  </Text>
+);
+
+const UserDetailsName = ({ userData }) => (
+  <Text size="xs" color="rgba(255, 255, 255, 0.74)">
+    {userData?.name ? `@${userData.name}` : ""}
+  </Text>
+);
+
+const RelativeTime = ({ note }) => (
+  <Text size="sm" color="rgba(255, 255, 255, 0.38)">
+    · {getRelativeTimeString(note.event.created_at)}
+  </Text>
+);
+
+const DesktopUserDetails = ({ note, userData }) => (
+  <Group spacing={6}>
+    <UserDetailsAnchorWrapper note={note}>
+      <Group spacing={6}>
+        <UserDetailsAvatar userData={userData} />
+        <UserDetailsDisplayName size="lg" note={note} userData={userData} />
+        <VerifiedIcon width={14} height={14} />
+        <UserDetailsName userData={userData} />
+      </Group>
+    </UserDetailsAnchorWrapper>
+    <RelativeTime note={note} />
+  </Group>
+);
+
+const MobileUserDetails = ({ note, userData }) => (
+  <Group spacing={6}>
+    <UserDetailsAnchorWrapper note={note}>
+      <Group spacing={6} alignItems="flex-start">
+        <UserDetailsAvatar userData={userData} />
+        <Stack spacing={0}>
+          <Group spacing={6}>
+            <UserDetailsDisplayName size="sm" note={note} userData={userData} />
+            <VerifiedIcon width={14} height={14} />
+            <RelativeTime note={note} />
+          </Group>
+          <UserDetailsName userData={userData} />
+        </Stack>
+      </Group>
+    </UserDetailsAnchorWrapper>
+  </Group>
+);
 
 const NoteHeader = ({
   note,
@@ -12,40 +83,12 @@ const NoteHeader = ({
   downloadStatus,
   setDownloadStatus,
 }) => {
+  const isSmallScreen = useMediaQuery("(max-width: 600px)");
+  const UserDetails = isSmallScreen ? MobileUserDetails : DesktopUserDetails;
+
   return (
     <Group position="apart">
-      <Group spacing={6}>
-        <Anchor
-          component={Link}
-          href={`/user/${note.event.pubkey}`}
-          sx={{
-            ":hover": {
-              textDecoration: "none",
-            },
-          }}
-        >
-          <Group spacing={6}>
-            <Avatar
-              src={userData?.image}
-              alt={userData?.name}
-              size={42}
-              radius="50%"
-            />
-            <Text size="lg" color="white">
-              {userData?.displayName
-                ? userData.displayName
-                : `@${note.event.pubkey.substring(0, 5)}...`}
-            </Text>
-            <VerifiedIcon width={14} height={14} />
-            <Text size="xs" color="rgba(255, 255, 255, 0.74)">
-              {userData?.name ? `@${userData.name}` : ""}
-            </Text>
-          </Group>
-        </Anchor>
-        <Text size="sm" color="rgba(255, 255, 255, 0.38)">
-          · {getRelativeTimeString(note.event.created_at)}
-        </Text>
-      </Group>
+      <UserDetails note={note} userData={userData} />
       <Group position="right">
         <DownloadSoundButton
           href={downloadUrl}
