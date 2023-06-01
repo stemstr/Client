@@ -39,7 +39,7 @@ export default function HomeFeed() {
           ...style,
           top: topPosition,
           right: 0,
-          maxWidth: 568,
+          maxWidth: 600,
         }}
       >
         <div ref={rowRef} style={{ paddingBottom: isLastNote ? gapSize : 0 }}>
