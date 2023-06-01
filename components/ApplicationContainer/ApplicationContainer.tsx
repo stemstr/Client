@@ -12,7 +12,6 @@ export const ApplicationContainer = ({
     styles={{
       root: {
         width: "100%",
-        maxWidth: "600px",
         height: "100vh",
         margin: "auto",
       },

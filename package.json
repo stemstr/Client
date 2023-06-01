@@ -49,6 +49,8 @@
     "react-device-detect": "^2.2.3",
     "react-dom": "18.2.0",
     "react-redux": "^8.0.5",
+    "react-virtualized-auto-sizer": "^1.0.19",
+    "react-window": "^1.8.9",
     "websocket-polyfill": "^0.0.3"
   },
   "devDependencies": {
