@@ -29,9 +29,9 @@ export function useThread({ noteId }: { noteId: string }) {
   useEffect(() => {
     if (ndk) {
       if (targetEvent) {
-        const { rootId } = parseEventTags(targetEvent);
-        if (rootId) {
-          ndk.fetchEvent({ ids: [rootId] }).then((note: NDKEvent | null) => {
+        const { root } = parseEventTags(targetEvent);
+        if (root) {
+          ndk.fetchEvent({ ids: [root[1]] }).then((note: NDKEvent | null) => {
             setRootEvent(note);
           });
         } else {
@@ -48,6 +48,7 @@ export function useThread({ noteId }: { noteId: string }) {
     threadEvents.forEach((event) => {
       notes.push({
         event: event,
+        reactions: [],
       });
     });
     setNotes(notes);

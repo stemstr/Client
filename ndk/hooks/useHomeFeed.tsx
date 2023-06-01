@@ -19,8 +19,9 @@ export function useHomeFeed() {
 
   useEffect(() => {
     setNotes(
-      events.map((event) => ({
+      events.map<Note>((event) => ({
         event: event,
+        reactions: [],
       }))
     );
   }, [events.length, setNotes]);

@@ -8,6 +8,7 @@ import NoteTags from "../NoteTags/NoteTags";
 import NoteHeader from "../NoteHeader/NoteHeader";
 import NoteAction from "../NoteAction/NoteAction";
 import NoteActionComment from "../NoteAction/NoteActionComment";
+import NoteActionLike from "../NoteAction/NoteActionLike";
 import SoundPlayer from "../SoundPlayer/SoundPlayer";
 import RepostButton from "../RepostButton/RepostButton";
 import useStyles from "./Note.styles";
@@ -30,25 +31,6 @@ const Note = (props) => {
       note.event.tags?.find((tag) => tag[0] === "download_url") || null;
     return downloadUrlTag ? downloadUrlTag[1] : null;
   }, [note]);
-
-  const handleClickShaka = () => {
-    let created_at = Math.floor(Date.now() / 1000);
-    let tags = [
-      ["p", note.event.pubkey],
-      ["e", note.event.id],
-    ];
-    let reactionEvent = {
-      kind: Kind.Reaction,
-      created_at: created_at,
-      tags: tags,
-      content: "🤙",
-    };
-    signEvent(reactionEvent).then((reactionEvent) => {
-      if (reactionEvent) {
-        publish(reactionEvent, [process.env.NEXT_PUBLIC_STEMSTR_RELAY]);
-      }
-    });
-  };
 
   const handleClickComment = (e) => {
     dispatch(openSheet({ sheetKey: "postSheet", replyingTo: note.event }));
@@ -91,9 +73,7 @@ const Note = (props) => {
           <Group position="apart">
             <NoteActionComment note={note} onClick={handleClickComment} />
             {/* <RepostButton note={note} /> */}
-            {/* <NoteAction>
-            <ShakaIcon onClick={handleClickShaka} width={18} height={18} /> 0
-          </NoteAction> */}
+            <NoteActionLike note={note} />
             {/* <NoteAction>
             <ZapIcon width={18} height={18} /> 4
           </NoteAction> */}

@@ -51,9 +51,9 @@ export default function PostSheet() {
       tags.push(["t", hashtag]);
     });
     if (sheetState.replyingTo) {
-      const { rootId, replyingToId } = parseEventTags(sheetState.replyingTo);
-      if (rootId) {
-        tags.push(["e", rootId, "", "root"]);
+      const { root } = parseEventTags(sheetState.replyingTo);
+      if (root) {
+        tags.push(root);
         tags.push(["e", sheetState.replyingTo.id, "", "reply"]);
       } else {
         tags.push(["e", sheetState.replyingTo.id, "", "root"]);
