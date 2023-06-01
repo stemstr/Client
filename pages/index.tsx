@@ -11,7 +11,7 @@ export default function HomePage() {
       </Head>
       {/* <ColorSchemeToggle /> */}
       <Stack spacing={0}>
-        <Box w={568} m="auto">
+        <Box m="auto" pl="md" pr="md" w="100%" sx={{ maxWidth: 568 }}>
           <HomeFeedHeader />
         </Box>
         <HomeFeed />

@@ -3,6 +3,7 @@ import { FeedNote } from "../Note/Note";
 import { useHomeFeed } from "ndk/hooks/useHomeFeed";
 import { VariableSizeList, areEqual } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
+import { Box } from "@mantine/core";
 
 export default function HomeFeed() {
   const feed = useHomeFeed();
@@ -30,19 +31,21 @@ export default function HomeFeed() {
     }, [rowRef]);
 
     return (
-      <div
-        style={{
+      <Box
+        m="auto"
+        pl="md"
+        pr="md"
+        sx={{
           ...style,
           top: topPosition,
-          width: 568,
           right: 0,
-          margin: "auto",
+          maxWidth: 568,
         }}
       >
         <div ref={rowRef} style={{ paddingBottom: isLastNote ? gapSize : 0 }}>
           <FeedNote key={note.event.id} note={note} />
         </div>
-      </div>
+      </Box>
     );
   }, areEqual);
 
