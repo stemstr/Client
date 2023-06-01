@@ -3,7 +3,11 @@ import withStopClickPropagation from "../../utils/hoc/withStopClickPropagation";
 
 const NoteTags = ({ note, classes, ...rest }) => {
   return (
-    <Group position="left" {...rest}>
+    <Group
+      position="left"
+      sx={{ flexWrap: "nowrap", overflowX: "auto" }}
+      {...rest}
+    >
       {note.event?.tags
         ?.filter((tag) => tag[0] == "t")
         .map((tag, index) => (
