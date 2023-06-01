@@ -9,7 +9,6 @@ export const ApplicationContainer = ({
   children,
 }: React.PropsWithChildren<{}>) => {
   const router = useRouter();
-  console.log(router.pathname);
 
   return (
     <AppShell
