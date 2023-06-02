@@ -38,8 +38,8 @@ const UserDetailsName = ({ userData }) => (
   </Text>
 );
 
-const RelativeTime = ({ note }) => (
-  <Text size="sm" color="rgba(255, 255, 255, 0.38)">
+const RelativeTime = ({ note, ...rest }) => (
+  <Text size="sm" color="rgba(255, 255, 255, 0.38)" {...rest}>
     · {getRelativeTimeString(note.event.created_at)}
   </Text>
 );
@@ -59,7 +59,7 @@ const DesktopUserDetails = ({ note, userData }) => (
 );
 
 const MobileUserDetails = ({ note, userData }) => (
-  <Group spacing={6}>
+  <Group spacing={6} sx={{ alignItems: "flex-start" }}>
     <UserDetailsAnchorWrapper note={note}>
       <Group spacing={6} alignItems="flex-start">
         <UserDetailsAvatar userData={userData} />
@@ -67,12 +67,12 @@ const MobileUserDetails = ({ note, userData }) => (
           <Group spacing={6}>
             <UserDetailsDisplayName size="sm" note={note} userData={userData} />
             <VerifiedIcon width={14} height={14} />
-            <RelativeTime note={note} />
           </Group>
           <UserDetailsName userData={userData} />
         </Stack>
       </Group>
     </UserDetailsAnchorWrapper>
+    <RelativeTime note={note} mt={1} />
   </Group>
 );
 
