@@ -6,6 +6,7 @@ import AutoSizer from "react-virtualized-auto-sizer";
 import { Box } from "@mantine/core";
 
 export default function HomeFeed() {
+  const headerHeight = 68;
   const feed = useHomeFeed();
   const notes = feed.filter(
     (note) => !note.event.tags.find((tag) => tag[0] === "e")
@@ -50,7 +51,7 @@ export default function HomeFeed() {
   }, areEqual);
 
   return (
-    <AutoSizer style={{ height: "100vh" }}>
+    <AutoSizer style={{ height: `calc(100vh - ${headerHeight}px` }}>
       {({ height, width }) => (
         <VariableSizeList
           height={height - 164}
