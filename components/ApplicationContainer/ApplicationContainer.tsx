@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import BottomNavigation from "../BottomNavigation/BottomNavigation";
 import PostSheet from "../PostSheet/PostSheet";
 import FileDropOverlay from "../FileDropOverlay/FileDropOverlay";
+import { Route } from "enums/routes";
 
 export const ApplicationContainer = ({
   children,
@@ -16,7 +17,7 @@ export const ApplicationContainer = ({
       styles={{
         root: {
           width: "100%",
-          maxWidth: router.pathname === "/" ? "100%" : 600,
+          maxWidth: router.pathname === Route.Home ? "100%" : 600,
           height: "100vh",
           margin: "auto",
         },
