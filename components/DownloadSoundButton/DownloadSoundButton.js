@@ -1,9 +1,9 @@
 import { Anchor, Center } from "@mantine/core";
 import useFeatureDetection, { FeatureName } from "hooks/useFeatureDetection";
 import {
-  DownloadIcon,
   CheckIcon,
   DownloadCloudIcon,
+  PlusIcon,
 } from "../../icons/StemstrIcon";
 
 export default function DownloadSoundButton({
@@ -31,7 +31,7 @@ export default function DownloadSoundButton({
   const renderIcon = () => {
     switch (downloadStatus) {
       case "initial":
-        return <DownloadIcon width={16} height={16} />;
+        return <PlusIcon width={16} height={16} />;
       case "pending":
         return <CheckIcon width={16} height={16} />;
       case "ready":
