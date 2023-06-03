@@ -32,6 +32,8 @@ const NoteActionMore = ({ note }: { note: Note }) => {
             backgroundColor: theme.colors.dark[8],
             color: theme.white,
             boxShadow: `0px -4px 4px ${theme.fn.rgba("black", 0.25)}`,
+            maxWidth: 600,
+            margin: "auto",
           },
           body: {
             fontWeight: 500,
