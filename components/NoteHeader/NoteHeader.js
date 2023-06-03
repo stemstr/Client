@@ -5,6 +5,7 @@ import DownloadSoundButton from "../DownloadSoundButton/DownloadSoundButton";
 import Link from "next/link";
 import withStopClickPropagation from "../../utils/hoc/withStopClickPropagation";
 import { getRelativeTimeString } from "../../ndk/utils";
+import NoteActionMore from "components/NoteAction/NoteActionMore";
 
 const UserDetailsAnchorWrapper = ({ note, children }) => (
   <Anchor
@@ -102,7 +103,7 @@ const NoteHeader = ({
             color: theme.colors.gray[2],
           })}
         >
-          <MoreIcon width={24} height={24} />
+          <NoteActionMore note={note} />
         </Center>
       </Group>
     </Group>

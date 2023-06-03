@@ -4,6 +4,8 @@ import Download from "./Line icons/Arrows/arrow-down.svg";
 import ChevronLeft from "./Line icons/Arrows/chevron-left.svg";
 import ChevronRight from "./Line icons/Arrows/chevron-right.svg";
 
+import BracketsEllipses from "./Line icons/Development/brackets-ellipses.svg";
+
 import Comment from "./Line icons/Communication/message-square-02.svg";
 
 import Tags from "./Line icons/Finance & eCommerce/tag-03.svg";
@@ -288,6 +290,14 @@ export const HeartIcon = (props) => {
   return (
     <StemstrIcon>
       <Heart {...props} />
+    </StemstrIcon>
+  );
+};
+
+export const BracketsEllipsesIcon = (props) => {
+  return (
+    <StemstrIcon>
+      <BracketsEllipses {...props} />
     </StemstrIcon>
   );
 };
