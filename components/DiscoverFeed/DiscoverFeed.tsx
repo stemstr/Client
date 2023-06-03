@@ -7,6 +7,7 @@ import { Box } from "@mantine/core";
 
 export default function DiscoverFeed() {
   const headerHeight = 68;
+  const chipsHeight = 68;
   const feed = useHomeFeed();
   const events = feed.filter(
     (event) => !event.tags.find((tag) => tag[0] === "e")
@@ -57,7 +58,9 @@ export default function DiscoverFeed() {
   );
 
   return (
-    <AutoSizer style={{ height: `calc(100vh - ${headerHeight}px` }}>
+    <AutoSizer
+      style={{ height: `calc(100vh - ${headerHeight}px - ${chipsHeight}px` }}
+    >
       {({ height, width }: { height: number; width: number }) => (
         <VariableSizeList
           height={height - 164}

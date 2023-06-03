@@ -4,7 +4,7 @@ import useStyles from "./DiscoverFeedChips.styles";
 export default function DiscoverFeedChips() {
   const { classes } = useStyles();
   const chipNames = [
-    "🔥 Trending now",
+    "🔥 Latest",
     "#hiphop",
     "#soul",
     "#indie",

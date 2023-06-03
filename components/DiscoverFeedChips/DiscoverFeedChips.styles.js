@@ -12,6 +12,8 @@ const useStyles = createStyles((theme, _params, getRef) => ({
     top: 0,
     backgroundColor: theme.colors.dark[7],
     zIndex: 1,
+    paddingLeft: theme.spacing.md,
+    paddingRight: theme.spacing.md,
   },
   chipGroup: {
     paddingTop: theme.spacing.md,
