@@ -4,7 +4,7 @@ import { Kind } from "nostr-tools";
 import { useNDK } from "ndk/NDKProvider";
 import { NDKEvent } from "@nostr-dev-kit/ndk";
 import { parseEventTags, usesDepecratedETagSchema } from "ndk/utils";
-import { Note, NoteTreeNode } from "ndk/types/note";
+import { NoteTreeNode } from "ndk/types/note";
 
 export function useThread({ noteId }: { noteId: string }) {
   const { ndk } = useNDK();
@@ -15,7 +15,7 @@ export function useThread({ noteId }: { noteId: string }) {
     [rootEvent?.id]
   );
   const events = useFeed(filter);
-  const [notes, setNotes] = useState<Note[]>([]);
+  const [threadEvents, setThreadEvents] = useState<NDKEvent[]>([]);
   const [thread, setThread] = useState<NoteTreeNode | null>(null);
 
   useEffect(() => {
@@ -42,62 +42,51 @@ export function useThread({ noteId }: { noteId: string }) {
   }, [targetEvent, setRootEvent]);
 
   useEffect(() => {
-    const notes: Note[] = [];
-    let threadEvents = [...events];
-    if (rootEvent) threadEvents = [rootEvent, ...threadEvents];
-    threadEvents.forEach((event) => {
-      notes.push({
-        event: event,
-        reactions: [],
-      });
-    });
-    setNotes(notes);
-  }, [events.length, rootEvent, setNotes]);
+    let newThreadEvents = [...events];
+    if (rootEvent) newThreadEvents = [rootEvent, ...newThreadEvents];
+    setThreadEvents(newThreadEvents);
+  }, [events.length, rootEvent]);
 
   useEffect(() => {
-    setThread(buildTree(notes, rootEvent?.id));
-  }, [notes.length, setThread]);
+    setThread(buildTree(threadEvents, rootEvent?.id));
+  }, [threadEvents.length, rootEvent, setThread]);
 
   return { thread, targetEvent };
 }
 
 function buildTree(
-  notes: Note[],
+  events: NDKEvent[],
   rootEventId: string | undefined
 ): NoteTreeNode | null {
-  const noteMap = new Map<string, NoteTreeNode>();
+  const eventMap = new Map<string, NoteTreeNode>();
 
-  notes.forEach((note) => {
-    noteMap.set(note.event.id, { note: note, children: [] });
+  events.forEach((event) => {
+    eventMap.set(event.id, { event: event, children: [] });
   });
 
   let rootNode: NoteTreeNode | null = null;
 
   function sortChildrenByCreatedAt(node: NoteTreeNode): void {
     node.children.sort(
-      (a, b) =>
-        (a.note.event.created_at as number) -
-        (b.note.event.created_at as number)
+      (a, b) => (a.event.created_at as number) - (b.event.created_at as number)
     );
     node.children.forEach((child) => sortChildrenByCreatedAt(child));
   }
   let parentEventTag = null;
-  noteMap.forEach((node, nodeId) => {
-    if (usesDepecratedETagSchema(node.note.event)) {
-      parentEventTag = node.note.event.tags
-        .filter((tag) => tag[0] === "e")
-        .pop();
+  eventMap.forEach((node, nodeId) => {
+    if (usesDepecratedETagSchema(node.event)) {
+      parentEventTag = node.event.tags.filter((tag) => tag[0] === "e").pop();
     } else {
-      parentEventTag = node.note.event.tags.find((tag) => tag[3] === "reply");
+      parentEventTag = node.event.tags.find((tag) => tag[3] === "reply");
       if (!parentEventTag) {
-        parentEventTag = node.note.event.tags.find((tag) => tag[3] === "root");
+        parentEventTag = node.event.tags.find((tag) => tag[3] === "root");
       }
     }
     const parentEventId = parentEventTag ? parentEventTag[1] : undefined;
-    if (rootEventId === node.note.event.id) {
+    if (rootEventId === node.event.id) {
       rootNode = node;
     } else if (parentEventId) {
-      const parentNode = noteMap.get(parentEventId);
+      const parentNode = eventMap.get(parentEventId);
       if (parentNode) {
         parentNode.children.push(node);
       }
@@ -119,7 +108,7 @@ function findNodeById(
     return null;
   }
 
-  if (noteTreeNode.note.event.id === id) {
+  if (noteTreeNode.event.id === id) {
     return noteTreeNode;
   }
 

@@ -10,9 +10,9 @@ export default function ProfileFeed({ pubkey }) {
   return feed.length > 0 ? (
     <Stack>
       {feed
-        .filter((note) => !note.event.tags.find((tag) => tag[0] === "e"))
-        .map((note) => (
-          <FeedNote key={note.event.id} note={note} />
+        .filter((event) => !event.tags.find((tag) => tag[0] === "e"))
+        .map((event) => (
+          <FeedNote key={event.id} event={event} />
         ))}
     </Stack>
   ) : (

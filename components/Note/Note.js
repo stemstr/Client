@@ -14,9 +14,11 @@ import RepostButton from "../RepostButton/RepostButton";
 import useStyles from "./Note.styles";
 import { useRouter } from "next/router";
 import { openSheet } from "store/Sheets";
+import { useNote } from "ndk/hooks/useNote";
 
 const Note = (props) => {
-  const { note, type } = props;
+  const { event, type } = props;
+  const note = useNote({ event });
   const { classes } = useStyles();
   const router = useRouter();
   const dispatch = useDispatch();

@@ -6,6 +6,6 @@ export type Note = {
 };
 
 export type NoteTreeNode = {
-  note: Note;
+  event: NDKEvent;
   children: NoteTreeNode[];
 };
