@@ -1,34 +1,34 @@
-import { NDKEvent } from "@nostr-dev-kit/ndk";
+import { NDKEvent, NDKTag } from "@nostr-dev-kit/ndk";
 import { nip19 } from "nostr-tools";
 
 interface ParsedEventTags {
-  rootId: string | undefined;
-  mentionIds: string[];
-  replyingToId: string | undefined;
+  root?: NDKTag;
+  mentions: NDKTag[];
+  reply?: NDKTag;
 }
 
 export const parseEventTags = (event: NDKEvent) => {
   const result: ParsedEventTags = {
-    rootId: "",
-    mentionIds: [],
-    replyingToId: "",
+    root: undefined,
+    mentions: [],
+    reply: undefined,
   };
   const eTags = event.tags.filter((t) => t[0] === "e");
   if (usesDepecratedETagSchema(event)) {
     if (eTags) {
       if (eTags.length === 1) {
-        result.replyingToId = eTags[0][1];
+        result.reply = eTags[0];
       }
       if (eTags.length > 0) {
-        result.rootId = eTags[0][1];
+        result.root = eTags[0];
       }
       if (eTags.length > 1) {
         console.log(eTags);
-        result.replyingToId = eTags[eTags.length - 1][1];
+        result.reply = eTags[eTags.length - 1];
       }
       if (eTags.length > 2) {
         for (let i = 1; i < eTags.length - 1; i++) {
-          result.mentionIds.push(eTags[i][1]);
+          result.mentions.push(eTags[i]);
         }
       }
     }
@@ -36,18 +36,40 @@ export const parseEventTags = (event: NDKEvent) => {
     eTags?.forEach((t) => {
       switch (t[3]) {
         case "root":
-          result.rootId = t[1];
+          result.root = t;
           break;
         case "reply":
-          result.replyingToId = t[1];
+          result.reply = t;
           break;
         case "mention":
-          result.mentionIds.push(t[1]);
+          result.mentions.push(t);
           break;
       }
     });
   }
+  if (result.root) {
+    result.root = formatETag(result.root, "root");
+  }
+  result.mentions.forEach((mention, i) => {
+    if (mention) {
+      result.mentions[i] = formatETag(mention, "mention");
+    }
+  });
+  if (result.reply) {
+    result.reply = formatETag(result.reply, "reply");
+  }
   return result;
+};
+
+export const formatETag = (
+  tag: NDKTag,
+  type: "root" | "mention" | "reply"
+): NDKTag => {
+  if (!tag[2]) {
+    tag[2] = "";
+  }
+  tag[3] = type;
+  return tag;
 };
 
 export const usesDepecratedETagSchema = (event: NDKEvent | undefined) => {

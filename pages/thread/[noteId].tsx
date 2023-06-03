@@ -51,10 +51,10 @@ const NoteTree = ({
 }) => {
   if (!noteTreeNode || !type) return null;
 
-  if (type === "parent" && noteTreeNode.note.event.id === targetEvent?.id)
+  if (type === "parent" && noteTreeNode.event.id === targetEvent?.id)
     type = "focus";
 
-  if (type === "focus" && noteTreeNode.note.event.id !== targetEvent?.id)
+  if (type === "focus" && noteTreeNode.event.id !== targetEvent?.id)
     return null;
 
   const childType = useMemo(() => {
@@ -63,7 +63,7 @@ const NoteTree = ({
     if (type === "focus") childType = "child";
     if (
       noteTreeNode.children.find(
-        (childNode) => childNode.note.event.id === targetEvent?.id
+        (childNode) => childNode.event.id === targetEvent?.id
       )
     )
       childType = "focus";
@@ -95,14 +95,14 @@ const NoteTree = ({
         })}
       >
         <Note
-          key={noteTreeNode.note.event.id}
-          note={noteTreeNode.note}
+          key={noteTreeNode.event.id}
+          event={noteTreeNode.event}
           type={type}
         />
       </Box>
       {noteTreeNode.children.map((childNode) => (
         <NoteTree
-          key={childNode.note.event.id}
+          key={childNode.event.id}
           noteTreeNode={childNode}
           targetEvent={targetEvent}
           nodeDepth={nodeDepth + 1}
@@ -128,7 +128,7 @@ function isAncestorOf(ancestorNode: NoteTreeNode, targetEvent: NDKEvent) {
   }
   const parentEventId = parentEventTag ? parentEventTag[1] : undefined;
 
-  if (parentEventId === ancestorNode.note.event.id) {
+  if (parentEventId === ancestorNode.event.id) {
     return true;
   }
 

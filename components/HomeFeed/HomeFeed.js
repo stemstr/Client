@@ -8,8 +8,8 @@ import { Box } from "@mantine/core";
 export default function HomeFeed() {
   const headerHeight = 68;
   const feed = useHomeFeed();
-  const notes = feed.filter(
-    (note) => !note.event.tags.find((tag) => tag[0] === "e")
+  const events = feed.filter(
+    (event) => !event.tags.find((tag) => tag[0] === "e")
   );
   const listRef = useRef({});
   const rowHeights = useRef({});
@@ -20,10 +20,10 @@ export default function HomeFeed() {
   };
   const Row = memo(({ index, style }) => {
     const rowRef = useRef({});
-    const note = notes[index];
+    const event = events[index];
     const gapSize = 16;
     const topPosition = style.top + gapSize * index;
-    const isLastNote = index === notes.length - 1;
+    const isLastEvent = index === events.length - 1;
 
     useEffect(() => {
       if (rowRef.current) {
@@ -43,8 +43,8 @@ export default function HomeFeed() {
           maxWidth: 600,
         }}
       >
-        <div ref={rowRef} style={{ paddingBottom: isLastNote ? gapSize : 0 }}>
-          <FeedNote key={note.event.id} note={note} />
+        <div ref={rowRef} style={{ paddingBottom: isLastEvent ? gapSize : 0 }}>
+          <FeedNote key={event.id} event={event} />
         </div>
       </Box>
     );
@@ -55,7 +55,7 @@ export default function HomeFeed() {
       {({ height, width }) => (
         <VariableSizeList
           height={height - 164}
-          itemCount={notes.length}
+          itemCount={events.length}
           itemSize={getRowHeight}
           width={width}
           overscanCount={10}
