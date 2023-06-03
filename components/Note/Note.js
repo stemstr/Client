@@ -62,7 +62,7 @@ const Note = (props) => {
             })}
           />
         )}
-        <Stack sx={{ flexGrow: 1 }}>
+        <Stack sx={{ flexGrow: 1, overflowX: "auto" }}>
           <SoundPlayer
             event={note.event}
             downloadStatus={downloadStatus}

@@ -16,3 +16,6 @@ yarn-error.log*
 
 # Next.js
 /.next
+
+# WebStorm configs
+.idea
