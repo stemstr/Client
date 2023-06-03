@@ -1,8 +1,7 @@
 import { Box, Group, Text } from "@mantine/core";
-import { SearchIcon } from "../../icons/StemstrIcon";
 import ProfileLink from "../ProfileLink/ProfileLink";
 
-export default function HomeFeedHeader() {
+export default function DiscoverFeedHeader() {
   return (
     <Box
       component={Group}

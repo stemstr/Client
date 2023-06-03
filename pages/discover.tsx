@@ -1,20 +1,19 @@
 import { Box, Stack } from "@mantine/core";
 import Head from "next/head";
-import HomeFeed from "../components/HomeFeed/HomeFeed";
-import HomeFeedHeader from "../components/HomeFeedHeader/HomeFeedHeader";
+import DiscoverFeedHeader from "components/DiscoverFeedHeader/DiscoverFeedHeader";
+import DiscoverFeed from "components/DiscoverFeed/DiscoverFeed";
 
 export default function HomePage() {
   return (
     <>
       <Head>
-        <title>Stemstr - Home</title>
+        <title>Stemstr - Discover</title>
       </Head>
-      {/* <ColorSchemeToggle /> */}
       <Stack spacing={0}>
         <Box m="auto" pl="md" pr="md" w="100%" sx={{ maxWidth: 600 }}>
-          <HomeFeedHeader />
+          <DiscoverFeedHeader />
         </Box>
-        <HomeFeed />
+        <DiscoverFeed />
       </Stack>
     </>
   );
