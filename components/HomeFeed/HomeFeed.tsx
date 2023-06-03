@@ -11,6 +11,7 @@ export default function HomeFeed() {
   const events = feed.filter(
     (event) => !event.tags.find((tag) => tag[0] === "e")
   );
+
   const listRef = useRef<VariableSizeList>(null);
   const rowHeights = useRef<number[]>([]);
   const getRowHeight = (index: number) => rowHeights.current[index] || 200;
@@ -18,6 +19,7 @@ export default function HomeFeed() {
     listRef.current?.resetAfterIndex(0);
     rowHeights.current = { ...rowHeights.current, [index]: height };
   };
+
   const Row = memo(
     ({ index, style }: { index: number; style: Record<string, any> }) => {
       const rowRef = useRef<HTMLDivElement>(null);
