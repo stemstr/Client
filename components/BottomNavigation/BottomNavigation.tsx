@@ -59,9 +59,9 @@ export default function BottomNavigation() {
         maw={600}
         mx="auto"
       >
-        <BottomNavigationItem href={Route.Home}>
+        <AuthBottomNavigationItem href={Route.Home}>
           <HomeIcon />
-        </BottomNavigationItem>
+        </AuthBottomNavigationItem>
         <BottomNavigationItem href={Route.Discover}>
           <CompassIcon />
         </BottomNavigationItem>
