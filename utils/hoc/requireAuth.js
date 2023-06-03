@@ -13,7 +13,7 @@ const requireAuth = (WrappedComponent) => {
       if (!authState?.type) {
         router.push(Route.Login);
       } else {
-        props.onClick();
+        if (props.onClick) props.onClick();
       }
     };
 
