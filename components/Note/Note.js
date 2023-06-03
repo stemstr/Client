@@ -27,7 +27,6 @@ const Note = (props) => {
   const router = useRouter();
   const dispatch = useDispatch();
   const auth = useSelector((state) => state.auth);
-  const [profileFetched, setProfileFetched] = useState(false);
   const [downloadStatus, setDownloadStatus] = useState("initial");
   const { data: userData } = useProfile({
     pubkey: note.event.pubkey,
