@@ -1,17 +1,24 @@
-import { useRef, useEffect, memo } from "react";
+import { useRef, useEffect, memo, useState } from "react";
 import { FeedNote } from "../Note/Note";
-import { useHomeFeed } from "ndk/hooks/useHomeFeed";
 import { VariableSizeList, areEqual } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { Box } from "@mantine/core";
+import DiscoverFeedChips from "components/DiscoverFeedChips/DiscoverFeedChips";
+import { useDiscoverFeed } from "ndk/hooks/useDiscoverFeed";
 
 export default function DiscoverFeed() {
   const headerHeight = 68;
   const chipsHeight = 68;
-  const feed = useHomeFeed();
-  const events = feed.filter(
-    (event) => !event.tags.find((tag) => tag[0] === "e")
-  );
+  const [selectedChip, setSelectedChip] = useState("");
+  const feed = useDiscoverFeed({
+    tags: selectedChip ? [selectedChip] : undefined,
+  });
+  const events = feed
+    .filter((event) => !event.tags.find((tag) => tag[0] === "e"))
+    .filter(
+      (event) =>
+        !selectedChip || event.tags.some((tag) => tag[1] === selectedChip)
+    );
   const listRef = useRef<VariableSizeList>(null);
   const rowHeights = useRef<number[]>([]);
   const getRowHeight = (index: number) => rowHeights.current[index] || 200;
@@ -58,21 +65,28 @@ export default function DiscoverFeed() {
   );
 
   return (
-    <AutoSizer
-      style={{ height: `calc(100vh - ${headerHeight}px - ${chipsHeight}px` }}
-    >
-      {({ height, width }: { height: number; width: number }) => (
-        <VariableSizeList
-          height={height - 164}
-          itemCount={events.length}
-          itemSize={getRowHeight}
-          width={width}
-          overscanCount={10}
-          ref={listRef}
-        >
-          {Row}
-        </VariableSizeList>
-      )}
-    </AutoSizer>
+    <>
+      <DiscoverFeedChips
+        events={feed}
+        value={selectedChip}
+        onChange={(newValue) => setSelectedChip(newValue as string)}
+      />
+      <AutoSizer
+        style={{ height: `calc(100vh - ${headerHeight}px - ${chipsHeight}px` }}
+      >
+        {({ height, width }: { height: number; width: number }) => (
+          <VariableSizeList
+            height={height - 164}
+            itemCount={events.length}
+            itemSize={getRowHeight}
+            width={width}
+            overscanCount={10}
+            ref={listRef}
+          >
+            {Row}
+          </VariableSizeList>
+        )}
+      </AutoSizer>
+    </>
   );
 }
