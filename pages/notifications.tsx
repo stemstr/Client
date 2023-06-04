@@ -14,7 +14,7 @@ export default function Notifications() {
       <Head>
         <title>Stemstr - Notifications</title>
       </Head>
-      <Stack spacing={0}>
+      <Stack spacing="md">
         <Box m="auto" pl="md" pr="md" w="100%" sx={{ maxWidth: 600 }}>
           <HomeFeedHeader />
         </Box>
