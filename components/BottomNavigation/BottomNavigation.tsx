@@ -59,8 +59,12 @@ export default function BottomNavigation() {
         maw={600}
         mx="auto"
       >
-        <BottomNavigationItem />
-        <BottomNavigationItem />
+        <AuthBottomNavigationItem href={Route.Home}>
+          <HomeIcon />
+        </AuthBottomNavigationItem>
+        <BottomNavigationItem href={Route.Discover}>
+          <CompassIcon />
+        </BottomNavigationItem>
         <AuthBottomNavigationItem onClick={openPostSheet} middleButton>
           <Center
             sx={{
