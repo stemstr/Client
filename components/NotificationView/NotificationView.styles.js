@@ -19,6 +19,12 @@ const useStyles = createStyles((theme, _params, getRef) => ({
       },
     },
   },
+  notificationHeader: {
+    gap: theme.spacing.md,
+  },
+  notificationHeaderProfiles: {},
+  notificationHeaderProfilePics: {},
+  notificationHeaderProfileNames: {},
   kindIcon: {
     width: 42,
     height: 42,
