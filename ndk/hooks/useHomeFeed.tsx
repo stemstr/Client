@@ -13,8 +13,7 @@ export function useHomeFeed() {
     let pubkeys = [...contactList.values()].map((user) => user.hexpubkey());
     if (authState.pk && !pubkeys.some((pubkey) => pubkey === authState.pk))
       pubkeys = [authState.pk, ...pubkeys];
-    // TODO: remove limit
-    return pubkeys.slice(0, 500);
+    return pubkeys.slice(0, 1000);
   }, [contactList.size]);
   const filter = useMemo<NDKFilter>(
     () => ({
