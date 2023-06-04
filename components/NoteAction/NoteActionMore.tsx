@@ -1,4 +1,4 @@
-import { Box, Button, Center, Drawer, Group, Stack, Text } from "@mantine/core";
+import { Button, Center, Drawer, Group, Stack, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { BracketsEllipsesIcon, MoreIcon } from "icons/StemstrIcon";
 import { Note } from "ndk/types/note";
@@ -61,9 +61,9 @@ const NoteActionMore = ({ note }: { note: Note }) => {
           Close
         </Button>
       </Drawer>
-      <Box onClick={open} sx={(theme) => ({ cursor: "pointer" })}>
+      <Center onClick={open} sx={(theme) => ({ cursor: "pointer" })}>
         <MoreIcon width={24} height={24} />
-      </Box>
+      </Center>
     </>
   );
 };
