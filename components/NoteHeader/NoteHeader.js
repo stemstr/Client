@@ -1,6 +1,6 @@
 import { Anchor, Avatar, Center, Group, Text, Stack } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
-import { MoreIcon, VerifiedIcon } from "../../icons/StemstrIcon";
+import { VerifiedIcon } from "../../icons/StemstrIcon";
 import DownloadSoundButton from "../DownloadSoundButton/DownloadSoundButton";
 import Link from "next/link";
 import withStopClickPropagation from "../../utils/hoc/withStopClickPropagation";
@@ -15,9 +15,12 @@ const UserDetailsAnchorWrapper = ({ note, children }) => (
       ":hover": {
         textDecoration: "none",
       },
+      overflow: "hidden",
     }}
   >
-    {children}
+    <Group spacing={6} sx={{ flexWrap: "nowrap" }}>
+      {children}
+    </Group>
   </Anchor>
 );
 
@@ -33,49 +36,70 @@ const UserDetailsDisplayName = ({ note, userData, ...rest }) => (
   </Text>
 );
 
-const UserDetailsName = ({ userData }) => (
-  <Text size="xs" color="rgba(255, 255, 255, 0.74)">
+const UserDetailsName = ({ userData, ...rest }) => (
+  <Text size="xs" color="rgba(255, 255, 255, 0.74)" {...rest}>
     {userData?.name ? `@${userData.name}` : ""}
   </Text>
 );
 
 const RelativeTime = ({ note, ...rest }) => (
-  <Text size="sm" color="rgba(255, 255, 255, 0.38)" {...rest}>
+  <Text
+    size="sm"
+    color="rgba(255, 255, 255, 0.38)"
+    sx={{ whiteSpace: "nowrap" }}
+    {...rest}
+  >
     · {getRelativeTimeString(note.event.created_at)}
   </Text>
 );
 
-const DesktopUserDetails = ({ note, userData }) => (
-  <Group spacing={6}>
+const DesktopUserDetails = ({ note, userData, sx }) => (
+  <Group spacing={6} sx={sx}>
     <UserDetailsAnchorWrapper note={note}>
-      <Group spacing={6}>
-        <UserDetailsAvatar userData={userData} />
-        <UserDetailsDisplayName size="lg" note={note} userData={userData} />
-        <VerifiedIcon width={14} height={14} />
-        <UserDetailsName userData={userData} />
-      </Group>
+      <UserDetailsAvatar userData={userData} />
+      <UserDetailsDisplayName size="lg" note={note} userData={userData} />
+      <VerifiedIcon width={14} height={14} />
+      <UserDetailsName userData={userData} />
     </UserDetailsAnchorWrapper>
     <RelativeTime note={note} />
   </Group>
 );
 
-const MobileUserDetails = ({ note, userData }) => (
-  <Group spacing={6} sx={{ alignItems: "flex-start" }}>
-    <UserDetailsAnchorWrapper note={note}>
-      <Group spacing={6} alignItems="flex-start">
+const MobileUserDetails = ({ note, userData, sx }) => {
+  const isReallySmallScreen = useMediaQuery("(max-width: 400px)");
+  const nameStyles = {
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    flex: 1,
+    maxWidth: isReallySmallScreen ? 140 : "auto",
+  };
+  const hasUserName = Boolean(userData?.name);
+
+  return (
+    <Group
+      spacing={6}
+      sx={{ ...sx, alignItems: hasUserName ? "flex-start" : "center" }}
+    >
+      <UserDetailsAnchorWrapper note={note}>
         <UserDetailsAvatar userData={userData} />
-        <Stack spacing={0}>
+        <Stack spacing={0} sx={{ overflow: "hidden" }}>
           <Group spacing={6}>
-            <UserDetailsDisplayName size="sm" note={note} userData={userData} />
+            <UserDetailsDisplayName
+              size="sm"
+              note={note}
+              userData={userData}
+              sx={nameStyles}
+            />
             <VerifiedIcon width={14} height={14} />
           </Group>
-          <UserDetailsName userData={userData} />
+          <UserDetailsName userData={userData} sx={nameStyles} />
         </Stack>
-      </Group>
-    </UserDetailsAnchorWrapper>
-    <RelativeTime note={note} mt={1} />
-  </Group>
-);
+      </UserDetailsAnchorWrapper>
+      <RelativeTime note={note} mt={hasUserName ? 1 : 0} />
+    </Group>
+  );
+};
 
 const NoteHeader = ({
   note,
@@ -88,9 +112,13 @@ const NoteHeader = ({
   const UserDetails = isSmallScreen ? MobileUserDetails : DesktopUserDetails;
 
   return (
-    <Group position="apart">
-      <UserDetails note={note} userData={userData} />
-      <Group position="right">
+    <Group position="apart" sx={{ flexWrap: "nowrap" }}>
+      <UserDetails
+        note={note}
+        userData={userData}
+        sx={{ flexWrap: "nowrap", overflow: "hidden" }}
+      />
+      <Group position="right" sx={{ minWidth: 68 }}>
         <DownloadSoundButton
           href={downloadUrl}
           downloadStatus={downloadStatus}
@@ -98,8 +126,8 @@ const NoteHeader = ({
         />
         <Center
           sx={(theme) => ({
-            width: 28,
-            height: 28,
+            width: 24,
+            height: 24,
             color: theme.colors.gray[2],
           })}
         >

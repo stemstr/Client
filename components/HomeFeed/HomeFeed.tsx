@@ -4,9 +4,11 @@ import { useHomeFeed } from "ndk/hooks/useHomeFeed";
 import { VariableSizeList, areEqual } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { Box } from "@mantine/core";
+import { useMediaQuery } from "@mantine/hooks";
 
 export default function HomeFeed() {
   const headerHeight = 68;
+  const footerHeight = useMediaQuery("(max-width: 480px)") ? 64 : 96;
   const feed = useHomeFeed();
   const events = feed.filter(
     (event) => !event.tags.find((tag) => tag[0] === "e")
@@ -27,11 +29,14 @@ export default function HomeFeed() {
       const gapSize = 16;
       const topPosition = style.top + gapSize * index;
       const isLastEvent = index === events.length - 1;
-
-      useEffect(() => {
+      const updateRowHeight = () => {
         if (rowRef.current) {
           setRowHeight(index, rowRef.current.clientHeight);
         }
+      };
+
+      useEffect(() => {
+        updateRowHeight();
       }, [rowRef]);
 
       return (
@@ -50,7 +55,11 @@ export default function HomeFeed() {
             ref={rowRef}
             style={{ paddingBottom: isLastEvent ? gapSize : 0 }}
           >
-            <FeedNote key={event.id} event={event} />
+            <FeedNote
+              key={event.id}
+              event={event}
+              onUserDataLoad={updateRowHeight}
+            />
           </div>
         </Box>
       );
@@ -62,7 +71,7 @@ export default function HomeFeed() {
     <AutoSizer style={{ height: `calc(100vh - ${headerHeight}px` }}>
       {({ height, width }: { height: number; width: number }) => (
         <VariableSizeList
-          height={height - 164}
+          height={height - headerHeight - footerHeight}
           itemCount={events.length}
           itemSize={getRowHeight}
           width={width}
