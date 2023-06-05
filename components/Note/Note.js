@@ -21,7 +21,7 @@ import { NDKEvent } from "@nostr-dev-kit/ndk";
 
 const Note = (props) => {
   const { ndk } = useNDK();
-  const { event, type } = props;
+  const { event, type, onUserDataLoad } = props;
   const note = useNote({ event });
   const { classes } = useStyles();
   const router = useRouter();
@@ -84,6 +84,12 @@ const Note = (props) => {
       }
     }
   }, [note.reactions.length, auth.pk]);
+
+  useEffect(() => {
+    if (userData) {
+      onUserDataLoad();
+    }
+  }, [userData]);
 
   const handleClick = () => {
     router.push(`/thread/${note.event.id}`);
