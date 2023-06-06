@@ -177,7 +177,7 @@ function NotificationHeaderProfileNames(props: NotificationProps) {
   useEffect(() => {
     const newDisplayedUsers = users.slice(0, 3).map((user) => (
       <Anchor component={Link} c="purple.5" href={`${Route.User}/${user.npub}`}>
-        @{user.profile?.name}
+        @{user.profile?.name || `${user.hexpubkey().slice(0, 5)}...`}
       </Anchor>
     ));
     setDisplayedUsers(newDisplayedUsers);
