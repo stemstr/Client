@@ -9,6 +9,7 @@ import { useThread } from "../../ndk/hooks/useThread";
 import { NoteTreeNode } from "../../ndk/types/note";
 import { Route } from "../../enums/routes";
 import { NDKEvent } from "@nostr-dev-kit/ndk";
+import { EventProvider } from "../../ndk/NDKEventProvider";
 
 export default function ThreadPage() {
   const router = useRouter();
@@ -94,11 +95,9 @@ const NoteTree = ({
           },
         })}
       >
-        <Note
-          key={noteTreeNode.event.id}
-          event={noteTreeNode.event}
-          type={type}
-        />
+        <EventProvider event={noteTreeNode.event}>
+          <Note key={noteTreeNode.event.id} type={type} />
+        </EventProvider>
       </Box>
       {noteTreeNode.children.map((childNode) => (
         <NoteTree

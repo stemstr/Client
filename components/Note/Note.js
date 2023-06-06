@@ -3,7 +3,6 @@ import { Kind } from "nostr-tools";
 import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { CommentIcon, ShakaIcon, ZapIcon } from "../../icons/StemstrIcon";
-import { useProfile } from "../../ndk/hooks/useProfile";
 import NoteTags from "../NoteTags/NoteTags";
 import NoteHeader from "../NoteHeader/NoteHeader";
 import NoteAction from "../NoteAction/NoteAction";
@@ -18,20 +17,16 @@ import { useNote } from "ndk/hooks/useNote";
 import { useNDK } from "ndk/NDKProvider";
 import { formatETag, parseEventTags } from "ndk/utils";
 import { NDKEvent } from "@nostr-dev-kit/ndk";
-import { noop } from "../../utils/common";
 
 const Note = (props) => {
   const { ndk } = useNDK();
-  const { event, type, onUserDataLoad = noop } = props;
-  const note = useNote({ event });
+  const { type } = props;
+  const note = useNote();
   const { classes } = useStyles();
   const router = useRouter();
   const dispatch = useDispatch();
   const auth = useSelector((state) => state.auth);
   const [downloadStatus, setDownloadStatus] = useState("initial");
-  const { data: userData } = useProfile({
-    pubkey: note.event.pubkey,
-  });
   const downloadUrl = useMemo(() => {
     const downloadUrlTag =
       note.event.tags?.find((tag) => tag[0] === "download_url") || null;
@@ -86,12 +81,6 @@ const Note = (props) => {
     }
   }, [note.reactions.length, auth.pk]);
 
-  useEffect(() => {
-    if (userData) {
-      onUserDataLoad();
-    }
-  }, [userData]);
-
   const handleClick = () => {
     router.push(`/thread/${note.event.id}`);
   };
@@ -99,8 +88,6 @@ const Note = (props) => {
   return (
     <Stack onClick={handleClick} sx={{ cursor: "pointer" }}>
       <NoteHeader
-        note={note}
-        userData={userData}
         downloadUrl={downloadUrl}
         downloadStatus={downloadStatus}
         setDownloadStatus={setDownloadStatus}

@@ -5,6 +5,7 @@ import { VariableSizeList, areEqual } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { Box } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
+import { EventProvider } from "../../ndk/NDKEventProvider";
 
 export default function HomeFeed() {
   const headerHeight = 68;
@@ -29,14 +30,11 @@ export default function HomeFeed() {
       const gapSize = 16;
       const topPosition = style.top + gapSize * index;
       const isLastEvent = index === events.length - 1;
-      const updateRowHeight = () => {
+
+      useEffect(() => {
         if (rowRef.current) {
           setRowHeight(index, rowRef.current.clientHeight);
         }
-      };
-
-      useEffect(() => {
-        updateRowHeight();
       }, [rowRef]);
 
       return (
@@ -55,11 +53,9 @@ export default function HomeFeed() {
             ref={rowRef}
             style={{ paddingBottom: isLastEvent ? gapSize : 0 }}
           >
-            <FeedNote
-              key={event.id}
-              event={event}
-              onUserDataLoad={updateRowHeight}
-            />
+            <EventProvider event={event}>
+              <FeedNote key={event.id} />
+            </EventProvider>
           </div>
         </Box>
       );
@@ -75,7 +71,7 @@ export default function HomeFeed() {
           itemCount={events.length}
           itemSize={getRowHeight}
           width={width}
-          overscanCount={10}
+          overscanCount={5}
           ref={listRef}
         >
           {Row}
