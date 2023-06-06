@@ -2,9 +2,11 @@ import { useEffect, useMemo, useState } from "react";
 import { useFeed } from "./useFeed";
 import { Kind } from "nostr-tools";
 import { Note } from "ndk/types/note";
-import { NDKEvent, NDKFilter } from "@nostr-dev-kit/ndk";
+import { NDKFilter } from "@nostr-dev-kit/ndk";
+import { useEvent } from "../NDKEventProvider";
 
-export function useNote({ event }: { event: NDKEvent }) {
+export function useNote() {
+  const { event } = useEvent();
   const [note, setNote] = useState<Note>({ event: event, reactions: [] });
   const reactionsFilter = useMemo<NDKFilter>(
     () => ({

@@ -1,10 +1,10 @@
 import { Button, Center, Drawer, Group, Stack, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { BracketsEllipsesIcon, MoreIcon } from "icons/StemstrIcon";
-import { Note } from "ndk/types/note";
 import withStopClickPropagation from "utils/hoc/withStopClickPropagation";
+import { useEvent } from "../../ndk/NDKEventProvider";
 
-const NoteActionMore = ({ note }: { note: Note }) => {
+const NoteActionMore = () => {
   const [opened, { open, close }] = useDisclosure(false);
 
   return (
@@ -41,7 +41,7 @@ const NoteActionMore = ({ note }: { note: Note }) => {
         })}
       >
         <Stack spacing="md" mb="md">
-          <NoteActionMoreCopyRawEvent note={note} onDone={close} />
+          <NoteActionMoreCopyRawEvent onDone={close} />
         </Stack>
         <Button
           onClick={close}
@@ -68,16 +68,11 @@ const NoteActionMore = ({ note }: { note: Note }) => {
   );
 };
 
-const NoteActionMoreCopyRawEvent = ({
-  note,
-  onDone,
-}: {
-  note: Note;
-  onDone: () => void;
-}) => {
+const NoteActionMoreCopyRawEvent = ({ onDone }: { onDone: () => void }) => {
+  const { event } = useEvent();
   const handleClick = () => {
     if (navigator?.clipboard) {
-      navigator.clipboard.writeText(JSON.stringify(note.event.rawEvent()));
+      navigator.clipboard.writeText(JSON.stringify(event.rawEvent()));
       onDone();
     }
   };

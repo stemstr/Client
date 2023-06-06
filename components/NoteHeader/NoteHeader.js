@@ -6,35 +6,45 @@ import Link from "next/link";
 import withStopClickPropagation from "../../utils/hoc/withStopClickPropagation";
 import { getRelativeTimeString } from "../../ndk/utils";
 import NoteActionMore from "components/NoteAction/NoteActionMore";
+import { useEvent } from "../../ndk/NDKEventProvider";
+import { useProfile } from "../../ndk/hooks/useProfile";
 
-const UserDetailsAnchorWrapper = ({ note, children }) => (
-  <Anchor
-    component={Link}
-    href={`/user/${note.event.pubkey}`}
-    sx={{
-      ":hover": {
-        textDecoration: "none",
-      },
-      overflow: "hidden",
-    }}
-  >
-    <Group spacing={6} sx={{ flexWrap: "nowrap" }}>
-      {children}
-    </Group>
-  </Anchor>
-);
+const UserDetailsAnchorWrapper = ({ children }) => {
+  const { event } = useEvent();
+
+  return (
+    <Anchor
+      component={Link}
+      href={`/user/${event.pubkey}`}
+      sx={{
+        ":hover": {
+          textDecoration: "none",
+        },
+        overflow: "hidden",
+      }}
+    >
+      <Group spacing={6} sx={{ flexWrap: "nowrap" }}>
+        {children}
+      </Group>
+    </Anchor>
+  );
+};
 
 const UserDetailsAvatar = ({ userData }) => (
   <Avatar src={userData?.image} alt={userData?.name} size={42} radius="50%" />
 );
 
-const UserDetailsDisplayName = ({ note, userData, ...rest }) => (
-  <Text color="white" {...rest}>
-    {userData?.displayName
-      ? userData.displayName
-      : `@${note.event.pubkey.substring(0, 5)}...`}
-  </Text>
-);
+const UserDetailsDisplayName = ({ userData, ...rest }) => {
+  const { event } = useEvent();
+
+  return (
+    <Text color="white" {...rest}>
+      {userData?.displayName
+        ? userData.displayName
+        : `@${event.pubkey.substring(0, 5)}...`}
+    </Text>
+  );
+};
 
 const UserDetailsName = ({ userData, ...rest }) => (
   <Text size="xs" color="rgba(255, 255, 255, 0.74)" {...rest}>
@@ -42,30 +52,34 @@ const UserDetailsName = ({ userData, ...rest }) => (
   </Text>
 );
 
-const RelativeTime = ({ note, ...rest }) => (
-  <Text
-    size="sm"
-    color="rgba(255, 255, 255, 0.38)"
-    sx={{ whiteSpace: "nowrap" }}
-    {...rest}
-  >
-    · {getRelativeTimeString(note.event.created_at)}
-  </Text>
-);
+const RelativeTime = (props) => {
+  const { event } = useEvent();
 
-const DesktopUserDetails = ({ note, userData, sx }) => (
+  return (
+    <Text
+      size="sm"
+      color="rgba(255, 255, 255, 0.38)"
+      sx={{ whiteSpace: "nowrap" }}
+      {...props}
+    >
+      · {getRelativeTimeString(event.created_at)}
+    </Text>
+  );
+};
+
+const DesktopUserDetails = ({ userData, sx }) => (
   <Group spacing={6} sx={sx}>
-    <UserDetailsAnchorWrapper note={note}>
+    <UserDetailsAnchorWrapper>
       <UserDetailsAvatar userData={userData} />
-      <UserDetailsDisplayName size="lg" note={note} userData={userData} />
+      <UserDetailsDisplayName size="lg" userData={userData} />
       <VerifiedIcon width={14} height={14} />
       <UserDetailsName userData={userData} />
     </UserDetailsAnchorWrapper>
-    <RelativeTime note={note} />
+    <RelativeTime />
   </Group>
 );
 
-const MobileUserDetails = ({ note, userData, sx }) => {
+const MobileUserDetails = ({ userData, sx }) => {
   const isReallySmallScreen = useMediaQuery("(max-width: 400px)");
   const nameStyles = {
     whiteSpace: "nowrap",
@@ -81,13 +95,12 @@ const MobileUserDetails = ({ note, userData, sx }) => {
       spacing={6}
       sx={{ ...sx, alignItems: hasUserName ? "flex-start" : "center" }}
     >
-      <UserDetailsAnchorWrapper note={note}>
+      <UserDetailsAnchorWrapper>
         <UserDetailsAvatar userData={userData} />
         <Stack spacing={0} sx={{ overflow: "hidden" }}>
           <Group spacing={6}>
             <UserDetailsDisplayName
               size="sm"
-              note={note}
               userData={userData}
               sx={nameStyles}
             />
@@ -96,25 +109,34 @@ const MobileUserDetails = ({ note, userData, sx }) => {
           <UserDetailsName userData={userData} sx={nameStyles} />
         </Stack>
       </UserDetailsAnchorWrapper>
-      <RelativeTime note={note} mt={hasUserName ? 1 : 0} />
+      <RelativeTime mt={hasUserName ? 1 : 0} />
     </Group>
   );
 };
 
-const NoteHeader = ({
-  note,
-  userData,
-  downloadUrl,
-  downloadStatus,
-  setDownloadStatus,
-}) => {
+const UserDetails = ({ userData, sx }) => {
   const isSmallScreen = useMediaQuery("(max-width: 600px)");
-  const UserDetails = isSmallScreen ? MobileUserDetails : DesktopUserDetails;
+  const UserDetailsComponent = isSmallScreen
+    ? MobileUserDetails
+    : DesktopUserDetails;
+
+  return (
+    <UserDetailsComponent
+      userData={userData}
+      sx={{ flexWrap: "nowrap", overflow: "hidden", ...sx }}
+    />
+  );
+};
+
+const NoteHeader = ({ downloadUrl, downloadStatus, setDownloadStatus }) => {
+  const { event } = useEvent();
+  const { data: userData } = useProfile({
+    pubkey: event.pubkey,
+  });
 
   return (
     <Group position="apart" sx={{ flexWrap: "nowrap" }}>
       <UserDetails
-        note={note}
         userData={userData}
         sx={{ flexWrap: "nowrap", overflow: "hidden" }}
       />
@@ -131,11 +153,10 @@ const NoteHeader = ({
             color: theme.colors.gray[2],
           })}
         >
-          <NoteActionMore note={note} />
+          <NoteActionMore />
         </Center>
       </Group>
     </Group>
   );
 };
-
 export default withStopClickPropagation(NoteHeader);

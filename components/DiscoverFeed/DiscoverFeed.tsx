@@ -5,6 +5,7 @@ import AutoSizer from "react-virtualized-auto-sizer";
 import { Box } from "@mantine/core";
 import DiscoverFeedChips from "components/DiscoverFeedChips/DiscoverFeedChips";
 import { useDiscoverFeed } from "ndk/hooks/useDiscoverFeed";
+import { EventProvider } from "../../ndk/NDKEventProvider";
 
 export default function DiscoverFeed() {
   const headerHeight = 68;
@@ -56,7 +57,9 @@ export default function DiscoverFeed() {
             ref={rowRef}
             style={{ paddingBottom: isLastEvent ? gapSize : 0 }}
           >
-            <FeedNote key={event.id} event={event} />
+            <EventProvider event={event}>
+              <FeedNote key={event.id} />
+            </EventProvider>
           </div>
         </Box>
       );
@@ -80,7 +83,7 @@ export default function DiscoverFeed() {
             itemCount={events.length}
             itemSize={getRowHeight}
             width={width}
-            overscanCount={10}
+            overscanCount={5}
             ref={listRef}
           >
             {Row}
