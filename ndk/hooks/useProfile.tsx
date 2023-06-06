@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import NDK, { NDKUser } from "@nostr-dev-kit/ndk";
+import { NDKUser } from "@nostr-dev-kit/ndk";
 import { useNDK } from "ndk/NDKProvider";
 
 export function useProfile({ pubkey }: { pubkey: string }) {
@@ -16,7 +16,6 @@ export function useProfile({ pubkey }: { pubkey: string }) {
         await newUser.fetchProfile();
         setUser(newUser);
       };
-      setUser(null);
       fetchUser();
     }
   }, [pubkey, setUser]);
