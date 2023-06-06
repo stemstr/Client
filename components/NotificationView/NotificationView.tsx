@@ -1,12 +1,23 @@
-import { Box, Center, Group, Image, Stack, Text } from "@mantine/core";
+import {
+  Anchor,
+  AnchorProps,
+  Box,
+  Center,
+  Group,
+  Image,
+  Stack,
+  Text,
+} from "@mantine/core";
 import { NDKUser } from "@nostr-dev-kit/ndk";
 import { FeedNote } from "components/Note/Note";
 import useStyles from "components/NotificationView/NotificationView.styles";
+import { Route } from "enums";
 import { HeartIcon, RepostIcon, ZapIcon } from "icons/StemstrIcon";
 import { Notification } from "ndk/hooks/useNotifications";
 import { useProfiles } from "ndk/hooks/useProfiles";
+import Link from "next/link";
 import { Kind } from "nostr-tools";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 type NotificationViewProps = {
   notification: Notification;
@@ -89,7 +100,7 @@ function ZapNotificationView(props: NotificationProps) {
 function RepostNotificationView(props: NotificationProps) {
   const { classes } = useStyles();
   return (
-    <Group className={classes.notificationHeader}>
+    <Group align="center" className={classes.notificationHeader}>
       <Center className={`${classes.kindIcon} ${classes.kindIconRepost}`}>
         <RepostIcon width={20} height={20} />
       </Center>
@@ -105,7 +116,7 @@ function DefaultNotificationView(props: NotificationProps) {
 function NotificationHeader(props: NotificationProps) {
   const { classes } = useStyles();
   return (
-    <Stack className={classes.notificationHeaderProfiles}>
+    <Stack spacing={6} className={classes.notificationHeaderProfiles}>
       <NotificationHeaderProfilePics {...props} />
       <NotificationHeaderProfileNames {...props} />
     </Stack>
@@ -161,5 +172,45 @@ function NotificationHeaderProfilePics(props: NotificationProps) {
 function NotificationHeaderProfileNames(props: NotificationProps) {
   const { classes } = useStyles();
   const { users } = props;
-  return <Group className={classes.notificationHeaderProfileNames}></Group>;
+  const [displayedUsers, setDisplayedUsers] = useState<JSX.Element[]>([]);
+
+  useEffect(() => {
+    const newDisplayedUsers = users.slice(0, 3).map((user) => (
+      <Anchor component={Link} c="purple.5" href={`${Route.User}/${user.npub}`}>
+        @{user.profile?.name}
+      </Anchor>
+    ));
+    setDisplayedUsers(newDisplayedUsers);
+  }, [users, users.length, setDisplayedUsers]);
+
+  const renderedUsers = useMemo(() => {
+    if (users.length === 0) return <></>;
+    if (users.length === 1) return <>{displayedUsers[0]}</>;
+    if (users.length === 2)
+      return (
+        <>
+          {displayedUsers[0]} and {displayedUsers[1]}
+        </>
+      );
+    if (users.length === 3)
+      return (
+        <>
+          {displayedUsers[0]}, {displayedUsers[1]}, and {displayedUsers[2]}
+        </>
+      );
+    if (users.length > 3)
+      return (
+        <>
+          {displayedUsers[0]}, {displayedUsers[1]}, {displayedUsers[2]} and{" "}
+          {users.length - 3} more
+        </>
+      );
+    return <></>;
+  }, [displayedUsers, users.length]);
+
+  return (
+    <Text fz="xs" className={classes.notificationHeaderProfileNames}>
+      {renderedUsers}
+    </Text>
+  );
 }
