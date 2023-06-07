@@ -183,7 +183,7 @@ function NotificationHeaderProfilePics(props: NotificationProps) {
             alt=""
             styles={(theme) => ({
               root: {
-                marginLeft: index * -7,
+                marginLeft: -7,
               },
               image: {
                 borderRadius: "50%",
@@ -200,7 +200,7 @@ function NotificationHeaderProfilePics(props: NotificationProps) {
           bg="gray.6"
           pos="relative"
           sx={(theme) => ({
-            marginLeft: maxDisplayedUsers * -7,
+            marginLeft: -7,
             borderRadius: "50%",
             border: `2px solid ${theme.colors.dark[8]}`,
           })}
