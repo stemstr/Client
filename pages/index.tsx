@@ -12,14 +12,15 @@ import { MaxWidthContainer } from "../components/Feed";
 export default function HomePage() {
   const authState = useSelector((state: AppState) => state.auth);
   const router = useRouter();
+  const willRedirect = !authState.type;
 
   useEffect(() => {
-    if (!authState.type) {
+    if (willRedirect) {
       router.push(Route.Discover);
     }
-  }, [authState.type]);
+  }, [willRedirect]);
 
-  return (
+  return willRedirect ? null : (
     <>
       <Head>
         <title>Stemstr - Home</title>
