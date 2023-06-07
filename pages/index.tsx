@@ -1,4 +1,4 @@
-import { Box, Stack } from "@mantine/core";
+import { Stack } from "@mantine/core";
 import Head from "next/head";
 import HomeFeed from "../components/HomeFeed/HomeFeed";
 import HomeFeedHeader from "../components/HomeFeedHeader/HomeFeedHeader";
@@ -7,6 +7,7 @@ import { AppState } from "store/Store";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { Route } from "enums";
+import { MaxWidthContainer } from "../components/Feed";
 
 export default function HomePage() {
   const authState = useSelector((state: AppState) => state.auth);
@@ -25,9 +26,9 @@ export default function HomePage() {
       </Head>
       {/* <ColorSchemeToggle /> */}
       <Stack spacing={0}>
-        <Box m="auto" pl="md" pr="md" w="100%" sx={{ maxWidth: 600 }}>
+        <MaxWidthContainer>
           <HomeFeedHeader />
-        </Box>
+        </MaxWidthContainer>
         <HomeFeed />
       </Stack>
     </>

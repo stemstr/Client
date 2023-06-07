@@ -1,5 +1,5 @@
 import { useHomeFeed } from "ndk/hooks/useHomeFeed";
-import Feed from "../Feed/Feed";
+import { Feed } from "../Feed";
 
 export default function HomeFeed() {
   const feed = useHomeFeed();

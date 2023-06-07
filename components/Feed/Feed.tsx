@@ -12,7 +12,7 @@ interface FeedProps {
   heightOffset?: number;
 }
 
-export default function Feed({ events, heightOffset = 0 }: FeedProps) {
+export function Feed({ events, heightOffset = 0 }: FeedProps) {
   const headerHeight = 68;
   const footerHeight = useMediaQuery("(max-width: 480px)") ? 64 : 96;
   const listRef = useRef<VariableSizeList>(null);

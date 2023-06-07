@@ -1,7 +1,7 @@
 import { useState } from "react";
 import DiscoverFeedChips from "components/DiscoverFeedChips/DiscoverFeedChips";
 import { useDiscoverFeed } from "ndk/hooks/useDiscoverFeed";
-import Feed from "../Feed/Feed";
+import { Feed, MaxWidthContainer } from "../Feed";
 
 export default function DiscoverFeed() {
   const chipsHeight = 68;
@@ -18,11 +18,13 @@ export default function DiscoverFeed() {
 
   return (
     <>
-      <DiscoverFeedChips
-        events={feed}
-        value={selectedChip}
-        onChange={(newValue) => setSelectedChip(newValue as string)}
-      />
+      <MaxWidthContainer>
+        <DiscoverFeedChips
+          events={feed}
+          value={selectedChip}
+          onChange={(newValue) => setSelectedChip(newValue as string)}
+        />
+      </MaxWidthContainer>
       <Feed events={events} heightOffset={chipsHeight} />
     </>
   );
