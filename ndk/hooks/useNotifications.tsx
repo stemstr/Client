@@ -45,7 +45,6 @@ export function useNotifications({ pubkey }: { pubkey: string }) {
       }
     });
     setNotifications(notifications);
-    console.log(notifications);
   }, [events.length]);
 
   return notifications;
