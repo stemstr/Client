@@ -71,7 +71,7 @@ export default function HomeFeed() {
           itemCount={events.length}
           itemSize={getRowHeight}
           width={width}
-          overscanCount={5}
+          overscanCount={2}
           ref={listRef}
         >
           {Row}

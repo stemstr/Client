@@ -83,7 +83,7 @@ export default function DiscoverFeed() {
             itemCount={events.length}
             itemSize={getRowHeight}
             width={width}
-            overscanCount={5}
+            overscanCount={2}
             ref={listRef}
           >
             {Row}
