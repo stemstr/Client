@@ -183,7 +183,7 @@ function NotificationHeaderProfilePics(props: NotificationProps) {
             alt=""
             styles={(theme) => ({
               root: {
-                marginLeft: -7,
+                marginLeft: index > 0 ? -7 : undefined,
               },
               image: {
                 borderRadius: "50%",
