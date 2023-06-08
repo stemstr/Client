@@ -17,7 +17,11 @@ export const ApplicationContainer = ({
       styles={{
         root: {
           width: "100%",
-          maxWidth: router.pathname === Route.Home ? "100%" : 600,
+          maxWidth: [Route.Home, Route.Discover].includes(
+            router.pathname as Route
+          )
+            ? "100%"
+            : 600,
           height: "100vh",
           margin: "auto",
         },
