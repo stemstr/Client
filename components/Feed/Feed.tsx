@@ -35,7 +35,7 @@ export function Feed({ events, heightOffset = 0 }: FeedProps) {
         if (rowRef.current) {
           setRowHeight(index, rowRef.current.clientHeight);
         }
-      }, [rowRef]);
+      }, [rowRef.current]);
 
       return (
         <Box

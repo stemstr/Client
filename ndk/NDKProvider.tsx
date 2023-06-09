@@ -14,6 +14,7 @@ import NDK, {
 import { useDispatch, useSelector } from "react-redux";
 import { isAuthState, selectAuthState, setAuthState } from "store/Auth";
 import { getCachedAuth } from "cache/cache";
+import inMemoryCacheAdapter from "./inMemoryCacheAdapter";
 
 interface NDKContext {
   ndk?: NDK;
@@ -39,7 +40,10 @@ const NDKProvider = ({
   // Initialize NDK instance on component mount
   useEffect(() => {
     const initNDK = async () => {
-      const ndkInstance = new NDK({ explicitRelayUrls });
+      const ndkInstance = new NDK({
+        explicitRelayUrls,
+        cacheAdapter: inMemoryCacheAdapter,
+      });
 
       try {
         // Connect to the relays
