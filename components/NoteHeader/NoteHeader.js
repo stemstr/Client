@@ -8,7 +8,6 @@ import { getRelativeTimeString } from "../../ndk/utils";
 import NoteActionMore from "components/NoteAction/NoteActionMore";
 import { useEvent } from "../../ndk/NDKEventProvider";
 import { useProfile } from "../../ndk/hooks/useProfile";
-import { isMobileUserAgent } from "../../utils/common";
 
 const UserDetailsAnchorWrapper = ({ children }) => {
   const { event } = useEvent();
@@ -116,14 +115,10 @@ const MobileUserDetails = ({ userData, sx }) => {
 };
 
 const UserDetails = ({ userData, sx }) => {
-  const isPossiblyMobileDevice = isMobileUserAgent();
-  const isSmallScreen = useMediaQuery(
-    "(max-width: 600px)",
-    isPossiblyMobileDevice,
-    {
-      getInitialValueInEffect: !isPossiblyMobileDevice,
-    }
-  );
+  const viewportWidth = document.documentElement.clientWidth;
+  const isSmallScreen = useMediaQuery("(max-width: 600px)", viewportWidth, {
+    getInitialValueInEffect: !viewportWidth,
+  });
   const UserDetailsComponent = isSmallScreen
     ? MobileUserDetails
     : DesktopUserDetails;
