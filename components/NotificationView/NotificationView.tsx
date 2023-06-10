@@ -1,18 +1,9 @@
-import {
-  Anchor,
-  AnchorProps,
-  Box,
-  Center,
-  Group,
-  Image,
-  Stack,
-  Text,
-} from "@mantine/core";
+import { Anchor, Avatar, Box, Center, Group, Stack, Text } from "@mantine/core";
 import { NDKEvent, NDKUser } from "@nostr-dev-kit/ndk";
 import { FeedNote } from "components/Note/Note";
 import useStyles from "components/NotificationView/NotificationView.styles";
 import { Route } from "enums";
-import { HeartIcon, RepostIcon, ZapIcon } from "icons/StemstrIcon";
+import { HeartIcon, ProfileIcon, RepostIcon, ZapIcon } from "icons/StemstrIcon";
 import { useNDK } from "ndk/NDKProvider";
 import { Notification } from "ndk/hooks/useNotifications";
 import { useProfiles } from "ndk/hooks/useProfiles";
@@ -174,25 +165,24 @@ function NotificationHeaderProfilePics(props: NotificationProps) {
   const maxDisplayedUsers = 10;
   return (
     <Group className={classes.notificationHeaderProfilePics} spacing={0}>
-      {users.slice(0, maxDisplayedUsers).map((user, index) =>
-        user.profile?.image ? (
-          <Image
-            src={user.profile.image}
-            width={28}
-            height={28}
-            alt=""
-            styles={(theme) => ({
-              root: {
-                marginLeft: index > 0 ? -7 : undefined,
-              },
-              image: {
-                borderRadius: "50%",
-                border: `2px solid ${theme.colors.dark[8]}`,
-              },
-            })}
-          />
-        ) : null
-      )}
+      {users.slice(0, maxDisplayedUsers).map((user, index) => (
+        <Avatar
+          src={user.profile?.image}
+          alt={user.profile?.name}
+          size={28}
+          styles={(theme) => ({
+            root: {
+              marginLeft: index > 0 ? -7 : undefined,
+            },
+            image: {
+              borderRadius: "50%",
+              border: `2px solid ${theme.colors.dark[8]}`,
+            },
+          })}
+        >
+          <ProfileIcon />
+        </Avatar>
+      ))}
       {users.length > maxDisplayedUsers && (
         <Center
           w={28}
