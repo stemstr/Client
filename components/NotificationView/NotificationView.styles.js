@@ -21,10 +21,11 @@ const useStyles = createStyles((theme, _params, getRef) => ({
   },
   notificationHeader: {
     gap: theme.spacing.md,
+    flexWrap: "nowrap",
   },
   notificationHeaderProfiles: {},
   notificationHeaderProfilePics: {},
-  notificationHeaderProfileNames: {},
+  notificationHeaderProfileNames: { whiteSpace: "pre-wrap" },
   kindIcon: {
     width: 42,
     height: 42,
