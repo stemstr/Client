@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useFeed } from "./useFeed";
 import { NDKEvent, NDKFilter } from "@nostr-dev-kit/ndk";
 import { Kind } from "nostr-tools";
+import { parseEventTags } from "ndk/utils";
 
 export function useNotifications({ pubkey }: { pubkey: string }) {
   const [notifications, setNotifications] = useState<NotificationsMap>(
@@ -21,7 +22,8 @@ export function useNotifications({ pubkey }: { pubkey: string }) {
   useEffect(() => {
     const notifications: NotificationsMap = new Map();
     events.forEach((event) => {
-      const eTag = event.tags.find((tag) => tag[0] === "e");
+      const { root, reply } = parseEventTags(event);
+      const eTag = reply ? reply : root ? root : undefined;
       const referencedEventId = eTag ? eTag[1] : "";
       const isGrouped = ![Kind.Text, 1808 as Kind].includes(event.kind as Kind);
       const index: NotificationsMapIndex = isGrouped

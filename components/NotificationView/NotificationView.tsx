@@ -10,6 +10,8 @@ import { useProfiles } from "ndk/hooks/useProfiles";
 import Link from "next/link";
 import { Kind } from "nostr-tools";
 import { useEffect, useMemo, useState } from "react";
+import { useSelector } from "react-redux";
+import { selectAuthState } from "store/Auth";
 
 type NotificationViewProps = {
   notification: Notification;
@@ -207,7 +209,12 @@ function NotificationHeaderProfilePics(props: NotificationProps) {
 function NotificationHeaderProfileNames(props: NotificationProps) {
   const { classes } = useStyles();
   const { users } = props;
+  const authSate = useSelector(selectAuthState);
   const [displayedUsers, setDisplayedUsers] = useState<JSX.Element[]>([]);
+  const referencedEventIsUsers = useMemo(
+    () => props.referencedEvent?.pubkey === authSate.pk,
+    [props.referencedEvent?.pubkey, authSate.pk]
+  );
 
   const renderedUsers = useMemo(() => {
     if (users.length === 0) return <></>;
@@ -237,9 +244,19 @@ function NotificationHeaderProfileNames(props: NotificationProps) {
   const output = useMemo(() => {
     switch (props.notification.kind) {
       case 6 as Kind:
-        return <>{renderedUsers} reposted your note</>;
+        return (
+          <>
+            {renderedUsers} reposted{" "}
+            {referencedEventIsUsers ? "your post" : "a post you were tagged in"}
+          </>
+        );
       case Kind.Reaction:
-        return <>{renderedUsers} reacted to your post</>;
+        return (
+          <>
+            {renderedUsers} reacted to{" "}
+            {referencedEventIsUsers ? "your post" : "a post you were tagged in"}
+          </>
+        );
       case Kind.Zap:
         return <>{renderedUsers} zapped you</>;
       default:
