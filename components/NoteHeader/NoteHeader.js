@@ -115,7 +115,14 @@ const MobileUserDetails = ({ userData, sx }) => {
 };
 
 const UserDetails = ({ userData, sx }) => {
-  const isSmallScreen = useMediaQuery("(max-width: 600px)");
+  const isScreenSmallOnInitialLoad = document.documentElement.clientWidth < 600;
+  const isSmallScreen = useMediaQuery(
+    "(max-width: 600px)",
+    isScreenSmallOnInitialLoad,
+    {
+      getInitialValueInEffect: !isScreenSmallOnInitialLoad,
+    }
+  );
   const UserDetailsComponent = isSmallScreen
     ? MobileUserDetails
     : DesktopUserDetails;
