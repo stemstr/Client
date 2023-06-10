@@ -1,25 +1,31 @@
 import { useEffect, useState } from "react";
-import NDK, { NDKUser } from "@nostr-dev-kit/ndk";
+import { NDKUserProfile } from "@nostr-dev-kit/ndk";
 import { useNDK } from "ndk/NDKProvider";
+import { getCachedProfile } from "../inMemoryCacheAdapter";
 
 export function useProfile({ pubkey }: { pubkey: string }) {
   const { ndk } = useNDK();
-  const [user, setUser] = useState<NDKUser | null>(null);
+  const [profile, setProfile] = useState<NDKUserProfile | undefined>(
+    getCachedProfile(pubkey, ndk)
+  );
 
   useEffect(() => {
-    if (!pubkey) {
+    if (!pubkey || profile) {
       return;
     }
+
     if (ndk) {
       const fetchUser = async () => {
         const newUser = ndk.getUser({ hexpubkey: pubkey });
         await newUser.fetchProfile();
-        setUser(newUser);
+
+        if (Object.values(newUser.profile ?? {}).length > 0) {
+          setProfile(newUser.profile);
+        }
       };
-      setUser(null);
       fetchUser();
     }
-  }, [pubkey, setUser]);
+  }, [pubkey, profile, setProfile]);
 
-  return { data: user?.profile };
+  return { data: profile };
 }

@@ -4,6 +4,7 @@ const useStyles = createStyles((theme, _params, getRef) => ({
   container: {
     paddingLeft: theme.spacing.md,
     paddingRight: theme.spacing.md,
+    cursor: "pointer",
   },
   notification: {
     backgroundColor: theme.colors.dark[8],

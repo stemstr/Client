@@ -4,10 +4,12 @@ import { FeedNote } from "components/Note/Note";
 import useStyles from "components/NotificationView/NotificationView.styles";
 import { Route } from "enums";
 import { HeartIcon, ProfileIcon, RepostIcon, ZapIcon } from "icons/StemstrIcon";
+import { EventProvider } from "ndk/NDKEventProvider";
 import { useNDK } from "ndk/NDKProvider";
 import { Notification } from "ndk/hooks/useNotifications";
 import { useProfiles } from "ndk/hooks/useProfiles";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { Kind } from "nostr-tools";
 import { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
@@ -26,9 +28,10 @@ export default function NotificationView(props: NotificationViewProps) {
   const { ndk } = useNDK();
   const { classes } = useStyles();
   const { notification } = props;
+  const router = useRouter();
   const profileIds = useMemo(
     () => notification.events.map((event) => event.pubkey),
-    [notification.events.length]
+    [notification.events, notification.events.length]
   );
   const users: NDKUser[] = useProfiles({ hexpubkeys: profileIds });
   const [referencedEvent, setReferencedEvent] = useState<
@@ -66,7 +69,10 @@ export default function NotificationView(props: NotificationViewProps) {
           ])}
           className={classes.container}
         >
-          <FeedNote event={notification.events[0]} />
+          {/* <FeedNote event={notification.events[0]} /> */}
+          <EventProvider event={notification.events[0]}>
+            <FeedNote key={notification.events[0].id} />
+          </EventProvider>
         </Box>
       );
     case Kind.Zap:
@@ -78,12 +84,20 @@ export default function NotificationView(props: NotificationViewProps) {
     default:
       NotificationView = <DefaultNotificationView {...props} users={users} />;
   }
+
+  const handleClick = () => {
+    if (notification.referencedEventId) {
+      router.push(`${Route.Thread}/${notification.referencedEventId}`);
+    }
+  };
+
   return (
     <Box
       key={JSON.stringify([notification.kind, notification.referencedEventId])}
       className={classes.container}
+      onClick={handleClick}
     >
-      <Anchor
+      {/* <Anchor
         component={Link}
         href={
           notification.referencedEventId
@@ -95,9 +109,9 @@ export default function NotificationView(props: NotificationViewProps) {
             textDecoration: "none",
           },
         }}
-      >
-        <Box className={classes.notification}>{NotificationView}</Box>
-      </Anchor>
+      > */}
+      <Box className={classes.notification}>{NotificationView}</Box>
+      {/* </Anchor> */}
     </Box>
   );
 }
@@ -169,6 +183,7 @@ function NotificationHeaderProfilePics(props: NotificationProps) {
     <Group className={classes.notificationHeaderProfilePics} spacing={0}>
       {users.slice(0, maxDisplayedUsers).map((user, index) => (
         <Avatar
+          key={index}
           src={user.profile?.image}
           alt={user.profile?.name}
           size={28}
@@ -262,11 +277,16 @@ function NotificationHeaderProfileNames(props: NotificationProps) {
       default:
         return null;
     }
-  }, [renderedUsers]);
+  }, [props.notification.kind, renderedUsers]);
 
   useEffect(() => {
     const newDisplayedUsers = users.slice(0, 3).map((user) => (
-      <Anchor component={Link} c="purple.5" href={`${Route.User}/${user.npub}`}>
+      <Anchor
+        key={user.hexpubkey()}
+        component={Link}
+        c="purple.5"
+        href={`${Route.User}/${user.npub}`}
+      >
         @{user.profile?.name || `${user.hexpubkey().slice(0, 5)}...`}
       </Anchor>
     ));

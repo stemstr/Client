@@ -20,8 +20,9 @@ export default function Notifications() {
         </Box>
         {Array.from(notifications.values())
           .sort((a, b) => b.created_at - a.created_at)
-          .map((notification) => (
-            <NotificationView notification={notification} />
+          .slice(0, 3)
+          .map((notification, index) => (
+            <NotificationView key={index} notification={notification} />
           ))}
       </Stack>
     </>

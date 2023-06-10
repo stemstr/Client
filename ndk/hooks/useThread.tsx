@@ -1,20 +1,15 @@
-import { useEffect, useMemo, useState } from "react";
-import { useFeed } from "./useFeed";
-import { Kind } from "nostr-tools";
+import { useEffect, useState } from "react";
 import { useNDK } from "ndk/NDKProvider";
 import { NDKEvent } from "@nostr-dev-kit/ndk";
 import { parseEventTags, usesDepecratedETagSchema } from "ndk/utils";
 import { NoteTreeNode } from "ndk/types/note";
+import { useEventReplies } from "./useEventReplies";
 
 export function useThread({ noteId }: { noteId: string }) {
   const { ndk } = useNDK();
   const [targetEvent, setTargetEvent] = useState<NDKEvent | null>(null);
   const [rootEvent, setRootEvent] = useState<NDKEvent | null>(null);
-  const filter = useMemo(
-    () => ({ kinds: [1, 1808 as Kind], "#e": [rootEvent ? rootEvent.id : ""] }),
-    [rootEvent?.id]
-  );
-  const events = useFeed(filter);
+  const events = useEventReplies(rootEvent);
   const [threadEvents, setThreadEvents] = useState<NDKEvent[]>([]);
   const [thread, setThread] = useState<NoteTreeNode | null>(null);
 
