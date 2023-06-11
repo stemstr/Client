@@ -8,6 +8,7 @@ import { EventProvider } from "ndk/NDKEventProvider";
 import { useNDK } from "ndk/NDKProvider";
 import { Notification } from "ndk/hooks/useNotifications";
 import { useProfiles } from "ndk/hooks/useProfiles";
+import { useUsers } from "ndk/hooks/useUsers";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { Kind } from "nostr-tools";
@@ -33,7 +34,7 @@ export default function NotificationView(props: NotificationViewProps) {
     () => notification.events.map((event) => event.pubkey),
     [notification.events, notification.events.length]
   );
-  const users: NDKUser[] = useProfiles({ hexpubkeys: profileIds });
+  const users: NDKUser[] = useUsers(profileIds);
   const [referencedEvent, setReferencedEvent] = useState<
     NDKEvent | undefined
   >();
