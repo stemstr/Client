@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { NDKUser, NDKUserProfile } from "@nostr-dev-kit/ndk";
+import { NDKUser } from "@nostr-dev-kit/ndk";
 import { useNDK } from "ndk/NDKProvider";
 import { getCachedProfile } from "../inMemoryCacheAdapter";
 
@@ -10,9 +10,24 @@ export function useUsers(pubkeys: string[]): NDKUser[] {
 
   useEffect(() => {
     if (ndk) {
+      // Remove unused data
+      Array.from(users.keys()).forEach((pubkey) => {
+        if (!pubkeys.includes(pubkey)) {
+          queriedPubkeys.current = queriedPubkeys.current.filter(
+            (queriedPubkey) => queriedPubkey !== pubkey
+          );
+          setUsers((prev) => {
+            const newUsers = new Map(prev);
+            newUsers.delete(pubkey);
+            return newUsers;
+          });
+        }
+      });
+      // Determine which pubkeys haven't been queried
       const pubkeysToQuery = pubkeys.filter(
         (pubkey) => !queriedPubkeys.current.includes(pubkey)
       );
+      // Query new pubkeys
       pubkeysToQuery.forEach((pubkey) => {
         queriedPubkeys.current.push(pubkey);
         const user = ndk.getUser({ hexpubkey: pubkey });

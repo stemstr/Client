@@ -3,15 +3,20 @@ import Link from "next/link";
 import { useSelector } from "react-redux";
 import { ProfileIcon } from "../../icons/StemstrIcon";
 import { selectAuthState } from "../../store/Auth";
-import { useProfile } from "ndk/hooks/useProfile";
+import { useUser } from "ndk/hooks/useUser";
 
 export default function ProfileLink() {
   const authState = useSelector(selectAuthState);
-  const { data } = useProfile({ pubkey: authState.pk });
+  const user = useUser(authState.pk);
 
   return (
     <Link href="/profile">
-      <Avatar src={data?.image} alt={data?.name} size={36} radius="50%">
+      <Avatar
+        src={user?.profile?.image}
+        alt={user?.profile?.name}
+        size={36}
+        radius="50%"
+      >
         <ProfileIcon />
       </Avatar>
     </Link>

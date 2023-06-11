@@ -7,7 +7,7 @@ import withStopClickPropagation from "../../utils/hoc/withStopClickPropagation";
 import { getRelativeTimeString } from "../../ndk/utils";
 import NoteActionMore from "components/NoteAction/NoteActionMore";
 import { useEvent } from "../../ndk/NDKEventProvider";
-import { useProfile } from "../../ndk/hooks/useProfile";
+import { useUser } from "ndk/hooks/useUser";
 
 const UserDetailsAnchorWrapper = ({ children }) => {
   const { event } = useEvent();
@@ -137,14 +137,12 @@ const UserDetails = ({ userData, sx }) => {
 
 const NoteHeader = ({ downloadUrl, downloadStatus, setDownloadStatus }) => {
   const { event } = useEvent();
-  const { data: userData } = useProfile({
-    pubkey: event.pubkey,
-  });
+  const user = useUser(event.pubkey);
 
   return (
     <Group position="apart" sx={{ flexWrap: "nowrap" }}>
       <UserDetails
-        userData={userData}
+        userData={user?.profile}
         sx={{ flexWrap: "nowrap", overflow: "hidden" }}
       />
       <Group position="right" sx={{ minWidth: 68 }}>

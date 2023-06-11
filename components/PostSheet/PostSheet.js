@@ -12,7 +12,7 @@ import { acceptedMimeTypes } from "../../utils/media";
 import { parseEventTags } from "../../ndk/utils";
 import { useNDK } from "ndk/NDKProvider";
 import { NDKEvent } from "@nostr-dev-kit/ndk";
-import { useProfile } from "ndk/hooks/useProfile";
+import { useUser } from "ndk/hooks/useUser";
 
 export default function PostSheet() {
   const { ndk, stemstrRelaySet } = useNDK();
@@ -21,9 +21,7 @@ export default function PostSheet() {
   const relays = useSelector((state) => state.relays);
   const sheetState = useSelector((state) => state.sheets[sheetKey]);
   const dispatch = useDispatch();
-  const { data: replyingTo } = useProfile({
-    pubkey: sheetState.replyingTo?.pubkey,
-  });
+  const replyingTo = useUser(sheetState.replyingTo?.pubkey);
   const [isDragging, setIsDragging] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const form = useForm({
@@ -139,7 +137,7 @@ export default function PostSheet() {
 
   let title = isDragging ? "Drop to proccess sound" : "Share";
   if (sheetState.replyingTo) {
-    title = `Replying to @${replyingTo?.name}`;
+    title = `Replying to @${replyingTo?.profile?.name}`;
   }
   if (!sheetState.isOpen) title = "";
 

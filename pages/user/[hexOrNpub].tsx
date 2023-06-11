@@ -28,7 +28,7 @@ import {
   VerifiedIcon,
   ChevronLeftIcon,
 } from "icons/StemstrIcon";
-import { useProfile } from "ndk/hooks/useProfile";
+import { useUser } from "ndk/hooks/useUser";
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -39,9 +39,7 @@ export default function ProfilePage() {
     [hexOrNpub]
   );
   const authState = useSelector(selectAuthState);
-  const { data: userData } = useProfile({
-    pubkey: pk,
-  });
+  const user = useUser(pk);
   const handleLogout = () => {
     dispatch(logout());
     router.push(Route.Login);
@@ -50,7 +48,7 @@ export default function ProfilePage() {
   return (
     <>
       <Head>
-        <title>{`Stemstr - ${userData?.displayName || "Profile"}`}</title>
+        <title>{`Stemstr - ${user?.profile?.displayName || "Profile"}`}</title>
       </Head>
       <Box
         sx={(theme) => ({
@@ -58,9 +56,9 @@ export default function ProfilePage() {
           height: 200,
         })}
       >
-        {userData?.banner && (
+        {user?.profile?.banner && (
           <Image
-            src={userData.banner}
+            src={user.profile.banner}
             height={200}
             styles={(theme) => ({
               root: {
@@ -94,8 +92,8 @@ export default function ProfilePage() {
       </Box>
       <Group pl="md" pr="md" mb="lg" position="apart" mt={-50}>
         <Avatar
-          src={userData?.image}
-          alt={userData?.name}
+          src={user?.profile?.image}
+          alt={user?.profile?.name}
           size={100}
           radius={50}
         />
@@ -116,12 +114,14 @@ export default function ProfilePage() {
       </Group>
       <Stack spacing={6} mb="xl" pl="md" pr="md" c="white">
         <Text size="lg" color="white" fw="bold">
-          {userData?.displayName
-            ? userData.displayName
+          {user?.profile?.displayName
+            ? user.profile.displayName
             : `@${pk.substring(0, 5)}...`}
         </Text>
         <Group spacing={4}>
-          <Text size="sm">{userData?.name && `@${userData.name}`}</Text>
+          <Text size="sm">
+            {user?.profile?.name && `@${user?.profile.name}`}
+          </Text>
           {/* {nip05 && (
             <>
               <VerifiedIcon width={14} height={14} />
@@ -133,7 +133,7 @@ export default function ProfilePage() {
           )} */}
         </Group>
         <Text size="sm" mb={8} sx={{ whiteSpace: "pre-wrap" }}>
-          {userData?.about}
+          {user?.profile?.about}
         </Text>
         <CopyNpub npub={npub} />
       </Stack>

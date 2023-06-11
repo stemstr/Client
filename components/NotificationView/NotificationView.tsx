@@ -7,7 +7,6 @@ import { HeartIcon, ProfileIcon, RepostIcon, ZapIcon } from "icons/StemstrIcon";
 import { EventProvider } from "ndk/NDKEventProvider";
 import { useNDK } from "ndk/NDKProvider";
 import { Notification } from "ndk/hooks/useNotifications";
-import { useProfiles } from "ndk/hooks/useProfiles";
 import { useUsers } from "ndk/hooks/useUsers";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -278,7 +277,7 @@ function NotificationHeaderProfileNames(props: NotificationProps) {
       default:
         return null;
     }
-  }, [props.notification.kind, renderedUsers]);
+  }, [props.notification.kind, renderedUsers, referencedEventIsUsers]);
 
   useEffect(() => {
     const newDisplayedUsers = users.slice(0, 3).map((user) => (

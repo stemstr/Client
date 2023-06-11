@@ -10,7 +10,7 @@ export function useUser(pubkey?: string): NDKUser | undefined {
     if (users.length) {
       setUser(users[0]);
     }
-  }, [users, users.length, setUser]);
+  }, [users[0], users.length, setUser]);
 
   return user;
 }
