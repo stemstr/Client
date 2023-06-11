@@ -86,7 +86,9 @@ export default function BottomNavigation() {
           </Center>
         </AuthBottomNavigationItem>
         <BottomNavigationItem />
-        <BottomNavigationItem />
+        <AuthBottomNavigationItem href={Route.Notifications}>
+          <BellIcon />
+        </AuthBottomNavigationItem>
       </Group>
     </Footer>
   );

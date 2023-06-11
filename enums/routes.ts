@@ -5,4 +5,6 @@ export enum Route {
   Signup = "/signup",
   Settings = "/settings",
   Thread = "/thread",
+  Notifications = "/notifications",
+  User = "/user",
 }

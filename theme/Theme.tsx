@@ -57,7 +57,19 @@ const stemstrTheme: MantineThemeOverride = {
       "#CC0E80", // red.6
       "#CC0E80", // red.7
       "#CC0E80", // red.8
-      "#CC0E80", // red.9
+      "#4B0730", // red.9
+    ],
+    orange: [
+      "#FAA330", // orange.0
+      "#FAA330", // orange.1
+      "#FAA330", // orange.2
+      "#FAA330", // orange.3
+      "#FAA330", // orange.4
+      "#FAA330", // orange.5
+      "#FAA330", // orange.6
+      "#FAA330", // orange.7
+      "#FAA330", // orange.8
+      "#37250C", // orange.9
     ],
     gray: [
       "#FAFAFA", // gray.0
