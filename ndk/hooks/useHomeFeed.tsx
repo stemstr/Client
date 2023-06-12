@@ -1,31 +1,21 @@
 import { useMemo } from "react";
-import { useFeed } from "./useFeed";
-import { Kind } from "nostr-tools";
-import { NDKFilter } from "@nostr-dev-kit/ndk";
-import useContactList from "./useContactList";
-import { useSelector } from "react-redux";
-import { AppState } from "store/Store";
+import { type Kind } from "nostr-tools";
+import { type NDKFilter } from "@nostr-dev-kit/ndk";
+import { useFeedWithEose } from "./useFeedWithEose";
 
-export function useHomeFeed() {
-  const authState = useSelector((state: AppState) => state.auth);
-  const contactList = useContactList({ hexpubkey: authState.pk });
-  const queriedAuthors = useMemo(() => {
-    let pubkeys = [...contactList.values()].map((user) => user.hexpubkey());
-    if (authState.pk && !pubkeys.some((pubkey) => pubkey === authState.pk))
-      pubkeys = [authState.pk, ...pubkeys];
-    return pubkeys.slice(0, 1000);
-  }, [contactList.size]);
+export function useHomeFeed(pubkeys: string[]) {
+  const pubkeyHash = pubkeys.join();
   const filter = useMemo<NDKFilter>(
     () => ({
       kinds: [1, 1808 as Kind],
       limit: 100,
-      authors: queriedAuthors,
+      authors: pubkeys,
     }),
-    [queriedAuthors]
+    [pubkeyHash]
   );
-  const events = useFeed(filter, [
+  const events = useFeedWithEose(filter, [
     process.env.NEXT_PUBLIC_STEMSTR_RELAY as string,
   ]);
 
-  return events;
+  return events.filter((event) => !event.tags.find((tag) => tag[0] === "e"));
 }
