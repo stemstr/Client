@@ -42,20 +42,27 @@ const inMemoryCacheAdapter = {
   locking: true,
   async query(subscription: NDKSubscription) {
     const { filter } = subscription;
+    const { authors, kinds } = filter;
 
-    // currently only supporting profile caching
-    if (!filter.authors || !filter.kinds || filter.kinds[0] !== 0) {
+    // currently only supporting profile caching and authors and kinds are available for profile caching
+    if (!authors || !kinds) {
       return;
     }
 
-    filter.authors.forEach((pubkey: string) => {
-      const cachedProfile = profileEventsCache[pubkey];
+    authors.forEach((pubkey: string) => {
+      kinds.forEach((kind: number) => {
+        if (kind !== 0) {
+          return;
+        }
 
-      if (cachedProfile) {
-        const ndkEvent = new NDKEvent(subscription.ndk, cachedProfile);
+        const cachedProfile = profileEventsCache[pubkey];
 
-        subscription.eventReceived(ndkEvent, undefined, true);
-      }
+        if (cachedProfile) {
+          const ndkEvent = new NDKEvent(subscription.ndk, cachedProfile);
+
+          subscription.eventReceived(ndkEvent, undefined, true);
+        }
+      });
     });
   },
   async setEvent(event: NDKEvent) {
