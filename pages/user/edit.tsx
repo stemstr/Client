@@ -1,6 +1,7 @@
 import { Box, Center, Group, Image, Text } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import BackButton from "components/BackButton/BackButton";
+import BannerSelector from "components/EditProfileForm/BannerSelector";
 import ProfilePicSelector from "components/EditProfileForm/ProfilePicSelector";
 import { Route } from "enums";
 import { ChevronLeftIcon, EditIcon } from "icons/StemstrIcon";
@@ -42,6 +43,10 @@ export default function EditProfile() {
     }
   }, [user?.profile?.image]);
 
+  useEffect(() => {
+    console.log(form.values);
+  }, [form.values]);
+
   return (
     <>
       <Head>
@@ -50,29 +55,18 @@ export default function EditProfile() {
       <Box
         sx={(theme) => ({
           padding: `${theme.spacing.md}px ${theme.spacing.md}px 0`,
-          height: 200,
         })}
       >
-        {user?.profile?.banner && (
-          <Image
-            src={user.profile.banner}
-            height={200}
-            styles={(theme) => ({
-              root: {
-                filter: "brightness(0.5)",
-                position: "absolute",
-                zIndex: -1,
-                top: 0,
-                left: 0,
-                right: 0,
-              },
-              imageWrapper: {
-                position: "static",
-              },
-            })}
-          />
-        )}
-        <Group position="apart">
+        <BannerSelector {...form.getInputProps("banner")} />
+        <Group
+          position="apart"
+          sx={(theme) => ({
+            position: "absolute",
+            top: 0,
+            zIndex: 2,
+            paddingTop: `${theme.spacing.md}px`,
+          })}
+        >
           <Group spacing="sm" align="center" c="white">
             <BackButton defaultUrl={Route.Profile}>
               <ChevronLeftIcon width={24} height={24} />
@@ -82,13 +76,10 @@ export default function EditProfile() {
             </Text>
           </Group>
         </Group>
-        <Center mt="lg">
-          <EditIcon width={26} height={26} color="white" />
+        <Center>
+          <ProfilePicSelector {...form.getInputProps("picture")} />
         </Center>
       </Box>
-      <Center>
-        <ProfilePicSelector {...form.getInputProps("picture")} />
-      </Center>
     </>
   );
 }

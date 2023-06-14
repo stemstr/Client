@@ -1,5 +1,5 @@
 import { Avatar, Box, Center, FileInput, TextInput } from "@mantine/core";
-import { CameraPlusIcon, EditIcon } from "icons/StemstrIcon";
+import { EditIcon } from "icons/StemstrIcon";
 import { useRef } from "react";
 import { uploadImage } from "utils/media";
 
