@@ -7,15 +7,13 @@ import { useNDK } from "ndk/NDKProvider";
 import { createRelaySet } from "ndk/utils";
 import { useEffect, useRef, useState } from "react";
 import { chunkArray } from "../../utils/common";
+import { uniqBy } from "ndk/utils";
 
 export function useFeedWithEose(filter: NDKFilter, relayUrls: string[] = []) {
   const { ndk } = useNDK();
   const [feed, setFeed] = useState<NDKEvent[]>([]);
   const eventBatch = useRef<NDKEvent[] | null>([]);
   const eoseCount = useRef(0);
-  const sortedFeed = feed.sort(
-    (a, b) => (b.created_at ?? 0) - (a.created_at ?? 0)
-  );
 
   useEffect(() => {
     if (!ndk) {
@@ -73,5 +71,7 @@ export function useFeedWithEose(filter: NDKFilter, relayUrls: string[] = []) {
     };
   }, [filter, setFeed, ndk]);
 
-  return sortedFeed;
+  return uniqBy(feed, "id").sort(
+    (a, b) => (b.created_at ?? 0) - (a.created_at ?? 0)
+  );
 }
