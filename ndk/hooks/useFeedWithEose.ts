@@ -27,7 +27,7 @@ export function useFeedWithEose(filter: NDKFilter, relayUrls: string[] = []) {
     // many relays have a max of 256 authors
     const maxAuthors = 256;
 
-    const hasAuthorsInFilter = filter.authors?.length ?? 0;
+    const hasAuthorsInFilter = filter.authors && filter.authors > 0;
     const filters = hasAuthorsInFilter
       ? chunkArray(filter.authors, maxAuthors).map((authors) => ({
           ...filter,
