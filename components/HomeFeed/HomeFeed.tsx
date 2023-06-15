@@ -6,8 +6,8 @@ import usePreloadProfileCache from "../../ndk/hooks/usePreloadProfileCache";
 const HomeFeedContent = ({ pubkeys }: { pubkeys: string[] }) => {
   const events = useHomeFeed(pubkeys);
 
-  // only preload the first 20 profiles to reduce amount of data fetched and since relays don't return any
-  // results when requesting too many profiles
+  // only preload the profiles for the first 20 events to reduce amount of data fetched and since relays don't return
+  // any results when requesting too many profiles
   const hasAttemptedProfileCachePreload = usePreloadProfileCache(
     events.slice(0, 20).map(({ pubkey }) => pubkey)
   );
