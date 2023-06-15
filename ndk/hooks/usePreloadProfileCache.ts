@@ -4,18 +4,19 @@ import { useEffect, useState } from "react";
 export default function usePreloadProfileCache(pubkeys: string[]) {
   const { ndk } = useNDK();
   const [hasAttemptedPreload, setHasAttemptedPreload] = useState(false);
-  const pubkeysHash = pubkeys.join();
+  const dedupedPubkeys = Array.from(new Set(pubkeys));
+  const dedupedPubkeysHash = pubkeys.join();
 
   useEffect(() => {
-    if (!ndk || pubkeysHash.length === 0) {
+    if (!ndk || dedupedPubkeysHash.length === 0) {
       return;
     }
 
     ndk
-      .fetchEvents({ kinds: [0], authors: pubkeys })
+      .fetchEvents({ kinds: [0], authors: dedupedPubkeys })
       .catch(console.error)
       .finally(() => setHasAttemptedPreload(true));
-  }, [ndk, pubkeysHash]);
+  }, [ndk, dedupedPubkeysHash]);
 
   return hasAttemptedPreload;
 }
