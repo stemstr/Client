@@ -22,7 +22,7 @@ const FileDropOverlay = () => {
       e.preventDefault();
       const items = e.dataTransfer.items;
       if (items.length > 0 && acceptedMimeTypes.includes(items[0].type)) {
-        if (authState?.user?.pk) {
+        if (authState.pk) {
           if (!postSheetState.isOpen) {
             dispatch(openSheet({ sheetKey }));
           }
@@ -43,7 +43,7 @@ const FileDropOverlay = () => {
       document.body.removeEventListener("dragover", onDragOver);
       document.body.removeEventListener("drop", onDrop);
     };
-  }, [dispatch, shouldRenderOverlay, authState?.user?.pk, postSheetState]);
+  }, [dispatch, shouldRenderOverlay, authState.pk, postSheetState]);
 
   return null;
 };

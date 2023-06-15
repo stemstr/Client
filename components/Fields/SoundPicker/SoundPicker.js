@@ -56,7 +56,7 @@ export default function SoundPicker({
         rest.onChange(null);
       } else {
         const formData = new FormData();
-        formData.append("pk", auth.user.pk);
+        formData.append("pk", auth.pk);
         formData.append("sum", sum);
         formData.append("filename", rest.value.name);
         formData.append("file", rest.value);

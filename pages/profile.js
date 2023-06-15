@@ -7,8 +7,8 @@ export default function Profile() {
   const router = useRouter();
   const authState = useSelector(selectAuthState);
   useEffect(() => {
-    if (authState?.user?.pk) {
-      router.replace(`/user/${authState.user.pk}`);
+    if (authState.pk) {
+      router.replace(`/user/${authState.pk}`);
     } else {
       router.replace("/login");
     }

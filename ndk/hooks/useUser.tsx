@@ -1,16 +1,23 @@
 import { useEffect, useState } from "react";
-import { NDKUser } from "@nostr-dev-kit/ndk";
-import { useUsers } from "./useUsers";
+import { getCachedUser } from "../inMemoryCacheAdapter";
+import { useNDK } from "../NDKProvider";
 
-export function useUser(pubkey?: string): NDKUser | undefined {
-  const users = useUsers(pubkey ? [pubkey] : []);
-  const [user, setUser] = useState<NDKUser | undefined>();
+export function useUser(pubkey?: string) {
+  const { ndk } = useNDK();
+  const [user, setUser] = useState(getCachedUser(pubkey, ndk));
 
   useEffect(() => {
-    if (users.length) {
-      setUser(users[0]);
+    if (!ndk || !pubkey || user) {
+      return;
     }
-  }, [users[0], users.length, setUser]);
+
+    const fetchUser = async () => {
+      const newUser = ndk.getUser({ hexpubkey: pubkey });
+      await newUser.fetchProfile();
+      setUser(newUser);
+    };
+    fetchUser();
+  }, [pubkey, ndk, user]);
 
   return user;
 }

@@ -23,7 +23,7 @@ export function Feed({ events, heightOffset = 0 }: FeedProps) {
     rowHeights.current = { ...rowHeights.current, [index]: height };
   };
 
-  const Row = memo(
+  const FeedRow = memo(
     ({ index, style }: { index: number; style: Record<string, any> }) => {
       const rowRef = useRef<HTMLDivElement>(null);
       const event = events[index];
@@ -63,6 +63,8 @@ export function Feed({ events, heightOffset = 0 }: FeedProps) {
     areEqual
   );
 
+  FeedRow.displayName = "FeedRow";
+
   return (
     <AutoSizer
       style={{ height: `calc(100vh - ${headerHeight}px - ${heightOffset}px` }}
@@ -73,10 +75,10 @@ export function Feed({ events, heightOffset = 0 }: FeedProps) {
           itemCount={events.length}
           itemSize={getRowHeight}
           width={width}
-          overscanCount={2}
+          overscanCount={5}
           ref={listRef}
         >
-          {Row}
+          {FeedRow}
         </VariableSizeList>
       )}
     </AutoSizer>
