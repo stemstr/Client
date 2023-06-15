@@ -4,6 +4,7 @@ import NDK, {
   type NostrEvent,
   mergeEvent,
 } from "@nostr-dev-kit/ndk";
+import { Kind } from "nostr-tools";
 
 const eventsCache: Record<string, Record<string, NostrEvent>> = {};
 
@@ -19,41 +20,60 @@ export const getCachedProfile = (pubkey: string, ndk?: NDK) => {
   }
 };
 
+export const getCachedUser = (pubkey?: string, ndk?: NDK) => {
+  if (!pubkey) {
+    return;
+  }
+
+  const cachedProfile = profileEventsCache[pubkey];
+
+  if (ndk && cachedProfile) {
+    const ndkEvent = new NDKEvent(ndk, cachedProfile);
+    const ndkUser = ndkEvent.author();
+
+    ndkUser.profile = mergeEvent(ndkEvent, {});
+
+    return ndkUser;
+  }
+};
+
 const makeCacheKey = (pubkey: string, kind: number) => `${pubkey}:${kind}`;
 
 const inMemoryCacheAdapter = {
   locking: true,
   async query(subscription: NDKSubscription) {
     const { filter } = subscription;
+    const { authors, kinds } = filter;
 
-    // currently only supporting profile caching
-    if (
-      !filter.authors ||
-      !filter.authors[0] ||
-      !filter.kinds ||
-      filter.kinds[0] !== 0
-    ) {
+    // currently only supporting profile caching and authors and kinds are available for profile caching
+    if (!authors || !kinds) {
       return;
     }
 
-    const cachedProfile = profileEventsCache[filter.authors[0]];
+    authors.forEach((pubkey: string) => {
+      if (!kinds.includes(Kind.Metadata)) {
+        return;
+      }
 
-    if (cachedProfile) {
-      const ndkEvent = new NDKEvent(subscription.ndk, cachedProfile);
+      const cachedProfile = profileEventsCache[pubkey];
 
-      subscription.eventReceived(ndkEvent, undefined, true);
-    }
+      if (cachedProfile) {
+        const ndkEvent = new NDKEvent(subscription.ndk, cachedProfile);
+
+        subscription.eventReceived(ndkEvent, undefined, true);
+      }
+    });
   },
   async setEvent(event: NDKEvent) {
     // caching only certain types of kinds for now to make sure logic is correct
-    const whitelistedKinds = [0];
+    const whitelistedKinds = [Kind.Metadata];
 
     if (event.kind === undefined || !whitelistedKinds.includes(event.kind)) {
       return;
     }
 
     // only cache the most recent event for kind 0
-    if (event.kind === 0) {
+    if (event.kind === Kind.Metadata) {
       const key = event.pubkey;
 
       if (

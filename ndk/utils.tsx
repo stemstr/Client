@@ -1,4 +1,9 @@
-import { NDKEvent, NDKTag } from "@nostr-dev-kit/ndk";
+import NDK, {
+  NDKEvent,
+  NDKRelay,
+  NDKRelaySet,
+  NDKTag,
+} from "@nostr-dev-kit/ndk";
 import { nip19 } from "nostr-tools";
 
 interface ParsedEventTags {
@@ -178,4 +183,22 @@ export const getNoteIds = (noteId: string): { hex: string; bech32: string } => {
     ids.bech32 = nip19.noteEncode(noteId);
   }
   return ids;
+};
+
+export const createRelaySet = (relayUrls: string[], ndk: NDK) => {
+  if (!relayUrls.length) {
+    return;
+  }
+
+  const relays: Set<NDKRelay> = new Set();
+
+  relayUrls.forEach((url) => {
+    const relay = ndk.pool?.relays.get(url);
+
+    if (relay) {
+      relays.add(relay);
+    }
+  });
+
+  return new NDKRelaySet(relays, ndk);
 };
