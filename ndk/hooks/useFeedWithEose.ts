@@ -27,13 +27,13 @@ export function useFeedWithEose(filter: NDKFilter, relayUrls: string[] = []) {
     // many relays have a max of 256 authors
     const maxAuthors = 256;
 
-    const filters =
-      filter.authors?.length ?? 0 > maxAuthors
-        ? chunkArray(filter.authors, maxAuthors).map((authors) => ({
-            ...filter,
-            authors,
-          }))
-        : [filter];
+    const hasAuthorsInFilter = filter.authors?.length ?? 0 > maxAuthors;
+    const filters = hasAuthorsInFilter
+      ? chunkArray(filter.authors, maxAuthors).map((authors) => ({
+          ...filter,
+          authors,
+        }))
+      : [filter];
     const subscriptions: NDKSubscription[] = [];
 
     filters.forEach((filter) => {
