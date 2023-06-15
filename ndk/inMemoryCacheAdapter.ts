@@ -4,6 +4,7 @@ import NDK, {
   type NostrEvent,
   mergeEvent,
 } from "@nostr-dev-kit/ndk";
+import { Kind } from "nostr-tools";
 
 const eventsCache: Record<string, Record<string, NostrEvent>> = {};
 
@@ -50,31 +51,29 @@ const inMemoryCacheAdapter = {
     }
 
     authors.forEach((pubkey: string) => {
-      kinds.forEach((kind: number) => {
-        if (kind !== 0) {
-          return;
-        }
+      if (!kinds.includes(Kind.Metadata)) {
+        return;
+      }
 
-        const cachedProfile = profileEventsCache[pubkey];
+      const cachedProfile = profileEventsCache[pubkey];
 
-        if (cachedProfile) {
-          const ndkEvent = new NDKEvent(subscription.ndk, cachedProfile);
+      if (cachedProfile) {
+        const ndkEvent = new NDKEvent(subscription.ndk, cachedProfile);
 
-          subscription.eventReceived(ndkEvent, undefined, true);
-        }
-      });
+        subscription.eventReceived(ndkEvent, undefined, true);
+      }
     });
   },
   async setEvent(event: NDKEvent) {
     // caching only certain types of kinds for now to make sure logic is correct
-    const whitelistedKinds = [0];
+    const whitelistedKinds = [Kind.Metadata];
 
     if (event.kind === undefined || !whitelistedKinds.includes(event.kind)) {
       return;
     }
 
     // only cache the most recent event for kind 0
-    if (event.kind === 0) {
+    if (event.kind === Kind.Metadata) {
       const key = event.pubkey;
 
       if (
