@@ -58,6 +58,8 @@ export function useFeedWithEose(filter: NDKFilter, relayUrls: string[] = []) {
         if (newEoseCount === subscriptions.length) {
           eventBatch.current = null;
         }
+
+        eoseCount.current = newEoseCount;
       });
     });
 
