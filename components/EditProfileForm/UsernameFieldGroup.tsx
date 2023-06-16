@@ -1,5 +1,5 @@
 import { TextInput } from "@mantine/core";
-import useStyles from "components/EditProfileForm/EditProfileForm.styles";
+import useStyles from "./EditProfileForm.styles";
 import FieldGroup from "components/FieldGroups/FieldGroup";
 import { AtSignIcon } from "icons/StemstrIcon";
 import { ChangeEvent } from "react";

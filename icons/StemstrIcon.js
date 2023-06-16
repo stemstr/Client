@@ -13,6 +13,7 @@ import Tags from "./Line icons/Finance & eCommerce/tag-03.svg";
 import AtSign from "./Line icons/General/at-sign.svg";
 import Check from "./Line icons/General/check.svg";
 import CheckCircle from "./Line icons/General/check-circle.svg";
+import CheckVerified from "./Line icons/General/check-verified-02.svg";
 import Copy from "./Line icons/General/copy-03.svg";
 import DownloadCloud from "./Line icons/General/download-cloud-01.svg";
 import Edit from "./Line icons/General/edit-02.svg";
@@ -307,6 +308,14 @@ export const AtSignIcon = (props) => {
   return (
     <StemstrIcon>
       <AtSign {...props} />
+    </StemstrIcon>
+  );
+};
+
+export const CheckVerifiedIcon = (props) => {
+  return (
+    <StemstrIcon>
+      <CheckVerified {...props} />
     </StemstrIcon>
   );
 };

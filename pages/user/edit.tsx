@@ -4,7 +4,7 @@ import BackButton from "components/BackButton/BackButton";
 import BannerSelector from "components/EditProfileForm/BannerSelector";
 import LNURLField from "components/EditProfileForm/LNURLField";
 import NameFieldGroup from "components/EditProfileForm/NameFieldGroup";
-import Nip05Field from "components/EditProfileForm/Nip05Field";
+import Nip05FieldGroup from "components/EditProfileForm/Nip05FieldGroup";
 import ProfilePicSelector from "components/EditProfileForm/ProfilePicSelector";
 import UsernameFieldGroup from "components/EditProfileForm/UsernameFieldGroup";
 import { Route } from "enums";
@@ -24,6 +24,7 @@ export default function EditProfile() {
       picture: "",
       display_name: "",
       name: "",
+      nip05: "",
       about: "",
       lnurl: "",
     },
@@ -32,11 +33,13 @@ export default function EditProfile() {
 
   useEffect(() => {
     if (user?.profile) {
+      console.log(user.profile);
       form.setValues({
         banner: user.profile.banner,
         picture: user.profile.image,
         display_name: user.profile.displayName,
         name: user.profile.name ? `@${user.profile.name}` : "",
+        nip05: user.profile.nip05,
         about: user.profile.about,
         lnurl: user.profile.lud06
           ? user.profile.lud06
@@ -90,7 +93,7 @@ export default function EditProfile() {
         <Stack spacing="md">
           <NameFieldGroup {...form.getInputProps("display_name")} />
           <UsernameFieldGroup {...form.getInputProps("name")} />
-          <Nip05Field />
+          <Nip05FieldGroup {...form.getInputProps("nip05")} />
           <LNURLField />
         </Stack>
       </Box>

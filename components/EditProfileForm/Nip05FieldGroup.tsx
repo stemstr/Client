@@ -1,20 +1,20 @@
-import { TextInput } from "@mantine/core";
-import useStyles from "./EditProfileForm.styles";
 import FieldGroup from "components/FieldGroups/FieldGroup";
-import { ProfileIcon } from "icons/StemstrIcon";
+import useStyles from "./EditProfileForm.styles";
+import { CheckVerifiedIcon } from "icons/StemstrIcon";
+import { TextInput } from "@mantine/core";
 
-export default function NameFieldGroup(props: any) {
+export default function Nip05FieldGroup(props: any) {
   const { classes } = useStyles();
 
   return (
     <FieldGroup
-      TitleIcon={ProfileIcon}
-      title="Your name"
+      TitleIcon={CheckVerifiedIcon}
+      title="nostr verification"
       titleFontSize="sm"
       iconSize={16}
     >
       <TextInput
-        placeholder="What do you want to be called?"
+        placeholder="name@example.com"
         classNames={{
           input: classes.textInput,
         }}
