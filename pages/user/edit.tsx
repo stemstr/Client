@@ -1,8 +1,12 @@
-import { Box, Center, Group, Image, Text } from "@mantine/core";
+import { Box, Center, Group, Image, Stack, Text } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import BackButton from "components/BackButton/BackButton";
 import BannerSelector from "components/EditProfileForm/BannerSelector";
+import LNURLField from "components/EditProfileForm/LNURLField";
+import NameFieldGroup from "components/EditProfileForm/NameFieldGroup";
+import Nip05Field from "components/EditProfileForm/Nip05Field";
 import ProfilePicSelector from "components/EditProfileForm/ProfilePicSelector";
+import UsernameField from "components/EditProfileForm/UsernameField";
 import { Route } from "enums";
 import { ChevronLeftIcon, EditIcon } from "icons/StemstrIcon";
 import { useUser } from "ndk/hooks/useUser";
@@ -76,9 +80,19 @@ export default function EditProfile() {
             </Text>
           </Group>
         </Group>
-        <Center>
+        <Center
+          sx={(theme) => ({
+            marginBottom: theme.fn.largerThan("xs") ? 24 : 16,
+          })}
+        >
           <ProfilePicSelector {...form.getInputProps("picture")} />
         </Center>
+        <Stack spacing="md">
+          <NameFieldGroup {...form.getInputProps("display_name")} />
+          <UsernameField />
+          <Nip05Field />
+          <LNURLField />
+        </Stack>
       </Box>
     </>
   );

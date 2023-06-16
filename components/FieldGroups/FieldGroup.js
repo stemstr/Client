@@ -5,6 +5,7 @@ export default function FieldGroup({
   title,
   children,
   titleFontSize,
+  iconSize,
 }) {
   return (
     <Stack
@@ -13,8 +14,10 @@ export default function FieldGroup({
         color: theme.white,
       })}
     >
-      <Group spacing="xs" align="center">
-        {TitleIcon && <TitleIcon width={20} height={20} />}{" "}
+      <Group spacing={iconSize ? iconSize / 2 : "xs"} align="center">
+        {TitleIcon && (
+          <TitleIcon width={iconSize || 20} height={iconSize || 20} />
+        )}{" "}
         <Text
           fw={500}
           fz={titleFontSize || undefined}
