@@ -9,6 +9,7 @@ import BracketsEllipses from "./Line icons/Development/brackets-ellipses.svg";
 import Comment from "./Line icons/Communication/message-square-02.svg";
 
 import Tags from "./Line icons/Finance & eCommerce/tag-03.svg";
+import Wallet from "./Line icons/Finance & eCommerce/wallet-02.svg";
 
 import AtSign from "./Line icons/General/at-sign.svg";
 import Check from "./Line icons/General/check.svg";
@@ -316,6 +317,14 @@ export const CheckVerifiedIcon = (props) => {
   return (
     <StemstrIcon>
       <CheckVerified {...props} />
+    </StemstrIcon>
+  );
+};
+
+export const WalletIcon = (props) => {
+  return (
+    <StemstrIcon>
+      <Wallet {...props} />
     </StemstrIcon>
   );
 };

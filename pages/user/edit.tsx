@@ -2,7 +2,7 @@ import { Box, Center, Group, Image, Stack, Text } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import BackButton from "components/BackButton/BackButton";
 import BannerSelector from "components/EditProfileForm/BannerSelector";
-import LNURLField from "components/EditProfileForm/LNURLField";
+import LNURLFieldGroup from "components/EditProfileForm/LNURLFieldGroup";
 import NameFieldGroup from "components/EditProfileForm/NameFieldGroup";
 import Nip05FieldGroup from "components/EditProfileForm/Nip05FieldGroup";
 import ProfilePicSelector from "components/EditProfileForm/ProfilePicSelector";
@@ -94,7 +94,7 @@ export default function EditProfile() {
           <NameFieldGroup {...form.getInputProps("display_name")} />
           <UsernameFieldGroup {...form.getInputProps("name")} />
           <Nip05FieldGroup {...form.getInputProps("nip05")} />
-          <LNURLField />
+          <LNURLFieldGroup {...form.getInputProps("lnurl")} />
         </Stack>
       </Box>
     </>
