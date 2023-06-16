@@ -1,10 +1,21 @@
-import { Box, Center, FileInput, Image, TextInput } from "@mantine/core";
+import {
+  Box,
+  Center,
+  FileInput,
+  Image,
+  TextInput,
+  useMantineTheme,
+} from "@mantine/core";
+import { useMediaQuery } from "@mantine/hooks";
 import { EditIcon } from "icons/StemstrIcon";
 import { useRef } from "react";
 import { uploadImage } from "utils/media";
 
 export default function BannerSelector(props: any) {
   const inputRef = useRef<HTMLButtonElement>(null);
+  const theme = useMantineTheme();
+  const isDesktop = useMediaQuery(`(min-width: ${theme.breakpoints.xs}px`);
+  const height = isDesktop ? 200 : 170;
 
   const handleSelectClick = () => {
     inputRef.current?.click();
@@ -28,7 +39,7 @@ export default function BannerSelector(props: any) {
     <Box
       onClick={handleSelectClick}
       sx={(theme) => ({
-        height: 200,
+        height: height,
         backgroundColor: theme.colors.gray[6],
         margin: `-${theme.spacing.md}px -${theme.spacing.md}px 0`,
         padding: `0 ${theme.spacing.md}px 0`,
@@ -51,15 +62,31 @@ export default function BannerSelector(props: any) {
           onChange={handleImageChange}
         />
       </Box>
-      <Box pos="absolute" left={0} right={0} sx={{ zIndex: 1 }}>
+      <Box
+        pos="absolute"
+        sx={(theme) => ({
+          zIndex: 1,
+          right: theme.spacing.md,
+          bottom: theme.spacing.md,
+          [`${theme.fn.largerThan("xs")}`]: {
+            left: 0,
+            right: 0,
+            bottom: "unset",
+          },
+        })}
+      >
         <Center mt={80}>
-          <EditIcon width={26} height={26} color="white" />
+          <EditIcon
+            width={isDesktop ? 26 : 20}
+            height={isDesktop ? 26 : 20}
+            color="white"
+          />
         </Center>
       </Box>
       {props.value && (
         <Image
           src={props.value}
-          height={200}
+          height={height}
           styles={(theme) => ({
             root: {
               position: "absolute",

@@ -1,10 +1,20 @@
-import { Avatar, Box, Center, FileInput, TextInput } from "@mantine/core";
+import {
+  Avatar,
+  Box,
+  Center,
+  FileInput,
+  TextInput,
+  useMantineTheme,
+} from "@mantine/core";
+import { useMediaQuery } from "@mantine/hooks";
 import { EditIcon } from "icons/StemstrIcon";
 import { useRef } from "react";
 import { uploadImage } from "utils/media";
 
 export default function ProfilePicSelector(props: any) {
   const inputRef = useRef<HTMLButtonElement>(null);
+  const theme = useMantineTheme();
+  const isDesktop = useMediaQuery(`(min-width: ${theme.breakpoints.xs}px`);
 
   const handleSelectClick = () => {
     inputRef.current?.click();
@@ -77,7 +87,11 @@ export default function ProfilePicSelector(props: any) {
             position: "absolute",
           }}
         >
-          <EditIcon color="white" width={26} height={26} />
+          <EditIcon
+            color="white"
+            width={isDesktop ? 26 : 20}
+            height={isDesktop ? 26 : 20}
+          />
         </Center>
       </Box>
     </>
