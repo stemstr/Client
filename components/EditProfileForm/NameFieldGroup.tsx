@@ -1,8 +1,11 @@
 import { TextInput } from "@mantine/core";
+import useStyles from "components/EditProfileForm/EditProfileForm.styles";
 import FieldGroup from "components/FieldGroups/FieldGroup";
 import { ProfileIcon } from "icons/StemstrIcon";
 
 export default function NameFieldGroup(props: any) {
+  const { classes } = useStyles();
+
   return (
     <FieldGroup
       TitleIcon={ProfileIcon}
@@ -12,16 +15,9 @@ export default function NameFieldGroup(props: any) {
     >
       <TextInput
         placeholder="What do you want to be called?"
-        styles={(theme) => ({
-          input: {
-            backgroundColor: theme.colors.dark[7],
-            padding: theme.spacing.md,
-            borderRadius: theme.radius.md,
-            border: `1px solid ${theme.colors.gray[4]}`,
-            fontSize: theme.fontSizes.md,
-            color: theme.white,
-          },
-        })}
+        classNames={{
+          input: classes.textInput,
+        }}
         {...props}
       />
     </FieldGroup>

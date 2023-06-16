@@ -9,7 +9,7 @@ export default function FieldGroup({
 }) {
   return (
     <Stack
-      spacing="sm"
+      spacing="xs"
       sx={(theme) => ({
         color: theme.white,
       })}

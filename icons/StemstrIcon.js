@@ -10,6 +10,7 @@ import Comment from "./Line icons/Communication/message-square-02.svg";
 
 import Tags from "./Line icons/Finance & eCommerce/tag-03.svg";
 
+import AtSign from "./Line icons/General/at-sign.svg";
 import Check from "./Line icons/General/check.svg";
 import CheckCircle from "./Line icons/General/check-circle.svg";
 import Copy from "./Line icons/General/copy-03.svg";
@@ -298,6 +299,14 @@ export const BracketsEllipsesIcon = (props) => {
   return (
     <StemstrIcon>
       <BracketsEllipses {...props} />
+    </StemstrIcon>
+  );
+};
+
+export const AtSignIcon = (props) => {
+  return (
+    <StemstrIcon>
+      <AtSign {...props} />
     </StemstrIcon>
   );
 };

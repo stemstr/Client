@@ -6,7 +6,7 @@ import LNURLField from "components/EditProfileForm/LNURLField";
 import NameFieldGroup from "components/EditProfileForm/NameFieldGroup";
 import Nip05Field from "components/EditProfileForm/Nip05Field";
 import ProfilePicSelector from "components/EditProfileForm/ProfilePicSelector";
-import UsernameField from "components/EditProfileForm/UsernameField";
+import UsernameFieldGroup from "components/EditProfileForm/UsernameFieldGroup";
 import { Route } from "enums";
 import { ChevronLeftIcon, EditIcon } from "icons/StemstrIcon";
 import { useUser } from "ndk/hooks/useUser";
@@ -31,21 +31,21 @@ export default function EditProfile() {
   });
 
   useEffect(() => {
-    if (user) {
+    if (user?.profile) {
       form.setValues({
-        banner: user.profile?.banner,
-        picture: user.profile?.image,
-        display_name: user.profile?.displayName,
-        name: user.profile?.name,
-        about: user.profile?.about,
-        lnurl: user.profile?.lud06
-          ? user.profile?.lud06
-          : user.profile?.lud16
-          ? user.profile?.lud16
+        banner: user.profile.banner,
+        picture: user.profile.image,
+        display_name: user.profile.displayName,
+        name: user.profile.name ? `@${user.profile.name}` : "",
+        about: user.profile.about,
+        lnurl: user.profile.lud06
+          ? user.profile.lud06
+          : user.profile.lud16
+          ? user.profile.lud16
           : undefined,
       });
     }
-  }, [user?.profile?.image]);
+  }, [user?.profile]);
 
   useEffect(() => {
     console.log(form.values);
@@ -89,7 +89,7 @@ export default function EditProfile() {
         </Center>
         <Stack spacing="md">
           <NameFieldGroup {...form.getInputProps("display_name")} />
-          <UsernameField />
+          <UsernameFieldGroup {...form.getInputProps("name")} />
           <Nip05Field />
           <LNURLField />
         </Stack>
