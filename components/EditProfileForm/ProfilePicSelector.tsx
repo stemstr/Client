@@ -11,7 +11,7 @@ import { EditIcon } from "icons/StemstrIcon";
 import { useRef } from "react";
 import { uploadImage } from "utils/media";
 
-export default function ProfilePicSelector(props: any) {
+export default function ProfilePicSelector({ setIsUploading, ...rest }: any) {
   const inputRef = useRef<HTMLButtonElement>(null);
   const theme = useMantineTheme();
   const isDesktop = useMediaQuery(`(min-width: ${theme.breakpoints.xs}px`);
@@ -21,27 +21,27 @@ export default function ProfilePicSelector(props: any) {
   };
 
   const handleImageChange = (file: File) => {
-    props.setIsUploading(true);
+    setIsUploading(true);
     uploadImage(file)
       .then((imageUrl) => {
-        if (props.onChange) {
-          props.onChange(imageUrl);
+        if (rest.onChange) {
+          rest.onChange(imageUrl);
         }
       })
       .catch((err) => {
-        if (props.onChange) {
-          props.onChange("");
+        if (rest.onChange) {
+          rest.onChange("");
         }
       })
       .finally(() => {
-        props.setIsUploading(false);
+        setIsUploading(false);
       });
   };
 
   return (
     <>
       <Box hidden>
-        <TextInput {...props} />
+        <TextInput {...rest} />
         <FileInput
           accept="image/*"
           ref={inputRef}
@@ -70,7 +70,7 @@ export default function ProfilePicSelector(props: any) {
         })}
       >
         <Avatar
-          src={props.value as string}
+          src={rest.value as string}
           styles={(theme) => ({
             root: {
               filter: "brightness(0.5)",

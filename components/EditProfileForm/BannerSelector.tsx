@@ -8,10 +8,14 @@ import {
 } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { EditIcon } from "icons/StemstrIcon";
-import { useRef } from "react";
+import { Dispatch, SetStateAction, useRef } from "react";
 import { uploadImage } from "utils/media";
 
-export default function BannerSelector(props: any) {
+type BannerProps = {
+  setIsUploading: Dispatch<SetStateAction<boolean>>;
+};
+
+export default function BannerSelector({ setIsUploading, ...rest }: any) {
   const inputRef = useRef<HTMLButtonElement>(null);
   const theme = useMantineTheme();
   const isDesktop = useMediaQuery(`(min-width: ${theme.breakpoints.xs}px`);
@@ -22,20 +26,20 @@ export default function BannerSelector(props: any) {
   };
 
   const handleImageChange = (file: File) => {
-    props.setIsUploading(true);
+    setIsUploading(true);
     uploadImage(file)
       .then((imageUrl) => {
-        if (props.onChange) {
-          props.onChange(imageUrl);
+        if (rest.onChange) {
+          rest.onChange(imageUrl);
         }
       })
       .catch((err) => {
-        if (props.onChange) {
-          props.onChange("");
+        if (rest.onChange) {
+          rest.onChange("");
         }
       })
       .finally(() => {
-        props.setIsUploading(false);
+        setIsUploading(false);
       });
   };
 
@@ -59,7 +63,7 @@ export default function BannerSelector(props: any) {
       })}
     >
       <Box hidden>
-        <TextInput {...props} />
+        <TextInput {...rest} />
         <FileInput
           accept="image/*"
           ref={inputRef}
@@ -87,9 +91,9 @@ export default function BannerSelector(props: any) {
           />
         </Center>
       </Box>
-      {props.value && (
+      {rest.value && (
         <Image
-          src={props.value}
+          src={rest.value}
           height={height}
           styles={(theme) => ({
             root: {
