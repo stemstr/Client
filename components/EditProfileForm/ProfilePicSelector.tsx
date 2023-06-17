@@ -21,6 +21,7 @@ export default function ProfilePicSelector(props: any) {
   };
 
   const handleImageChange = (file: File) => {
+    props.setIsUploading(true);
     uploadImage(file)
       .then((imageUrl) => {
         if (props.onChange) {
@@ -31,6 +32,9 @@ export default function ProfilePicSelector(props: any) {
         if (props.onChange) {
           props.onChange("");
         }
+      })
+      .finally(() => {
+        props.setIsUploading(false);
       });
   };
 

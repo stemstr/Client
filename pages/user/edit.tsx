@@ -16,7 +16,7 @@ import { useUser } from "ndk/hooks/useUser";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { Kind } from "nostr-tools";
-import { useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { selectAuthState } from "store/Auth";
 
@@ -25,6 +25,12 @@ export default function EditProfile() {
   const router = useRouter();
   const authState = useSelector(selectAuthState);
   const user = useUser(authState.pk);
+  const [bannerIsUploading, setBannerIsUploading] = useState(false);
+  const [profilePicIsUploading, setProfilePicIsUploading] = useState(false);
+  const canSubmitForm = useMemo<boolean>(
+    () => !bannerIsUploading && !profilePicIsUploading,
+    [bannerIsUploading, profilePicIsUploading]
+  );
   const initialFormValues: NDKUserProfile = {
     name: "",
     displayName: "",
@@ -107,7 +113,10 @@ export default function EditProfile() {
           padding: `${theme.spacing.md}px ${theme.spacing.md}px 0`,
         })}
       >
-        <BannerSelector {...form.getInputProps("banner")} />
+        <BannerSelector
+          {...form.getInputProps("banner")}
+          setIsUploading={setBannerIsUploading}
+        />
         <Group
           position="apart"
           sx={(theme) => ({
@@ -131,7 +140,10 @@ export default function EditProfile() {
             marginBottom: theme.fn.largerThan("xs") ? 24 : 16,
           })}
         >
-          <ProfilePicSelector {...form.getInputProps("image")} />
+          <ProfilePicSelector
+            {...form.getInputProps("image")}
+            setIsUploading={setProfilePicIsUploading}
+          />
         </Center>
         <Stack spacing="md">
           <NameFieldGroup {...form.getInputProps("displayName")} />
@@ -139,6 +151,7 @@ export default function EditProfile() {
           <Nip05FieldGroup {...form.getInputProps("nip05")} />
           <LNURLFieldGroup form={form} />
           <Button
+            disabled={!canSubmitForm}
             onClick={submitForm}
             leftIcon={<CheckIcon width={14} height={14} />}
             sx={(theme) => ({
