@@ -4,9 +4,11 @@ import Download from "./Line icons/Arrows/arrow-down.svg";
 import ChevronLeft from "./Line icons/Arrows/chevron-left.svg";
 import ChevronRight from "./Line icons/Arrows/chevron-right.svg";
 
+import Comment from "./Line icons/Communication/message-square-02.svg";
+
 import BracketsEllipses from "./Line icons/Development/brackets-ellipses.svg";
 
-import Comment from "./Line icons/Communication/message-square-02.svg";
+import AlignLeft from "./Line icons/Editor/align-left.svg";
 
 import Tags from "./Line icons/Finance & eCommerce/tag-03.svg";
 import Wallet from "./Line icons/Finance & eCommerce/wallet-02.svg";
@@ -325,6 +327,14 @@ export const WalletIcon = (props) => {
   return (
     <StemstrIcon>
       <Wallet {...props} />
+    </StemstrIcon>
+  );
+};
+
+export const AlignLeftIcon = (props) => {
+  return (
+    <StemstrIcon>
+      <AlignLeft {...props} />
     </StemstrIcon>
   );
 };

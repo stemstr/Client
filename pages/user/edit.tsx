@@ -3,6 +3,7 @@ import { useForm } from "@mantine/form";
 import { showNotification } from "@mantine/notifications";
 import { NDKEvent, NDKUserProfile } from "@nostr-dev-kit/ndk";
 import BackButton from "components/BackButton/BackButton";
+import AboutFieldGroup from "components/EditProfileForm/AboutFieldGroup";
 import BannerSelector from "components/EditProfileForm/BannerSelector";
 import LNURLFieldGroup from "components/EditProfileForm/LNURLFieldGroup";
 import NameFieldGroup from "components/EditProfileForm/NameFieldGroup";
@@ -108,11 +109,7 @@ export default function EditProfile() {
       <Head>
         <title>Stemstr - Edit Profile</title>
       </Head>
-      <Box
-        sx={(theme) => ({
-          padding: `${theme.spacing.md}px ${theme.spacing.md}px 0`,
-        })}
-      >
+      <Box p="md">
         <BannerSelector
           {...form.getInputProps("banner")}
           setIsUploading={setBannerIsUploading}
@@ -148,6 +145,7 @@ export default function EditProfile() {
         <Stack spacing="md">
           <NameFieldGroup {...form.getInputProps("displayName")} />
           <UsernameFieldGroup {...form.getInputProps("name")} />
+          <AboutFieldGroup {...form.getInputProps("about")} />
           <Nip05FieldGroup {...form.getInputProps("nip05")} />
           <LNURLFieldGroup form={form} />
           <Button
