@@ -29,8 +29,9 @@ export default function BottomNavigation() {
   };
 
   if (
-    pathname === Route.Login ||
-    pathname === Route.Signup ||
+    [Route.Login, Route.Signup, Route.EditProfile].includes(
+      pathname as Route
+    ) ||
     pathname.includes(Route.Thread)
   )
     return null;

@@ -34,10 +34,6 @@ export const ApplicationContainer = ({
       footer={<BottomNavigation />}
     >
       {children}
-      {![Route.Home, Route.Discover].includes(router.pathname as Route) && (
-        // Spacer so content isn't covered up by bottom nav
-        <Box h={96 + 16} />
-      )}
       <PostSheet />
       <FileDropOverlay />
     </AppShell>
