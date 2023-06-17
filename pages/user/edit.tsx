@@ -1,6 +1,7 @@
-import { Box, Center, Group, Image, Stack, Text } from "@mantine/core";
+import { Box, Button, Center, Group, Stack, Text } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { NDKUserProfile } from "@nostr-dev-kit/ndk";
+import { showNotification } from "@mantine/notifications";
+import { NDKEvent, NDKUserProfile } from "@nostr-dev-kit/ndk";
 import BackButton from "components/BackButton/BackButton";
 import BannerSelector from "components/EditProfileForm/BannerSelector";
 import LNURLFieldGroup from "components/EditProfileForm/LNURLFieldGroup";
@@ -9,14 +10,19 @@ import Nip05FieldGroup from "components/EditProfileForm/Nip05FieldGroup";
 import ProfilePicSelector from "components/EditProfileForm/ProfilePicSelector";
 import UsernameFieldGroup from "components/EditProfileForm/UsernameFieldGroup";
 import { Route } from "enums";
-import { ChevronLeftIcon, EditIcon } from "icons/StemstrIcon";
+import { CheckIcon, ChevronLeftIcon } from "icons/StemstrIcon";
+import { useNDK } from "ndk/NDKProvider";
 import { useUser } from "ndk/hooks/useUser";
 import Head from "next/head";
+import { useRouter } from "next/router";
+import { Kind } from "nostr-tools";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { selectAuthState } from "store/Auth";
 
 export default function EditProfile() {
+  const { ndk } = useNDK();
+  const router = useRouter();
   const authState = useSelector(selectAuthState);
   const user = useUser(authState.pk);
   const initialFormValues: NDKUserProfile = {
@@ -38,7 +44,6 @@ export default function EditProfile() {
 
   useEffect(() => {
     if (user?.profile) {
-      console.log(user.profile);
       form.setValues({
         name: user.profile.name,
         displayName: user.profile.displayName,
@@ -54,9 +59,43 @@ export default function EditProfile() {
     }
   }, [user?.profile]);
 
-  useEffect(() => {
-    console.log(form.values);
-  }, [form.values]);
+  const submitForm = () => {
+    if (!authState.pk) return;
+
+    const content: any = {};
+    Object.entries(form.values).forEach(([key, value]) => {
+      if (value === undefined) return;
+      switch (key) {
+        case "displayName":
+          content.display_name = value;
+          break;
+        case "image":
+          content.picture = value;
+          break;
+        default:
+          content[key] = value;
+          break;
+      }
+    });
+
+    const event: NDKEvent = new NDKEvent(ndk);
+    event.kind = Kind.Metadata;
+    event.pubkey = authState.pk;
+    event.created_at = Math.floor(Date.now() / 1000);
+    event.content = JSON.stringify(content);
+    event.tags = [];
+    // publish new profile
+    event.publish().then(() => {
+      showNotification({
+        title: "Profile updated",
+        message: "Your profile was updated successfully!",
+      });
+      // update cached profile
+      ndk?.cacheAdapter?.setEvent(event, { authors: [event.pubkey] });
+      // navigate back to profile page
+      router.push(Route.Profile);
+    });
+  };
 
   return (
     <>
@@ -99,6 +138,17 @@ export default function EditProfile() {
           <UsernameFieldGroup {...form.getInputProps("name")} />
           <Nip05FieldGroup {...form.getInputProps("nip05")} />
           <LNURLFieldGroup form={form} />
+          <Button
+            onClick={submitForm}
+            leftIcon={<CheckIcon width={14} height={14} />}
+            sx={(theme) => ({
+              [`${theme.fn.largerThan("xs")}`]: {
+                width: "fit-content",
+              },
+            })}
+          >
+            Save Changes
+          </Button>
         </Stack>
       </Box>
     </>
