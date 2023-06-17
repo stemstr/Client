@@ -45,16 +45,16 @@ export default function EditProfile() {
   useEffect(() => {
     if (user?.profile) {
       form.setValues({
-        name: user.profile.name,
-        displayName: user.profile.displayName,
-        image: user.profile.image,
-        banner: user.profile.banner,
-        bio: user.profile.bio,
-        nip05: user.profile.nip05,
-        lud06: user.profile.lud06,
-        lud16: user.profile.lud16,
-        about: user.profile.about,
-        zapService: user.profile.zapService,
+        name: user.profile.name || "",
+        displayName: user.profile.displayName || "",
+        image: user.profile.image || "",
+        banner: user.profile.banner || "",
+        bio: user.profile.bio || "",
+        nip05: user.profile.nip05 || "",
+        lud06: user.profile.lud06 || "",
+        lud16: user.profile.lud16 || "",
+        about: user.profile.about || "",
+        zapService: user.profile.zapService || "",
       });
     }
   }, [user?.profile]);
@@ -64,7 +64,7 @@ export default function EditProfile() {
 
     const content: any = {};
     Object.entries(form.values).forEach(([key, value]) => {
-      if (value === undefined) return;
+      if (!value) return;
       switch (key) {
         case "displayName":
           content.display_name = value;
