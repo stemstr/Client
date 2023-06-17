@@ -92,10 +92,10 @@ export default function EditProfile() {
             marginBottom: theme.fn.largerThan("xs") ? 24 : 16,
           })}
         >
-          <ProfilePicSelector {...form.getInputProps("picture")} />
+          <ProfilePicSelector {...form.getInputProps("image")} />
         </Center>
         <Stack spacing="md">
-          <NameFieldGroup {...form.getInputProps("display_name")} />
+          <NameFieldGroup {...form.getInputProps("displayName")} />
           <UsernameFieldGroup {...form.getInputProps("name")} />
           <Nip05FieldGroup {...form.getInputProps("nip05")} />
           <LNURLFieldGroup form={form} />
