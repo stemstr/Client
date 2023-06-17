@@ -1,5 +1,6 @@
 import { Box, Center, Group, Image, Stack, Text } from "@mantine/core";
 import { useForm } from "@mantine/form";
+import { NDKUserProfile } from "@nostr-dev-kit/ndk";
 import BackButton from "components/BackButton/BackButton";
 import BannerSelector from "components/EditProfileForm/BannerSelector";
 import LNURLFieldGroup from "components/EditProfileForm/LNURLFieldGroup";
@@ -18,16 +19,20 @@ import { selectAuthState } from "store/Auth";
 export default function EditProfile() {
   const authState = useSelector(selectAuthState);
   const user = useUser(authState.pk);
+  const initialFormValues: NDKUserProfile = {
+    name: "",
+    displayName: "",
+    image: "",
+    banner: "",
+    bio: "",
+    nip05: "",
+    lud06: "",
+    lud16: "",
+    about: "",
+    zapService: "",
+  };
   const form = useForm({
-    initialValues: {
-      banner: "",
-      picture: "",
-      display_name: "",
-      name: "",
-      nip05: "",
-      about: "",
-      lnurl: "",
-    },
+    initialValues: initialFormValues,
     validate: {},
   });
 
@@ -35,17 +40,16 @@ export default function EditProfile() {
     if (user?.profile) {
       console.log(user.profile);
       form.setValues({
+        name: user.profile.name,
+        displayName: user.profile.displayName,
+        image: user.profile.image,
         banner: user.profile.banner,
-        picture: user.profile.image,
-        display_name: user.profile.displayName,
-        name: user.profile.name ? `@${user.profile.name}` : "",
+        bio: user.profile.bio,
         nip05: user.profile.nip05,
+        lud06: user.profile.lud06,
+        lud16: user.profile.lud16,
         about: user.profile.about,
-        lnurl: user.profile.lud06
-          ? user.profile.lud06
-          : user.profile.lud16
-          ? user.profile.lud16
-          : undefined,
+        zapService: user.profile.zapService,
       });
     }
   }, [user?.profile]);
@@ -94,7 +98,7 @@ export default function EditProfile() {
           <NameFieldGroup {...form.getInputProps("display_name")} />
           <UsernameFieldGroup {...form.getInputProps("name")} />
           <Nip05FieldGroup {...form.getInputProps("nip05")} />
-          <LNURLFieldGroup {...form.getInputProps("lnurl")} />
+          <LNURLFieldGroup form={form} />
         </Stack>
       </Box>
     </>

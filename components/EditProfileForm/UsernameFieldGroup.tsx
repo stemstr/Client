@@ -4,11 +4,12 @@ import FieldGroup from "components/FieldGroups/FieldGroup";
 import { AtSignIcon } from "icons/StemstrIcon";
 import { ChangeEvent } from "react";
 
-export default function UsernameFieldGroup({ onChange, ...rest }: any) {
+export default function UsernameFieldGroup({ onChange, value, ...rest }: any) {
   const { classes } = useStyles();
+
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     let val = event.target.value;
-    if (val && !val.startsWith("@")) val = `@${val}`;
+    if (val.startsWith("@")) val = val.slice(1);
     onChange(val);
   };
 
@@ -20,7 +21,7 @@ export default function UsernameFieldGroup({ onChange, ...rest }: any) {
       iconSize={16}
     >
       <TextInput
-        placeholder="@entercrazywildnamehere"
+        placeholder="entercrazywildnamehere"
         classNames={{
           input: classes.textInput,
         }}
@@ -36,6 +37,14 @@ export default function UsernameFieldGroup({ onChange, ...rest }: any) {
         })}
         {...rest}
         onChange={handleChange}
+        value={`${value}`}
+        icon={
+          <AtSignIcon
+            width={16}
+            height={16}
+            color={value ? "white" : "#5C5F66"}
+          />
+        }
       />
     </FieldGroup>
   );
