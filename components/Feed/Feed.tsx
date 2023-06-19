@@ -22,8 +22,8 @@ export const Feed = memo(
   ({ filter, heightOffset = 0, onEventsLoaded = noop }: FeedProps) => {
     const { ndk, stemstrRelaySet } = useNDK();
     const [events, setEvents] = useState<NDKEvent[]>([]);
-    const [hasMoreEvents, setHasMoreEvents] = useState(true);
-    const [isLoadingMore, setIsLoadingMore] = useState(false);
+    const hasMoreEvents = useRef(true);
+    const isLoadingMore = useRef(false);
     const headerHeight = 68;
     const footerHeight = useMediaQuery("(max-width: 480px)") ? 64 : 96;
     const listRef = useRef<VariableSizeList>(null);
@@ -106,17 +106,17 @@ export const Feed = memo(
         .catch(console.error);
 
       return () => {
-        setHasMoreEvents(true);
+        hasMoreEvents.current = true;
         setEvents([]);
       };
     }, [ndk, filter, stemstrRelaySet, processEvents]);
 
     const loadMoreItems = async () => {
-      if (!ndk || !stemstrRelaySet || isLoadingMore) {
+      if (!ndk || !stemstrRelaySet || isLoadingMore.current) {
         return;
       }
 
-      setIsLoadingMore(true);
+      isLoadingMore.current = true;
 
       try {
         const newEvents = await fetchEvents(
@@ -126,8 +126,8 @@ export const Feed = memo(
         );
 
         if (newEvents.size === 0) {
-          setHasMoreEvents(false);
-          setIsLoadingMore(false);
+          hasMoreEvents.current = false;
+          isLoadingMore.current = false;
           return;
         }
 
@@ -136,7 +136,7 @@ export const Feed = memo(
         console.error(error);
       }
 
-      setIsLoadingMore(false);
+      isLoadingMore.current = false;
     };
 
     return hasAttemptedProfileCachePreload ? (
@@ -146,7 +146,9 @@ export const Feed = memo(
         {({ height, width }: { height: number; width: number }) => (
           <InfiniteLoader
             isItemLoaded={(index: number) => index < events.length}
-            itemCount={hasMoreEvents ? events.length + 1 : events.length}
+            itemCount={
+              hasMoreEvents.current ? events.length + 1 : events.length
+            }
             loadMoreItems={loadMoreItems}
           >
             {({ onItemsRendered, ref }) => (
