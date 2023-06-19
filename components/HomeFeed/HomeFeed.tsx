@@ -1,22 +1,19 @@
-import { useHomeFeed } from "ndk/hooks/useHomeFeed";
 import { Feed } from "../Feed";
 import useHomeFeedPubkeys from "../../ndk/hooks/useHomeFeedPubkeys";
-import usePreloadProfileCache from "../../ndk/hooks/usePreloadProfileCache";
-
-const HomeFeedContent = ({ pubkeys }: { pubkeys: string[] }) => {
-  const events = useHomeFeed(pubkeys);
-
-  // only preload the profiles for the first 20 events to reduce amount of data fetched and since relays don't return
-  // any results when requesting too many profiles
-  const hasAttemptedProfileCachePreload = usePreloadProfileCache(
-    events.slice(0, 20).map(({ pubkey }) => pubkey)
-  );
-
-  return hasAttemptedProfileCachePreload ? <Feed events={events} /> : null;
-};
+import { useMemo } from "react";
+import { NDKFilter } from "@nostr-dev-kit/ndk";
+import { Kind } from "nostr-tools";
 
 export default function HomeFeed() {
   const pubkeys = useHomeFeedPubkeys();
+  const pubkeyHash = pubkeys.join();
+  const filter = useMemo<NDKFilter>(
+    () => ({
+      kinds: [1, 1808 as Kind],
+      authors: pubkeys,
+    }),
+    [pubkeyHash]
+  );
 
-  return pubkeys.length > 0 ? <HomeFeedContent pubkeys={pubkeys} /> : null;
+  return pubkeys.length > 0 ? <Feed filter={filter} /> : null;
 }
