@@ -1,4 +1,4 @@
-import { useMemo, useState, useCallback } from "react";
+import { useMemo, useState } from "react";
 import DiscoverFeedChips from "components/DiscoverFeedChips/DiscoverFeedChips";
 import { Feed, MaxWidthContainer } from "../Feed";
 import { type NDKEvent, type NDKFilter } from "@nostr-dev-kit/ndk";
@@ -7,37 +7,21 @@ import { Kind } from "nostr-tools";
 export default function DiscoverFeed() {
   const chipsHeight = 68;
   const [selectedChip, setSelectedChip] = useState("");
-  const [chipLabels, setChipLabels] = useState<string[]>([]);
-  const chipLabelsHash = chipLabels.join();
+  const [events, setEvents] = useState<NDKEvent[]>([]);
   const filter = useMemo<NDKFilter>(
     () => ({
       kinds: [1, 1808 as Kind],
+      limit: 50,
       "#t": selectedChip ? [selectedChip] : undefined,
     }),
     [selectedChip]
-  );
-  const handleOnEventsLoaded = useCallback(
-    (events: NDKEvent[]) => {
-      const tagNames: string[] = [];
-
-      events.forEach(({ tags }) => {
-        tags.forEach((tag) => {
-          if (tag[0] === "t") {
-            tagNames.push(tag[1]);
-          }
-        });
-      });
-
-      setChipLabels(Array.from(new Set([...chipLabels, ...tagNames])));
-    },
-    [chipLabelsHash]
   );
 
   return (
     <>
       <MaxWidthContainer>
         <DiscoverFeedChips
-          labels={chipLabels}
+          events={events}
           value={selectedChip}
           onChange={(newValue) => setSelectedChip(newValue as string)}
         />
@@ -45,7 +29,7 @@ export default function DiscoverFeed() {
       <Feed
         filter={filter}
         heightOffset={chipsHeight}
-        onEventsLoaded={handleOnEventsLoaded}
+        onEventsLoaded={setEvents}
       />
     </>
   );
