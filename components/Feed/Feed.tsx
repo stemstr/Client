@@ -28,7 +28,8 @@ export const Feed = memo(
     const footerHeight = useMediaQuery("(max-width: 480px)") ? 64 : 96;
     const listRef = useRef<VariableSizeList>(null);
     const rowHeights = useRef<number[]>([]);
-    const getRowHeight = (index: number) => rowHeights.current[index] || 200;
+    const getRowHeight = (index: number) =>
+      rowHeights.current[index] + 16 || 300;
     const setRowHeight = (index: number, height: number) => {
       listRef.current?.resetAfterIndex(0);
       rowHeights.current = { ...rowHeights.current, [index]: height };
@@ -38,9 +39,6 @@ export const Feed = memo(
       ({ index, style }: { index: number; style: Record<string, any> }) => {
         const rowRef = useRef<HTMLDivElement>(null);
         const event = events[index];
-        const gapSize = 16;
-        const topPosition = style.top + gapSize * index;
-        const isLastEvent = index === events.length - 1;
 
         useEffect(() => {
           if (rowRef.current) {
@@ -55,15 +53,11 @@ export const Feed = memo(
             pr="md"
             sx={{
               ...style,
-              top: topPosition,
               right: 0,
               maxWidth: 600,
             }}
           >
-            <div
-              ref={rowRef}
-              style={{ paddingBottom: isLastEvent ? gapSize : 0 }}
-            >
+            <div ref={rowRef}>
               <EventProvider event={event}>
                 <FeedNote key={event.id} />
               </EventProvider>
@@ -158,7 +152,7 @@ export const Feed = memo(
                 itemCount={events.length}
                 itemSize={getRowHeight}
                 width={width}
-                overscanCount={5}
+                overscanCount={10}
                 ref={(_ref) => {
                   ref(_ref);
                   // @ts-ignore
