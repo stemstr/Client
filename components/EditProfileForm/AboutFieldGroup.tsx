@@ -14,6 +14,7 @@ export default function AboutFieldGroup(props: any) {
       iconSize={16}
     >
       <Textarea
+        autosize
         placeholder="Tell the world a lil' something"
         classNames={{
           input: classes.textInput,
