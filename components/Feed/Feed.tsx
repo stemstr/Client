@@ -111,7 +111,6 @@ export const Feed = memo(
       };
     }, [ndk, filter, stemstrRelaySet, processEvents]);
 
-    const itemCount = hasMoreEvents ? events.length + 1 : events.length;
     const loadMoreItems = async () => {
       if (!ndk || !stemstrRelaySet || isLoadingMore) {
         return;
@@ -147,7 +146,7 @@ export const Feed = memo(
         {({ height, width }: { height: number; width: number }) => (
           <InfiniteLoader
             isItemLoaded={(index: number) => index < events.length}
-            itemCount={itemCount}
+            itemCount={hasMoreEvents ? events.length + 1 : events.length}
             loadMoreItems={loadMoreItems}
           >
             {({ onItemsRendered, ref }) => (
