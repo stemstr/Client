@@ -12,7 +12,6 @@ export default function DiscoverFeed() {
   const filter = useMemo<NDKFilter>(
     () => ({
       kinds: [1, 1808 as Kind],
-      limit: 100,
       "#t": selectedChip ? [selectedChip] : undefined,
     }),
     [selectedChip]

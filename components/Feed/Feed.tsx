@@ -1,7 +1,8 @@
-import { useRef, useEffect, memo, useState } from "react";
+import { useRef, useEffect, memo, useState, useCallback } from "react";
 import { FeedNote } from "../Note/Note";
 import { VariableSizeList, areEqual } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
+import InfiniteLoader from "react-window-infinite-loader";
 import { Box } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { EventProvider } from "../../ndk/NDKEventProvider";
@@ -21,6 +22,8 @@ export const Feed = memo(
   ({ filter, heightOffset = 0, onEventsLoaded = noop }: FeedProps) => {
     const { ndk, stemstrRelaySet } = useNDK();
     const [events, setEvents] = useState<NDKEvent[]>([]);
+    const [hasMoreEvents, setHasMoreEvents] = useState(true);
+    const [isLoadingMore, setIsLoadingMore] = useState(false);
     const headerHeight = 68;
     const footerHeight = useMediaQuery("(max-width: 480px)") ? 64 : 96;
     const listRef = useRef<VariableSizeList>(null);
@@ -43,7 +46,7 @@ export const Feed = memo(
           if (rowRef.current) {
             setRowHeight(index, rowRef.current.clientHeight);
           }
-        }, [rowRef.current]);
+        }, [index]);
 
         return (
           <Box
@@ -79,6 +82,18 @@ export const Feed = memo(
       events.slice(0, 20).map(({ pubkey }) => pubkey)
     );
 
+    const processEvents = useCallback(
+      (events: NDKEvent[]) => {
+        const rootEvents = events.filter(
+          (event) => !event.tags.find((tag) => tag[0] === "e")
+        );
+
+        setEvents(rootEvents);
+        onEventsLoaded(rootEvents);
+      },
+      [onEventsLoaded]
+    );
+
     // initial load
     useEffect(() => {
       if (!ndk || !stemstrRelaySet) {
@@ -87,35 +102,74 @@ export const Feed = memo(
 
       fetchEvents(filter, ndk, stemstrRelaySet)
         .then((events) => Array.from(events))
-        .then((events) =>
-          events.filter((event) => !event.tags.find((tag) => tag[0] === "e"))
-        )
-        .then((events) => {
-          setEvents(events);
-          onEventsLoaded(events);
-        })
+        .then(processEvents)
         .catch(console.error);
 
       return () => {
+        setHasMoreEvents(true);
         setEvents([]);
       };
-    }, [ndk, filter, stemstrRelaySet, onEventsLoaded]);
+    }, [ndk, filter, stemstrRelaySet, processEvents]);
+
+    const itemCount = hasMoreEvents ? events.length + 1 : events.length;
+    const loadMoreItems = async () => {
+      if (!ndk || !stemstrRelaySet || isLoadingMore) {
+        return;
+      }
+
+      setIsLoadingMore(true);
+
+      try {
+        const newEvents = await fetchEvents(
+          { ...filter, until: events[events.length - 1].created_at },
+          ndk,
+          stemstrRelaySet
+        );
+
+        if (newEvents.size === 0) {
+          setHasMoreEvents(false);
+          setIsLoadingMore(false);
+          return;
+        }
+
+        processEvents([...events, ...newEvents]);
+      } catch (error) {
+        console.error(error);
+      }
+
+      setIsLoadingMore(false);
+    };
 
     return hasAttemptedProfileCachePreload ? (
       <AutoSizer
         style={{ height: `calc(100vh - ${headerHeight}px - ${heightOffset}px` }}
       >
         {({ height, width }: { height: number; width: number }) => (
-          <VariableSizeList
-            height={height - headerHeight - heightOffset - footerHeight}
-            itemCount={events.length}
-            itemSize={getRowHeight}
-            width={width}
-            overscanCount={5}
-            ref={listRef}
+          <InfiniteLoader
+            isItemLoaded={(index: number) => index < events.length}
+            itemCount={itemCount}
+            loadMoreItems={loadMoreItems}
           >
-            {FeedRow}
-          </VariableSizeList>
+            {({ onItemsRendered, ref }) => (
+              <VariableSizeList
+                height={height - headerHeight - heightOffset - footerHeight}
+                itemKey={(index: number) => events[index].id}
+                itemCount={events.length}
+                itemSize={getRowHeight}
+                width={width}
+                overscanCount={5}
+                ref={(_ref) => {
+                  ref(_ref);
+                  // @ts-ignore
+                  // TODO: figure out why TS thinks current is immutable
+                  listRef.current = _ref;
+                }}
+                onItemsRendered={onItemsRendered}
+              >
+                {FeedRow}
+              </VariableSizeList>
+            )}
+          </InfiniteLoader>
         )}
       </AutoSizer>
     ) : null;

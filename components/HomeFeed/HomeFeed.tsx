@@ -10,7 +10,6 @@ export default function HomeFeed() {
   const filter = useMemo<NDKFilter>(
     () => ({
       kinds: [1, 1808 as Kind],
-      limit: 100,
       authors: pubkeys,
     }),
     [pubkeyHash]
