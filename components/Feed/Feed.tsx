@@ -70,10 +70,10 @@ export const Feed = memo(
 
     FeedRow.displayName = "FeedRow";
 
-    // only preload the profiles for the first 20 events to reduce amount of data fetched and since relays don't return
+    // only preload the profiles for the first 100 events to reduce amount of data fetched and since relays don't return
     // any results when requesting too many profiles
     const hasAttemptedProfileCachePreload = usePreloadProfileCache(
-      events.slice(0, 20).map(({ pubkey }) => pubkey)
+      events.slice(0, 100).map(({ pubkey }) => pubkey)
     );
 
     const processEvents = useCallback(
