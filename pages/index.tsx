@@ -1,13 +1,13 @@
 import { Stack } from "@mantine/core";
 import Head from "next/head";
 import HomeFeed from "../components/HomeFeed/HomeFeed";
-import HomeFeedHeader from "../components/HomeFeedHeader/HomeFeedHeader";
 import { useSelector } from "react-redux";
 import { AppState } from "store/Store";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { Route } from "enums";
 import { MaxWidthContainer } from "../components/Feed";
+import FeedHeader from "../components/FeedHeader/FeedHeader";
 
 export default function HomePage() {
   const authState = useSelector((state: AppState) => state.auth);
@@ -28,7 +28,7 @@ export default function HomePage() {
       {/* <ColorSchemeToggle /> */}
       <Stack spacing={0}>
         <MaxWidthContainer>
-          <HomeFeedHeader />
+          <FeedHeader>Stemstr</FeedHeader>
         </MaxWidthContainer>
         <HomeFeed />
       </Stack>

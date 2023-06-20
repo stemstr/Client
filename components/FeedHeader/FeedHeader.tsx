@@ -1,7 +1,8 @@
 import { Box, Group, Text } from "@mantine/core";
 import ProfileLink from "../ProfileLink/ProfileLink";
+import { PropsWithChildren } from "react";
 
-export default function DiscoverFeedHeader() {
+export default function FeedHeader({ children }: PropsWithChildren) {
   return (
     <Box
       component={Group}
@@ -25,7 +26,7 @@ export default function DiscoverFeedHeader() {
         })}
         lh="normal"
       >
-        Stemstr
+        {children}
       </Text>
       <Group spacing={20}>
         <ProfileLink />
