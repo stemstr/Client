@@ -207,7 +207,7 @@ export default function PostSheet() {
             <TagsFieldGroup {...form.getInputProps("tags")} />
             {/* <ShareAcrossField {...form.getInputProps("shareAcross")} /> */}
             <Button disabled={isUploading} type="submit">
-              Share
+              {sheetState.replyingTo ? "Reply" : "Share"}
             </Button>
           </Stack>
         </form>
