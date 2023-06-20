@@ -119,13 +119,13 @@ export default function Login() {
             </Text>
             <Group grow>
               <Button
-                onClick={() => window.location.assign(LEARN_MORE_URL)}
+                onClick={() => router.push(Route.Discover)}
                 variant="light"
               >
-                Learn more
+                Explore
               </Button>
               <Button onClick={() => router.push(Route.Signup)} fullWidth>
-                Sign me up
+                Create account
               </Button>
             </Group>
           </Box>
