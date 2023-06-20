@@ -7,4 +7,6 @@ export enum Route {
   Thread = "/thread",
   Notifications = "/notifications",
   User = "/user",
+  EditProfile = "/user/edit",
+  Profile = "/profile",
 }

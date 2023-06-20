@@ -1,4 +1,4 @@
-import { AppShell } from "@mantine/core";
+import { AppShell, Box } from "@mantine/core";
 import { useRouter } from "next/router";
 
 import BottomNavigation from "../BottomNavigation/BottomNavigation";

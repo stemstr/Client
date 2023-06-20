@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   ActionIcon,
   Avatar,
@@ -40,10 +40,15 @@ export default function ProfilePage() {
   );
   const authState = useSelector(selectAuthState);
   const user = useUser(pk);
+  const [isCurrentUser, setIsCurrentUser] = useState(false);
   const handleLogout = () => {
     dispatch(logout());
     router.push(Route.Login);
   };
+
+  useEffect(() => {
+    setIsCurrentUser(pk === authState.pk);
+  }, [pk, authState.pk]);
 
   return (
     <>
@@ -104,12 +109,14 @@ export default function ProfilePage() {
           <ProfileActionButton>
             <ZapIcon width={13} height={13} />
           </ProfileActionButton>
-          <ProfileActionButton>
-            <EditIcon width={13} height={13} />
-            <Text lh="normal" ml={8}>
-              Edit Profile
-            </Text>
-          </ProfileActionButton>
+          {isCurrentUser && (
+            <ProfileActionButton onClick={() => router.push(Route.EditProfile)}>
+              <EditIcon width={13} height={13} />
+              <Text lh="normal" ml={8}>
+                Edit Profile
+              </Text>
+            </ProfileActionButton>
+          )}
         </Group>
       </Group>
       <Stack spacing={6} mb="xl" pl="md" pr="md" c="white">

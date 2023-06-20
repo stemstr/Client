@@ -4,14 +4,19 @@ import Download from "./Line icons/Arrows/arrow-down.svg";
 import ChevronLeft from "./Line icons/Arrows/chevron-left.svg";
 import ChevronRight from "./Line icons/Arrows/chevron-right.svg";
 
-import BracketsEllipses from "./Line icons/Development/brackets-ellipses.svg";
-
 import Comment from "./Line icons/Communication/message-square-02.svg";
 
-import Tags from "./Line icons/Finance & eCommerce/tag-03.svg";
+import BracketsEllipses from "./Line icons/Development/brackets-ellipses.svg";
 
+import AlignLeft from "./Line icons/Editor/align-left.svg";
+
+import Tags from "./Line icons/Finance & eCommerce/tag-03.svg";
+import Wallet from "./Line icons/Finance & eCommerce/wallet-02.svg";
+
+import AtSign from "./Line icons/General/at-sign.svg";
 import Check from "./Line icons/General/check.svg";
 import CheckCircle from "./Line icons/General/check-circle.svg";
+import CheckVerified from "./Line icons/General/check-verified-02.svg";
 import Copy from "./Line icons/General/copy-03.svg";
 import DownloadCloud from "./Line icons/General/download-cloud-01.svg";
 import Edit from "./Line icons/General/edit-02.svg";
@@ -298,6 +303,38 @@ export const BracketsEllipsesIcon = (props) => {
   return (
     <StemstrIcon>
       <BracketsEllipses {...props} />
+    </StemstrIcon>
+  );
+};
+
+export const AtSignIcon = (props) => {
+  return (
+    <StemstrIcon>
+      <AtSign {...props} />
+    </StemstrIcon>
+  );
+};
+
+export const CheckVerifiedIcon = (props) => {
+  return (
+    <StemstrIcon>
+      <CheckVerified {...props} />
+    </StemstrIcon>
+  );
+};
+
+export const WalletIcon = (props) => {
+  return (
+    <StemstrIcon>
+      <Wallet {...props} />
+    </StemstrIcon>
+  );
+};
+
+export const AlignLeftIcon = (props) => {
+  return (
+    <StemstrIcon>
+      <AlignLeft {...props} />
     </StemstrIcon>
   );
 };

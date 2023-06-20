@@ -2687,7 +2687,7 @@
 
 "@mantine/notifications@5.10.2":
   version "5.10.2"
-  resolved "https://registry.npmjs.org/@mantine/notifications/-/notifications-5.10.2.tgz"
+  resolved "https://registry.yarnpkg.com/@mantine/notifications/-/notifications-5.10.2.tgz#4e9477a08f0b0bfa423ee6206dda368d07edad98"
   integrity sha512-JO92oVLRVbeD1Lz3zFlAFaK8uCWxev4R+RfhuAf3/MJgMLMvHT44hAJtnRUYC4jqnW0pweOKKflyQvnTZM7/Hg==
   dependencies:
     "@mantine/utils" "5.10.2"
