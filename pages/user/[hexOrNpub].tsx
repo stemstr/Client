@@ -95,7 +95,7 @@ export default function ProfilePage() {
           </Group>
         </Group>
       </Box>
-      <Group pl="md" pr="md" mb="lg" position="apart" mt={-50}>
+      <Group pl="md" pr="md" mb="lg" position="apart" align="end" mt={-50}>
         <Avatar
           src={user?.profile?.image}
           alt={user?.profile?.name}
@@ -104,14 +104,14 @@ export default function ProfilePage() {
         />
         <Group>
           <ProfileActionButton>
-            <ShareIcon width={13} height={13} />
+            <ShareIcon width={16} height={16} />
           </ProfileActionButton>
           <ProfileActionButton>
-            <ZapIcon width={13} height={13} />
+            <ZapIcon width={16} height={16} />
           </ProfileActionButton>
           {isCurrentUser && (
             <ProfileActionButton onClick={() => router.push(Route.EditProfile)}>
-              <EditIcon width={13} height={13} />
+              <EditIcon width={16} height={16} />
               <Text lh="normal" ml={8}>
                 Edit Profile
               </Text>

@@ -11,15 +11,16 @@ export default function ProfileActionButton({
   return (
     <Center
       sx={(theme) => ({
+        height: 34,
         padding: "8px 16px",
-        borderRadius: theme.radius.xl,
+        borderRadius: theme.radius.md,
         borderWidth: 1,
         borderStyle: "solid",
-        borderColor: theme.white,
-        backgroundColor: theme.colors.dark[7],
+        borderColor: theme.colors.gray[4],
+        backgroundColor: theme.colors.gray[6],
         color: theme.white,
         cursor: "pointer",
-        fontSize: 12,
+        fontSize: theme.fontSizes.sm,
         fontWeight: 500,
         lineHeight: "normal",
       })}
