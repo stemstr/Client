@@ -14,6 +14,7 @@ import { Route } from "enums";
 import { CheckIcon, ChevronLeftIcon } from "icons/StemstrIcon";
 import { useNDK } from "ndk/NDKProvider";
 import { useUser } from "ndk/hooks/useUser";
+import { fetchEvents } from "ndk/utils";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { Kind } from "nostr-tools";
@@ -26,6 +27,7 @@ export default function EditProfile() {
   const router = useRouter();
   const authState = useSelector(selectAuthState);
   const user = useUser(authState.pk);
+  const [metadataEvent, setMetadataEvent] = useState<NDKEvent>();
   const [bannerIsUploading, setBannerIsUploading] = useState(false);
   const [profilePicIsUploading, setProfilePicIsUploading] = useState(false);
   const canSubmitForm = useMemo<boolean>(
@@ -50,6 +52,23 @@ export default function EditProfile() {
   });
 
   useEffect(() => {
+    if (authState.pk && ndk) {
+      // Get raw profile event
+      fetchEvents({ kinds: [Kind.Metadata], authors: [authState.pk] }, ndk)
+        .then((events) => Array.from(events))
+        .then((events) => {
+          if (events.length) {
+            const newestMetadataEvent = events.reduce((a, b) =>
+              a.created_at! > b.created_at! ? a : b
+            );
+            setMetadataEvent(newestMetadataEvent);
+          }
+        })
+        .catch(console.error);
+    }
+  }, [authState.pk]);
+
+  useEffect(() => {
     if (user?.profile) {
       form.setValues({
         name: user.profile.name || "",
@@ -69,7 +88,12 @@ export default function EditProfile() {
   const submitForm = () => {
     if (!authState.pk) return;
 
-    const content: any = {};
+    let content: any = {};
+    if (metadataEvent) {
+      try {
+        content = JSON.parse(metadataEvent.content);
+      } catch (err) {}
+    }
     Object.entries(form.values).forEach(([key, value]) => {
       if (!value) return;
       switch (key) {
