@@ -1,4 +1,4 @@
-import { Box, Stack } from "@mantine/core";
+import { Stack } from "@mantine/core";
 import { useNotifications } from "ndk/hooks/useNotifications";
 import { useSelector } from "react-redux";
 import { AppState } from "store/Store";
@@ -15,9 +15,7 @@ export default function Notifications() {
         <title>Stemstr - Notifications</title>
       </Head>
       <Stack spacing="md">
-        <Box m="auto" pl="md" pr="md" w="100%" sx={{ maxWidth: 600 }}>
-          <FeedHeader>Notifications</FeedHeader>
-        </Box>
+        <FeedHeader>Notifications</FeedHeader>
         {Array.from(notifications.values())
           .sort((a, b) => b.created_at - a.created_at)
           .map((notification, index) => (

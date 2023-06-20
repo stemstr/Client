@@ -6,7 +6,6 @@ import { AppState } from "store/Store";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { Route } from "enums";
-import { MaxWidthContainer } from "../components/Feed";
 import FeedHeader from "../components/FeedHeader/FeedHeader";
 
 export default function HomePage() {
@@ -27,9 +26,7 @@ export default function HomePage() {
       </Head>
       {/* <ColorSchemeToggle /> */}
       <Stack spacing={0}>
-        <MaxWidthContainer>
-          <FeedHeader>Stemstr</FeedHeader>
-        </MaxWidthContainer>
+        <FeedHeader>Stemstr</FeedHeader>
         <HomeFeed />
       </Stack>
     </>

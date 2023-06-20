@@ -1,7 +1,6 @@
 import { Stack } from "@mantine/core";
 import Head from "next/head";
 import DiscoverFeed from "components/DiscoverFeed/DiscoverFeed";
-import { MaxWidthContainer } from "../components/Feed";
 import FeedHeader from "../components/FeedHeader/FeedHeader";
 
 export default function HomePage() {
@@ -11,9 +10,7 @@ export default function HomePage() {
         <title>Stemstr - Discover</title>
       </Head>
       <Stack spacing={0}>
-        <MaxWidthContainer>
-          <FeedHeader>Discover</FeedHeader>
-        </MaxWidthContainer>
+        <FeedHeader>Discover</FeedHeader>
         <DiscoverFeed />
       </Stack>
     </>
