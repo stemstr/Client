@@ -1,8 +1,7 @@
 import { Box, Chip } from "@mantine/core";
 import useStyles from "./DiscoverFeedChips.styles";
-import { NDKEvent, NDKTag } from "@nostr-dev-kit/ndk";
-import { useMemo } from "react";
-import { uniqBy } from "ndk/utils";
+import { useEffect, useState } from "react";
+import { NDKEvent } from "@nostr-dev-kit/ndk";
 
 export default function DiscoverFeedChips({
   events,
@@ -14,24 +13,22 @@ export default function DiscoverFeedChips({
   onChange: (value: string | string[]) => void;
 }) {
   const { classes } = useStyles();
-  const tags = useMemo<NDKTag[]>(
-    () =>
-      uniqBy(
-        events.reduce<NDKTag[]>(
-          (tags, event) => [
-            ...tags,
-            ...event.tags.filter((tag) => tag[0] === "t"),
-          ],
-          []
-        ),
-        1
-      ),
-    [events.length]
-  );
-  const chipNames = useMemo<string[]>(
-    () => ["", ...tags.map((tag) => `${tag[1]}`)],
-    [tags.length]
-  );
+  const [chipLabels, setChipLabels] = useState<string[]>([]);
+  const chipLabelsHash = chipLabels.join();
+
+  useEffect(() => {
+    const tagNames: string[] = [];
+
+    events.forEach(({ tags }) => {
+      tags.forEach((tag) => {
+        if (tag[0] === "t") {
+          tagNames.push(tag[1]);
+        }
+      });
+    });
+
+    setChipLabels(Array.from(new Set([...chipLabels, ...tagNames])));
+  }, [events, chipLabelsHash]);
 
   return (
     <Box className={classes.box}>
@@ -42,10 +39,10 @@ export default function DiscoverFeedChips({
         position="left"
         className={classes.chipGroup}
       >
-        {chipNames.map((chipName, index) => (
+        {["🔥 Latest", ...chipLabels].map((chipName, index) => (
           <Chip
             key={index}
-            value={chipName}
+            value={index === 0 ? "" : chipName}
             radius="md"
             classNames={{
               root: classes.chip,
@@ -53,7 +50,7 @@ export default function DiscoverFeedChips({
               label: classes.label,
             }}
           >
-            {chipName === "" ? "🔥 Latest" : `#${chipName}`}
+            {index === 0 ? chipName : `#${chipName}`}
           </Chip>
         ))}
       </Chip.Group>
