@@ -79,7 +79,7 @@ const NoteActionLike = () => {
           <HeartIcon width={18} height={18} />
         </motion.span>{" "}
         <Text lh="normal">
-          {reactions.length > 0 && event.pubkey === auth.pk
+          {reactions.length > 0
             ? reactions.length
             : ""}
         </Text>
