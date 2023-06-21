@@ -1,12 +1,12 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Event } from "nostr-tools";
+import { type NostrEvent } from "@nostr-dev-kit/ndk";
 
 type SheetKey = "postSheet";
 
 interface SheetsState {
   postSheet: {
     isOpen: boolean;
-    replyingTo?: Event;
+    replyingTo?: NostrEvent;
   };
 }
 
@@ -18,7 +18,7 @@ const initialState: SheetsState = {
 
 interface OpenSheetPayload {
   sheetKey: SheetKey;
-  replyingTo?: Event;
+  replyingTo?: NostrEvent;
 }
 
 export const sheetsSlice = createSlice({

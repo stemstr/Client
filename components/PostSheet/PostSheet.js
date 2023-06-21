@@ -19,9 +19,9 @@ export default function PostSheet() {
   const sheetKey = "postSheet";
   const auth = useSelector((state) => state.auth);
   const relays = useSelector((state) => state.relays);
-  const sheetState = useSelector((state) => state.sheets[sheetKey]);
+  const { isOpen, replyingTo } = useSelector((state) => state.sheets[sheetKey]);
+  const { profile } = useUser(replyingTo?.pubkey) ?? {};
   const dispatch = useDispatch();
-  const replyingTo = useUser(sheetState.replyingTo?.pubkey);
   const [isDragging, setIsDragging] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const form = useForm({
@@ -48,16 +48,16 @@ export default function PostSheet() {
     hashtags.forEach((hashtag) => {
       tags.push(["t", hashtag]);
     });
-    if (sheetState.replyingTo) {
-      const { root } = parseEventTags(sheetState.replyingTo);
+    if (replyingTo) {
+      const { root } = parseEventTags(new NDKEvent(ndk, replyingTo));
       if (root) {
         tags.push(root);
-        tags.push(["e", sheetState.replyingTo.id, "", "reply"]);
+        tags.push(["e", replyingTo.id, "", "reply"]);
       } else {
-        tags.push(["e", sheetState.replyingTo.id, "", "root"]);
+        tags.push(["e", replyingTo.id, "", "root"]);
       }
-      const pTagPKs = [sheetState.replyingTo.pubkey];
-      sheetState.replyingTo.tags.forEach((t) => {
+      const pTagPKs = [replyingTo.pubkey];
+      replyingTo.tags.forEach((t) => {
         if (t[0] === "p") {
           pTagPKs.push(t[1]);
         }
@@ -93,7 +93,7 @@ export default function PostSheet() {
   };
 
   const toggleSheet = () => {
-    if (sheetState.isOpen) {
+    if (isOpen) {
       dispatch(closeSheet(sheetKey));
     } else {
       dispatch(openSheet({ sheetKey }));
@@ -136,14 +136,18 @@ export default function PostSheet() {
   };
 
   let title = isDragging ? "Drop to proccess sound" : "Share";
-  if (sheetState.replyingTo) {
-    title = `Replying to @${replyingTo?.profile?.name}`;
+  if (replyingTo) {
+    title = `Replying to @${
+      profile?.name ??
+      profile?.displayName ??
+      `${replyingTo.pubkey.substring(0, 5)}...`
+    }`;
   }
-  if (!sheetState.isOpen) title = "";
+  if (!isOpen) title = "";
 
   return (
     <Drawer
-      opened={sheetState.isOpen}
+      opened={isOpen}
       onClose={handleClose}
       position="bottom"
       title={title}
@@ -207,7 +211,7 @@ export default function PostSheet() {
             <TagsFieldGroup {...form.getInputProps("tags")} />
             {/* <ShareAcrossField {...form.getInputProps("shareAcross")} /> */}
             <Button disabled={isUploading} type="submit">
-              {sheetState.replyingTo ? "Reply" : "Share"}
+              {replyingTo ? "Reply" : "Share"}
             </Button>
           </Stack>
         </form>

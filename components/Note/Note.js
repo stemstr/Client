@@ -1,7 +1,6 @@
 import { Box, Group, Stack, Text } from "@mantine/core";
 import React, { useMemo, useState } from "react";
-import { useDispatch } from "react-redux";
-import { CommentIcon, ShakaIcon, ZapIcon } from "../../icons/StemstrIcon";
+import { ZapIcon } from "../../icons/StemstrIcon";
 import NoteTags from "../NoteTags/NoteTags";
 import NoteHeader from "../NoteHeader/NoteHeader";
 import NoteAction from "../NoteAction/NoteAction";
@@ -11,24 +10,18 @@ import SoundPlayer from "../SoundPlayer/SoundPlayer";
 import RepostButton from "../RepostButton/RepostButton";
 import useStyles from "./Note.styles";
 import { useRouter } from "next/router";
-import { openSheet } from "store/Sheets";
 import { useEvent } from "../../ndk/NDKEventProvider";
 
 const Note = ({ type }) => {
   const { event } = useEvent();
   const { classes } = useStyles();
   const router = useRouter();
-  const dispatch = useDispatch();
   const [downloadStatus, setDownloadStatus] = useState("initial");
   const downloadUrl = useMemo(() => {
     const downloadUrlTag =
       event.tags?.find((tag) => tag[0] === "download_url") || null;
     return downloadUrlTag ? downloadUrlTag[1] : null;
   }, [event]);
-
-  const handleClickComment = (e) => {
-    dispatch(openSheet({ sheetKey: "postSheet", replyingTo: event }));
-  };
 
   const handleClick = () => {
     router.push(`/thread/${event.id}`);
@@ -63,7 +56,7 @@ const Note = ({ type }) => {
           </Text>
           <NoteTags classes={classes} />
           <Group position="apart">
-            <NoteActionComment onClick={handleClickComment} />
+            <NoteActionComment />
             {/* <RepostButton note={note} /> */}
             <NoteActionLike />
             {/* <NoteAction>
