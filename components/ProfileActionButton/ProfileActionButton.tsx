@@ -1,31 +1,21 @@
-import { Center } from "@mantine/core";
+import { Center, DefaultProps } from "@mantine/core";
+import useStyles from "components/ProfileActionButton/ProfileActionButton.styles";
+import { MouseEventHandler } from "react";
 
-interface ProfileActionButtonProps {
-  onClick?: () => void;
+interface ProfileActionButtonProps extends DefaultProps {
+  onClick?: MouseEventHandler<HTMLDivElement>;
 }
 
 export default function ProfileActionButton({
-  children,
   onClick,
+  className,
+  children,
+  ...rest
 }: React.PropsWithChildren<ProfileActionButtonProps>) {
+  const { classes, cx } = useStyles();
+
   return (
-    <Center
-      sx={(theme) => ({
-        height: 34,
-        padding: "8px 16px",
-        borderRadius: theme.radius.md,
-        borderWidth: 1,
-        borderStyle: "solid",
-        borderColor: theme.colors.gray[4],
-        backgroundColor: theme.colors.gray[6],
-        color: theme.white,
-        cursor: "pointer",
-        fontSize: theme.fontSizes.sm,
-        fontWeight: 500,
-        lineHeight: "normal",
-      })}
-      onClick={onClick}
-    >
+    <Center onClick={onClick} className={cx(classes.root, className)} {...rest}>
       {children}
     </Center>
   );

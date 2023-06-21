@@ -29,6 +29,7 @@ import {
   ChevronLeftIcon,
 } from "icons/StemstrIcon";
 import { useUser } from "ndk/hooks/useUser";
+import FollowButton from "components/FollowButton/FollowButton";
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -102,7 +103,7 @@ export default function ProfilePage() {
           size={100}
           radius={50}
         />
-        <Group>
+        <Group spacing={12}>
           <ProfileActionButton>
             <ShareIcon width={16} height={16} />
           </ProfileActionButton>
@@ -117,6 +118,7 @@ export default function ProfilePage() {
               </Text>
             </ProfileActionButton>
           )}
+          {!isCurrentUser && <FollowButton pubkey={pk} />}
         </Group>
       </Group>
       <Stack spacing={6} mb="xl" pl="md" pr="md" c="white">

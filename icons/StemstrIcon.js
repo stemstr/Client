@@ -39,7 +39,9 @@ import Stop from "./Line icons/Media & devices/stop.svg";
 
 import Key from "./Line icons/Security/key-01.svg";
 
+import Follow from "./Line icons/Users/user-right-01.svg";
 import Profile from "./Line icons/Users/user-circle.svg";
+import Unfollow from "./Line icons/Users/user-left-01.svg";
 
 import Collection from "./collection.svg";
 import Repost from "./repost.svg";
@@ -335,6 +337,22 @@ export const AlignLeftIcon = (props) => {
   return (
     <StemstrIcon>
       <AlignLeft {...props} />
+    </StemstrIcon>
+  );
+};
+
+export const FollowIcon = (props) => {
+  return (
+    <StemstrIcon>
+      <Follow {...props} />
+    </StemstrIcon>
+  );
+};
+
+export const UnfollowIcon = (props) => {
+  return (
+    <StemstrIcon>
+      <Unfollow {...props} />
     </StemstrIcon>
   );
 };
