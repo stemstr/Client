@@ -1,16 +1,14 @@
-import { Box, Group, Stack, Text } from "@mantine/core";
+import { Box, Group, Stack, Text, Space } from "@mantine/core";
 import React, { useMemo, useState } from "react";
-import { ZapIcon } from "../../icons/StemstrIcon";
 import NoteTags from "../NoteTags/NoteTags";
 import NoteHeader from "../NoteHeader/NoteHeader";
-import NoteAction from "../NoteAction/NoteAction";
 import NoteActionComment from "../NoteAction/NoteActionComment";
 import NoteActionLike from "../NoteAction/NoteActionLike";
 import SoundPlayer from "../SoundPlayer/SoundPlayer";
-import RepostButton from "../RepostButton/RepostButton";
 import useStyles from "./Note.styles";
 import { useRouter } from "next/router";
 import { useEvent } from "../../ndk/NDKEventProvider";
+import NoteActionZap from "../NoteAction/NoteActionZap";
 
 const Note = ({ type }) => {
   const { event } = useEvent();
@@ -57,11 +55,9 @@ const Note = ({ type }) => {
           <NoteTags classes={classes} />
           <Group position="apart">
             <NoteActionComment />
-            {/* <RepostButton note={note} /> */}
+            <Space w={59} />
             <NoteActionLike />
-            {/* <NoteAction>
-            <ZapIcon width={18} height={18} /> 4
-          </NoteAction> */}
+            <NoteActionZap />
           </Group>
         </Stack>
       </Group>
