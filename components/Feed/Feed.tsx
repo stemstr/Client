@@ -9,7 +9,6 @@ import { EventProvider } from "../../ndk/NDKEventProvider";
 import { type NDKEvent, type NDKFilter } from "@nostr-dev-kit/ndk";
 import { useNDK } from "../../ndk/NDKProvider";
 import { fetchEvents } from "../../ndk/utils";
-import usePreloadProfileCache from "../../ndk/hooks/usePreloadProfileCache";
 import { noop } from "../../utils/common";
 
 interface FeedProps {
@@ -70,12 +69,6 @@ export const Feed = memo(
 
     FeedRow.displayName = "FeedRow";
 
-    // only preload the profiles for the first 50 events to reduce amount of data fetched and since relays don't return
-    // any results when requesting too many profiles
-    const hasAttemptedProfileCachePreload = usePreloadProfileCache(
-      events.slice(0, 50).map(({ pubkey }) => pubkey)
-    );
-
     const processEvents = useCallback(
       (events: NDKEvent[]) => {
         const rootEvents = events.filter(
@@ -133,7 +126,7 @@ export const Feed = memo(
       isLoadingMore.current = false;
     };
 
-    return hasAttemptedProfileCachePreload ? (
+    return (
       <AutoSizer
         style={{ height: `calc(100vh - ${headerHeight}px - ${heightOffset}px` }}
       >
@@ -167,7 +160,7 @@ export const Feed = memo(
           </InfiniteLoader>
         )}
       </AutoSizer>
-    ) : null;
+    );
   }
 );
 
