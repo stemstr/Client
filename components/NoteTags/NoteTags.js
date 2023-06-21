@@ -8,6 +8,12 @@ const NoteTags = ({ classes, ...rest }) => {
     <Group
       position="left"
       spacing={12}
+      sx={(theme) => ({
+        [theme.fn.smallerThan("xs")]: {
+          flexWrap: "nowrap",
+          overflowX: "auto"
+        }
+      })}
       {...rest}
     >
       {event?.tags
