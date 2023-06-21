@@ -7,7 +7,8 @@ const NoteTags = ({ classes, ...rest }) => {
   return (
     <Group
       position="left"
-      sx={{ flexWrap: "nowrap", overflowX: "auto" }}
+      gap={12}
+      sx={{ flexWrap: "wrap" }}
       {...rest}
     >
       {event?.tags
