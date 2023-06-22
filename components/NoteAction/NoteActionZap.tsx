@@ -20,6 +20,7 @@ import SatsButton from "./SatsButton";
 import useGetBtcPrice from "./useGetBtcPrice";
 import FieldGroup from "../FieldGroups/FieldGroup";
 import { useMediaQuery } from "@mantine/hooks";
+import SquareButton from "./SquareButton";
 
 const Drawer = withStopClickPropagation(MantineDrawer);
 
@@ -105,10 +106,12 @@ const NoteActionZap = () => {
                 isHighlighted={_satsAmount === satsAmount && !isCustomAmount}
               />
             ))}
-            <SatsButton
-              satsAmount="Custom"
+            <SquareButton
               onClick={() => setIsCustomAmount(true)}
-            />
+              mainContent="Custom"
+            >
+              ...
+            </SquareButton>
           </Flex>
           <FieldGroup
             TitleIcon={CommentIcon}
