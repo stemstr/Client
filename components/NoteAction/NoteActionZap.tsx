@@ -108,7 +108,6 @@ const NoteActionZap = () => {
             <SatsButton
               satsAmount="Custom"
               onClick={() => setIsCustomAmount(true)}
-              isHighlighted={isCustomAmount}
             />
           </Flex>
           <FieldGroup
