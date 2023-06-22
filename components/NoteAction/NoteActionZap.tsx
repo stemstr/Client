@@ -29,7 +29,6 @@ const NoteActionZap = () => {
   const [isOpen, setIsOpen] = useState(false);
   const defaultSatAmounts = [21, 444, 808, 5000, 10000];
   const [satsAmount, setSatsAmount] = useState(defaultSatAmounts[0]);
-  const [isCustomAmount, setIsCustomAmount] = useState(false);
   const hasChosenValidSatsAmount = satsAmount > 0;
   const btcPrice = useGetBtcPrice(isOpen);
   const satsButtonRowPx = useMediaQuery("(max-width: 480px)") ? 32 : 64;
@@ -39,11 +38,9 @@ const NoteActionZap = () => {
   const handleClose = () => {
     setIsOpen(false);
     setSatsAmount(defaultSatAmounts[0]);
-    setIsCustomAmount(false);
   };
   const handleSelectOneOfTheDefaultSatAmounts = (satsAmount: number) => {
     setSatsAmount(satsAmount);
-    setIsCustomAmount(false);
   };
 
   return (
@@ -89,7 +86,7 @@ const NoteActionZap = () => {
                 onClick={() =>
                   handleSelectOneOfTheDefaultSatAmounts(_satsAmount)
                 }
-                isHighlighted={_satsAmount === satsAmount && !isCustomAmount}
+                isHighlighted={_satsAmount === satsAmount}
               />
             ))}
           </Flex>
@@ -102,14 +99,10 @@ const NoteActionZap = () => {
                 onClick={() =>
                   handleSelectOneOfTheDefaultSatAmounts(_satsAmount)
                 }
-                isHighlighted={_satsAmount === satsAmount && !isCustomAmount}
+                isHighlighted={_satsAmount === satsAmount}
               />
             ))}
-            <SatsButton
-              satsAmount="Custom"
-              onClick={() => setIsCustomAmount(true)}
-              isHighlighted={isCustomAmount}
-            />
+            <SatsButton satsAmount="Custom" />
           </Flex>
           <FieldGroup
             TitleIcon={CommentIcon}
