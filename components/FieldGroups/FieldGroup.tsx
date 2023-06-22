@@ -1,10 +1,16 @@
-import { Group, Stack, Text } from "@mantine/core";
+import {
+  Group,
+  type SpacingValue,
+  Stack,
+  type SystemProp,
+  Text,
+} from "@mantine/core";
 import { type PropsWithChildren, type FC } from "react";
 
 interface FieldGroupProps {
   TitleIcon?: FC<{ width: number; height: number }>;
   title: string;
-  titleFontSize?: number;
+  titleFontSize?: SystemProp<SpacingValue>;
   iconSize?: number;
   disabled?: boolean;
 }
