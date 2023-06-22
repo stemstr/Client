@@ -19,6 +19,7 @@ import { getNormalizedName } from "../../ndk/utils";
 import SatsButton from "./SatsButton";
 import useGetBtcPrice from "./useGetBtcPrice";
 import FieldGroup from "../FieldGroups/FieldGroup";
+import { useMediaQuery } from "@mantine/hooks";
 
 const Drawer = withStopClickPropagation(MantineDrawer);
 
@@ -31,6 +32,7 @@ const NoteActionZap = () => {
   const [isCustomAmount, setIsCustomAmount] = useState(false);
   const hasChosenValidSatsAmount = satsAmount > 0;
   const btcPrice = useGetBtcPrice(isOpen);
+  const satsButtonRowPx = useMediaQuery("(max-width: 480px)") ? 32 : 64;
   const handleOnClick = () => {
     setIsOpen(true);
   };
@@ -78,7 +80,7 @@ const NoteActionZap = () => {
             </Text>{" "}
             to {getNormalizedName(event.pubkey, user)}
           </Text>
-          <Flex justify="space-between" px={64}>
+          <Flex justify="space-between" px={satsButtonRowPx}>
             {defaultSatAmounts.slice(0, 3).map((_satsAmount) => (
               <SatsButton
                 key={_satsAmount}
@@ -91,7 +93,7 @@ const NoteActionZap = () => {
               />
             ))}
           </Flex>
-          <Flex justify="space-between" px={64}>
+          <Flex justify="space-between" px={satsButtonRowPx}>
             {defaultSatAmounts.slice(3).map((_satsAmount) => (
               <SatsButton
                 key={_satsAmount}
