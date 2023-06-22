@@ -38,7 +38,7 @@ const NoteActionZap = () => {
   };
   const handleClose = () => {
     setIsOpen(false);
-    setSatsAmount(0);
+    setSatsAmount(defaultSatAmounts[0]);
     setIsCustomAmount(false);
   };
   const handleSelectOneOfTheDefaultSatAmounts = (satsAmount: number) => {
