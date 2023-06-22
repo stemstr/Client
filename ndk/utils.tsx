@@ -4,6 +4,7 @@ import NDK, {
   NDKRelay,
   NDKRelaySet,
   NDKTag,
+  NDKUser,
 } from "@nostr-dev-kit/ndk";
 import { nip19 } from "nostr-tools";
 import { NDKSubscriptionOptions } from "@nostr-dev-kit/ndk/lib/src/subscription";
@@ -239,4 +240,12 @@ export const fetchEvents = async (
 
     relaySetSubscription.start();
   });
+};
+
+export const getNormalizedName = (pubkey: string, user?: NDKUser) => {
+  const profile = user?.profile;
+
+  return (
+    profile?.displayName ?? profile?.name ?? `${pubkey.substring(0, 5)}...`
+  );
 };
