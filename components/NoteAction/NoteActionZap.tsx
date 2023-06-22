@@ -1,5 +1,4 @@
 import { ZapIcon } from "icons/StemstrIcon";
-import requireAuth from "../../utils/hoc/requireAuth";
 import NoteAction from "./NoteAction";
 import { useState } from "react";
 import ZapInfoDrawer from "./ZapInfoDrawer";
@@ -30,4 +29,4 @@ const NoteActionZap = () => {
   );
 };
 
-export default requireAuth(NoteActionZap);
+export default NoteActionZap;
