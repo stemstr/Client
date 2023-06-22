@@ -26,7 +26,9 @@ const NoteActionZap = () => {
   const { event } = useEvent();
   const user = useUser(event.pubkey);
   const [isOpen, setIsOpen] = useState(false);
-  const [satsAmount, setSatsAmount] = useState(0);
+  const defaultSatAmounts = [21, 444, 808, 5000, 10000];
+  const [satsAmount, setSatsAmount] = useState(defaultSatAmounts[0]);
+  const [isCustomAmount, setIsCustomAmount] = useState(false);
   const hasChosenValidSatsAmount = satsAmount > 0;
   const btcPrice = useGetBtcPrice(isOpen);
   const handleOnClick = () => {
@@ -35,6 +37,11 @@ const NoteActionZap = () => {
   const handleClose = () => {
     setIsOpen(false);
     setSatsAmount(0);
+    setIsCustomAmount(false);
+  };
+  const handleSelectOneOfTheDefaultSatAmounts = (satsAmount: number) => {
+    setSatsAmount(satsAmount);
+    setIsCustomAmount(false);
   };
 
   return (
@@ -72,27 +79,35 @@ const NoteActionZap = () => {
             to {getNormalizedName(event.pubkey, user)}
           </Text>
           <Flex justify="space-between" px={64}>
-            {[500, 1000, 2000].map((_satsAmount) => (
+            {defaultSatAmounts.slice(0, 3).map((_satsAmount) => (
               <SatsButton
                 key={_satsAmount}
                 satsAmount={_satsAmount}
                 btcPrice={btcPrice}
-                onClick={() => setSatsAmount(_satsAmount)}
-                isHighlighted={_satsAmount === satsAmount}
+                onClick={() =>
+                  handleSelectOneOfTheDefaultSatAmounts(_satsAmount)
+                }
+                isHighlighted={_satsAmount === satsAmount && !isCustomAmount}
               />
             ))}
           </Flex>
           <Flex justify="space-between" px={64}>
-            {[4000, 6000].map((_satsAmount) => (
+            {defaultSatAmounts.slice(3).map((_satsAmount) => (
               <SatsButton
                 key={_satsAmount}
                 satsAmount={_satsAmount}
                 btcPrice={btcPrice}
-                onClick={() => setSatsAmount(_satsAmount)}
-                isHighlighted={_satsAmount === satsAmount}
+                onClick={() =>
+                  handleSelectOneOfTheDefaultSatAmounts(_satsAmount)
+                }
+                isHighlighted={_satsAmount === satsAmount && !isCustomAmount}
               />
             ))}
-            <SatsButton satsAmount="Custom" />
+            <SatsButton
+              satsAmount="Custom"
+              onClick={() => setIsCustomAmount(true)}
+              isHighlighted={isCustomAmount}
+            />
           </Flex>
           <FieldGroup
             TitleIcon={CommentIcon}
