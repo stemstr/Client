@@ -18,7 +18,10 @@ export default createStyles((theme) => {
     borderColor: theme.colors.gray[7],
     borderRadius: theme.radius.lg,
     boxShadow: "0px 2px 2px rgba(0, 0, 0, 0.25)",
-    "&:hover": hightlightStyles,
+    "@media (hover: hover)": {
+      "&:hover": hightlightStyles,
+    },
+    "&:active": hightlightStyles,
     ...subtleStyles,
   };
 

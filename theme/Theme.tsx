@@ -156,9 +156,13 @@ const stemstrTheme: MantineThemeOverride = {
               ? theme.colors.gray[6]
               : undefined,
           color: params.variant === "light" ? theme.white : undefined,
-          "&hover": {
-            backgroundColor:
-              params.variant === "default" ? theme.colors.purple[7] : undefined,
+          "@media (hover: hover)": {
+            "&hover": {
+              backgroundColor:
+                params.variant === "default"
+                  ? theme.colors.purple[7]
+                  : undefined,
+            },
           },
           "&:disabled": {
             backgroundColor:
