@@ -1,30 +1,43 @@
-import { Button, Stack, Text } from "@mantine/core";
+import {
+  Button,
+  type ButtonProps,
+  Stack,
+  Text,
+  type TextProps,
+} from "@mantine/core";
 import withStopClickPropagation from "utils/hoc/withStopClickPropagation";
 import { type MouseEventHandler, type PropsWithChildren } from "react";
 import useStyles from "./SquareButton.styles";
 
-interface NoteActionZapButtonProps {
+interface NoteActionZapButtonProps extends ButtonProps {
   onClick: MouseEventHandler;
-  mainContent: number | string;
+  label: string | number;
+  labelProps: TextProps;
   isHighlighted?: boolean;
 }
 
 const SquareButton = ({
   onClick,
-  mainContent,
+  label,
+  labelProps,
   isHighlighted,
   children,
+  ...rest
 }: PropsWithChildren<NoteActionZapButtonProps>) => {
   const { classes } = useStyles();
+  const getClassName = () => {
+    if (rest?.variant === "subtle") {
+      return classes.subtleButton;
+    }
+
+    return isHighlighted ? classes.highlightedButton : classes.button;
+  };
 
   return (
-    <Button
-      className={isHighlighted ? classes.highlightedButton : classes.button}
-      onClick={onClick}
-    >
+    <Button {...rest} className={getClassName()} onClick={onClick}>
       <Stack ta="center" spacing={5}>
-        <Text size={17} fw="bold">
-          {mainContent.toLocaleString()}
+        <Text size={17} fw="bold" {...labelProps}>
+          {label.toLocaleString()}
         </Text>
         <Text color="rgba(255, 255, 255, 0.4)" size="xs" fw={400}>
           {children}

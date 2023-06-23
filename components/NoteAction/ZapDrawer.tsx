@@ -47,8 +47,8 @@ const ZapDrawer = ({
       })}
     >
       {children}
-      <Divider color="gray.4" />
-      <Flex justify="center" mt={21}>
+      <Divider color="gray.4" mt={21} />
+      <Flex justify="center" mt={10}>
         <Button
           variant="subtle"
           styles={(theme) => ({

@@ -28,7 +28,7 @@ const SatsButton = ({
   return (
     <SquareButton
       onClick={onClick}
-      mainContent={satsAmount}
+      label={satsAmount}
       isHighlighted={isHighlighted}
     >
       {getFiatAmount()}
