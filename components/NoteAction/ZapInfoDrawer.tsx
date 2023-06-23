@@ -1,4 +1,4 @@
-import { Button, Flex, Stack, Text, TextInput } from "@mantine/core";
+import { Button, Stack, Text, TextInput } from "@mantine/core";
 import { useRef, useState } from "react";
 import ZapDrawer from "./ZapDrawer";
 import { getNormalizedName } from "../../ndk/utils";
@@ -8,8 +8,8 @@ import FieldGroup from "../FieldGroups/FieldGroup";
 import { CommentIcon } from "../../icons/StemstrIcon";
 import { useUser } from "../../ndk/hooks/useUser";
 import { useEvent } from "../../ndk/NDKEventProvider";
-import { useMediaQuery } from "@mantine/hooks";
 import useGetBtcPrice from "./useGetBtcPrice";
+import SquareButtonRow from "./SquareButtonRow";
 
 interface ZapInfoDrawerProps {
   isOpen: boolean;
@@ -20,7 +20,6 @@ interface ZapInfoDrawerProps {
 const ZapInfoDrawer = ({ isOpen, onClose, onContinue }: ZapInfoDrawerProps) => {
   const { event } = useEvent();
   const user = useUser(event.pubkey);
-  const satsButtonRowPx = useMediaQuery("(max-width: 480px)") ? 32 : 64;
   const btcPrice = useGetBtcPrice(isOpen);
   const defaultSatAmounts = [21, 444, 808, 5000, 10000];
   const [satsAmount, setSatsAmount] = useState(defaultSatAmounts[0]);
@@ -29,6 +28,15 @@ const ZapInfoDrawer = ({ isOpen, onClose, onContinue }: ZapInfoDrawerProps) => {
     setSatsAmount(defaultSatAmounts[0]);
     onClose();
   };
+  const renderSatsAmountButton = (_satsAmount: number) => (
+    <SatsButton
+      key={_satsAmount}
+      satsAmount={_satsAmount}
+      btcPrice={btcPrice}
+      onClick={() => setSatsAmount(_satsAmount)}
+      isHighlighted={_satsAmount === satsAmount}
+    />
+  );
 
   return (
     <ZapDrawer isOpen={isOpen} onClose={handleOnClose} size={578}>
@@ -40,29 +48,13 @@ const ZapInfoDrawer = ({ isOpen, onClose, onContinue }: ZapInfoDrawerProps) => {
           </Text>{" "}
           to {getNormalizedName(event.pubkey, user)}
         </Text>
-        <Flex justify="space-between" px={satsButtonRowPx}>
-          {defaultSatAmounts.slice(0, 3).map((_satsAmount) => (
-            <SatsButton
-              key={_satsAmount}
-              satsAmount={_satsAmount}
-              btcPrice={btcPrice}
-              onClick={() => setSatsAmount(_satsAmount)}
-              isHighlighted={_satsAmount === satsAmount}
-            />
-          ))}
-        </Flex>
-        <Flex justify="space-between" px={satsButtonRowPx}>
-          {defaultSatAmounts.slice(3).map((_satsAmount) => (
-            <SatsButton
-              key={_satsAmount}
-              satsAmount={_satsAmount}
-              btcPrice={btcPrice}
-              onClick={() => setSatsAmount(_satsAmount)}
-              isHighlighted={_satsAmount === satsAmount}
-            />
-          ))}
+        <SquareButtonRow>
+          {defaultSatAmounts.slice(0, 3).map(renderSatsAmountButton)}
+        </SquareButtonRow>
+        <SquareButtonRow>
+          {defaultSatAmounts.slice(3).map(renderSatsAmountButton)}
           <SquareButton mainContent="Custom">...</SquareButton>
-        </Flex>
+        </SquareButtonRow>
         <FieldGroup TitleIcon={CommentIcon} title="Comment" iconSize={16}>
           <TextInput ref={commentRef} placeholder="Share some zappreciation" />
         </FieldGroup>
