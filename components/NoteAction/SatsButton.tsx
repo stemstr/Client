@@ -1,4 +1,3 @@
-import withStopClickPropagation from "utils/hoc/withStopClickPropagation";
 import { type MouseEventHandler } from "react";
 import SquareButton from "./SquareButton";
 
@@ -37,4 +36,4 @@ const SatsButton = ({
   );
 };
 
-export default withStopClickPropagation(SatsButton);
+export default SatsButton;
