@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   ActionIcon,
   Box,
@@ -22,6 +22,7 @@ import { SettingsIcon, VerifiedIcon, ChevronLeftIcon } from "icons/StemstrIcon";
 import { useUser } from "ndk/hooks/useUser";
 import ProfilePic from "components/ProfilePage/ProfilePic";
 import ProfileActionButtons from "components/ProfilePage/ProfileActionButtons";
+import { Nip05Status, getNip05Status } from "ndk/inMemoryCacheAdapter";
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -33,10 +34,20 @@ export default function ProfilePage() {
   );
   const authState = useSelector(selectAuthState);
   const user = useUser(pk);
+  const [nip05Status, setNip05Status] = useState<Nip05Status>();
+
   const handleLogout = () => {
     dispatch(logout());
     router.push(Route.Login);
   };
+
+  useEffect(() => {
+    if (user?.profile?.nip05) {
+      getNip05Status(user?.profile?.nip05, pk).then((status) => {
+        setNip05Status(status);
+      });
+    }
+  }, [user?.profile?.nip05]);
 
   return (
     <>
@@ -97,15 +108,14 @@ export default function ProfilePage() {
           <Text size="sm">
             {user?.profile?.name && `@${user?.profile.name}`}
           </Text>
-          {/* {nip05 && (
+          {nip05Status === Nip05Status.Valid && (
             <>
               <VerifiedIcon width={14} height={14} />
               <Text size="sm" color="purple.2">
-                {userData?.nip05 &&
-                  userData.nip05.slice(userData.nip05.indexOf("@") + 1)}
+                {user?.profile?.nip05 && user.profile.nip05.split("@")[1]}
               </Text>
             </>
-          )} */}
+          )}
         </Group>
         <Text size="sm" mb={8} sx={{ whiteSpace: "pre-wrap" }}>
           {user?.profile?.about}

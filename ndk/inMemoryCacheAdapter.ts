@@ -4,11 +4,53 @@ import NDK, {
   type NostrEvent,
   mergeEvent,
 } from "@nostr-dev-kit/ndk";
+import axios from "axios";
 import { Kind } from "nostr-tools";
 
 const eventsCache: Record<string, Record<string, NostrEvent>> = {};
 
 const profileEventsCache: Record<string, NostrEvent> = {};
+
+const nip05StatusCache: Record<string, Nip05Status> = {};
+
+const makeNip05StatusKey = (nip05: string, pubkey: string) => {
+  return `${nip05}/${pubkey}`;
+};
+
+export enum Nip05Status {
+  Valid = 1,
+  Invalid = 2,
+}
+
+export const getNip05Status = async (
+  nip05: string,
+  pubkey: string
+): Promise<Nip05Status> => {
+  return new Promise<Nip05Status>(async (resolve, reject) => {
+    const key = makeNip05StatusKey(nip05, pubkey);
+    if (nip05StatusCache[key] !== undefined) {
+      resolve(nip05StatusCache[key]);
+      return;
+    }
+    const [name, domain] = nip05.split("@");
+    if (!(name && domain)) {
+      nip05StatusCache[key] = Nip05Status.Invalid;
+      resolve(Nip05Status.Invalid);
+    } else {
+      axios
+        .get(`https://${domain}/.well-known/nostr.json?name=${name}`)
+        .then((response) => {
+          if (response.data.names[name] === pubkey) {
+            nip05StatusCache[key] = Nip05Status.Valid;
+            resolve(Nip05Status.Valid);
+          } else {
+            nip05StatusCache[key] = Nip05Status.Invalid;
+            resolve(Nip05Status.Invalid);
+          }
+        });
+    }
+  });
+};
 
 export const getCachedProfile = (pubkey: string, ndk?: NDK) => {
   const cachedProfile = profileEventsCache[pubkey];

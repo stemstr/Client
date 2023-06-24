@@ -8,6 +8,8 @@ import { getRelativeTimeString } from "../../ndk/utils";
 import NoteActionMore from "components/NoteAction/NoteActionMore";
 import { useEvent } from "../../ndk/NDKEventProvider";
 import { useUser } from "ndk/hooks/useUser";
+import { useEffect, useState } from "react";
+import { Nip05Status, getNip05Status } from "ndk/inMemoryCacheAdapter";
 
 const UserDetailsAnchorWrapper = ({ children }) => {
   const { event } = useEvent();
@@ -28,6 +30,23 @@ const UserDetailsAnchorWrapper = ({ children }) => {
       </Group>
     </Anchor>
   );
+};
+
+const UserDetailsNip05 = ({ userData }) => {
+  const { event } = useEvent();
+  const [nip05Status, setNip05Status] = useState();
+
+  useEffect(() => {
+    if (userData?.nip05) {
+      getNip05Status(userData.nip05, event.pubkey).then((status) => {
+        setNip05Status(status);
+      });
+    }
+  }, [userData?.nip05, event.pubkey]);
+
+  return nip05Status === Nip05Status.Valid ? (
+    <VerifiedIcon width={14} height={14} />
+  ) : null;
 };
 
 const UserDetailsAvatar = ({ userData }) => (
@@ -72,7 +91,7 @@ const DesktopUserDetails = ({ userData, sx }) => (
     <UserDetailsAnchorWrapper>
       <UserDetailsAvatar userData={userData} />
       <UserDetailsDisplayName size="lg" userData={userData} />
-      <VerifiedIcon width={14} height={14} />
+      <UserDetailsNip05 userData={userData} />
       <UserDetailsName userData={userData} />
     </UserDetailsAnchorWrapper>
     <RelativeTime />
@@ -104,7 +123,7 @@ const MobileUserDetails = ({ userData, sx }) => {
               userData={userData}
               sx={nameStyles}
             />
-            <VerifiedIcon width={14} height={14} />
+            <UserDetailsNip05 userData={userData} />
           </Group>
           <UserDetailsName userData={userData} sx={nameStyles} />
         </Stack>
