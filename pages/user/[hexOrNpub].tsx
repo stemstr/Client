@@ -1,7 +1,6 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import {
   ActionIcon,
-  Avatar,
   Box,
   Button,
   Group,
@@ -16,20 +15,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { selectAuthState, reset as logout } from "store/Auth";
 import { Route } from "enums/routes";
 import { getPublicKeys } from "ndk/utils";
-import ProfileActionButton from "components/ProfileActionButton/ProfileActionButton";
 import CopyNpub from "components/CopyNpub/CopyNpub";
 import ProfileFeed from "components/ProfileFeed/ProfileFeed";
 import BackButton from "components/BackButton/BackButton";
-import {
-  SettingsIcon,
-  ZapIcon,
-  ShareIcon,
-  EditIcon,
-  VerifiedIcon,
-  ChevronLeftIcon,
-} from "icons/StemstrIcon";
+import { SettingsIcon, VerifiedIcon, ChevronLeftIcon } from "icons/StemstrIcon";
 import { useUser } from "ndk/hooks/useUser";
-import FollowButton from "components/FollowButton/FollowButton";
+import ProfilePic from "components/ProfilePage/ProfilePic";
+import ProfileActionButtons from "components/ProfilePage/ProfileActionButtons";
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -41,15 +33,10 @@ export default function ProfilePage() {
   );
   const authState = useSelector(selectAuthState);
   const user = useUser(pk);
-  const [isCurrentUser, setIsCurrentUser] = useState(false);
   const handleLogout = () => {
     dispatch(logout());
     router.push(Route.Login);
   };
-
-  useEffect(() => {
-    setIsCurrentUser(pk === authState.pk);
-  }, [pk, authState.pk]);
 
   return (
     <>
@@ -96,30 +83,9 @@ export default function ProfilePage() {
           </Group>
         </Group>
       </Box>
-      <Group pl="md" pr="md" mb="lg" position="apart" align="end" mt={-50}>
-        <Avatar
-          src={user?.profile?.image}
-          alt={user?.profile?.name}
-          size={100}
-          radius={50}
-        />
-        <Group spacing={12}>
-          <ProfileActionButton>
-            <ShareIcon width={16} height={16} />
-          </ProfileActionButton>
-          <ProfileActionButton>
-            <ZapIcon width={16} height={16} />
-          </ProfileActionButton>
-          {isCurrentUser && (
-            <ProfileActionButton onClick={() => router.push(Route.EditProfile)}>
-              <EditIcon width={16} height={16} />
-              <Text lh="normal" ml={8}>
-                Edit Profile
-              </Text>
-            </ProfileActionButton>
-          )}
-          {!isCurrentUser && <FollowButton pubkey={pk} />}
-        </Group>
+      <Group pl="md" pr="md" mb="lg" position="apart" align="start">
+        <ProfilePic pubkey={pk} />
+        <ProfileActionButtons pubkey={pk} />
       </Group>
       <Stack spacing={6} mb="xl" pl="md" pr="md" c="white">
         <Text size="lg" color="white" fw="bold">
