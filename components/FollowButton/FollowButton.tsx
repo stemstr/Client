@@ -6,8 +6,8 @@ import { EllipsisIcon, FollowIcon, UnfollowIcon } from "icons/StemstrIcon";
 import { useNDK } from "ndk/NDKProvider";
 import useContactList from "ndk/hooks/useContactList";
 import { useMemo, useState } from "react";
-import { useSelector } from "react-redux";
-import { selectAuthState } from "store/Auth";
+import { useDispatch, useSelector } from "react-redux";
+import { selectAuthState, setIsNewlyCreatedUser } from "store/Auth";
 
 type FollowButtonProps = {
   pubkey: string;
@@ -16,6 +16,7 @@ type FollowButtonProps = {
 export default function FollowButton({ pubkey }: FollowButtonProps) {
   const { classes, cx } = useStyles();
   const { ndk } = useNDK();
+  const dispatch = useDispatch();
   const authState = useSelector(selectAuthState);
   const { contactList, setContactList } = useContactList({
     hexpubkey: authState.pk,
@@ -29,7 +30,7 @@ export default function FollowButton({ pubkey }: FollowButtonProps) {
 
   const handleClick = () => {
     if (!contactList || !authState.pk) return;
-    if (!contactList.tags.length) {
+    if (!contactList.tags.length && !authState.isNewlyCreatedUser) {
       setConfirmOverwriteModalOpened(true);
     } else {
       follow();
@@ -56,6 +57,7 @@ export default function FollowButton({ pubkey }: FollowButtonProps) {
     }
     newContactList.publish().then(() => {
       setContactList(newContactList);
+      dispatch(setIsNewlyCreatedUser(false));
     });
   };
 
@@ -80,7 +82,8 @@ export default function FollowButton({ pubkey }: FollowButtonProps) {
             contacts.
           </Text>
           <Text>
-            If this is your time following someone, you can safely proceed.
+            If this is your first time following someone, you can safely
+            proceed.
           </Text>
           <Group>
             <Button

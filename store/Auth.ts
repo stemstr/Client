@@ -10,6 +10,7 @@ export interface AuthState {
   type?: "privatekey" | "nip07";
   sk?: string;
   pk?: string;
+  isNewlyCreatedUser?: boolean;
 }
 
 export function isAuthState(object: any) {
@@ -58,6 +59,10 @@ export const authSlice = createSlice({
       state.pk = pk;
       cacheAuthState(state);
     },
+    setIsNewlyCreatedUser: (state, action) => {
+      state.isNewlyCreatedUser = action.payload;
+      cacheAuthState(state);
+    },
     reset: () => {
       cacheAuthState(null);
       return initialState;
@@ -74,7 +79,8 @@ export const authSlice = createSlice({
   },
 });
 
-export const { setSK, reset, setAuthState, setNIP07 } = authSlice.actions;
+export const { setSK, reset, setAuthState, setNIP07, setIsNewlyCreatedUser } =
+  authSlice.actions;
 
 export const selectAuthState = (state: AppState) => state.auth;
 

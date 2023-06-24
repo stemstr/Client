@@ -10,7 +10,7 @@ import {
   KeyIcon,
 } from "../../icons/StemstrIcon";
 import { abbreviateKey } from "../../ndk/utils";
-import { setSK } from "../../store/Auth";
+import { setIsNewlyCreatedUser, setSK } from "../../store/Auth";
 import { Route } from "../../enums/routes";
 
 export default function SignupComplete({ sk }) {
@@ -24,6 +24,7 @@ export default function SignupComplete({ sk }) {
 
   useEffect(() => {
     dispatch(setSK(sk));
+    dispatch(setIsNewlyCreatedUser(true));
   }, [sk]);
 
   return (
