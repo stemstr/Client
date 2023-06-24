@@ -36,6 +36,7 @@ const NDKProvider = ({
   const [stemstrRelaySet, setStemstrRelaySet] = useState<
     NDKRelaySet | undefined
   >(undefined);
+  const [canPublishEvents, setCanPublishEvents] = useState(false);
 
   // Initialize NDK instance on component mount
   useEffect(() => {
@@ -86,6 +87,7 @@ const NDKProvider = ({
           break;
       }
       ndk.signer = signer;
+      setCanPublishEvents(!!ndk?.signer);
     }
   }, [ndk, authState.type, authState.sk, authState.pk]);
 
@@ -98,9 +100,7 @@ const NDKProvider = ({
 
   // Return the provider with the NDK instance
   return (
-    <NDKContext.Provider
-      value={{ ndk, stemstrRelaySet, canPublishEvents: !!ndk?.signer }}
-    >
+    <NDKContext.Provider value={{ ndk, stemstrRelaySet, canPublishEvents }}>
       {ndk ? children : "Loading..."}
     </NDKContext.Provider>
   );
