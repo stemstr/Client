@@ -178,6 +178,11 @@ const stemstrTheme: MantineThemeOverride = {
         },
       }),
     },
+    Modal: {
+      defaultProps: {
+        radius: "lg",
+      },
+    },
   },
 };
 

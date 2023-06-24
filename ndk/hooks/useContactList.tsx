@@ -30,6 +30,11 @@ export default function useContactList({ hexpubkey }: { hexpubkey?: string }) {
         }
       );
       setContactList(newestEvent);
+    } else {
+      const emptyContactList = new NDKEvent();
+      emptyContactList.kind = 3;
+      emptyContactList.pubkey = hexpubkey;
+      setContactList(emptyContactList);
     }
   }, [hexpubkey, ndk, setContactList]);
 
