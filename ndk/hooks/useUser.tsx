@@ -7,17 +7,22 @@ export function useUser(pubkey?: string) {
   const [user, setUser] = useState(getCachedUser(pubkey, ndk));
 
   useEffect(() => {
-    if (!ndk || !pubkey || user) {
+    if (!ndk || !pubkey) {
       return;
     }
 
     const fetchUser = async () => {
-      const newUser = ndk.getUser({ hexpubkey: pubkey });
-      await newUser.fetchProfile();
+      const newUser =
+        getCachedUser(pubkey, ndk) ?? ndk.getUser({ hexpubkey: pubkey });
+
+      if (!newUser.profile) {
+        await newUser.fetchProfile();
+      }
+
       setUser(newUser);
     };
     fetchUser();
-  }, [pubkey, ndk, user]);
+  }, [pubkey, ndk]);
 
   return user;
 }

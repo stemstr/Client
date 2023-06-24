@@ -7,7 +7,13 @@ const NoteTags = ({ classes, ...rest }) => {
   return (
     <Group
       position="left"
-      sx={{ flexWrap: "nowrap", overflowX: "auto" }}
+      spacing={12}
+      sx={(theme) => ({
+        [theme.fn.smallerThan("xs")]: {
+          flexWrap: "nowrap",
+          overflowX: "auto"
+        }
+      })}
       {...rest}
     >
       {event?.tags
