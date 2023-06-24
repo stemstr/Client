@@ -3,7 +3,7 @@ import FieldGroup from "./FieldGroup";
 
 export default function NameFieldGroup(props) {
   return (
-    <FieldGroup title="Name" titleFontSize="xs">
+    <FieldGroup title="Username" titleFontSize="xs">
       <NameField {...props} />
     </FieldGroup>
   );
