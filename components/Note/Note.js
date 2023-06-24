@@ -8,7 +8,7 @@ import SoundPlayer from "../SoundPlayer/SoundPlayer";
 import useStyles from "./Note.styles";
 import { useRouter } from "next/router";
 import { useEvent } from "../../ndk/NDKEventProvider";
-import NoteActionZap from "../NoteAction/NoteActionZap";
+import NoteActionZap from "../NoteActionZap/NoteActionZap";
 
 const Note = ({ type }) => {
   const { event } = useEvent();

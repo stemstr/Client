@@ -1,7 +1,7 @@
 import { type MouseEventHandler } from "react";
 import SquareButton from "./SquareButton";
 
-interface NoteActionZapButtonProps {
+interface SatsButtonProps {
   onClick: MouseEventHandler;
   satsAmount: number;
   btcPrice?: number;
@@ -13,7 +13,7 @@ const SatsButton = ({
   satsAmount,
   btcPrice,
   isHighlighted,
-}: NoteActionZapButtonProps) => {
+}: SatsButtonProps) => {
   const getFiatAmount = () => {
     if (!btcPrice) {
       return "";

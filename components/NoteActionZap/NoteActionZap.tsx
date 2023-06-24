@@ -1,5 +1,5 @@
 import { ZapIcon } from "icons/StemstrIcon";
-import NoteAction from "./NoteAction";
+import NoteAction from "components/NoteAction/NoteAction";
 import { useCallback, useRef, useState } from "react";
 import ZapOptionsDrawer from "./ZapOptionsDrawer";
 import CustomAmountDrawer from "./CustomAmountDrawer";

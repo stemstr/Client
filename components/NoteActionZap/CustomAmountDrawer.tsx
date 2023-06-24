@@ -6,7 +6,7 @@ import SquareButtonRow from "./SquareButtonRow";
 import SendSatsHeader from "./SendSatsHeader";
 import ZapCommentFieldGroup from "./ZapCommentFieldGroup";
 
-interface ZapOptionsDrawerProps {
+interface CustomAmountDrawerProps {
   isOpen: boolean;
   onClose: Function;
   onContinue: (satsAmount: number) => void;
@@ -15,14 +15,14 @@ interface ZapOptionsDrawerProps {
   comment: string;
 }
 
-const ZapOptionsDrawer = ({
+const CustomAmountDrawer = ({
   isOpen,
   onClose,
   onContinue,
   onReturnToZapOptionsClick,
   onCommentChange,
   comment,
-}: ZapOptionsDrawerProps) => {
+}: CustomAmountDrawerProps) => {
   const [satsAmount, setSatsAmount] = useState("");
   const handleOnClose = useCallback(() => {
     setSatsAmount("");
@@ -97,4 +97,4 @@ const ZapOptionsDrawer = ({
   );
 };
 
-export default ZapOptionsDrawer;
+export default CustomAmountDrawer;

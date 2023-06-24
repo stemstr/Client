@@ -9,7 +9,7 @@ import withStopClickPropagation from "utils/hoc/withStopClickPropagation";
 import { type MouseEventHandler, type PropsWithChildren } from "react";
 import useStyles from "./SquareButton.styles";
 
-interface NoteActionZapButtonProps extends ButtonProps {
+interface SquareButtonProps extends ButtonProps {
   onClick: MouseEventHandler;
   label: string | number;
   labelProps: TextProps;
@@ -23,7 +23,7 @@ const SquareButton = ({
   isHighlighted,
   children,
   ...rest
-}: PropsWithChildren<NoteActionZapButtonProps>) => {
+}: PropsWithChildren<SquareButtonProps>) => {
   const { classes } = useStyles();
   const getClassName = () => {
     if (rest?.variant === "subtle") {

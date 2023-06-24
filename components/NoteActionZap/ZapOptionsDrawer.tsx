@@ -8,7 +8,7 @@ import SquareButtonRow from "./SquareButtonRow";
 import SendSatsHeader from "./SendSatsHeader";
 import ZapCommentFieldGroup from "./ZapCommentFieldGroup";
 
-interface ZapInfoDrawerProps {
+interface ZapOptionsDrawerProps {
   isOpen: boolean;
   onClose: Function;
   onContinue: (satsAmount: number, comment?: string) => void;
@@ -24,7 +24,7 @@ const ZapOptionsDrawer = ({
   onCustomClick,
   onCommentChange,
   comment,
-}: ZapInfoDrawerProps) => {
+}: ZapOptionsDrawerProps) => {
   const btcPrice = useGetBtcPrice(isOpen);
   const defaultSatAmountValues = [21, 444, 808, 5000, 10000];
   const defaultSatAmount = defaultSatAmountValues[0];
