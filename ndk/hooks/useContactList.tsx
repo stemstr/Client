@@ -1,26 +1,42 @@
-import { NDKUser } from "@nostr-dev-kit/ndk";
+import { NDKEvent } from "@nostr-dev-kit/ndk";
 import { useNDK } from "ndk/NDKProvider";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 export default function useContactList({ hexpubkey }: { hexpubkey?: string }) {
   const { ndk } = useNDK();
-  const [user, setUser] = useState<NDKUser | undefined>();
-  const [contactList, setContactList] = useState<Set<NDKUser>>(new Set());
+  const [contactList, setContactList] = useState<NDKEvent>();
 
   useEffect(() => {
-    if (hexpubkey && ndk) {
-      const newUser = ndk.getUser({ hexpubkey: hexpubkey });
-      setUser(newUser);
-    }
+    fetchContactList();
   }, [hexpubkey, ndk]);
 
-  useEffect(() => {
-    if (user) {
-      user.follows().then((follows) => {
-        setContactList(follows);
-      });
-    }
-  }, [user]);
+  const fetchContactList = useCallback(async () => {
+    if (!ndk || !hexpubkey) return;
+    const contactListEvents = await ndk.fetchEvents({
+      kinds: [3],
+      authors: [hexpubkey],
+    });
 
-  return contactList;
+    if (contactListEvents.size) {
+      const newestEvent = Array.from(contactListEvents).reduce(
+        (newestEvent, currentEvent) => {
+          if (
+            !newestEvent ||
+            currentEvent.created_at! > newestEvent.created_at!
+          ) {
+            return currentEvent;
+          }
+          return newestEvent;
+        }
+      );
+      setContactList(newestEvent);
+    } else {
+      const emptyContactList = new NDKEvent();
+      emptyContactList.kind = 3;
+      emptyContactList.pubkey = hexpubkey;
+      setContactList(emptyContactList);
+    }
+  }, [hexpubkey, ndk, setContactList]);
+
+  return { contactList, setContactList };
 }

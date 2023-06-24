@@ -20,6 +20,7 @@ import CheckVerified from "./Line icons/General/check-verified-02.svg";
 import Copy from "./Line icons/General/copy-03.svg";
 import DownloadCloud from "./Line icons/General/download-cloud-01.svg";
 import Edit from "./Line icons/General/edit-02.svg";
+import Ellipsis from "./Line icons/General/dots-horizontal.svg";
 import Home from "./Line icons/General/home-03.svg";
 import Heart from "./Line icons/General/heart.svg";
 import More from "./Line icons/General/dots-vertical.svg";
@@ -39,7 +40,9 @@ import Stop from "./Line icons/Media & devices/stop.svg";
 
 import Key from "./Line icons/Security/key-01.svg";
 
+import Follow from "./Line icons/Users/user-right-01.svg";
 import Profile from "./Line icons/Users/user-circle.svg";
+import Unfollow from "./Line icons/Users/user-left-01.svg";
 
 import Collection from "./collection.svg";
 import Repost from "./repost.svg";
@@ -335,6 +338,30 @@ export const AlignLeftIcon = (props) => {
   return (
     <StemstrIcon>
       <AlignLeft {...props} />
+    </StemstrIcon>
+  );
+};
+
+export const FollowIcon = (props) => {
+  return (
+    <StemstrIcon>
+      <Follow {...props} />
+    </StemstrIcon>
+  );
+};
+
+export const UnfollowIcon = (props) => {
+  return (
+    <StemstrIcon>
+      <Unfollow {...props} />
+    </StemstrIcon>
+  );
+};
+
+export const EllipsisIcon = (props) => {
+  return (
+    <StemstrIcon>
+      <Ellipsis {...props} />
     </StemstrIcon>
   );
 };
