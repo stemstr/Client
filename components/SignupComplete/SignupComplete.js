@@ -135,7 +135,7 @@ export default function SignupComplete({ sk }) {
           )}
         </CopyButton>
       </Stack>
-      <Button onClick={() => router.push(Route.Home)} fullWidth>
+      <Button onClick={() => router.push(Route.Discover)} fullWidth>
         Private key secured 🫡 Let’s go!{" "}
         <ChevronRightIcon width={16} height={16} />
       </Button>
