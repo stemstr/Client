@@ -8,14 +8,11 @@ export default function DiscoverFeed() {
   const chipsHeight = 68;
   const [selectedChip, setSelectedChip] = useState("");
   const [events, setEvents] = useState<NDKEvent[]>([]);
-  const filter = useMemo<NDKFilter>(
-    () => ({
-      kinds: [1, 1808 as Kind],
-      limit: 50,
-      "#t": selectedChip ? [selectedChip] : undefined,
-    }),
-    [selectedChip]
-  );
+  const filter = useMemo<NDKFilter>(() => {
+    const filter: NDKFilter = { kinds: [1, 1808 as Kind], limit: 50 };
+    if (selectedChip) filter["#t"] = [selectedChip];
+    return filter;
+  }, [selectedChip]);
 
   return (
     <>
