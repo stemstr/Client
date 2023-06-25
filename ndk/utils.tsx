@@ -5,9 +5,20 @@ import NDK, {
   NDKRelaySet,
   NDKTag,
   NDKUser,
+  NDKUserProfile,
+  NDKSubscriptionOptions,
+  NostrEvent,
 } from "@nostr-dev-kit/ndk";
-import { nip19 } from "nostr-tools";
-import { NDKSubscriptionOptions } from "@nostr-dev-kit/ndk/lib/src/subscription";
+import {
+  nip19,
+  nip57,
+  finishEvent,
+  generatePrivateKey,
+  type EventTemplate,
+} from "nostr-tools";
+import axios from "axios";
+import { bech32 } from "@scure/base";
+import { defaultRelayUrls } from "../constants";
 
 interface ParsedEventTags {
   root?: NDKTag;
@@ -248,4 +259,173 @@ export const getNormalizedName = (pubkey: string, user?: NDKUser) => {
   return (
     profile?.displayName ?? profile?.name ?? `${pubkey.substring(0, 5)}...`
   );
+};
+
+const getZapEndpoint = async (
+  zappedUserProfile?: NDKUserProfile,
+  zappedEvent?: NDKEvent
+) => {
+  let lud06: string | undefined;
+  let lud16: string | undefined;
+  let zapEndpoint: string | undefined;
+  let zapEndpointCallback: string | undefined;
+
+  if (zappedEvent) {
+    const zapTag = zappedEvent.getMatchingTags("zap")[0];
+
+    if (zapTag) {
+      switch (zapTag[2]) {
+        case "lud06":
+          lud06 = zapTag[1];
+          break;
+        case "lud16":
+          lud16 = zapTag[1];
+          break;
+        default:
+          throw new Error(`Unknown zap tag ${zapTag}`);
+      }
+    }
+  }
+
+  if (!lud06 && !lud16) {
+    lud06 = zappedUserProfile?.lud06;
+    lud16 = zappedUserProfile?.lud16;
+  }
+
+  if (lud16) {
+    const [name, domain] = lud16.split("@");
+    zapEndpoint = `https://${domain}/.well-known/lnurlp/${name}`;
+  } else if (lud06) {
+    const { words } = bech32.decode(lud06, 1000);
+    const data = bech32.fromWords(words);
+    const utf8Decoder = new TextDecoder("utf-8");
+    zapEndpoint = utf8Decoder.decode(data);
+  }
+
+  if (!zapEndpoint) {
+    throw new Error("No zap endpoint found");
+  }
+
+  const { data } = await axios(zapEndpoint);
+
+  if (data?.allowsNostr && (data?.nostrPubkey || data?.nostrPubKey)) {
+    zapEndpointCallback = data.callback;
+  }
+
+  return zapEndpointCallback;
+};
+
+const getUserRelayUrls = async (
+  user: NDKUser,
+  opts?: { filter?: "readable" | "writable" }
+) => {
+  const relayListEvent = Array.from(await user.relayList())[0];
+  const { filter } = opts ?? {};
+
+  if (!relayListEvent) {
+    return null;
+  }
+
+  return relayListEvent
+    .getMatchingTags("r")
+    .filter((tag) => {
+      if (filter === "readable") {
+        return tag[2] === "read" || tag[2] === undefined;
+      }
+
+      if (filter === "writable") {
+        return tag[2] === "write" || tag[2] === undefined;
+      }
+
+      return true;
+    })
+    .map((tag) => tag[1]);
+};
+
+interface SignEventParams {
+  event: EventTemplate;
+  ndk: NDK;
+  isAnonymous?: boolean;
+}
+
+const signEvent = async ({ event, ndk, isAnonymous }: SignEventParams) => {
+  if (isAnonymous) {
+    return finishEvent(event, generatePrivateKey());
+  }
+
+  const zapRequestEvent = new NDKEvent(ndk, event as NostrEvent);
+
+  await zapRequestEvent.sign();
+
+  return await zapRequestEvent.toNostrEvent();
+};
+
+interface CreateZapRequestParams {
+  amount: number; // amount to zap in sats
+  comment?: string;
+  extraTags?: NDKTag[];
+  zappedUser: NDKUser;
+  zappedEvent?: NDKEvent;
+  ndk: NDK;
+  isAnonymous?: boolean;
+}
+
+export const createZapRequest = async ({
+  amount,
+  comment,
+  extraTags,
+  zappedUser,
+  zappedEvent,
+  ndk,
+  isAnonymous,
+}: CreateZapRequestParams) => {
+  const zapEndpoint = await getZapEndpoint(zappedUser.profile, zappedEvent);
+  const normalizedAmount = amount * 1000; // convert to millisats
+
+  if (!zapEndpoint) {
+    throw new Error("No zap endpoint found");
+  }
+
+  const userRelayUrls = await getUserRelayUrls(zappedUser, {
+    filter: "writable",
+  });
+  const zapRequest = nip57.makeZapRequest({
+    profile: zappedUser.hexpubkey(),
+
+    // set the event to null since nostr-tools doesn't support nip-33 zaps
+    event: null,
+    amount: normalizedAmount,
+    comment: comment ?? "",
+    relays: userRelayUrls
+      ? [...userRelayUrls, ...defaultRelayUrls]
+      : defaultRelayUrls,
+  });
+
+  // add the event tag if it exists; this supports both 'e' and 'a' tags
+  if (zappedEvent) {
+    const tag = zappedEvent.tagReference();
+    if (tag) {
+      zapRequest.tags.push(tag);
+    }
+  }
+
+  if (extraTags) {
+    zapRequest.tags = zapRequest.tags.concat(extraTags);
+  }
+
+  const signedZapRequest = await signEvent({
+    event: zapRequest,
+    ndk,
+    isAnonymous,
+  });
+
+  const { data } = await axios(
+    `${zapEndpoint}?` +
+      new URLSearchParams({
+        amount: normalizedAmount.toString(),
+        nostr: JSON.stringify(signedZapRequest),
+      })
+  );
+
+  return data.pr;
 };

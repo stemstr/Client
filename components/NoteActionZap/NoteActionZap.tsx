@@ -4,8 +4,17 @@ import { useCallback, useRef, useState } from "react";
 import ZapOptionsDrawer from "./ZapOptionsDrawer";
 import CustomAmountDrawer from "./CustomAmountDrawer";
 import InvoiceDrawer from "./InvoiceDrawer";
+import { useEvent } from "../../ndk/NDKEventProvider";
+import { useUser } from "../../ndk/hooks/useUser";
+import { createZapRequest } from "../../ndk/utils";
+import { useNDK } from "../../ndk/NDKProvider";
+import { useIsLoggedIn } from "../../hooks/useIsLoggedIn";
 
 const NoteActionZap = () => {
+  const { ndk } = useNDK();
+  const { event } = useEvent();
+  const isLoggedIn = useIsLoggedIn();
+  const zapRecipient = useUser(event.pubkey);
   const [isZapOptionsDrawerOpen, setIsZapOptionsDrawerOpen] = useState(false);
   const [isCustomAmountDrawerOpen, setIsCustomAmountDrawerOpen] =
     useState(false);
@@ -19,11 +28,16 @@ const NoteActionZap = () => {
   const handleContinueClick = async (satsAmount: number) => {
     amount.current = satsAmount;
 
-    // TODO: fetch real invoice for zap
-    const invoice =
-      "lnbc210n1pjf0p0tpp570nknrhks9k79mwtnqpgxvj7g0mvw5a6edzgjwgwtgzu0hzkf7asdqu2askcmr9wssx7e3q2dshgmmndp5scqzzsxqyz5vqsp5mde7m46qd80nfflr3krsgx29ru3uvv8gvf3ttzrs9280f8pwgsys9qyyssq2p7drxdgr9l85t27rws8eqpemn6e72mj69x6yxe35rjs4xtkwqhkg0393wrjn7aga0s027gmz62fukejyu97j2cva482ngngll7xgrqqgm24l8";
-
     try {
+      const invoice = await createZapRequest({
+        amount: satsAmount,
+        comment: comment.current,
+        zappedUser: zapRecipient!, // the zapRecipient must exist if we've gotten to this point
+        zappedEvent: event,
+        ndk: ndk!,
+        isAnonymous: !isLoggedIn,
+      });
+
       setIsZapOptionsDrawerOpen(false);
       setIsCustomAmountDrawerOpen(false);
       setInvoice(invoice);

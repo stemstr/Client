@@ -30,8 +30,10 @@ const ZapOptionsDrawer = ({
   const defaultSatAmountValues = [21, 444, 808, 5000, 10000];
   const defaultSatAmount = defaultSatAmountValues[0];
   const [satsAmount, setSatsAmount] = useState(defaultSatAmount);
+  const [isLoading, setIsLoading] = useState(false);
   const handleOnClose = useCallback(() => {
     setSatsAmount(defaultSatAmount);
+    setIsLoading(false);
     onClose();
   }, [onClose, defaultSatAmount]);
   const renderSatsAmountButton = (_satsAmount: number) => (
@@ -43,6 +45,10 @@ const ZapOptionsDrawer = ({
       isHighlighted={_satsAmount === satsAmount}
     />
   );
+  const handleContinueClick = () => {
+    setIsLoading(true);
+    onContinue(satsAmount);
+  };
 
   useEffect(() => {
     if (!isOpen) {
@@ -67,7 +73,12 @@ const ZapOptionsDrawer = ({
           defaultValue={comment}
           onChange={onCommentChange}
         />
-        <Button mt={24} fullWidth onClick={() => onContinue(satsAmount)}>
+        <Button
+          mt={24}
+          fullWidth
+          onClick={handleContinueClick}
+          loading={isLoading}
+        >
           Continue
         </Button>
         <Divider color="gray.4" />

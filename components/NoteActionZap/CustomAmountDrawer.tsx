@@ -25,8 +25,10 @@ const CustomAmountDrawer = ({
   comment,
 }: CustomAmountDrawerProps) => {
   const [satsAmount, setSatsAmount] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const handleOnClose = useCallback(() => {
     setSatsAmount("");
+    setIsLoading(false);
     onClose();
   }, [onClose]);
   const renderNumberSquareButton = (n: number) => {
@@ -43,6 +45,10 @@ const CustomAmountDrawer = ({
         }
       />
     );
+  };
+  const handleContinueClick = () => {
+    setIsLoading(true);
+    onContinue(Number(satsAmount));
   };
 
   useEffect(() => {
@@ -86,10 +92,11 @@ const CustomAmountDrawer = ({
             color="gray.6"
             onClick={() => onReturnToZapOptionsClick()}
             fullWidth
+            disabled={isLoading}
           >
             &lt;&nbsp;&nbsp; Return to zap options
           </Button>
-          <Button onClick={() => onContinue(Number(satsAmount))} fullWidth>
+          <Button onClick={handleContinueClick} fullWidth loading={isLoading}>
             Continue
           </Button>
         </Flex>
