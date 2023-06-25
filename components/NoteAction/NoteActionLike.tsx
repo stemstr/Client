@@ -11,12 +11,12 @@ import { NDKEvent } from "@nostr-dev-kit/ndk";
 import { useNDK } from "../../ndk/NDKProvider";
 import { useEvent } from "../../ndk/NDKEventProvider";
 import { useNoteReactions } from "../../ndk/hooks/useNoteReactions";
-import useGuardAuth from "hooks/useGuardAuth";
+import useAuth from "hooks/useAuth";
 
 const NoteActionLike = ({ onClick }: any) => {
   const { ndk } = useNDK();
   const { event } = useEvent();
-  const { guardAuth } = useGuardAuth();
+  const { guardAuth } = useAuth();
   const reactions = useNoteReactions();
   const controls = useAnimation();
   const auth = useSelector(selectAuthState);

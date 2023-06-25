@@ -1,25 +1,15 @@
 import { Stack } from "@mantine/core";
 import Head from "next/head";
 import HomeFeed from "../components/HomeFeed/HomeFeed";
-import { useSelector } from "react-redux";
-import { AppState } from "store/Store";
-import { useEffect } from "react";
-import { useRouter } from "next/router";
 import { Route } from "enums";
 import FeedHeader from "../components/FeedHeader/FeedHeader";
+import useAuth from "hooks/useAuth";
 
 export default function HomePage() {
-  const authState = useSelector((state: AppState) => state.auth);
-  const router = useRouter();
-  const willRedirect = !authState.type;
+  const { guardAuth, isAuthenticated } = useAuth();
+  guardAuth(Route.Discover);
 
-  useEffect(() => {
-    if (willRedirect) {
-      router.push(Route.Discover);
-    }
-  }, [willRedirect]);
-
-  return willRedirect ? null : (
+  return isAuthenticated ? (
     <>
       <Head>
         <title>Stemstr - Home</title>
@@ -30,5 +20,5 @@ export default function HomePage() {
         <HomeFeed />
       </Stack>
     </>
-  );
+  ) : null;
 }

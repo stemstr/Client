@@ -1,14 +1,16 @@
 import { Stack } from "@mantine/core";
 import { useNotifications } from "ndk/hooks/useNotifications";
-import { useSelector } from "react-redux";
-import { AppState } from "store/Store";
 import NotificationView from "components/NotificationView/NotificationView";
 import Head from "next/head";
 import FeedHeader from "../components/FeedHeader/FeedHeader";
+import useAuth from "hooks/useAuth";
 
 export default function Notifications() {
-  const authState = useSelector((state: AppState) => state.auth);
+  const { authState, guardAuth } = useAuth();
+  guardAuth();
+
   const notifications = useNotifications({ pubkey: authState.pk as string });
+
   return (
     <>
       <Head>

@@ -5,13 +5,13 @@ import { useEvent } from "../../ndk/NDKEventProvider";
 import { useEventReplies } from "../../ndk/hooks/useEventReplies";
 import { openSheet } from "../../store/Sheets";
 import { useDispatch } from "react-redux";
-import useGuardAuth from "hooks/useGuardAuth";
+import useAuth from "hooks/useAuth";
 
 const NoteActionComment = () => {
   const { event } = useEvent();
   const replies = useEventReplies(event);
   const dispatch = useDispatch();
-  const { guardAuth } = useGuardAuth();
+  const { guardAuth } = useAuth();
 
   const handleClickComment = () => {
     if (!guardAuth()) return;

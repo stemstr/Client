@@ -1,13 +1,13 @@
 import { Center, MediaQuery } from "@mantine/core";
 import BottomNavigationItem from "components/BottomNavigationItem/BottomNavigationItem";
-import useGuardAuth from "hooks/useGuardAuth";
+import useAuth from "hooks/useAuth";
 import { PlusIcon } from "icons/StemstrIcon";
 import { useDispatch } from "react-redux";
 import { openSheet } from "store/Sheets";
 
 export default function BottomNavigationMiddleItem() {
   const dispatch = useDispatch();
-  const { guardAuth } = useGuardAuth();
+  const { guardAuth } = useAuth();
 
   const handleClick = () => {
     if (!guardAuth()) return;

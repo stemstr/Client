@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 
 import useStyles from "./BottomNavigationItem.styles";
-import useGuardAuth from "hooks/useGuardAuth";
+import useAuth from "hooks/useAuth";
 import { useMemo } from "react";
 import { Route } from "enums";
 
@@ -22,7 +22,7 @@ const BottomNavigationItem = ({
 }: React.PropsWithChildren<BottomNavigationItemProps>) => {
   const { pathname } = useRouter();
   const { classes } = useStyles();
-  const { guardAuth, isAuthenticated } = useGuardAuth();
+  const { guardAuth, isAuthenticated } = useAuth();
   const linkTo = useMemo(() => {
     if (!href) return;
     return requiresAuth && !isAuthenticated ? Route.Login : href;
