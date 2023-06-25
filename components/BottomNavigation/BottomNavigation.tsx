@@ -1,21 +1,13 @@
-import { Center, Footer, Group, MediaQuery } from "@mantine/core";
+import { Footer, Group } from "@mantine/core";
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/router";
 
 import { Route } from "enums";
 import { openSheet } from "store/Sheets";
 
-import {
-  CompassIcon,
-  HomeIcon,
-  ProfileIcon,
-  PlusIcon,
-  CollectionIcon,
-  BellIcon,
-} from "icons/StemstrIcon";
-import BottomNavigationItem, {
-  AuthBottomNavigationItem,
-} from "components/BottomNavigationItem/BottomNavigationItem";
+import { CompassIcon, HomeIcon, BellIcon } from "icons/StemstrIcon";
+import BottomNavigationItem from "components/BottomNavigationItem/BottomNavigationItem";
+import BottomNavigationMiddleItem from "./BottomNavigationMiddleItem";
 
 import useStyles from "./BottomNavigation.styles";
 
@@ -60,36 +52,17 @@ export default function BottomNavigation() {
         maw={600}
         mx="auto"
       >
-        <AuthBottomNavigationItem href={Route.Home}>
+        <BottomNavigationItem href={Route.Home} requiresAuth>
           <HomeIcon />
-        </AuthBottomNavigationItem>
+        </BottomNavigationItem>
         <BottomNavigationItem href={Route.Discover}>
           <CompassIcon />
         </BottomNavigationItem>
-        <AuthBottomNavigationItem onClick={openPostSheet} middleButton>
-          <Center
-            sx={{
-              width: "100%",
-              height: "100%",
-              borderRadius: "50%",
-              background:
-                "linear-gradient(142.52deg, #856BA3 9.14%, rgba(129, 36, 238, 0.76) 90.68%)",
-              color: "white",
-              cursor: "pointer",
-            }}
-          >
-            <MediaQuery smallerThan="xs" styles={{ display: "none" }}>
-              <PlusIcon width={34} height={34} />
-            </MediaQuery>
-            <MediaQuery largerThan="xs" styles={{ display: "none" }}>
-              <PlusIcon width={16} height={16} />
-            </MediaQuery>
-          </Center>
-        </AuthBottomNavigationItem>
+        <BottomNavigationMiddleItem />
         <BottomNavigationItem />
-        <AuthBottomNavigationItem href={Route.Notifications}>
+        <BottomNavigationItem href={Route.Notifications} requiresAuth>
           <BellIcon />
-        </AuthBottomNavigationItem>
+        </BottomNavigationItem>
       </Group>
     </Footer>
   );

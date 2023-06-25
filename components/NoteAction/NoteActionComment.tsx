@@ -1,17 +1,21 @@
 import { Group, Text } from "@mantine/core";
 import { CommentIcon } from "icons/StemstrIcon";
-import requireAuth from "../../utils/hoc/requireAuth";
 import NoteAction from "./NoteAction";
 import { useEvent } from "../../ndk/NDKEventProvider";
 import { useEventReplies } from "../../ndk/hooks/useEventReplies";
 import { openSheet } from "../../store/Sheets";
 import { useDispatch } from "react-redux";
+import useGuardAuth from "hooks/useGuardAuth";
 
 const NoteActionComment = () => {
   const { event } = useEvent();
   const replies = useEventReplies(event);
   const dispatch = useDispatch();
+  const { guardAuth } = useGuardAuth();
+
   const handleClickComment = () => {
+    if (!guardAuth()) return;
+
     dispatch(
       openSheet({
         sheetKey: "postSheet",
@@ -32,4 +36,4 @@ const NoteActionComment = () => {
   );
 };
 
-export default requireAuth(NoteActionComment);
+export default NoteActionComment;
