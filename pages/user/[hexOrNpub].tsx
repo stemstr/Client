@@ -67,10 +67,9 @@ export default function ProfilePage() {
           <ActionIcon
             component={Link}
             href={Route.Settings}
-            variant="default"
-            color="white"
+            variant="transparent"
           >
-            <SettingsIcon width={24} height={24} />
+            <SettingsIcon color="white" width={24} height={24} />
           </ActionIcon>
         </Group>
       </Box>

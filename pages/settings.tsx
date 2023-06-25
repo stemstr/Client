@@ -1,5 +1,6 @@
 import { Group, Stack, Text } from "@mantine/core";
 import BackButton from "components/BackButton/BackButton";
+import { SettingPubkey } from "components/Settings/SettingPubkey";
 import { SettingLogout } from "components/Settings/SettingLogout";
 import { Route } from "enums";
 import useAuth from "hooks/useAuth";
@@ -23,7 +24,8 @@ export default function Settings() {
           Account settings
         </Text>
       </Group>
-      <Stack pt="md" pl="md" pr="md" spacing={0} align="center">
+      <Stack pt="md" pl="md" pr="md" spacing="sm" align="center">
+        <SettingPubkey />
         <SettingLogout />
       </Stack>
     </>

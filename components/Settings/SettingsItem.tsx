@@ -9,6 +9,7 @@ export type SettingsItemProps = {
   description: string;
   route?: Route;
   onClick?: MouseEventHandler<HTMLDivElement>;
+  extra?: JSX.Element;
 };
 
 export default function SettingsItem({
@@ -17,6 +18,7 @@ export default function SettingsItem({
   description,
   route,
   onClick,
+  extra,
 }: SettingsItemProps) {
   const { classes } = useStyles();
 
@@ -34,8 +36,11 @@ export default function SettingsItem({
           <Text fz="sm" fw={500} c="white">
             {title}
           </Text>
-          <Text fz="xs">{description}</Text>
+          <Text fz="xs" sx={{ overflowWrap: "anywhere" }}>
+            {description}
+          </Text>
         </Stack>
+        {extra}
       </Group>
     </Box>
   );
