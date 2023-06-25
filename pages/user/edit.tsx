@@ -11,6 +11,7 @@ import Nip05FieldGroup from "components/EditProfileForm/Nip05FieldGroup";
 import ProfilePicSelector from "components/EditProfileForm/ProfilePicSelector";
 import UsernameFieldGroup from "components/EditProfileForm/UsernameFieldGroup";
 import { Route } from "enums";
+import useAuth from "hooks/useAuth";
 import { CheckIcon, ChevronLeftIcon } from "icons/StemstrIcon";
 import { useNDK } from "ndk/NDKProvider";
 import { useUser } from "ndk/hooks/useUser";
@@ -19,13 +20,13 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { Kind } from "nostr-tools";
 import { useEffect, useMemo, useState } from "react";
-import { useSelector } from "react-redux";
-import { selectAuthState } from "store/Auth";
 
 export default function EditProfile() {
+  const { authState, guardAuth } = useAuth();
+  guardAuth();
+
   const { ndk } = useNDK();
   const router = useRouter();
-  const authState = useSelector(selectAuthState);
   const user = useUser(authState.pk);
   const [metadataEvent, setMetadataEvent] = useState<NDKEvent>();
   const [bannerIsUploading, setBannerIsUploading] = useState(false);

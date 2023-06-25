@@ -2,23 +2,31 @@ import { Anchor, Box, BoxProps, Center } from "@mantine/core";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
-import requireAuth from "utils/hoc/requireAuth";
-
 import useStyles from "./BottomNavigationItem.styles";
+import useAuth from "hooks/useAuth";
+import { useMemo } from "react";
+import { Route } from "enums";
 
 interface BottomNavigationItemProps extends BoxProps {
   href?: string;
   middleButton?: boolean;
+  requiresAuth?: boolean;
 }
 
 const BottomNavigationItem = ({
   children,
   middleButton = false,
   href,
+  requiresAuth = false,
   ...rest
 }: React.PropsWithChildren<BottomNavigationItemProps>) => {
   const { pathname } = useRouter();
   const { classes } = useStyles();
+  const { guardAuth, isAuthenticated } = useAuth();
+  const linkTo = useMemo(() => {
+    if (!href) return;
+    return requiresAuth && !isAuthenticated ? Route.Login : href;
+  }, [href, requiresAuth, isAuthenticated]);
 
   const inner = (
     <Center
@@ -40,8 +48,8 @@ const BottomNavigationItem = ({
       {...rest}
       className={`${classes.root} ${pathname === href ? classes.active : ""}`}
     >
-      {href ? (
-        <Anchor component={Link} c="gray.2" href={href}>
+      {linkTo ? (
+        <Anchor component={Link} c="gray.2" href={linkTo}>
           {inner}
         </Anchor>
       ) : (
@@ -51,7 +59,4 @@ const BottomNavigationItem = ({
   );
 };
 
-const AuthBottomNavigationItem = requireAuth(BottomNavigationItem);
-
-export { AuthBottomNavigationItem, BottomNavigationItem };
 export default BottomNavigationItem;

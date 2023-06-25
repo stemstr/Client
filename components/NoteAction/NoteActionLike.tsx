@@ -4,7 +4,6 @@ import { motion, useAnimation } from "framer-motion";
 import { useSelector } from "react-redux";
 import { Kind } from "nostr-tools";
 import { HeartIcon } from "../../icons/StemstrIcon";
-import requireAuth from "../../utils/hoc/requireAuth";
 import NoteAction from "./NoteAction";
 import { selectAuthState } from "store/Auth";
 import { formatETag, parseEventTags } from "../../ndk/utils";
@@ -12,15 +11,20 @@ import { NDKEvent } from "@nostr-dev-kit/ndk";
 import { useNDK } from "../../ndk/NDKProvider";
 import { useEvent } from "../../ndk/NDKEventProvider";
 import { useNoteReactions } from "../../ndk/hooks/useNoteReactions";
+import useAuth from "hooks/useAuth";
 
-const NoteActionLike = () => {
+const NoteActionLike = ({ onClick }: any) => {
   const { ndk } = useNDK();
   const { event } = useEvent();
+  const { guardAuth } = useAuth();
   const reactions = useNoteReactions();
   const controls = useAnimation();
   const auth = useSelector(selectAuthState);
   const [likedByCurrentUser, setLikedByCurrentUser] = useState(false);
+
   const handleClickLike = () => {
+    if (!guardAuth()) return;
+
     let created_at = Math.floor(Date.now() / 1000);
     const { root, mentions, reply } = parseEventTags(event);
 
@@ -78,14 +82,10 @@ const NoteActionLike = () => {
         <motion.span animate={controls} style={{ lineHeight: 0 }}>
           <HeartIcon width={18} height={18} />
         </motion.span>{" "}
-        <Text lh="normal">
-          {reactions.length > 0
-            ? reactions.length
-            : ""}
-        </Text>
+        <Text lh="normal">{reactions.length > 0 ? reactions.length : ""}</Text>
       </Group>
     </NoteAction>
   );
 };
 
-export default requireAuth(NoteActionLike);
+export default NoteActionLike;
