@@ -23,6 +23,7 @@ import Edit from "./Line icons/General/edit-02.svg";
 import Ellipsis from "./Line icons/General/dots-horizontal.svg";
 import Home from "./Line icons/General/home-03.svg";
 import Heart from "./Line icons/General/heart.svg";
+import Logout from "./Line icons/General/log-out-04.svg";
 import More from "./Line icons/General/dots-vertical.svg";
 import Plus from "./Line icons/General/plus.svg";
 import Search from "./Line icons/General/search-sm.svg";
@@ -362,6 +363,14 @@ export const EllipsisIcon = (props) => {
   return (
     <StemstrIcon>
       <Ellipsis {...props} />
+    </StemstrIcon>
+  );
+};
+
+export const LogoutIcon = (props) => {
+  return (
+    <StemstrIcon>
+      <Logout {...props} />
     </StemstrIcon>
   );
 };
