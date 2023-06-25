@@ -15,6 +15,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { isAuthState, selectAuthState, setAuthState } from "store/Auth";
 import { getCachedAuth } from "cache/cache";
 import inMemoryCacheAdapter from "./inMemoryCacheAdapter";
+import LoadingScreen from "components/LoadingScreen/LoadingScreen";
 
 interface NDKContext {
   ndk?: NDK;
@@ -101,7 +102,7 @@ const NDKProvider = ({
   // Return the provider with the NDK instance
   return (
     <NDKContext.Provider value={{ ndk, stemstrRelaySet, canPublishEvents }}>
-      {ndk ? children : "Loading..."}
+      {ndk ? children : <LoadingScreen />}
     </NDKContext.Provider>
   );
 };
