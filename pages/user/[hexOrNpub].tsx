@@ -22,6 +22,8 @@ import { SettingsIcon, VerifiedIcon, ChevronLeftIcon } from "icons/StemstrIcon";
 import { useUser } from "ndk/hooks/useUser";
 import ProfilePic from "components/ProfilePage/ProfilePic";
 import ProfileActionButtons from "components/ProfilePage/ProfileActionButtons";
+import useNip05 from "ndk/hooks/useNip05";
+import { Nip05Status } from "store/Nip05";
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -33,6 +35,8 @@ export default function ProfilePage() {
   );
   const authState = useSelector(selectAuthState);
   const user = useUser(pk);
+  const nip05Status = useNip05(user?.hexpubkey(), user?.profile?.nip05);
+
   const handleLogout = () => {
     dispatch(logout());
     router.push(Route.Login);
@@ -97,15 +101,14 @@ export default function ProfilePage() {
           <Text size="sm">
             {user?.profile?.name && `@${user?.profile.name}`}
           </Text>
-          {/* {nip05 && (
+          {nip05Status === Nip05Status.Valid && (
             <>
               <VerifiedIcon width={14} height={14} />
               <Text size="sm" color="purple.2">
-                {userData?.nip05 &&
-                  userData.nip05.slice(userData.nip05.indexOf("@") + 1)}
+                {user?.profile?.nip05 && user.profile.nip05.split("@")[1]}
               </Text>
             </>
-          )} */}
+          )}
         </Group>
         <Text size="sm" mb={8} sx={{ whiteSpace: "pre-wrap" }}>
           {user?.profile?.about}
