@@ -1,4 +1,4 @@
-import { Button, Stack } from "@mantine/core";
+import { Button, Divider, Stack } from "@mantine/core";
 import { useState, useEffect, useCallback } from "react";
 import ZapDrawer from "./ZapDrawer";
 import SatsButton from "./SatsButton";
@@ -7,6 +7,7 @@ import useGetBtcPrice from "./useGetBtcPrice";
 import SquareButtonRow from "./SquareButtonRow";
 import SendSatsHeader from "./SendSatsHeader";
 import ZapCommentFieldGroup from "./ZapCommentFieldGroup";
+import DrawerCloseButton from "./CloseButton";
 
 interface ZapOptionsDrawerProps {
   isOpen: boolean;
@@ -69,6 +70,8 @@ const ZapOptionsDrawer = ({
         <Button mt={24} fullWidth onClick={() => onContinue(satsAmount)}>
           Continue
         </Button>
+        <Divider color="gray.4" />
+        <DrawerCloseButton onClick={handleOnClose} />
       </Stack>
     </ZapDrawer>
   );

@@ -1,10 +1,11 @@
-import { Button, Flex, Space, Stack, Text } from "@mantine/core";
+import { Button, Divider, Flex, Space, Stack, Text } from "@mantine/core";
 import { useCallback, useEffect, useState } from "react";
 import ZapDrawer from "./ZapDrawer";
 import SquareButton from "./SquareButton";
 import SquareButtonRow from "./SquareButtonRow";
 import SendSatsHeader from "./SendSatsHeader";
 import ZapCommentFieldGroup from "./ZapCommentFieldGroup";
+import DrawerCloseButton from "./CloseButton";
 
 interface CustomAmountDrawerProps {
   isOpen: boolean;
@@ -92,6 +93,8 @@ const CustomAmountDrawer = ({
             Continue
           </Button>
         </Flex>
+        <Divider color="gray.4" />
+        <DrawerCloseButton onClick={handleOnClose} />
       </Stack>
     </ZapDrawer>
   );

@@ -1,10 +1,4 @@
-import {
-  Button,
-  Divider,
-  Drawer as MantineDrawer,
-  Flex,
-  type MantineTheme,
-} from "@mantine/core";
+import { Drawer as MantineDrawer, type MantineTheme } from "@mantine/core";
 import withStopClickPropagation from "../../utils/hoc/withStopClickPropagation";
 import { MouseEventHandler, type PropsWithChildren } from "react";
 
@@ -47,23 +41,6 @@ const ZapDrawer = ({
       })}
     >
       {children}
-      <Divider color="gray.4" mt={21} />
-      <Flex justify="center" mt={10}>
-        <Button
-          variant="subtle"
-          styles={(theme) => ({
-            root: {
-              color: theme.white,
-              "&:hover": {
-                backgroundColor: "transparent",
-              },
-            },
-          })}
-          onClick={onClose}
-        >
-          Close
-        </Button>
-      </Flex>
     </Drawer>
   );
 };

@@ -26,6 +26,7 @@ const relayUrls: string[] = [
   "wss://relay.snort.social",
   "wss://nos.lol",
   "wss://relay.current.fyi",
+  "wss://relay.nostr.band",
 ];
 if (process.env.NEXT_PUBLIC_STEMSTR_RELAY)
   relayUrls.push(process.env.NEXT_PUBLIC_STEMSTR_RELAY);
