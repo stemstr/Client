@@ -4,8 +4,8 @@ import { useEvent } from "ndk/NDKEventProvider";
 import { useUser } from "ndk/hooks/useUser";
 import {
   ZapWizard,
-  ZapWizardProvider,
   useZapWizardStepManager,
+  withZapWizardProvider,
 } from "components/ZapWizard";
 
 const NoteActionZap = () => {
@@ -22,10 +22,4 @@ const NoteActionZap = () => {
   );
 };
 
-const NoteActionZapWrapper = () => (
-  <ZapWizardProvider>
-    <NoteActionZap />
-  </ZapWizardProvider>
-);
-
-export default NoteActionZapWrapper;
+export default withZapWizardProvider(NoteActionZap);
