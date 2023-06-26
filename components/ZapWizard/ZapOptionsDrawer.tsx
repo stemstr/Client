@@ -31,11 +31,13 @@ const ZapOptionsDrawer = ({
   const defaultSatAmount = defaultSatAmountValues[0];
   const [satsAmount, setSatsAmount] = useState(defaultSatAmount);
   const [isLoading, setIsLoading] = useState(false);
-  const handleOnClose = useCallback(() => {
+  const resetValues = useCallback(() => {
     setSatsAmount(defaultSatAmount);
     setIsLoading(false);
+  }, [defaultSatAmount]);
+  const handleOnClose = useCallback(() => {
     onClose();
-  }, [onClose, defaultSatAmount]);
+  }, [onClose]);
   const renderSatsAmountButton = (_satsAmount: number) => (
     <SatsButton
       key={_satsAmount}
@@ -52,9 +54,9 @@ const ZapOptionsDrawer = ({
 
   useEffect(() => {
     if (!isOpen) {
-      handleOnClose();
+      resetValues();
     }
-  }, [isOpen, handleOnClose]);
+  }, [isOpen, resetValues]);
 
   return (
     <ZapDrawer isOpen={isOpen} onClose={handleOnClose} size={578}>

@@ -26,9 +26,11 @@ const CustomAmountDrawer = ({
 }: CustomAmountDrawerProps) => {
   const [satsAmount, setSatsAmount] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const handleOnClose = useCallback(() => {
+  const resetValues = useCallback(() => {
     setSatsAmount("");
     setIsLoading(false);
+  }, []);
+  const handleOnClose = useCallback(() => {
     onClose();
   }, [onClose]);
   const renderNumberSquareButton = (n: number) => {
@@ -53,9 +55,9 @@ const CustomAmountDrawer = ({
 
   useEffect(() => {
     if (!isOpen) {
-      handleOnClose();
+      resetValues();
     }
-  }, [isOpen, handleOnClose]);
+  }, [isOpen, resetValues]);
 
   return (
     <ZapDrawer isOpen={isOpen} onClose={handleOnClose} size={876}>
