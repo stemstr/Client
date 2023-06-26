@@ -5,21 +5,15 @@ import InvoiceDrawer from "./InvoiceDrawer";
 import { createZapRequest } from "../../ndk/utils";
 import { useNDK } from "../../ndk/NDKProvider";
 import useAuth from "../../hooks/useAuth";
-import { type NDKEvent, type NDKUser } from "@nostr-dev-kit/ndk";
 import { useZapWizard } from "./ZapWizardProvider";
 
-interface ZapWizardProps {
-  zapRecipient: NDKUser;
-  event?: NDKEvent;
-}
-
-export const ZapWizard = ({ zapRecipient, event }: ZapWizardProps) => {
+export const ZapWizard = () => {
   const { ndk } = useNDK();
   const { isAuthenticated } = useAuth();
   const [invoice, setInvoice] = useState<string | null>(null);
   const amount = useRef<number>(0);
   const comment = useRef<string>("");
-  const { step, setStep } = useZapWizard();
+  const { step, setStep, zapRecipient, zappedEvent } = useZapWizard();
   const handleContinueClick = async (satsAmount: number) => {
     amount.current = satsAmount;
 
@@ -28,7 +22,7 @@ export const ZapWizard = ({ zapRecipient, event }: ZapWizardProps) => {
         amount: satsAmount,
         comment: comment.current,
         zappedUser: zapRecipient!, // the zapRecipient must exist if we've gotten to this point
-        zappedEvent: event,
+        zappedEvent,
         ndk: ndk!,
         isAnonymous: !isAuthenticated,
       });

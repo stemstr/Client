@@ -4,6 +4,7 @@ import {
   useContext,
   useState,
 } from "react";
+import { type NDKEvent, type NDKUser } from "@nostr-dev-kit/ndk";
 
 type ZapWizardStep = "idle" | "defaultAmounts" | "customAmount" | "invoice";
 
@@ -11,20 +12,33 @@ interface ZapWizardContextProps {
   step: ZapWizardStep;
   setStep: (step: ZapWizardStep) => void;
   start: Function;
+  zapRecipient: NDKUser;
+  zappedEvent?: NDKEvent;
 }
 
 const ZapWizardContext = createContext<ZapWizardContextProps>({
   step: "idle",
   setStep: () => {},
   start: () => {},
+  zapRecipient: {} as NDKUser,
 });
 
-export const ZapWizardProvider = ({ children }: PropsWithChildren) => {
+export const ZapWizardProvider = ({
+  zapRecipient,
+  zappedEvent,
+  children,
+}: PropsWithChildren<{ zapRecipient: NDKUser; zappedEvent?: NDKEvent }>) => {
   const [step, setStep] = useState<ZapWizardStep>("idle");
 
   return (
     <ZapWizardContext.Provider
-      value={{ step, setStep, start: () => setStep("defaultAmounts") }}
+      value={{
+        step,
+        setStep,
+        start: () => setStep("defaultAmounts"),
+        zapRecipient,
+        zappedEvent,
+      }}
     >
       {children}
     </ZapWizardContext.Provider>

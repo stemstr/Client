@@ -418,6 +418,7 @@ export const createZapRequest = async ({
     ndk,
     isAnonymous,
   });
+  console.log(signedZapRequest);
 
   const { data } = await axios(
     `${zapEndpoint}?` +

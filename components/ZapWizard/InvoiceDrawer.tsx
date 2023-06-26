@@ -13,12 +13,12 @@ import QRCode from "qrcode.react";
 import { useCallback, useState } from "react";
 import ZapDrawer from "./ZapDrawer";
 import { getNormalizedName } from "../../ndk/utils";
-import { useEvent } from "../../ndk/NDKEventProvider";
 import { useUser } from "../../ndk/hooks/useUser";
 import DrawerCloseButton from "./CloseButton";
 import { useSelector } from "react-redux";
 import { selectAuthState } from "../../store/Auth";
 import { ArrowRightIcon, ProfileIcon } from "../../icons/StemstrIcon";
+import { useZapWizard } from "./ZapWizardProvider";
 
 interface InvoiceDrawerProps {
   isOpen: boolean;
@@ -35,10 +35,9 @@ const InvoiceDrawer = ({
   comment,
   invoice,
 }: InvoiceDrawerProps) => {
-  const { event } = useEvent();
+  const { zapRecipient } = useZapWizard();
   const authState = useSelector(selectAuthState);
   const zapper = useUser(authState.pk);
-  const zapRecipient = useUser(event.pubkey);
   const [hasCopiedInvoice, setHasCopiedInvoice] = useState(false);
   const handleOnClose = useCallback(() => {
     setHasCopiedInvoice(false);
@@ -57,7 +56,7 @@ const InvoiceDrawer = ({
               <Text span color="green.6">
                 zap
               </Text>{" "}
-              to {getNormalizedName(event.pubkey, zapRecipient)}?
+              to {getNormalizedName(zapRecipient.hexpubkey(), zapRecipient)}?
             </>
           )}
         </Text>

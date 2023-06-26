@@ -5,21 +5,33 @@ import { useUser } from "ndk/hooks/useUser";
 import {
   ZapWizard,
   useZapWizard,
-  withZapWizardProvider,
+  ZapWizardProvider,
 } from "components/ZapWizard";
 
-const NoteActionZap = () => {
-  const { event } = useEvent();
-  const zapRecipient = useUser(event.pubkey);
+const NoteActionContentWithZapWizard = () => {
   const { start } = useZapWizard();
 
   return (
     <NoteAction onClick={start}>
       <ZapIcon width={18} height={18} />
-
-      {zapRecipient && <ZapWizard zapRecipient={zapRecipient} event={event} />}
+      <ZapWizard />
     </NoteAction>
   );
 };
 
-export default withZapWizardProvider(NoteActionZap);
+const NoteActionZap = () => {
+  const { event } = useEvent();
+  const zapRecipient = useUser(event.pubkey);
+
+  return zapRecipient ? (
+    <ZapWizardProvider zapRecipient={zapRecipient} zappedEvent={event}>
+      <NoteActionContentWithZapWizard />
+    </ZapWizardProvider>
+  ) : (
+    <NoteAction>
+      <ZapIcon width={18} height={18} />
+    </NoteAction>
+  );
+};
+
+export default NoteActionZap;

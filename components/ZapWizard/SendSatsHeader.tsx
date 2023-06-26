@@ -1,11 +1,8 @@
 import { Text } from "@mantine/core";
 import { getNormalizedName } from "../../ndk/utils";
-import { useUser } from "../../ndk/hooks/useUser";
-import { useEvent } from "../../ndk/NDKEventProvider";
-
+import { useZapWizard } from "./ZapWizardProvider";
 const SendSatsHeader = () => {
-  const { event } = useEvent();
-  const user = useUser(event.pubkey);
+  const { zapRecipient } = useZapWizard();
 
   return (
     <Text color="white" ta="center" size="xl" fw="bold">
@@ -13,7 +10,7 @@ const SendSatsHeader = () => {
       <Text span color="purple.6">
         sats
       </Text>{" "}
-      to {getNormalizedName(event.pubkey, user)}
+      to {getNormalizedName(zapRecipient.hexpubkey(), zapRecipient)}
     </Text>
   );
 };
