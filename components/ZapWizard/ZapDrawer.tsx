@@ -2,8 +2,8 @@ import { Drawer as MantineDrawer, type MantineTheme } from "@mantine/core";
 import withStopClickPropagation from "../../utils/hoc/withStopClickPropagation";
 import {
   type MouseEventHandler,
-  type MouseEvent,
   type PropsWithChildren,
+  type SyntheticEvent,
   useState,
 } from "react";
 import ZapDrawerHandle from "./ZapDrawerHandle";
@@ -29,15 +29,31 @@ const ZapDrawer = ({
   const [currentY, setCurrentY] = useState(0);
   const { end } = useZapWizard();
 
-  const handleDragStart = (event: MouseEvent) => {
-    setIsDragging(true);
-    setStartY(event.clientY);
-    setCurrentY(event.clientY);
+  const getClientY = (event: SyntheticEvent) => {
+    if (event.nativeEvent instanceof TouchEvent) {
+      return event.nativeEvent.touches[0].clientY;
+    }
+
+    if (event.nativeEvent instanceof MouseEvent) {
+      return event.nativeEvent.clientY;
+    }
+
+    throw new Error("Invalid event type");
   };
 
-  const handleDrag = (event: MouseEvent) => {
-    if (isDragging && event.clientY > startY) {
-      setCurrentY(event.clientY);
+  const handleDragStart = (event: SyntheticEvent) => {
+    const clientY = getClientY(event);
+
+    setIsDragging(true);
+    setStartY(clientY);
+    setCurrentY(clientY);
+  };
+
+  const handleDrag = (event: SyntheticEvent) => {
+    const clientY = getClientY(event);
+
+    if (isDragging && clientY > startY) {
+      setCurrentY(clientY);
     }
   };
 
@@ -89,6 +105,9 @@ const ZapDrawer = ({
         onMouseMove={isOpen ? handleDrag : noop}
         onMouseUp={isOpen ? handleDragEnd : noop}
         onMouseOut={isOpen ? handleDragEnd : noop}
+        onTouchStart={isOpen ? handleDragStart : noop}
+        onTouchMove={isOpen ? handleDrag : noop}
+        onTouchEnd={isOpen ? handleDragEnd : noop}
       />
       {children}
     </Drawer>
