@@ -4,17 +4,17 @@ import { useEvent } from "ndk/NDKEventProvider";
 import { useUser } from "ndk/hooks/useUser";
 import {
   ZapWizard,
-  useZapWizardStepManager,
+  useZapWizard,
   withZapWizardProvider,
 } from "components/ZapWizard";
 
 const NoteActionZap = () => {
   const { event } = useEvent();
   const zapRecipient = useUser(event.pubkey);
-  const { setStep } = useZapWizardStepManager();
+  const { start } = useZapWizard();
 
   return (
-    <NoteAction onClick={() => setStep("defaultAmounts")}>
+    <NoteAction onClick={start}>
       <ZapIcon width={18} height={18} />
 
       {zapRecipient && <ZapWizard zapRecipient={zapRecipient} event={event} />}

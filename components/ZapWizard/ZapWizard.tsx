@@ -6,7 +6,7 @@ import { createZapRequest } from "../../ndk/utils";
 import { useNDK } from "../../ndk/NDKProvider";
 import useAuth from "../../hooks/useAuth";
 import { type NDKEvent, type NDKUser } from "@nostr-dev-kit/ndk";
-import { useZapWizardStepManager } from "./ZapWizardProvider";
+import { useZapWizard } from "./ZapWizardProvider";
 
 interface ZapWizardProps {
   zapRecipient: NDKUser;
@@ -19,7 +19,7 @@ export const ZapWizard = ({ zapRecipient, event }: ZapWizardProps) => {
   const [invoice, setInvoice] = useState<string | null>(null);
   const amount = useRef<number>(0);
   const comment = useRef<string>("");
-  const { step, setStep } = useZapWizardStepManager();
+  const { step, setStep } = useZapWizard();
   const handleContinueClick = async (satsAmount: number) => {
     amount.current = satsAmount;
 
