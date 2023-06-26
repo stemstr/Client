@@ -12,6 +12,7 @@ interface ZapWizardContextProps {
   step: ZapWizardStep;
   setStep: (step: ZapWizardStep) => void;
   start: Function;
+  end: Function;
   zapRecipient: NDKUser;
   zappedEvent?: NDKEvent;
 }
@@ -20,6 +21,7 @@ const ZapWizardContext = createContext<ZapWizardContextProps>({
   step: "idle",
   setStep: () => {},
   start: () => {},
+  end: () => {},
   zapRecipient: {} as NDKUser,
 });
 
@@ -36,6 +38,7 @@ export const ZapWizardProvider = ({
         step,
         setStep,
         start: () => setStep("defaultAmounts"),
+        end: () => setStep("idle"),
         zapRecipient,
         zappedEvent,
       }}
