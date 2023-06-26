@@ -8,12 +8,12 @@ import { useEvent } from "../../ndk/NDKEventProvider";
 import { useUser } from "../../ndk/hooks/useUser";
 import { createZapRequest } from "../../ndk/utils";
 import { useNDK } from "../../ndk/NDKProvider";
-import { useIsLoggedIn } from "../../hooks/useIsLoggedIn";
+import useAuth from "../../hooks/useAuth";
 
 const NoteActionZap = () => {
   const { ndk } = useNDK();
   const { event } = useEvent();
-  const isLoggedIn = useIsLoggedIn();
+  const { isAuthenticated } = useAuth();
   const zapRecipient = useUser(event.pubkey);
   const [isZapOptionsDrawerOpen, setIsZapOptionsDrawerOpen] = useState(false);
   const [isCustomAmountDrawerOpen, setIsCustomAmountDrawerOpen] =
@@ -35,7 +35,7 @@ const NoteActionZap = () => {
         zappedUser: zapRecipient!, // the zapRecipient must exist if we've gotten to this point
         zappedEvent: event,
         ndk: ndk!,
-        isAnonymous: !isLoggedIn,
+        isAnonymous: !isAuthenticated,
       });
 
       setIsZapOptionsDrawerOpen(false);
