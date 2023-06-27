@@ -8,6 +8,7 @@ import ZapCommentFieldGroup from "./ZapCommentFieldGroup";
 import DrawerCloseButton from "./CloseButton";
 import { useZapWizard } from "./ZapWizardProvider";
 import AmountContinueButton from "./AmountContinueButton";
+import { useMediaQuery } from "@mantine/hooks";
 
 interface CustomAmountDrawerProps {
   isOpen: boolean;
@@ -30,7 +31,7 @@ const CustomAmountDrawer = ({
   const [satsAmount, setSatsAmount] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const buttonSize = willShowCloseButton ? 80 : 70;
-  const squareButtonRowPx = 64;
+  const squareButtonRowPx = useMediaQuery("(max-width: 414px)") ? 32 : 64;
   const resetValues = useCallback(() => {
     setSatsAmount("");
     setIsLoading(false);
