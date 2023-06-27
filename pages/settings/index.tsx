@@ -6,6 +6,7 @@ import { Route } from "enums";
 import useAuth from "hooks/useAuth";
 import { ChevronLeftIcon } from "icons/StemstrIcon";
 import Head from "next/head";
+import { SettingNsec } from "components/Settings/SettingNsec";
 
 export default function Settings() {
   const { guardAuth, isAuthenticated } = useAuth();
@@ -26,6 +27,7 @@ export default function Settings() {
       </Group>
       <Stack pt="md" pl="md" pr="md" spacing="sm" align="center">
         <SettingPubkey />
+        <SettingNsec />
         <SettingLogout />
       </Stack>
     </>

@@ -7,6 +7,7 @@ const useStyles = createStyles((theme, _params, getRef) => ({
     borderColor: theme.colors.gray[4],
     padding: theme.spacing.md,
     borderRadius: 12,
+    width: "100%",
   },
 }));
 

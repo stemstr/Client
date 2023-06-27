@@ -40,6 +40,7 @@ import Play from "./Line icons/Media & devices/play.svg";
 import Stop from "./Line icons/Media & devices/stop.svg";
 
 import Key from "./Line icons/Security/key-01.svg";
+import Lock from "./Line icons/Security/lock-01.svg";
 
 import Follow from "./Line icons/Users/user-right-01.svg";
 import Profile from "./Line icons/Users/user-circle.svg";
@@ -371,6 +372,14 @@ export const LogoutIcon = (props) => {
   return (
     <StemstrIcon>
       <Logout {...props} />
+    </StemstrIcon>
+  );
+};
+
+export const LockIcon = (props) => {
+  return (
+    <StemstrIcon>
+      <Lock {...props} />
     </StemstrIcon>
   );
 };
