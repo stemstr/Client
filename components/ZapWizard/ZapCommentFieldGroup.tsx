@@ -18,7 +18,7 @@ const CommentInput = ({
     onChange={(e) => onChange(e.target.value)}
     defaultValue={defaultValue}
     w="100%"
-    styles={{ input: { height: compact ? 40 : 48 } }}
+    size={compact ? "xs" : "lg"}
   />
 );
 
