@@ -9,7 +9,7 @@ export default createStyles((theme) => {
     color: theme.colors.purple[6],
     width: 80,
     height: 80,
-    padding: "0 8px",
+    padding: "0 2px",
   };
   const buttonStyles = {
     backgroundColor: "#202020",

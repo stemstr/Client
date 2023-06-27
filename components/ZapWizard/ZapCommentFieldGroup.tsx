@@ -1,23 +1,46 @@
-import { TextInput } from "@mantine/core";
+import { Flex, TextInput } from "@mantine/core";
 import FieldGroup from "../FieldGroups/FieldGroup";
 import { CommentIcon } from "../../icons/StemstrIcon";
 
 interface ZapCommentFieldGroupProps {
   defaultValue?: string;
   onChange: (value: string) => void;
+  compact?: boolean;
 }
+
+const CommentInput = ({
+  defaultValue,
+  onChange,
+  compact,
+}: ZapCommentFieldGroupProps) => (
+  <TextInput
+    placeholder="Share some zappreciation"
+    onChange={(e) => onChange(e.target.value)}
+    defaultValue={defaultValue}
+    w="100%"
+    size={compact ? "xs" : "lg"}
+  />
+);
 
 const ZapCommentFieldGroup = ({
   defaultValue,
   onChange,
-}: ZapCommentFieldGroupProps) => (
-  <FieldGroup TitleIcon={CommentIcon} title="Comment" iconSize={16}>
-    <TextInput
-      placeholder="Share some zappreciation"
-      onChange={(e) => onChange(e.target.value)}
-      defaultValue={defaultValue}
-    />
-  </FieldGroup>
-);
+  compact = false,
+}: ZapCommentFieldGroupProps) => {
+  return compact ? (
+    <Flex align="center" gap={8}>
+      <CommentIcon w={16} h={16} />
+      <CommentInput
+        defaultValue={defaultValue}
+        onChange={onChange}
+        compact={compact}
+      />
+    </Flex>
+  ) : (
+    <FieldGroup TitleIcon={CommentIcon} title="Comment" iconSize={16}>
+      <CommentInput defaultValue={defaultValue} onChange={onChange} />
+    </FieldGroup>
+  );
+};
 
 export default ZapCommentFieldGroup;

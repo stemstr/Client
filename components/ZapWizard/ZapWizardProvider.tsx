@@ -5,6 +5,7 @@ import {
   useState,
 } from "react";
 import { type NDKEvent, type NDKUser } from "@nostr-dev-kit/ndk";
+import { useMediaQuery } from "@mantine/hooks";
 
 type ZapWizardStep = "idle" | "defaultAmounts" | "customAmount" | "invoice";
 
@@ -15,6 +16,8 @@ interface ZapWizardContextProps {
   end: Function;
   zapRecipient: NDKUser;
   zappedEvent?: NDKEvent;
+  verticalSectionGap: number;
+  willShowCloseButton: boolean;
 }
 
 const ZapWizardContext = createContext<ZapWizardContextProps>({
@@ -23,6 +26,8 @@ const ZapWizardContext = createContext<ZapWizardContextProps>({
   start: () => {},
   end: () => {},
   zapRecipient: {} as NDKUser,
+  verticalSectionGap: 21,
+  willShowCloseButton: true,
 });
 
 export const ZapWizardProvider = ({
@@ -31,6 +36,7 @@ export const ZapWizardProvider = ({
   children,
 }: PropsWithChildren<{ zapRecipient: NDKUser; zappedEvent?: NDKEvent }>) => {
   const [step, setStep] = useState<ZapWizardStep>("idle");
+  const isHeightSmall = useMediaQuery("(max-height: 896px)");
 
   return (
     <ZapWizardContext.Provider
@@ -41,6 +47,8 @@ export const ZapWizardProvider = ({
         end: () => setStep("idle"),
         zapRecipient,
         zappedEvent,
+        verticalSectionGap: isHeightSmall ? 16 : 21,
+        willShowCloseButton: !isHeightSmall,
       }}
     >
       {children}

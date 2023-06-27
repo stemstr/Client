@@ -36,7 +36,7 @@ const SquareButton = ({
   return (
     <Button {...rest} className={getClassName()} onClick={onClick}>
       <Stack ta="center" spacing={5}>
-        <Text size={17} fw="bold" {...labelProps}>
+        <Text size={16} fw="bold" {...labelProps}>
           {label.toLocaleString()}
         </Text>
         <Text color="rgba(255, 255, 255, 0.4)" size="xs" fw={400}>

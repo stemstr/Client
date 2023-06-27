@@ -1,4 +1,4 @@
-import { Button, Divider, Stack } from "@mantine/core";
+import { Divider, Stack } from "@mantine/core";
 import { useState, useEffect, useCallback } from "react";
 import ZapDrawer from "./ZapDrawer";
 import SatsButton from "./SatsButton";
@@ -8,6 +8,8 @@ import SquareButtonRow from "./SquareButtonRow";
 import SendSatsHeader from "./SendSatsHeader";
 import ZapCommentFieldGroup from "./ZapCommentFieldGroup";
 import DrawerCloseButton from "./CloseButton";
+import { useZapWizard } from "./ZapWizardProvider";
+import AmountContinueButton from "./AmountContinueButton";
 
 interface ZapOptionsDrawerProps {
   isOpen: boolean;
@@ -26,6 +28,7 @@ const ZapOptionsDrawer = ({
   onCommentChange,
   comment,
 }: ZapOptionsDrawerProps) => {
+  const { verticalSectionGap, willShowCloseButton } = useZapWizard();
   const btcPrice = useGetBtcPrice(isOpen);
   const defaultSatAmountValues = [21, 444, 808, 5000, 10000];
   const defaultSatAmount = defaultSatAmountValues[0];
@@ -59,15 +62,19 @@ const ZapOptionsDrawer = ({
   }, [isOpen, resetValues]);
 
   return (
-    <ZapDrawer isOpen={isOpen} onClose={handleOnClose} size={578}>
-      <Stack spacing={21}>
+    <ZapDrawer
+      isOpen={isOpen}
+      onClose={handleOnClose}
+      size={willShowCloseButton ? 578 : 421}
+    >
+      <Stack spacing={verticalSectionGap}>
         <SendSatsHeader />
         <SquareButtonRow>
           {defaultSatAmountValues.slice(0, 3).map(renderSatsAmountButton)}
         </SquareButtonRow>
         <SquareButtonRow>
           {defaultSatAmountValues.slice(3).map(renderSatsAmountButton)}
-          <SquareButton label="Custom" onClick={onCustomClick}>
+          <SquareButton label="Custom" onClick={onCustomClick} h={70} w={70}>
             ...
           </SquareButton>
         </SquareButtonRow>
@@ -75,16 +82,18 @@ const ZapOptionsDrawer = ({
           defaultValue={comment}
           onChange={onCommentChange}
         />
-        <Button
-          mt={24}
+        <AmountContinueButton
+          mt={willShowCloseButton ? 24 : 0}
           fullWidth
           onClick={handleContinueClick}
           loading={isLoading}
-        >
-          Continue
-        </Button>
-        <Divider color="gray.4" />
-        <DrawerCloseButton onClick={handleOnClose} />
+        />
+        {willShowCloseButton && (
+          <>
+            <Divider color="gray.4" />
+            <DrawerCloseButton onClick={handleOnClose} />
+          </>
+        )}
       </Stack>
     </ZapDrawer>
   );

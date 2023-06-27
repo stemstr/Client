@@ -27,7 +27,7 @@ const ZapDrawer = ({
   const [isDragging, setIsDragging] = useState(false);
   const [startY, setStartY] = useState(0);
   const [currentY, setCurrentY] = useState(0);
-  const { end } = useZapWizard();
+  const { end, verticalSectionGap, willShowCloseButton } = useZapWizard();
 
   const getClientY = (event: SyntheticEvent) => {
     if (event.nativeEvent instanceof TouchEvent) {
@@ -94,13 +94,13 @@ const ZapDrawer = ({
           borderTopRightRadius: 40,
           maxWidth: 600,
           margin: "auto",
-          padding: "0 16px 48px 16px !important",
+          padding: `0 16px ${willShowCloseButton ? 48 : 24}px 16px !important`,
         },
       })}
     >
       <ZapDrawerHandle
         pt={24}
-        pb={21}
+        pb={verticalSectionGap}
         onMouseDown={isOpen ? handleDragStart : noop}
         onMouseMove={isOpen ? handleDrag : noop}
         onMouseUp={isOpen ? handleDragEnd : noop}

@@ -30,6 +30,8 @@ const SatsButton = ({
       onClick={onClick}
       label={satsAmount}
       isHighlighted={isHighlighted}
+      h={70}
+      w={70}
     >
       {getFiatAmount()}
     </SquareButton>

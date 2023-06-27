@@ -6,6 +6,8 @@ import SquareButtonRow from "./SquareButtonRow";
 import SendSatsHeader from "./SendSatsHeader";
 import ZapCommentFieldGroup from "./ZapCommentFieldGroup";
 import DrawerCloseButton from "./CloseButton";
+import { useZapWizard } from "./ZapWizardProvider";
+import AmountContinueButton from "./AmountContinueButton";
 
 interface CustomAmountDrawerProps {
   isOpen: boolean;
@@ -24,8 +26,11 @@ const CustomAmountDrawer = ({
   onCommentChange,
   comment,
 }: CustomAmountDrawerProps) => {
+  const { verticalSectionGap, willShowCloseButton } = useZapWizard();
   const [satsAmount, setSatsAmount] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const buttonSize = willShowCloseButton ? 80 : 70;
+  const squareButtonRowPx = 64;
   const resetValues = useCallback(() => {
     setSatsAmount("");
     setIsLoading(false);
@@ -45,6 +50,8 @@ const CustomAmountDrawer = ({
             prev.length === maxDigits ? prev : `${prev}${n}`
           )
         }
+        w={buttonSize}
+        h={buttonSize}
       />
     );
   };
@@ -60,50 +67,72 @@ const CustomAmountDrawer = ({
   }, [isOpen, resetValues]);
 
   return (
-    <ZapDrawer isOpen={isOpen} onClose={handleOnClose} size={876}>
-      <Stack spacing={21}>
+    <ZapDrawer
+      isOpen={isOpen}
+      onClose={handleOnClose}
+      size={willShowCloseButton ? 876 : 613}
+    >
+      <Stack spacing={verticalSectionGap}>
         <SendSatsHeader />
-        <Text color="purple.6" align="center" fz={50} fw="bold">
+        <Text
+          color="purple.6"
+          align="center"
+          fz={willShowCloseButton ? 50 : 48}
+          fw="bold"
+          h={willShowCloseButton ? undefined : 46}
+          sx={{ lineHeight: willShowCloseButton ? undefined : "46px" }}
+        >
           {satsAmount ? Number(satsAmount).toLocaleString() : 0} sats
         </Text>
-        <SquareButtonRow>
-          {[1, 2, 3].map(renderNumberSquareButton)}
-        </SquareButtonRow>
-        <SquareButtonRow>
-          {[4, 5, 6].map(renderNumberSquareButton)}
-        </SquareButtonRow>
-        <SquareButtonRow>
-          {[7, 8, 9].map(renderNumberSquareButton)}
-        </SquareButtonRow>
-        <SquareButtonRow>
-          <Space h={80} w={80} />
-          {renderNumberSquareButton(0)}
-          <SquareButton
-            variant="subtle"
-            label="<"
-            labelProps={{ fz: 48, fw: 400 }}
-            onClick={() => setSatsAmount((prev) => prev.slice(0, -1))}
-          />
-        </SquareButtonRow>
+        <Stack spacing={willShowCloseButton ? verticalSectionGap : 12}>
+          <SquareButtonRow px={squareButtonRowPx}>
+            {[1, 2, 3].map(renderNumberSquareButton)}
+          </SquareButtonRow>
+          <SquareButtonRow px={squareButtonRowPx}>
+            {[4, 5, 6].map(renderNumberSquareButton)}
+          </SquareButtonRow>
+          <SquareButtonRow px={squareButtonRowPx}>
+            {[7, 8, 9].map(renderNumberSquareButton)}
+          </SquareButtonRow>
+          <SquareButtonRow px={squareButtonRowPx}>
+            <Space h={buttonSize} w={buttonSize} />
+            {renderNumberSquareButton(0)}
+            <SquareButton
+              variant="subtle"
+              label="<"
+              labelProps={{ fz: 48, fw: 400 }}
+              onClick={() => setSatsAmount((prev) => prev.slice(0, -1))}
+            />
+          </SquareButtonRow>
+        </Stack>
         <ZapCommentFieldGroup
           defaultValue={comment}
           onChange={onCommentChange}
+          compact={!willShowCloseButton}
         />
-        <Flex mt={24} gap={16} sx={{ flexGrow: 1 }}>
-          <Button
-            color="gray.6"
-            onClick={() => onReturnToZapOptionsClick()}
+        <Flex mt={willShowCloseButton ? 24 : 0} gap={16} sx={{ flexGrow: 1 }}>
+          {willShowCloseButton && (
+            <Button
+              color="gray.6"
+              onClick={() => onReturnToZapOptionsClick()}
+              fullWidth
+              disabled={isLoading}
+            >
+              &lt;&nbsp;&nbsp; Return to zap options
+            </Button>
+          )}
+          <AmountContinueButton
+            onClick={handleContinueClick}
             fullWidth
-            disabled={isLoading}
-          >
-            &lt;&nbsp;&nbsp; Return to zap options
-          </Button>
-          <Button onClick={handleContinueClick} fullWidth loading={isLoading}>
-            Continue
-          </Button>
+            loading={isLoading}
+          />
         </Flex>
-        <Divider color="gray.4" />
-        <DrawerCloseButton onClick={handleOnClose} />
+        {willShowCloseButton && (
+          <>
+            <Divider color="gray.4" />
+            <DrawerCloseButton onClick={handleOnClose} />
+          </>
+        )}
       </Stack>
     </ZapDrawer>
   );
