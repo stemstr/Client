@@ -1,18 +1,8 @@
 import { useMemo } from "react";
-import {
-  ActionIcon,
-  Box,
-  Button,
-  Group,
-  Image,
-  Stack,
-  Text,
-} from "@mantine/core";
+import { ActionIcon, Box, Group, Image, Stack, Text } from "@mantine/core";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useDispatch, useSelector } from "react-redux";
 
-import { selectAuthState, reset as logout } from "store/Auth";
 import { Route } from "enums/routes";
 import { getPublicKeys } from "ndk/utils";
 import CopyNpub from "components/CopyNpub/CopyNpub";
@@ -24,23 +14,17 @@ import ProfilePic from "components/ProfilePage/ProfilePic";
 import ProfileActionButtons from "components/ProfilePage/ProfileActionButtons";
 import useNip05 from "ndk/hooks/useNip05";
 import { Nip05Status } from "store/Nip05";
+import Link from "next/link";
 
 export default function ProfilePage() {
   const router = useRouter();
-  const dispatch = useDispatch();
   const { hexOrNpub } = router.query;
   const { pk, npub } = useMemo(
     () => getPublicKeys(hexOrNpub as string),
     [hexOrNpub]
   );
-  const authState = useSelector(selectAuthState);
   const user = useUser(pk);
   const nip05Status = useNip05(user?.hexpubkey(), user?.profile?.nip05);
-
-  const handleLogout = () => {
-    dispatch(logout());
-    router.push(Route.Login);
-  };
 
   return (
     <>
@@ -80,11 +64,13 @@ export default function ProfilePage() {
               Profile
             </Text>
           </Group>
-          <Group spacing={20}>
-            <ActionIcon variant="default" color="white">
-              <SettingsIcon width={24} height={24} />
-            </ActionIcon>
-          </Group>
+          <ActionIcon
+            component={Link}
+            href={Route.Settings}
+            variant="transparent"
+          >
+            <SettingsIcon color="white" width={24} height={24} />
+          </ActionIcon>
         </Group>
       </Box>
       <Group pl="md" pr="md" mb="lg" position="apart" align="start">
@@ -156,11 +142,6 @@ export default function ProfilePage() {
         </Text>
       </Group>
       <Box pl="md" pr="md">
-        {authState?.pk === pk ? (
-          <Button onClick={handleLogout} mb="md">
-            Logout
-          </Button>
-        ) : null}
         <ProfileFeed pubkey={pk} />
       </Box>
     </>

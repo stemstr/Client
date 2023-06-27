@@ -173,8 +173,8 @@ const stemstrTheme: MantineThemeOverride = {
       },
       styles: (theme, params: ActionIconStylesParams) => ({
         root: {
-          backgroundColor: "transparent !important",
           border: "none",
+          borderRadius: 8,
         },
       }),
     },

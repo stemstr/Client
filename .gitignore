@@ -19,3 +19,6 @@ yarn-error.log*
 
 # WebStorm configs
 .idea
+
+# TypeScript
+tsconfig.tsbuildinfo

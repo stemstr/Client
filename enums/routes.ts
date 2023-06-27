@@ -4,6 +4,7 @@ export enum Route {
   Login = "/login",
   Signup = "/signup",
   Settings = "/settings",
+  SettingsNsec = `/settings/nsec`,
   Thread = "/thread",
   Notifications = "/notifications",
   User = "/user",
