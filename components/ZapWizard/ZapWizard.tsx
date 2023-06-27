@@ -32,7 +32,7 @@ export const ZapWizard = () => {
         setInvoice(invoice);
         setStep("invoice");
       } else {
-        window.open(`lightning:${invoice}`, "_blank");
+        window.location.href = `lightning:${invoice}`;
         setStep("idle");
       }
     } catch (error) {
