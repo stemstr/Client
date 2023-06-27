@@ -19,6 +19,7 @@ const CommentInput = ({
     defaultValue={defaultValue}
     w="100%"
     size={compact ? "xs" : "lg"}
+    styles={{ input: { fontSize: compact ? 16 : 18 } }}
   />
 );
 
