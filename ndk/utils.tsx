@@ -72,11 +72,12 @@ export const formatETag = (
   tag: NDKTag,
   type: "root" | "mention" | "reply"
 ): NDKTag => {
-  if (!tag[2]) {
-    tag[2] = "";
+  const formattedTag: NDKTag = [...tag];
+  if (!formattedTag[2]) {
+    formattedTag[2] = "";
   }
-  tag[3] = type;
-  return tag;
+  formattedTag[3] = type;
+  return formattedTag;
 };
 
 export const usesDepecratedETagSchema = (event: NDKEvent | undefined) => {
