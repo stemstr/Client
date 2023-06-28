@@ -11,6 +11,7 @@ export const ZapWizard = () => {
   const { ndk } = useNDK();
   const { isAuthenticated } = useAuth();
   const [invoice, setInvoice] = useState<string | null>(null);
+  const [zapReceiptRelays, setZapReceiptRelays] = useState<string[]>([]);
   const amount = useRef<number>(0);
   const comment = useRef<string>("");
   const { step, setStep, zapRecipient, zappedEvent } = useZapWizard();
@@ -18,7 +19,7 @@ export const ZapWizard = () => {
     amount.current = satsAmount;
 
     try {
-      const invoice = await createZapRequest({
+      const { invoice, relays } = await createZapRequest({
         amount: satsAmount,
         comment: comment.current,
         zappedUser: zapRecipient!, // the zapRecipient must exist if we've gotten to this point
@@ -28,6 +29,7 @@ export const ZapWizard = () => {
       });
 
       setInvoice(invoice);
+      setZapReceiptRelays(relays);
       setStep("invoice");
     } catch (error) {
       // TODO: let user know that something went wrong
@@ -76,6 +78,7 @@ export const ZapWizard = () => {
         amount={amount.current}
         comment={comment.current}
         invoice={invoice ?? ""}
+        zapReceiptRelays={zapReceiptRelays}
       />
     </>
   );

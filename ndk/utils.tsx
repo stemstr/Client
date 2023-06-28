@@ -400,6 +400,9 @@ export const createZapRequest = async ({
   const userRelayUrls = await getUserRelayUrls(zappedUser, {
     filter: "writable",
   });
+  const relays = userRelayUrls
+    ? [...userRelayUrls, ...defaultRelayUrls]
+    : defaultRelayUrls;
   const zapRequest = nip57.makeZapRequest({
     profile: zappedUser.hexpubkey(),
 
@@ -407,9 +410,7 @@ export const createZapRequest = async ({
     event: null,
     amount: normalizedAmount,
     comment: comment ?? "",
-    relays: userRelayUrls
-      ? [...userRelayUrls, ...defaultRelayUrls]
-      : defaultRelayUrls,
+    relays,
   });
 
   // add the event tag if it exists; this supports both 'e' and 'a' tags
@@ -438,5 +439,5 @@ export const createZapRequest = async ({
       })
   );
 
-  return data.pr;
+  return { invoice: data.pr, relays };
 };

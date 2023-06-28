@@ -10,16 +10,18 @@ import {
   Text,
 } from "@mantine/core";
 import QRCode from "qrcode.react";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { isDesktop } from "react-device-detect";
 import ZapDrawer from "./ZapDrawer";
-import { getNormalizedName } from "../../ndk/utils";
+import { createRelaySet, getNormalizedName } from "../../ndk/utils";
 import { useUser } from "../../ndk/hooks/useUser";
 import DrawerCloseButton from "./CloseButton";
 import { useSelector } from "react-redux";
 import { selectAuthState } from "../../store/Auth";
 import { ArrowRightIcon, ProfileIcon } from "../../icons/StemstrIcon";
 import { useZapWizard } from "./ZapWizardProvider";
+import { useNDK } from "../../ndk/NDKProvider";
+import { NDKEvent } from "@nostr-dev-kit/ndk";
 
 interface InvoiceDrawerProps {
   isOpen: boolean;
@@ -27,6 +29,7 @@ interface InvoiceDrawerProps {
   amount: number;
   comment?: string;
   invoice: string;
+  zapReceiptRelays: string[];
 }
 
 const InvoiceDrawer = ({
@@ -35,23 +38,38 @@ const InvoiceDrawer = ({
   amount,
   comment,
   invoice,
+  zapReceiptRelays,
 }: InvoiceDrawerProps) => {
+  const { ndk } = useNDK();
   const { zapRecipient, willShowCloseButton } = useZapWizard();
+  const zapRecipientHexPubkey = zapRecipient.hexpubkey();
   const authState = useSelector(selectAuthState);
   const zapper = useUser(authState.pk);
-  const [hasCopiedInvoice, setHasCopiedInvoice] = useState(false);
+  const [hasDetectedZapReceipt, setHasDetectedZapReceipt] = useState(false);
+  const [willDisplayCopiedMessage, setWillDisplayCopiedMessage] =
+    useState(false);
   const handleOnClose = useCallback(() => {
-    setHasCopiedInvoice(false);
+    setWillDisplayCopiedMessage(false);
+    setHasDetectedZapReceipt(false);
     onClose();
   }, [onClose]);
   const InitialHeader = () => {
+    const normalizedName = getNormalizedName(
+      zapRecipient.hexpubkey(),
+      zapRecipient
+    );
+
+    if (hasDetectedZapReceipt) {
+      return isDesktop ? <>Zap sent to {normalizedName}</> : <>Zap sent</>;
+    }
+
     return isDesktop ? (
       <>
         Ready to{" "}
         <Text span color="green.6" sx={{ lineHeight: "24px" }}>
           zap
         </Text>{" "}
-        to {getNormalizedName(zapRecipient.hexpubkey(), zapRecipient)}?
+        to {normalizedName}?
       </>
     ) : (
       <>Ready to zap?</>
@@ -66,11 +84,15 @@ const InvoiceDrawer = ({
               color="gray.6"
               onClick={() => {
                 copy();
-                setHasCopiedInvoice(true);
+                setWillDisplayCopiedMessage(true);
+                setTimeout(() => {
+                  setWillDisplayCopiedMessage(false);
+                }, 2000);
               }}
               fullWidth
+              disabled={willDisplayCopiedMessage}
             >
-              Copy Invoice
+              {willDisplayCopiedMessage ? "Copied" : "Copy Invoice"}
             </Button>
           )}
         </CopyButton>
@@ -85,6 +107,63 @@ const InvoiceDrawer = ({
       </Flex>
     );
   };
+  const getQrCodeImageSettings = () => {
+    const defaultSettings = {
+      height: 42,
+      width: 42,
+      excavate: false,
+    };
+
+    if (willDisplayCopiedMessage) {
+      return {
+        src: "/img/copied-to-clipboard.svg",
+        ...defaultSettings,
+      };
+    }
+
+    if (hasDetectedZapReceipt) {
+      return {
+        src: "/img/check-success.svg",
+        ...defaultSettings,
+      };
+    }
+  };
+
+  useEffect(() => {
+    if (hasDetectedZapReceipt && !isDesktop) {
+      handleOnClose();
+    }
+  }, [hasDetectedZapReceipt, handleOnClose]);
+
+  useEffect(() => {
+    if (!ndk || !isOpen || zapReceiptRelays.length === 0) {
+      return;
+    }
+
+    const filter = {
+      kinds: [9735],
+      "#p": [zapRecipientHexPubkey],
+      since: Math.round(Date.now() / 1000),
+    };
+    const subscription = ndk.subscribe(
+      filter,
+      { closeOnEose: false },
+      createRelaySet(zapReceiptRelays, ndk)
+    );
+
+    subscription.on("event", (event: NDKEvent) => {
+      if (event.tags.find((t) => t[0] === "bolt11" && t[1] === invoice)) {
+        setHasDetectedZapReceipt(true);
+        subscription.stop();
+      }
+    });
+
+    return () => {
+      if (subscription) {
+        subscription.stop();
+      }
+    };
+  }, [isOpen, zapReceiptRelays.length, ndk, invoice, zapRecipientHexPubkey]);
 
   return (
     <ZapDrawer
@@ -101,11 +180,7 @@ const InvoiceDrawer = ({
           mt={8}
           sx={{ lineHeight: "24px" }}
         >
-          {hasCopiedInvoice ? (
-            "Lightning invoice copied to clipboard"
-          ) : (
-            <InitialHeader />
-          )}
+          <InitialHeader />
         </Text>
         <Flex justify="space-between" mb={24}>
           <Box>
@@ -140,16 +215,7 @@ const InvoiceDrawer = ({
               <QRCode
                 size={144}
                 value={invoice}
-                imageSettings={
-                  hasCopiedInvoice
-                    ? {
-                        src: "/img/copied-to-clipboard.svg",
-                        height: 42,
-                        width: 42,
-                        excavate: false,
-                      }
-                    : undefined
-                }
+                imageSettings={getQrCodeImageSettings()}
               />
             </Center>
           )}
