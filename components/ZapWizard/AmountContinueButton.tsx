@@ -1,4 +1,3 @@
-import { isDesktop } from "react-device-detect";
 import { Button, type ButtonProps } from "@mantine/core";
 import { MouseEventHandler } from "react";
 
@@ -7,9 +6,7 @@ interface AmountContinueButtonProps extends ButtonProps {
 }
 
 const AmountContinueButton = (props: AmountContinueButtonProps) => {
-  return (
-    <Button {...props}>{isDesktop ? "Continue" : "Pay with wallet"}</Button>
-  );
+  return <Button {...props}>Continue</Button>;
 };
 
 export default AmountContinueButton;

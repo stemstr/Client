@@ -1,4 +1,3 @@
-import { isDesktop } from "react-device-detect";
 import { useCallback, useEffect, useRef, useState } from "react";
 import ZapOptionsDrawer from "./ZapOptionsDrawer";
 import CustomAmountDrawer from "./CustomAmountDrawer";
@@ -28,13 +27,8 @@ export const ZapWizard = () => {
         isAnonymous: !isAuthenticated,
       });
 
-      if (isDesktop) {
-        setInvoice(invoice);
-        setStep("invoice");
-      } else {
-        window.location.href = `lightning:${invoice}`;
-        setStep("idle");
-      }
+      setInvoice(invoice);
+      setStep("invoice");
     } catch (error) {
       // TODO: let user know that something went wrong
       console.error(error);
