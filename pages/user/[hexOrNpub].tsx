@@ -15,6 +15,7 @@ import ProfileActionButtons from "components/ProfilePage/ProfileActionButtons";
 import useNip05 from "ndk/hooks/useNip05";
 import { Nip05Status } from "store/Nip05";
 import Link from "next/link";
+import ProfileContactsBar from "components/ProfilePage/ProfileContactsBar";
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -101,46 +102,7 @@ export default function ProfilePage() {
         </Text>
         <CopyNpub npub={npub} />
       </Stack>
-      <Group
-        spacing="xl"
-        position="center"
-        sx={(theme) => ({
-          paddingTop: theme.spacing.sm,
-          paddingBottom: theme.spacing.sm,
-          marginBottom: theme.spacing.md,
-          borderTopWidth: 1,
-          borderBottomWidth: 1,
-          borderLeftWidth: 0,
-          borderRightWidth: 0,
-          borderStyle: "solid",
-          borderColor: theme.fn.rgba(theme.colors.gray[0], 0.1),
-          fontSize: 14,
-          color: theme.white,
-          [theme.fn.largerThan("sm")]: {
-            marginLeft: -theme.spacing.md,
-            marginRight: -theme.spacing.md,
-          },
-        })}
-      >
-        <Text>
-          <Text span fw={700}>
-            0
-          </Text>{" "}
-          following
-        </Text>
-        <Text>
-          <Text span fw={700}>
-            ?
-          </Text>{" "}
-          followers
-        </Text>
-        <Text>
-          <Text span fw={700}>
-            0
-          </Text>{" "}
-          relays
-        </Text>
-      </Group>
+      <ProfileContactsBar pubkey={pk} />
       <Box pl="md" pr="md">
         <ProfileFeed pubkey={pk} />
       </Box>
