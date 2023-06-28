@@ -48,7 +48,7 @@ const InvoiceDrawer = ({
     return isDesktop ? (
       <>
         Ready to{" "}
-        <Text span color="green.6">
+        <Text span color="green.6" sx={{ lineHeight: "24px" }}>
           zap
         </Text>{" "}
         to {getNormalizedName(zapRecipient.hexpubkey(), zapRecipient)}?
