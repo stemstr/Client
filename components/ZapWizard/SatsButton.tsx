@@ -16,7 +16,7 @@ const SatsButton = ({
 }: SatsButtonProps) => {
   const getFiatAmount = () => {
     if (!btcPrice) {
-      return "";
+      return "...";
     }
 
     return (btcPrice / (100_000_000 / satsAmount)).toLocaleString("en-US", {
