@@ -261,14 +261,12 @@ export const getNormalizedName = (pubkey: string, user?: NDKUser) => {
   );
 };
 
-const getZapEndpoint = async (
+export const getLnurlServiceEndpoint = (
   zappedUserProfile?: NDKUserProfile,
   zappedEvent?: NDKEvent
 ) => {
   let lud06: string | undefined;
   let lud16: string | undefined;
-  let zapEndpoint: string | undefined;
-  let zapEndpointCallback: string | undefined;
 
   if (zappedEvent) {
     const zapTag = zappedEvent.getMatchingTags("zap")[0];
@@ -294,25 +292,33 @@ const getZapEndpoint = async (
 
   if (lud16) {
     const [name, domain] = lud16.split("@");
-    zapEndpoint = `https://${domain}/.well-known/lnurlp/${name}`;
+    return `https://${domain}/.well-known/lnurlp/${name}`;
   } else if (lud06) {
     const { words } = bech32.decode(lud06, 1000);
     const data = bech32.fromWords(words);
     const utf8Decoder = new TextDecoder("utf-8");
-    zapEndpoint = utf8Decoder.decode(data);
+    return utf8Decoder.decode(data);
+  }
+};
+
+const getZapEndpoint = async (
+  zappedUserProfile?: NDKUserProfile,
+  zappedEvent?: NDKEvent
+) => {
+  const lnurlServiceEndpoint = getLnurlServiceEndpoint(
+    zappedUserProfile,
+    zappedEvent
+  );
+
+  if (!lnurlServiceEndpoint) {
+    return;
   }
 
-  if (!zapEndpoint) {
-    throw new Error("No zap endpoint found");
-  }
-
-  const { data } = await axios(zapEndpoint);
+  const { data } = await axios(lnurlServiceEndpoint);
 
   if (data?.allowsNostr && (data?.nostrPubkey || data?.nostrPubKey)) {
-    zapEndpointCallback = data.callback;
+    return data.callback;
   }
-
-  return zapEndpointCallback;
 };
 
 const getUserRelayUrls = async (
@@ -380,6 +386,11 @@ export const createZapRequest = async ({
   isAnonymous,
 }: CreateZapRequestParams) => {
   const zapEndpoint = await getZapEndpoint(zappedUser.profile, zappedEvent);
+
+  if (!zapEndpoint) {
+    throw new Error("No zap endpoint found");
+  }
+
   const normalizedAmount = amount * 1000; // convert to millisats
 
   if (!zapEndpoint) {

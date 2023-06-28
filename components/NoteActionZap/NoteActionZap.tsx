@@ -1,7 +1,9 @@
+import { Space } from "@mantine/core";
 import { ZapIcon } from "icons/StemstrIcon";
 import NoteAction from "components/NoteAction/NoteAction";
 import { useEvent } from "ndk/NDKEventProvider";
 import { useUser } from "ndk/hooks/useUser";
+import { getLnurlServiceEndpoint } from "ndk/utils";
 import {
   ZapWizard,
   useZapWizard,
@@ -22,15 +24,15 @@ const NoteActionContentWithZapWizard = () => {
 const NoteActionZap = () => {
   const { event } = useEvent();
   const zapRecipient = useUser(event.pubkey);
+  const isZappable =
+    zapRecipient && getLnurlServiceEndpoint(zapRecipient.profile, event);
 
-  return zapRecipient ? (
+  return isZappable ? (
     <ZapWizardProvider zapRecipient={zapRecipient} zappedEvent={event}>
       <NoteActionContentWithZapWizard />
     </ZapWizardProvider>
   ) : (
-    <NoteAction>
-      <ZapIcon width={18} height={18} />
-    </NoteAction>
+    <Space w={44} />
   );
 };
 
