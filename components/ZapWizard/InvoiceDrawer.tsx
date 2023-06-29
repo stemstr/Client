@@ -128,12 +128,13 @@ const InvoiceDrawer = ({
       };
     }
   };
-
-  useEffect(() => {
-    if (hasDetectedZapReceipt && !isDesktop) {
-      handleOnClose();
+  const getSize = () => {
+    if (isDesktop) {
+      return hasDetectedZapReceipt ? 379 : 467;
+    } else {
+      return hasDetectedZapReceipt ? 312 : 352;
     }
-  }, [hasDetectedZapReceipt, handleOnClose]);
+  };
 
   useEffect(() => {
     if (!ndk || !isOpen || zapReceiptRelays.length === 0) {
@@ -166,11 +167,7 @@ const InvoiceDrawer = ({
   }, [isOpen, zapReceiptRelays.length, ndk, invoice, zapRecipientHexPubkey]);
 
   return (
-    <ZapDrawer
-      isOpen={isOpen}
-      onClose={handleOnClose}
-      size={isDesktop ? 467 : 352}
-    >
+    <ZapDrawer isOpen={isOpen} onClose={handleOnClose} size={getSize()}>
       <Stack spacing={24} px={8}>
         <Text
           color="white"
@@ -182,7 +179,7 @@ const InvoiceDrawer = ({
         >
           <InitialHeader />
         </Text>
-        <Flex justify="space-between" mb={24}>
+        <Flex justify="space-between" mb={hasDetectedZapReceipt ? 0 : 24}>
           <Box>
             <Flex gap={6} align="center" h={44}>
               <Avatar
@@ -220,7 +217,7 @@ const InvoiceDrawer = ({
             </Center>
           )}
         </Flex>
-        <Buttons />
+        {!hasDetectedZapReceipt && <Buttons />}
         {willShowCloseButton && (
           <>
             <Divider color="gray.4" />
