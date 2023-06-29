@@ -1,7 +1,8 @@
 import { Group, Text } from "@mantine/core";
 import useContactList from "ndk/hooks/useContactList";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import useStyles from "./ProfilePage.styles";
+import useFollowers from "ndk/hooks/useFollowers";
 
 type ContactsBarProps = {
   pubkey: string;
@@ -13,12 +14,7 @@ export default function ContactsBar({ pubkey }: ContactsBarProps) {
   return (
     <Group spacing="xl" position="center" className={classes.contactsBar}>
       <FollowingButton pubkey={pubkey} />
-      <Text>
-        <Text span fw={700}>
-          ?
-        </Text>{" "}
-        followers
-      </Text>
+      <FollowersButton pubkey={pubkey} />
       <Text>
         <Text span fw={700}>
           0
@@ -42,6 +38,24 @@ const FollowingButton = ({ pubkey }: { pubkey: string }) => {
         {followingCount || 0}
       </Text>{" "}
       following
+    </Text>
+  );
+};
+
+const FollowersButton = ({ pubkey }: { pubkey: string }) => {
+  const [enabled, setEnabled] = useState(false);
+  const followers = useFollowers({ pubkey, enabled });
+
+  const handleClick = () => {
+    setEnabled(true);
+  };
+
+  return (
+    <Text onClick={handleClick} sx={{ cursor: "pointer" }}>
+      <Text span fw={700}>
+        {followers ? followers.length : "?"}
+      </Text>{" "}
+      followers
     </Text>
   );
 };
