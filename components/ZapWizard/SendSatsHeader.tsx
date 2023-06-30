@@ -5,7 +5,7 @@ const SendSatsHeader = () => {
   const { zapRecipient } = useZapWizard();
 
   return (
-    <Text color="white" ta="center" size="xl" fw="bold">
+    <Text color="white" ta="center" size="xl" fw="bold" truncate>
       ⚡️ Send{" "}
       <Text span color="purple.6">
         sats
