@@ -1,4 +1,19 @@
-import { Group, Stack, Text } from "@mantine/core";
+import {
+  Group,
+  type SpacingValue,
+  Stack,
+  type SystemProp,
+  Text,
+} from "@mantine/core";
+import { type PropsWithChildren, type FC } from "react";
+
+interface FieldGroupProps {
+  TitleIcon?: FC<{ width: number; height: number }>;
+  title: string;
+  titleFontSize?: SystemProp<SpacingValue>;
+  iconSize?: number;
+  disabled?: boolean;
+}
 
 export default function FieldGroup({
   TitleIcon,
@@ -6,12 +21,14 @@ export default function FieldGroup({
   children,
   titleFontSize,
   iconSize,
-}) {
+  disabled,
+}: PropsWithChildren<FieldGroupProps>) {
   return (
     <Stack
       spacing="xs"
       sx={(theme) => ({
         color: theme.white,
+        opacity: disabled ? 0.2 : 1,
       })}
     >
       <Group spacing={iconSize ? iconSize / 2 : "xs"} align="center">

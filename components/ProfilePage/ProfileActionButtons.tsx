@@ -3,11 +3,12 @@ import FollowButton from "components/FollowButton/FollowButton";
 import ProfileActionButton from "components/ProfileActionButton/ProfileActionButton";
 import useStyles from "components/ProfilePage/ProfilePage.styles";
 import { Route } from "enums";
-import { EditIcon, ShareIcon, ZapIcon } from "icons/StemstrIcon";
+import { EditIcon, ShareIcon } from "icons/StemstrIcon";
 import { useRouter } from "next/router";
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { selectAuthState } from "store/Auth";
+import ProfileActionZapButton from "./ProfileActionZapButton";
 
 type ProfileActionButtonsProps = {
   pubkey: string;
@@ -29,9 +30,7 @@ export default function ProfileActionButtons({
       <ProfileActionButton>
         <ShareIcon width={16} height={16} />
       </ProfileActionButton>
-      <ProfileActionButton>
-        <ZapIcon width={16} height={16} />
-      </ProfileActionButton>
+      <ProfileActionZapButton pubkey={pubkey} />
       {isCurrentUser && (
         <ProfileActionButton onClick={() => router.push(Route.EditProfile)}>
           <EditIcon width={16} height={16} />

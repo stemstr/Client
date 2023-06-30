@@ -9,7 +9,7 @@ import ShareAcrossField from "../ShareAcrossField/ShareAcrossField";
 import { parseHashtags } from "../Fields/TagsField/TagsField";
 import { useState } from "react";
 import { acceptedMimeTypes } from "../../utils/media";
-import { parseEventTags } from "../../ndk/utils";
+import { getNormalizedName, parseEventTags } from "../../ndk/utils";
 import { useNDK } from "ndk/NDKProvider";
 import { NDKEvent } from "@nostr-dev-kit/ndk";
 import { useUser } from "ndk/hooks/useUser";
@@ -20,7 +20,7 @@ export default function PostSheet() {
   const auth = useSelector((state) => state.auth);
   const relays = useSelector((state) => state.relays);
   const { isOpen, replyingTo } = useSelector((state) => state.sheets[sheetKey]);
-  const { profile } = useUser(replyingTo?.pubkey) ?? {};
+  const user = useUser(replyingTo?.pubkey);
   const dispatch = useDispatch();
   const [isDragging, setIsDragging] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
@@ -137,11 +137,7 @@ export default function PostSheet() {
 
   let title = isDragging ? "Drop to proccess sound" : "Share";
   if (replyingTo) {
-    title = `Replying to @${
-      profile?.name ??
-      profile?.displayName ??
-      `${replyingTo.pubkey.substring(0, 5)}...`
-    }`;
+    title = `Replying to @${getNormalizedName(replyingTo.pubkey, user)}`;
   }
   if (!isOpen) title = "";
 

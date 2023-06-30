@@ -3,6 +3,7 @@ import Bell from "./Line icons/Alerts & feedback/bell-02.svg";
 import Download from "./Line icons/Arrows/arrow-down.svg";
 import ChevronLeft from "./Line icons/Arrows/chevron-left.svg";
 import ChevronRight from "./Line icons/Arrows/chevron-right.svg";
+import ArrowRight from "./Line icons/Arrows/arrow-right.svg";
 
 import Comment from "./Line icons/Communication/message-square-02.svg";
 
@@ -340,6 +341,14 @@ export const AlignLeftIcon = (props) => {
   return (
     <StemstrIcon>
       <AlignLeft {...props} />
+    </StemstrIcon>
+  );
+};
+
+export const ArrowRightIcon = (props) => {
+  return (
+    <StemstrIcon>
+      <ArrowRight {...props} />
     </StemstrIcon>
   );
 };
