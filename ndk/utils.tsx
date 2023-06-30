@@ -349,21 +349,25 @@ const getUserRelayUrls = async (
 };
 
 interface SignEventParams {
-  event: EventTemplate;
+  eventTemplate: EventTemplate;
   ndk: NDK;
   isAnonymous?: boolean;
 }
 
-const signEvent = async ({ event, ndk, isAnonymous }: SignEventParams) => {
+const signEvent = async ({
+  eventTemplate,
+  ndk,
+  isAnonymous,
+}: SignEventParams) => {
   if (isAnonymous) {
-    return finishEvent(event, generatePrivateKey());
+    return finishEvent(eventTemplate, generatePrivateKey());
   }
 
-  const zapRequestEvent = new NDKEvent(ndk, event as NostrEvent);
+  const event = new NDKEvent(ndk, eventTemplate as NostrEvent);
 
-  await zapRequestEvent.sign();
+  await event.sign();
 
-  return await zapRequestEvent.toNostrEvent();
+  return await event.toNostrEvent();
 };
 
 interface CreateZapRequestParams {
@@ -426,7 +430,7 @@ export const createZapRequest = async ({
   }
 
   const signedZapRequest = await signEvent({
-    event: zapRequest,
+    eventTemplate: zapRequest,
     ndk,
     isAnonymous,
   });
