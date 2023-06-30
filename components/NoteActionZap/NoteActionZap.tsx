@@ -9,25 +9,32 @@ import {
   useZapWizard,
   ZapWizardProvider,
 } from "components/ZapWizard";
+import { useSelector } from "react-redux";
+import { AppState } from "../../store/Store";
+import { selectNoteState } from "../../store/Notes";
 
-const NoteActionContentWithZapWizard = ({
-  zapsTotal,
-}: {
-  zapsTotal: number;
-}) => {
+const NoteActionContentWithZapWizard = () => {
   const { start } = useZapWizard();
+  const { event } = useEvent();
+  const { zapsAmountTotal } = useSelector((state: AppState) =>
+    selectNoteState(state, event.id)
+  );
   const formattedZapsTotal = (() => {
     const formatNumber = (num: number) => num.toFixed(1).replace(/\.0$/, "");
 
-    if (zapsTotal >= 1_000_000) {
-      return `${formatNumber(zapsTotal / 1_000_000)}M`;
+    if (zapsAmountTotal === 0) {
+      return;
     }
 
-    if (zapsTotal >= 1000) {
-      return `${formatNumber(zapsTotal / 1_000)}k`;
+    if (zapsAmountTotal >= 1_000_000) {
+      return `${formatNumber(zapsAmountTotal / 1_000_000)}M`;
     }
 
-    return formatNumber(zapsTotal);
+    if (zapsAmountTotal >= 1000) {
+      return `${formatNumber(zapsAmountTotal / 1_000)}k`;
+    }
+
+    return formatNumber(zapsAmountTotal);
   })();
 
   return (
@@ -41,7 +48,7 @@ const NoteActionContentWithZapWizard = ({
   );
 };
 
-const NoteActionZap = ({ zapsTotal }: { zapsTotal: number }) => {
+const NoteActionZap = () => {
   const { event } = useEvent();
   const zapRecipient = useUser(event.pubkey);
   const isZappable =
@@ -49,7 +56,7 @@ const NoteActionZap = ({ zapsTotal }: { zapsTotal: number }) => {
 
   return isZappable ? (
     <ZapWizardProvider zapRecipient={zapRecipient} zappedEvent={event}>
-      <NoteActionContentWithZapWizard zapsTotal={zapsTotal} />
+      <NoteActionContentWithZapWizard />
     </ZapWizardProvider>
   ) : (
     <Space w={44} />

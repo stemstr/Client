@@ -3,13 +3,18 @@ import { CommentIcon } from "icons/StemstrIcon";
 import NoteAction from "./NoteAction";
 import { useEvent } from "../../ndk/NDKEventProvider";
 import { openSheet } from "../../store/Sheets";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import useAuth from "hooks/useAuth";
+import { AppState } from "../../store/Store";
+import { selectNoteState } from "../../store/Notes";
 
-const NoteActionComment = ({ commentCount }: { commentCount: number }) => {
+const NoteActionComment = () => {
   const { event } = useEvent();
   const dispatch = useDispatch();
   const { guardAuth } = useAuth();
+  const { commentCount } = useSelector((state: AppState) =>
+    selectNoteState(state, event.id)
+  );
 
   const handleClickComment = () => {
     if (!guardAuth()) return;

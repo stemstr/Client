@@ -6,6 +6,7 @@ import { sheetsSlice } from "./Sheets";
 import { relaysSlice } from "./Relays";
 import { eventsSlice } from "./Events";
 import { nip05Slice } from "./Nip05";
+import { notesSlice } from "./Notes";
 
 const makeStore = () =>
   configureStore({
@@ -16,6 +17,7 @@ const makeStore = () =>
       [relaysSlice.name]: relaysSlice.reducer,
       [eventsSlice.name]: eventsSlice.reducer,
       [nip05Slice.name]: nip05Slice.reducer,
+      [notesSlice.name]: notesSlice.reducer,
     },
     devTools: true,
   });
