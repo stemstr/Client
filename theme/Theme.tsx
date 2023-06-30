@@ -113,7 +113,6 @@ const stemstrTheme: MantineThemeOverride = {
     TextInput: {
       defaultProps: {
         radius: "md",
-        size: "lg",
       },
       styles: (theme, params) => ({
         input: {
