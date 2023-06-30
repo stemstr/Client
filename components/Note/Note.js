@@ -1,15 +1,13 @@
-import { Box, Group, Stack, Space } from "@mantine/core";
+import { Box, Group, Stack } from "@mantine/core";
 import React, { useMemo, useState } from "react";
 import NoteTags from "../NoteTags/NoteTags";
 import NoteHeader from "../NoteHeader/NoteHeader";
-import NoteActionComment from "../NoteAction/NoteActionComment";
-import NoteActionLike from "../NoteAction/NoteActionLike";
 import SoundPlayer from "../SoundPlayer/SoundPlayer";
 import useStyles from "./Note.styles";
 import { useRouter } from "next/router";
 import { useEvent } from "../../ndk/NDKEventProvider";
+import NoteActionRow from "../NoteActionRow/NoteActionRow";
 import { Route } from "enums";
-import NoteActionZap from "../NoteActionZap/NoteActionZap";
 import NoteContent from "../NoteContent/NoteContent";
 
 const Note = ({ type }) => {
@@ -56,12 +54,7 @@ const Note = ({ type }) => {
           />
           <NoteContent content={event.content} />
           <NoteTags classes={classes} />
-          <Group position="apart">
-            <NoteActionComment />
-            <Space w={59} />
-            <NoteActionLike />
-            <NoteActionZap />
-          </Group>
+          <NoteActionRow />
         </Stack>
       </Group>
     </Stack>

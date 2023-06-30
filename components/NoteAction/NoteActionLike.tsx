@@ -10,14 +10,12 @@ import { formatETag, parseEventTags } from "../../ndk/utils";
 import { NDKEvent } from "@nostr-dev-kit/ndk";
 import { useNDK } from "../../ndk/NDKProvider";
 import { useEvent } from "../../ndk/NDKEventProvider";
-import { useNoteReactions } from "../../ndk/hooks/useNoteReactions";
 import useAuth from "hooks/useAuth";
 
-const NoteActionLike = ({ onClick }: any) => {
+const NoteActionLike = ({ reactions }: { reactions: NDKEvent[] }) => {
   const { ndk } = useNDK();
   const { event } = useEvent();
   const { guardAuth } = useAuth();
-  const reactions = useNoteReactions();
   const controls = useAnimation();
   const auth = useSelector(selectAuthState);
   const [likedByCurrentUser, setLikedByCurrentUser] = useState(false);
@@ -78,6 +76,7 @@ const NoteActionLike = ({ onClick }: any) => {
             ? theme.colors.red[5]
             : theme.colors.gray[1],
         })}
+        noWrap
       >
         <motion.span animate={controls} style={{ lineHeight: 0 }}>
           <HeartIcon width={18} height={18} />
