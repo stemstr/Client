@@ -139,6 +139,16 @@ const stemstrTheme: MantineThemeOverride = {
         },
       }),
     },
+    Anchor: {
+      styles: (theme, params: ButtonStylesParams) => ({
+        root: {
+          color: "inherit",
+          "&:hover": {
+            textDecoration: "none",
+          },
+        },
+      }),
+    },
     Button: {
       styles: (theme, params: ButtonStylesParams) => ({
         root: {

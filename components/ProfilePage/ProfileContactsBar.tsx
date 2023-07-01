@@ -1,8 +1,11 @@
-import { Group, Text } from "@mantine/core";
+import { Anchor, Group, Text } from "@mantine/core";
 import useContactList from "ndk/hooks/useContactList";
 import { useMemo, useState } from "react";
 import useStyles from "./ProfilePage.styles";
 import useFollowers from "ndk/hooks/useFollowers";
+import Link from "next/link";
+import { Route } from "enums";
+import { getPublicKeys } from "ndk/utils";
 
 type ContactsBarProps = {
   pubkey: string;
@@ -26,6 +29,7 @@ export default function ContactsBar({ pubkey }: ContactsBarProps) {
 }
 
 const FollowingButton = ({ pubkey }: { pubkey: string }) => {
+  const { npub } = useMemo(() => getPublicKeys(pubkey as string), [pubkey]);
   const { contactList } = useContactList({ hexpubkey: pubkey });
   const followingCount = useMemo(
     () => contactList?.tags.filter((tag) => tag[0] === "p").length,
@@ -33,12 +37,14 @@ const FollowingButton = ({ pubkey }: { pubkey: string }) => {
   );
 
   return (
-    <Text>
-      <Text span fw={700}>
-        {followingCount || 0}
-      </Text>{" "}
-      following
-    </Text>
+    <Anchor component={Link} href={`${Route.User}/${npub}/contacts/following`}>
+      <Text>
+        <Text span fw={700}>
+          {followingCount || 0}
+        </Text>{" "}
+        following
+      </Text>
+    </Anchor>
   );
 };
 
