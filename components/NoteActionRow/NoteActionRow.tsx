@@ -53,7 +53,10 @@ const NoteActionRow = () => {
         );
 
         return validZaps.reduce((acc, event) => {
-          return acc + (zapInvoiceFromEvent(event)?.amount ?? 0);
+          const amountInMillisats = zapInvoiceFromEvent(event)?.amount;
+          const amount = amountInMillisats ? amountInMillisats / 1000 : 0;
+
+          return acc + amount;
         }, 0);
       };
 
