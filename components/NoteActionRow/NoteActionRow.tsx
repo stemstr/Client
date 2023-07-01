@@ -14,9 +14,11 @@ import {
   setIsLikedByCurrentUser,
   setCommentCount,
   setZapsAmountTotal,
+  selectNoteState,
 } from "../../store/Notes";
 import { selectAuthState } from "../../store/Auth";
 import { defaultRelayUrls } from "../../constants";
+import { AppState } from "../../store/Store";
 
 const NoteActionRow = () => {
   const dispatch = useDispatch();
@@ -24,6 +26,9 @@ const NoteActionRow = () => {
   const { ndk } = useNDK();
   const { event } = useEvent();
   const noteId = event.id;
+  const { zapsAmountTotal, reactionCount, commentCount } = useSelector(
+    (state: AppState) => selectNoteState(state, noteId)
+  );
   const filter = useMemo(
     () => ({
       kinds: [Kind.Text, 1808 as Kind, Kind.Reaction, Kind.Zap],
@@ -34,7 +39,7 @@ const NoteActionRow = () => {
   const dispatchData = useCallback(
     async (events: NDKEvent[]) => {
       const reactions = events.filter(({ kind }) => kind === Kind.Reaction);
-      const commentCount = events.filter(({ kind, content }) =>
+      const newCommentCount = events.filter(({ kind, content }) =>
         [Kind.Text, 1808].includes(kind as Kind)
       ).length;
       const getZapsAmountTotal = () => {
@@ -53,6 +58,18 @@ const NoteActionRow = () => {
           return acc + amount;
         }, 0);
       };
+      const newZapsAmountTotal = getZapsAmountTotal();
+
+      // sometimes the subscription is not returning the right amounts after initial load.
+      // this makes sure it doesn't override the previously loaded values since the new values should not be less
+      // than the previous values.
+      if (
+        commentCount > newCommentCount ||
+        reactionCount > reactions.length ||
+        zapsAmountTotal > newZapsAmountTotal
+      ) {
+        return;
+      }
 
       dispatch(setReactionCount({ id: noteId, value: reactions.length }));
       dispatch(
@@ -61,10 +78,10 @@ const NoteActionRow = () => {
           value: Boolean(reactions.find((ev) => ev.pubkey === auth.pk)),
         })
       );
-      dispatch(setCommentCount({ id: noteId, value: commentCount }));
-      dispatch(setZapsAmountTotal({ id: noteId, value: getZapsAmountTotal() }));
+      dispatch(setCommentCount({ id: noteId, value: newCommentCount }));
+      dispatch(setZapsAmountTotal({ id: noteId, value: newZapsAmountTotal }));
     },
-    [auth.pk, dispatch, noteId]
+    [auth.pk, dispatch, noteId, commentCount, reactionCount, zapsAmountTotal]
   );
 
   useEffect(() => {
