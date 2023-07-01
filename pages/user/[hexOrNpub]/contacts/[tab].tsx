@@ -10,6 +10,7 @@ import { useUser } from "ndk/hooks/useUser";
 import FollowingPanel from "components/ContactsTray/FollowingPanel";
 import FollowersPanel from "components/ContactsTray/FollowersPanel";
 import RelaysPanel from "components/ContactsTray/RelaysPanel";
+import useContactList from "ndk/hooks/useContactList";
 
 export default function Contacts() {
   const router = useRouter();
@@ -19,6 +20,11 @@ export default function Contacts() {
     [hexOrNpub]
   );
   const user = useUser(pk);
+  const { contactList } = useContactList({ hexpubkey: pk });
+  const followingCount = useMemo(
+    () => contactList?.tags.filter((tag) => tag[0] === "p").length,
+    [contactList]
+  );
 
   const getTitle = (tab: string) => {
     switch (tab) {
@@ -60,11 +66,11 @@ export default function Contacts() {
         }}
       >
         <Tabs.List grow>
-          <Tabs.Tab value="following">Following</Tabs.Tab>
+          <Tabs.Tab value="following">Following {followingCount}</Tabs.Tab>
           <Tabs.Tab value="followers">Followers</Tabs.Tab>
           <Tabs.Tab value="relays">Relays</Tabs.Tab>
         </Tabs.List>
-        <FollowingPanel />
+        <FollowingPanel contactList={contactList} />
         <FollowersPanel />
         <RelaysPanel />
       </Tabs>
