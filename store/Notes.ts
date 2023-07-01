@@ -33,7 +33,11 @@ export const notesSlice = createSlice({
     ) => {
       const { id, value } = action.payload;
 
-      state[id] = { ...state[id], reactionCount: value };
+      state[id] = {
+        ...defaultNoteMetadata,
+        ...state[id],
+        reactionCount: value,
+      };
     },
     setIsLikedByCurrentUser: (
       state,
@@ -41,7 +45,11 @@ export const notesSlice = createSlice({
     ) => {
       const { id, value } = action.payload;
 
-      state[id] = { ...state[id], isLikedByCurrentUser: value };
+      state[id] = {
+        ...defaultNoteMetadata,
+        ...state[id],
+        isLikedByCurrentUser: value,
+      };
     },
     setCommentCount: (
       state,
@@ -49,7 +57,7 @@ export const notesSlice = createSlice({
     ) => {
       const { id, value } = action.payload;
 
-      state[id] = { ...state[id], commentCount: value };
+      state[id] = { ...defaultNoteMetadata, ...state[id], commentCount: value };
     },
     setZapsAmountTotal: (
       state,
@@ -57,12 +65,17 @@ export const notesSlice = createSlice({
     ) => {
       const { id, value } = action.payload;
 
-      state[id] = { ...state[id], zapsAmountTotal: value };
+      state[id] = {
+        ...defaultNoteMetadata,
+        ...state[id],
+        zapsAmountTotal: value,
+      };
     },
     currentUserLikedNote: (state, action: PayloadAction<string>) => {
       const id = action.payload;
 
       state[id] = {
+        ...defaultNoteMetadata,
         ...state[id],
         isLikedByCurrentUser: true,
         reactionCount: state[id] ? state[id].reactionCount + 1 : 1,
@@ -71,7 +84,23 @@ export const notesSlice = createSlice({
     setHasInitialLoadCompleted: (state, action: PayloadAction<string>) => {
       const id = action.payload;
 
-      state[id] = { ...state[id], hasInitialLoadCompleted: true };
+      state[id] = {
+        ...defaultNoteMetadata,
+        ...state[id],
+        hasInitialLoadCompleted: true,
+      };
+    },
+    updateZapsAmountTotal: (
+      state,
+      action: PayloadAction<{ id: string; value: number }>
+    ) => {
+      const { id, value } = action.payload;
+
+      state[id] = {
+        ...defaultNoteMetadata,
+        ...state[id],
+        zapsAmountTotal: state[id] ? state[id].zapsAmountTotal + value : value,
+      };
     },
   },
 });
@@ -83,6 +112,7 @@ export const {
   setCommentCount,
   setZapsAmountTotal,
   setHasInitialLoadCompleted,
+  updateZapsAmountTotal,
 } = notesSlice.actions;
 
 export const selectNoteState = (state: AppState, noteId: string) =>

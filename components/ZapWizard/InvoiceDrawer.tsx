@@ -16,12 +16,13 @@ import ZapDrawer from "./ZapDrawer";
 import { createRelaySet, getNormalizedName } from "../../ndk/utils";
 import { useUser } from "../../ndk/hooks/useUser";
 import DrawerCloseButton from "./CloseButton";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { selectAuthState } from "../../store/Auth";
 import { ArrowRightIcon, ProfileIcon } from "../../icons/StemstrIcon";
 import { useZapWizard } from "./ZapWizardProvider";
 import { useNDK } from "../../ndk/NDKProvider";
 import { NDKEvent } from "@nostr-dev-kit/ndk";
+import { updateZapsAmountTotal } from "../../store/Notes";
 
 interface InvoiceDrawerProps {
   isOpen: boolean;
@@ -40,8 +41,9 @@ const InvoiceDrawer = ({
   invoice,
   zapReceiptRelays,
 }: InvoiceDrawerProps) => {
+  const dispatch = useDispatch();
   const { ndk } = useNDK();
-  const { zapRecipient, willShowCloseButton } = useZapWizard();
+  const { zapRecipient, willShowCloseButton, zappedEvent } = useZapWizard();
   const zapRecipientHexPubkey = zapRecipient.hexpubkey();
   const authState = useSelector(selectAuthState);
   const zapper = useUser(authState.pk);
@@ -154,6 +156,12 @@ const InvoiceDrawer = ({
 
     subscription.on("event", (event: NDKEvent) => {
       if (event.tags.find((t) => t[0] === "bolt11" && t[1] === invoice)) {
+        if (zappedEvent) {
+          dispatch(
+            updateZapsAmountTotal({ id: zappedEvent.id, value: amount })
+          );
+        }
+
         setHasDetectedZapReceipt(true);
         subscription.stop();
       }
@@ -164,7 +172,16 @@ const InvoiceDrawer = ({
         subscription.stop();
       }
     };
-  }, [isOpen, zapReceiptRelays.length, ndk, invoice, zapRecipientHexPubkey]);
+  }, [
+    isOpen,
+    zapReceiptRelays.length,
+    ndk,
+    invoice,
+    zapRecipientHexPubkey,
+    dispatch,
+    amount,
+    zappedEvent,
+  ]);
 
   return (
     <ZapDrawer isOpen={isOpen} onClose={handleOnClose} size={getSize()}>
