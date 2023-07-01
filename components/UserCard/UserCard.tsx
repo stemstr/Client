@@ -43,7 +43,7 @@ const UserCardTitle = ({ pubkey }: { pubkey: string }) => {
 
   return (
     <Group spacing={6} w="100%" noWrap>
-      <Text color="white" fz="lg">
+      <Text color="white" fz="lg" truncate>
         {user?.profile?.displayName
           ? user?.profile.displayName
           : `@${user?.hexpubkey().substring(0, 5)}...`}

@@ -1,4 +1,4 @@
-import { Stack, Tabs } from "@mantine/core";
+import { Space, Stack, Tabs } from "@mantine/core";
 import { NDKEvent } from "@nostr-dev-kit/ndk";
 import UserCard from "components/UserCard/UserCard";
 import { useMemo } from "react";
@@ -17,11 +17,13 @@ export default function FollowingPanel({ contactList }: FollowersPanelProps) {
 
   return (
     <Tabs.Panel value="following" pt="md" pl="md" pr="md">
+      {/* TODO: Virtualize this */}
       <Stack spacing="md">
-        {followingPubkeys.slice(0, 10).map((pubkey) => (
+        {followingPubkeys.map((pubkey) => (
           <UserCard key={pubkey} pubkey={pubkey} />
         ))}
       </Stack>
+      <Space h={112} />
     </Tabs.Panel>
   );
 }
