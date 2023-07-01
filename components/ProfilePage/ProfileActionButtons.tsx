@@ -56,13 +56,14 @@ const ProfileActionFollowButton = ({ pubkey }: { pubkey: string }) => {
             onClick={handleClick}
             className={cx(classes.followButton, {
               [classes.followButtonDisabled]: !enabled,
+              [classes.unfollowButton]: isFollowing,
             })}
             sx={{ minWidth: 101.41 }}
           >
             <Icon width={16} height={16} />
             {enabled && (
               <Text lh="normal" ml={8}>
-                {isFollowing ? "Unfollow" : "Follow"}
+                {isFollowing ? "Following" : "Follow"}
               </Text>
             )}
           </ProfileActionButton>

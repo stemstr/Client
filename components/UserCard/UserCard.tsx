@@ -1,5 +1,8 @@
-import { Button, Text } from "@mantine/core";
+import { Button, Text, useMantineTheme } from "@mantine/core";
 import { Avatar, Group, Stack } from "@mantine/core";
+import { useMediaQuery } from "@mantine/hooks";
+import FollowButton from "components/FollowButton/FollowButton";
+import useStyles from "components/UserCard/UserCard.styles";
 import { VerifiedIcon } from "icons/StemstrIcon";
 import useNip05 from "ndk/hooks/useNip05";
 import { useUser } from "ndk/hooks/useUser";
@@ -29,7 +32,7 @@ export default function UserCard({ pubkey }: { pubkey: string }) {
         <UserCardTitle pubkey={pubkey} />
         <UserCardContent pubkey={pubkey} />
       </Stack>
-      <Button>+</Button>
+      <UserCardFollowButton pubkey={pubkey} />
     </Group>
   );
 }
@@ -58,5 +61,36 @@ const UserCardContent = ({ pubkey }: { pubkey: string }) => {
     <Text fz="xs" truncate>
       {user?.profile?.about}
     </Text>
+  );
+};
+
+const UserCardFollowButton = ({ pubkey }: { pubkey: string }) => {
+  const theme = useMantineTheme();
+  const isDesktop = useMediaQuery(`(min-width: ${theme.breakpoints.xs}px`);
+  const { classes, cx } = useStyles();
+
+  return (
+    <FollowButton pubkey={pubkey}>
+      {({ isFollowing, enabled, handleClick, Icon }) => {
+        return (
+          <Button
+            pl={16}
+            pr={16}
+            onClick={handleClick}
+            className={cx(classes.followButton, {
+              [classes.followButtonDisabled]: !enabled,
+              [classes.unfollowButton]: isFollowing,
+            })}
+          >
+            <Icon width={16} height={16} />
+            {enabled && isDesktop && (
+              <Text lh="normal" ml={8}>
+                {isFollowing ? "Following" : "Follow"}
+              </Text>
+            )}
+          </Button>
+        );
+      }}
+    </FollowButton>
   );
 };

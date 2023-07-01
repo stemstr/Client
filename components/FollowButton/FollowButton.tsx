@@ -1,23 +1,24 @@
 import { Button, Group, Modal, Stack, Text } from "@mantine/core";
 import { NDKEvent, NDKTag } from "@nostr-dev-kit/ndk";
-import { EllipsisIcon, FollowIcon, UnfollowIcon } from "icons/StemstrIcon";
+import { EllipsisIcon, FollowIcon, FollowingIcon } from "icons/StemstrIcon";
 import { useNDK } from "ndk/NDKProvider";
 import useContactList from "ndk/hooks/useContactList";
 import { MouseEventHandler, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { selectAuthState, setIsNewlyCreatedUser } from "store/Auth";
+import withStopClickPropagation from "utils/hoc/withStopClickPropagation";
 
-type FollowButtonProps = {
+interface FollowButtonProps {
   pubkey: string;
-  children: (props: {
+  children(payload: {
     isFollowing: boolean;
     enabled: boolean;
     handleClick: MouseEventHandler;
     Icon: (props: any) => JSX.Element;
-  }) => JSX.Element;
-};
+  }): React.ReactNode;
+}
 
-export default function FollowButton({ pubkey, children }: FollowButtonProps) {
+const FollowButton = ({ pubkey, children }: FollowButtonProps) => {
   const { ndk } = useNDK();
   const dispatch = useDispatch();
   const authState = useSelector(selectAuthState);
@@ -65,7 +66,7 @@ export default function FollowButton({ pubkey, children }: FollowButtonProps) {
     });
   };
 
-  let Icon = isFollowing ? UnfollowIcon : FollowIcon;
+  let Icon = isFollowing ? FollowingIcon : FollowIcon;
   if (!contactList) {
     Icon = EllipsisIcon;
   }
@@ -106,4 +107,6 @@ export default function FollowButton({ pubkey, children }: FollowButtonProps) {
       })}
     </>
   );
-}
+};
+
+export default withStopClickPropagation<FollowButtonProps>(FollowButton);

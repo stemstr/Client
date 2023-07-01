@@ -33,6 +33,10 @@ const useStyles = createStyles((theme, _params, getRef) => ({
     borderColor: theme.colors.gray[5],
     cursor: "default",
   },
+  unfollowButton: {
+    backgroundColor: theme.colors.gray[6],
+    borderColor: theme.colors.gray[5],
+  },
 }));
 
 export default useStyles;
