@@ -1,4 +1,10 @@
-import { Button, Text, useMantineTheme } from "@mantine/core";
+import {
+  Box,
+  Button,
+  DefaultProps,
+  Text,
+  useMantineTheme,
+} from "@mantine/core";
 import { Avatar, Group, Stack } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import FollowButton from "components/FollowButton/FollowButton";
@@ -8,32 +14,39 @@ import useNip05 from "ndk/hooks/useNip05";
 import { useUser } from "ndk/hooks/useUser";
 import { Nip05Status } from "store/Nip05";
 
-export default function UserCard({ pubkey }: { pubkey: string }) {
+interface UserCardProps extends DefaultProps {
+  pubkey: string;
+}
+
+export default function UserCard({ pubkey, ...rest }: UserCardProps) {
   const user = useUser(pubkey);
 
   return (
-    <Group
-      p="md"
-      noWrap
-      sx={(theme) => ({
-        borderWidth: 1,
-        borderStyle: "solid",
-        borderColor: theme.colors.gray[4],
-        borderRadius: 12,
-      })}
-    >
-      <Avatar
-        src={user?.profile?.image}
-        alt={user?.profile?.name}
-        size={42}
-        radius={21}
-      />
-      <Stack spacing={6} sx={{ overflow: "hidden", flex: 1 }}>
-        <UserCardTitle pubkey={pubkey} />
-        <UserCardContent pubkey={pubkey} />
-      </Stack>
-      <UserCardFollowButton pubkey={pubkey} />
-    </Group>
+    <Box {...rest}>
+      <Group
+        p="md"
+        h={88}
+        noWrap
+        sx={(theme) => ({
+          borderWidth: 1,
+          borderStyle: "solid",
+          borderColor: theme.colors.gray[4],
+          borderRadius: 12,
+        })}
+      >
+        <Avatar
+          src={user?.profile?.image}
+          alt={user?.profile?.name}
+          size={42}
+          radius={21}
+        />
+        <Stack spacing={6} sx={{ overflow: "hidden", flex: 1 }}>
+          <UserCardTitle pubkey={pubkey} />
+          <UserCardContent pubkey={pubkey} />
+        </Stack>
+        <UserCardFollowButton pubkey={pubkey} />
+      </Group>
+    </Box>
   );
 }
 
