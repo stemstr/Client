@@ -7,6 +7,9 @@ import Head from "next/head";
 import BackButton from "components/BackButton/BackButton";
 import { ChevronLeftIcon } from "icons/StemstrIcon";
 import { useUser } from "ndk/hooks/useUser";
+import FollowingPanel from "components/ContactsTray/FollowingPanel";
+import FollowersPanel from "components/ContactsTray/FollowersPanel";
+import RelaysPanel from "components/ContactsTray/RelaysPanel";
 
 export default function Contacts() {
   const router = useRouter();
@@ -61,6 +64,9 @@ export default function Contacts() {
           <Tabs.Tab value="followers">Followers</Tabs.Tab>
           <Tabs.Tab value="relays">Relays</Tabs.Tab>
         </Tabs.List>
+        <FollowingPanel />
+        <FollowersPanel />
+        <RelaysPanel />
       </Tabs>
     </>
   );
