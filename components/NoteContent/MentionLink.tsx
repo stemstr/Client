@@ -40,7 +40,12 @@ export const MentionLink = ({ nostrUri }: { nostrUri: string }) => {
   }, [user, isAnchorTextFormattedAsMention]);
 
   return pubkey ? (
-    <Anchor component={Link} href={`/user/${pubkey}`} underline={false}>
+    <Anchor
+      component={Link}
+      href={`/user/${pubkey}`}
+      underline={false}
+      onClick={(e) => e.stopPropagation()}
+    >
       {anchorText}
     </Anchor>
   ) : (
