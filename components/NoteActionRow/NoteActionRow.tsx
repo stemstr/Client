@@ -6,7 +6,7 @@ import NoteActionZap from "../NoteActionZap/NoteActionZap";
 import { useEvent } from "../../ndk/NDKEventProvider";
 import { Kind, nip57 } from "nostr-tools";
 import { NDKEvent, zapInvoiceFromEvent } from "@nostr-dev-kit/ndk";
-import { fetchEvents } from "../../ndk/utils";
+import { createRelaySet, fetchEvents } from "../../ndk/utils";
 import { useNDK } from "../../ndk/NDKProvider";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -16,6 +16,7 @@ import {
   setZapsAmountTotal,
 } from "../../store/Notes";
 import { selectAuthState } from "../../store/Auth";
+import { defaultRelayUrls } from "../../constants";
 
 const NoteActionRow = () => {
   const dispatch = useDispatch();
@@ -68,7 +69,12 @@ const NoteActionRow = () => {
       return;
     }
 
-    fetchEvents(filter, ndk)
+    const relaySet = createRelaySet(
+      [...defaultRelayUrls, process.env.NEXT_PUBLIC_STEMSTR_RELAY as string],
+      ndk
+    );
+
+    fetchEvents(filter, ndk, relaySet)
       .then((events) => Array.from(events))
       .then(dispatchData)
       .catch(console.error);
