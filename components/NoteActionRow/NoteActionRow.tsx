@@ -14,9 +14,12 @@ import {
   setIsLikedByCurrentUser,
   setCommentCount,
   setZapsAmountTotal,
+  setHasInitialLoadCompleted,
+  selectNoteState,
 } from "../../store/Notes";
 import { selectAuthState } from "../../store/Auth";
 import { defaultRelayUrls } from "../../constants";
+import { AppState } from "../../store/Store";
 
 const NoteActionRow = () => {
   const dispatch = useDispatch();
@@ -24,6 +27,9 @@ const NoteActionRow = () => {
   const { ndk } = useNDK();
   const { event } = useEvent();
   const noteId = event.id;
+  const { hasInitialLoadCompleted } = useSelector((state: AppState) =>
+    selectNoteState(state, noteId)
+  );
   const filter = useMemo(
     () => ({
       kinds: [Kind.Text, 1808 as Kind, Kind.Reaction, Kind.Zap],
@@ -60,12 +66,13 @@ const NoteActionRow = () => {
       );
       dispatch(setCommentCount({ id: noteId, value: commentCount }));
       dispatch(setZapsAmountTotal({ id: noteId, value: getZapsAmountTotal() }));
+      dispatch(setHasInitialLoadCompleted(noteId));
     },
     [auth.pk, dispatch, noteId]
   );
 
   useEffect(() => {
-    if (!ndk) {
+    if (!ndk || hasInitialLoadCompleted) {
       return;
     }
 
@@ -78,7 +85,7 @@ const NoteActionRow = () => {
       .then((events) => Array.from(events))
       .then(dispatchData)
       .catch(console.error);
-  }, [ndk, filter, dispatchData]);
+  }, [ndk, filter, dispatchData, hasInitialLoadCompleted]);
 
   return (
     <Group position="apart" noWrap spacing="xs" sx={{ overflowX: "hidden" }}>
