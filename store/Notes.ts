@@ -6,7 +6,6 @@ interface NoteMetada {
   isLikedByCurrentUser: boolean;
   commentCount: number;
   zapsAmountTotal: number;
-  hasInitialLoadCompleted: boolean;
 }
 
 const defaultNoteMetadata: NoteMetada = {
@@ -14,7 +13,6 @@ const defaultNoteMetadata: NoteMetada = {
   isLikedByCurrentUser: false,
   commentCount: 0,
   zapsAmountTotal: 0,
-  hasInitialLoadCompleted: false,
 };
 
 interface NotesState {
@@ -81,15 +79,6 @@ export const notesSlice = createSlice({
         reactionCount: state[id] ? state[id].reactionCount + 1 : 1,
       };
     },
-    setHasInitialLoadCompleted: (state, action: PayloadAction<string>) => {
-      const id = action.payload;
-
-      state[id] = {
-        ...defaultNoteMetadata,
-        ...state[id],
-        hasInitialLoadCompleted: true,
-      };
-    },
     updateZapsAmountTotal: (
       state,
       action: PayloadAction<{ id: string; value: number }>
@@ -111,7 +100,6 @@ export const {
   currentUserLikedNote,
   setCommentCount,
   setZapsAmountTotal,
-  setHasInitialLoadCompleted,
   updateZapsAmountTotal,
 } = notesSlice.actions;
 
