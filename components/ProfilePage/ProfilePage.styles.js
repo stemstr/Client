@@ -24,6 +24,15 @@ const useStyles = createStyles((theme, _params, getRef) => ({
       marginRight: -theme.spacing.md,
     },
   },
+  followButton: {
+    backgroundColor: theme.colors.purple[5],
+    borderColor: theme.colors.purple[5],
+  },
+  followButtonDisabled: {
+    backgroundColor: theme.colors.gray[6],
+    borderColor: theme.colors.gray[5],
+    cursor: "default",
+  },
 }));
 
 export default useStyles;

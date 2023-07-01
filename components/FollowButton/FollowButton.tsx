@@ -1,20 +1,23 @@
 import { Button, Group, Modal, Stack, Text } from "@mantine/core";
 import { NDKEvent, NDKTag } from "@nostr-dev-kit/ndk";
-import useStyles from "components/FollowButton/FollowButton.styles";
-import ProfileActionButton from "components/ProfileActionButton/ProfileActionButton";
 import { EllipsisIcon, FollowIcon, UnfollowIcon } from "icons/StemstrIcon";
 import { useNDK } from "ndk/NDKProvider";
 import useContactList from "ndk/hooks/useContactList";
-import { useMemo, useState } from "react";
+import { MouseEventHandler, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { selectAuthState, setIsNewlyCreatedUser } from "store/Auth";
 
 type FollowButtonProps = {
   pubkey: string;
+  children: (props: {
+    isFollowing: boolean;
+    enabled: boolean;
+    handleClick: MouseEventHandler;
+    Icon: (props: any) => JSX.Element;
+  }) => JSX.Element;
 };
 
-export default function FollowButton({ pubkey }: FollowButtonProps) {
-  const { classes, cx } = useStyles();
+export default function FollowButton({ pubkey, children }: FollowButtonProps) {
   const { ndk } = useNDK();
   const dispatch = useDispatch();
   const authState = useSelector(selectAuthState);
@@ -22,7 +25,8 @@ export default function FollowButton({ pubkey }: FollowButtonProps) {
     hexpubkey: authState.pk,
   });
   const isFollowing = useMemo(
-    () => contactList && contactList.tags.some((tag) => tag[1] === pubkey),
+    () =>
+      Boolean(contactList && contactList.tags.some((tag) => tag[1] === pubkey)),
     [contactList, pubkey]
   );
   const [confirmOverwriteModalOpened, setConfirmOverwriteModalOpened] =
@@ -61,10 +65,8 @@ export default function FollowButton({ pubkey }: FollowButtonProps) {
     });
   };
 
-  let text = isFollowing ? "Unfollow" : "Follow";
   let Icon = isFollowing ? UnfollowIcon : FollowIcon;
   if (!contactList) {
-    text = "";
     Icon = EllipsisIcon;
   }
 
@@ -96,20 +98,12 @@ export default function FollowButton({ pubkey }: FollowButtonProps) {
           </Group>
         </Stack>
       </Modal>
-      <ProfileActionButton
-        onClick={handleClick}
-        className={cx(classes.button, {
-          [classes.disabled]: !contactList,
-        })}
-        sx={{ minWidth: 101.41 }}
-      >
-        <Icon width={16} height={16} />
-        {text && (
-          <Text lh="normal" ml={8}>
-            {text}
-          </Text>
-        )}
-      </ProfileActionButton>
+      {children({
+        isFollowing,
+        enabled: Boolean(contactList),
+        handleClick,
+        Icon,
+      })}
     </>
   );
 }

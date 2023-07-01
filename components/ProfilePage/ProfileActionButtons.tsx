@@ -40,7 +40,34 @@ export default function ProfileActionButtons({
           </Text>
         </ProfileActionButton>
       )}
-      {!isCurrentUser && <FollowButton pubkey={pubkey} />}
+      {!isCurrentUser && <ProfileActionFollowButton pubkey={pubkey} />}
     </Group>
   );
 }
+
+const ProfileActionFollowButton = ({ pubkey }: { pubkey: string }) => {
+  const { classes, cx } = useStyles();
+
+  return (
+    <FollowButton pubkey={pubkey}>
+      {({ isFollowing, enabled, handleClick, Icon }) => {
+        return (
+          <ProfileActionButton
+            onClick={handleClick}
+            className={cx(classes.followButton, {
+              [classes.followButtonDisabled]: !enabled,
+            })}
+            sx={{ minWidth: 101.41 }}
+          >
+            <Icon width={16} height={16} />
+            {enabled && (
+              <Text lh="normal" ml={8}>
+                {isFollowing ? "Unfollow" : "Follow"}
+              </Text>
+            )}
+          </ProfileActionButton>
+        );
+      }}
+    </FollowButton>
+  );
+};
