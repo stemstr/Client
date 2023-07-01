@@ -14,10 +14,10 @@ import { CustomFonts } from "theme/CustomFonts";
 import { ApplicationContainer } from "components/ApplicationContainer/ApplicationContainer";
 import { NDKProvider } from "ndk/NDKProvider";
 import { reduxWrapper } from "store/Store";
-import { defaultRelayUrls } from "../constants";
+import { DEFAULT_RELAY_URLS } from "../constants";
 
 if (process.env.NEXT_PUBLIC_STEMSTR_RELAY)
-  defaultRelayUrls.push(process.env.NEXT_PUBLIC_STEMSTR_RELAY);
+  DEFAULT_RELAY_URLS.push(process.env.NEXT_PUBLIC_STEMSTR_RELAY);
 
 function App(props: AppProps & { colorScheme: ColorScheme }) {
   const { Component, pageProps } = props;
@@ -99,7 +99,7 @@ function App(props: AppProps & { colorScheme: ColorScheme }) {
           withNormalizeCSS
         >
           <CustomFonts />
-          <NDKProvider explicitRelayUrls={defaultRelayUrls}>
+          <NDKProvider explicitRelayUrls={DEFAULT_RELAY_URLS}>
             <NotificationsProvider>
               <ApplicationContainer>
                 <Component {...pageProps} />
