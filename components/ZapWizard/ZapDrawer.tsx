@@ -10,7 +10,7 @@ import ZapDrawerHandle from "./ZapDrawerHandle";
 import { useZapWizard } from "./ZapWizardProvider";
 import { noop } from "../../utils/common";
 
-const Drawer = withStopClickPropagation(MantineDrawer);
+const Drawer = withStopClickPropagation<any>(MantineDrawer);
 
 interface ZapDrawerProps {
   isOpen: boolean;
