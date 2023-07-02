@@ -61,7 +61,7 @@ export default function useFollowers({
         subscription.stop();
       }
     };
-  }, [enabled, setContactLists]);
+  }, [enabled]);
 
   useEffect(() => {
     let processEventBatchInterval: NodeJS.Timer;

@@ -1,5 +1,4 @@
-import { Tabs, useMantineTheme } from "@mantine/core";
-import { useMediaQuery } from "@mantine/hooks";
+import { Tabs } from "@mantine/core";
 import { NDKEvent } from "@nostr-dev-kit/ndk";
 import UserCard from "components/UserCard/UserCard";
 import { forwardRef, memo, useMemo } from "react";
@@ -11,10 +10,7 @@ type FollowersPanelProps = {
 };
 
 export default function FollowingPanel({ contactList }: FollowersPanelProps) {
-  const theme = useMantineTheme();
-  const isDesktop = useMediaQuery(`(min-width: ${theme.breakpoints.xs}px`);
-  const footerHeight = isDesktop ? 96 : 64;
-  const headerHeight = 107;
+  const headerHeight = 111;
   const GUTTER_HEIGHT = 16;
   const followingPubkeys: string[] = useMemo(
     () =>
@@ -66,7 +62,7 @@ export default function FollowingPanel({ contactList }: FollowersPanelProps) {
     <Tabs.Panel value="following" pl="md" pr="md">
       <AutoSizer
         style={{
-          height: `calc(100vh - ${headerHeight}px - ${footerHeight}px`,
+          height: `calc(100vh - ${headerHeight}px)`,
         }}
       >
         {({ height, width }: { height: number; width: number }) => (
