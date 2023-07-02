@@ -140,19 +140,18 @@ const stemstrTheme: MantineThemeOverride = {
       }),
     },
     Anchor: {
+      defaultProps: {
+        underline: false,
+      },
       styles: (theme, params: ButtonStylesParams) => ({
         root: {
           color: "inherit",
-          "&:hover": {
-            textDecoration: "none",
-          },
         },
       }),
     },
     Button: {
       styles: (theme, params: ButtonStylesParams) => ({
         root: {
-          // width: "100%",
           borderRadius: theme.radius.md,
           minHeight: 40,
           backgroundColor:
