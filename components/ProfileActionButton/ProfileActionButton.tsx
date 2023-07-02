@@ -14,6 +14,7 @@ export default function ProfileActionButton({
 }: React.PropsWithChildren<ProfileActionButtonProps>) {
   const { classes, cx } = useStyles();
 
+  // TODO: Convert this to a <Button />
   return (
     <Center onClick={onClick} className={cx(classes.root, className)} {...rest}>
       {children}

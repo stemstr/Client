@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { Group, Tabs, Text } from "@mantine/core";
+import { Group, Text } from "@mantine/core";
 import { Route } from "enums";
 import { useMemo } from "react";
 import { getPublicKeys } from "ndk/utils";
@@ -7,10 +7,7 @@ import Head from "next/head";
 import BackButton from "components/BackButton/BackButton";
 import { ChevronLeftIcon } from "icons/StemstrIcon";
 import { useUser } from "ndk/hooks/useUser";
-import FollowingPanel from "components/ContactsTray/FollowingPanel";
-import FollowersPanel from "components/ContactsTray/FollowersPanel";
-import RelaysPanel from "components/ContactsTray/RelaysPanel";
-import useContactList from "ndk/hooks/useContactList";
+import ContactsTray from "components/ContactsTray/ContactsTray";
 
 export default function Contacts() {
   const router = useRouter();
@@ -20,30 +17,28 @@ export default function Contacts() {
     [hexOrNpub]
   );
   const user = useUser(pk);
-  const { contactList } = useContactList({ hexpubkey: pk });
-  const followingCount = useMemo(
-    () => contactList?.tags.filter((tag) => tag[0] === "p").length,
-    [contactList]
-  );
 
-  const getTitle = (tab: string) => {
+  const getTitle = () => {
+    let title = "Stemstr";
     switch (tab) {
       case "following":
-        return "Following";
+        title += " - Following";
+        break;
       case "followers":
-        return "Followers";
+        title += " - Followers";
+        break;
       case "relays":
-        return "Relays";
+        title += " - Relays";
+        break;
     }
+    if (user?.profile?.displayName) title += ` - ${user.profile.displayName}`;
+    return title;
   };
 
   return (
     <>
       <Head>
-        <title>
-          Stemstr - {getTitle(tab as string)}
-          {user?.profile?.displayName && ` - ${user.profile.displayName}`}
-        </title>
+        <title>{getTitle()}</title>
       </Head>
       <Group p="md" spacing="sm" align="center" c="white">
         <BackButton defaultUrl={`${Route.User}/${npub}`}>
@@ -53,27 +48,7 @@ export default function Contacts() {
           {user?.profile?.displayName || `${npub.slice(0, 9)}...`}
         </Text>
       </Group>
-      <Tabs
-        value={tab as string}
-        onTabChange={(value) =>
-          router.replace(`${Route.User}/${npub}/contacts/${value}`)
-        }
-        styles={{
-          tab: {
-            paddingTop: 14,
-            paddingBottom: 14,
-          },
-        }}
-      >
-        <Tabs.List grow>
-          <Tabs.Tab value="following">Following {followingCount}</Tabs.Tab>
-          <Tabs.Tab value="followers">Followers</Tabs.Tab>
-          <Tabs.Tab value="relays">Relays</Tabs.Tab>
-        </Tabs.List>
-        <FollowingPanel contactList={contactList} />
-        <FollowersPanel />
-        <RelaysPanel />
-      </Tabs>
+      <ContactsTray pubkey={pk} tab={tab as string} />
     </>
   );
 }

@@ -101,11 +101,11 @@ const UserCardFollowButton = withStopClickPropagation<any>(
               pr={16}
               onClick={handleClick}
               className={cx(classes.followButton, {
-                [classes.followButtonDisabled]: !enabled,
                 [classes.unfollowButton]: isFollowing,
               })}
+              disabled={!enabled}
             >
-              <Icon width={16} height={16} />
+              <Icon color="white" width={16} height={16} />
               {enabled && isDesktop && (
                 <Text lh="normal" ml={8}>
                   {isFollowing ? "Following" : "Follow"}
