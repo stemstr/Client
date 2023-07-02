@@ -49,7 +49,7 @@ export const MentionLink = ({ nostrUri }: { nostrUri: string }) => {
       {anchorText}
     </Anchor>
   ) : (
-    <>nostrUri</>
+    <>{nostrUri}</>
   );
 };
 
