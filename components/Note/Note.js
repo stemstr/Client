@@ -1,17 +1,16 @@
-import { Box, Group, Stack, Text } from "@mantine/core";
+import { Box, Group, Stack, Space } from "@mantine/core";
 import React, { useMemo, useState } from "react";
-import { ZapIcon } from "../../icons/StemstrIcon";
 import NoteTags from "../NoteTags/NoteTags";
 import NoteHeader from "../NoteHeader/NoteHeader";
-import NoteAction from "../NoteAction/NoteAction";
 import NoteActionComment from "../NoteAction/NoteActionComment";
 import NoteActionLike from "../NoteAction/NoteActionLike";
 import SoundPlayer from "../SoundPlayer/SoundPlayer";
-import RepostButton from "../RepostButton/RepostButton";
 import useStyles from "./Note.styles";
 import { useRouter } from "next/router";
 import { useEvent } from "../../ndk/NDKEventProvider";
 import { Route } from "enums";
+import NoteActionZap from "../NoteActionZap/NoteActionZap";
+import NoteContent from "../NoteContent/NoteContent";
 
 const Note = ({ type }) => {
   const { event } = useEvent();
@@ -55,17 +54,13 @@ const Note = ({ type }) => {
             downloadStatus={downloadStatus}
             setDownloadStatus={setDownloadStatus}
           />
-          <Text c="white" sx={{ overflowWrap: "anywhere" }}>
-            {event.content}
-          </Text>
+          <NoteContent content={event.content} />
           <NoteTags classes={classes} />
           <Group position="apart">
             <NoteActionComment />
-            {/* <RepostButton note={note} /> */}
+            <Space w={59} />
             <NoteActionLike />
-            {/* <NoteAction>
-            <ZapIcon width={18} height={18} /> 4
-          </NoteAction> */}
+            <NoteActionZap />
           </Group>
         </Stack>
       </Group>

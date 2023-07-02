@@ -8,7 +8,7 @@ import { useMediaQuery } from "@mantine/hooks";
 import { EventProvider } from "../../ndk/NDKEventProvider";
 import { type NDKEvent, type NDKFilter } from "@nostr-dev-kit/ndk";
 import { useNDK } from "../../ndk/NDKProvider";
-import { fetchEvents } from "../../ndk/utils";
+import { extractMentionPubkeys, fetchEvents } from "../../ndk/utils";
 import usePreloadProfileCache from "../../ndk/hooks/usePreloadProfileCache";
 import { noop } from "../../utils/common";
 
@@ -81,11 +81,33 @@ export const Feed = memo(
         const rootEvents = events.filter(
           (event) => !event.tags.find((tag) => tag[0] === "e")
         );
+        let mentionedPubkeys: string[] = [];
 
-        setEvents(rootEvents);
-        onEventsLoaded(rootEvents);
+        rootEvents.forEach((event) => {
+          const mentionNpubs = extractMentionPubkeys(event);
+
+          if (mentionNpubs.length > 0) {
+            mentionedPubkeys.push(...mentionNpubs);
+          }
+        });
+
+        if (mentionedPubkeys.length > 0 && ndk) {
+          ndk
+            .fetchEvents({
+              kinds: [0],
+              authors: Array.from(new Set(mentionedPubkeys)).slice(0, 50),
+            })
+            .catch(console.error)
+            .finally(() => {
+              setEvents(rootEvents);
+              onEventsLoaded(rootEvents);
+            });
+        } else {
+          setEvents(rootEvents);
+          onEventsLoaded(rootEvents);
+        }
       },
-      [onEventsLoaded]
+      [onEventsLoaded, ndk]
     );
 
     // initial load

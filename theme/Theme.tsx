@@ -118,8 +118,11 @@ const stemstrTheme: MantineThemeOverride = {
         input: {
           backgroundColor: theme.colors.dark[7],
           borderColor: theme.colors.gray[4],
-          color: theme.colors.gray[2],
+          color: theme.white,
           minHeight: 40,
+          "&:disabled": {
+            backgroundColor: theme.colors.dark[7],
+          },
         },
       }),
     },
@@ -161,13 +164,21 @@ const stemstrTheme: MantineThemeOverride = {
               ? theme.colors.gray[6]
               : undefined,
           color: params.variant === "light" ? theme.white : undefined,
-          "&hover": {
-            backgroundColor:
-              params.variant === "default" ? theme.colors.purple[7] : undefined,
+          "@media (hover: hover)": {
+            "&hover": {
+              backgroundColor:
+                params.variant === "default"
+                  ? theme.colors.purple[7]
+                  : undefined,
+            },
           },
-          ":disabled": {
+          "&:disabled": {
             backgroundColor:
-              params.variant === "default" ? theme.colors.gray[4] : undefined,
+              params.variant === "filled" ? theme.colors.gray[4] : undefined,
+            color:
+              params.variant === "filled"
+                ? theme.fn.rgba(theme.colors.gray[1], 0.3)
+                : undefined,
           },
         },
         label: {

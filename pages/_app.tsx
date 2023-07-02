@@ -14,24 +14,10 @@ import { CustomFonts } from "theme/CustomFonts";
 import { ApplicationContainer } from "components/ApplicationContainer/ApplicationContainer";
 import { NDKProvider } from "ndk/NDKProvider";
 import { reduxWrapper } from "store/Store";
+import { DEFAULT_RELAY_URLS } from "../constants";
 
-const relayUrls: string[] = [
-  // // paid relays
-  "wss://eden.nostr.land",
-  "wss://puravida.nostr.land",
-  "wss://nostr.milou.lol",
-  "wss://nostr.wine",
-  // // public relays
-  "wss://relay.damus.io",
-  "wss://relay.snort.social",
-  "wss://nos.lol",
-  "wss://relay.current.fyi",
-  // specialized relays
-  "wss://purplepag.es",
-  "wss://filter.nostr.wine",
-];
 if (process.env.NEXT_PUBLIC_STEMSTR_RELAY)
-  relayUrls.push(process.env.NEXT_PUBLIC_STEMSTR_RELAY);
+  DEFAULT_RELAY_URLS.push(process.env.NEXT_PUBLIC_STEMSTR_RELAY);
 
 function App(props: AppProps & { colorScheme: ColorScheme }) {
   const { Component, pageProps } = props;
@@ -113,7 +99,7 @@ function App(props: AppProps & { colorScheme: ColorScheme }) {
           withNormalizeCSS
         >
           <CustomFonts />
-          <NDKProvider explicitRelayUrls={relayUrls}>
+          <NDKProvider explicitRelayUrls={DEFAULT_RELAY_URLS}>
             <NotificationsProvider>
               <ApplicationContainer>
                 <Component {...pageProps} />
