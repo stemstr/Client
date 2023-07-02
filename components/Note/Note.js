@@ -1,4 +1,4 @@
-import { Box, Group, Stack, Text, Space } from "@mantine/core";
+import { Box, Group, Stack, Space } from "@mantine/core";
 import React, { useMemo, useState } from "react";
 import NoteTags from "../NoteTags/NoteTags";
 import NoteHeader from "../NoteHeader/NoteHeader";
@@ -9,6 +9,7 @@ import useStyles from "./Note.styles";
 import { useRouter } from "next/router";
 import { useEvent } from "../../ndk/NDKEventProvider";
 import NoteActionZap from "../NoteActionZap/NoteActionZap";
+import NoteContent from "../NoteContent/NoteContent";
 
 const Note = ({ type }) => {
   const { event } = useEvent();
@@ -49,9 +50,7 @@ const Note = ({ type }) => {
             downloadStatus={downloadStatus}
             setDownloadStatus={setDownloadStatus}
           />
-          <Text c="white" sx={{ overflowWrap: "anywhere" }}>
-            {event.content}
-          </Text>
+          <NoteContent content={event.content} />
           <NoteTags classes={classes} />
           <Group position="apart">
             <NoteActionComment />

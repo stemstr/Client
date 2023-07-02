@@ -18,7 +18,7 @@ import {
 } from "nostr-tools";
 import axios from "axios";
 import { bech32 } from "@scure/base";
-import { defaultRelayUrls } from "../constants";
+import { DEFAULT_RELAY_URLS, NPUB_NOSTR_URI_REGEX } from "../constants";
 
 interface ParsedEventTags {
   root?: NDKTag;
@@ -170,9 +170,12 @@ export const getPublicKeys = (
   return publicKeys;
 };
 
-// TODO: Write this function fr
 export const isNpub = (hexOrNpub: string): boolean => {
-  return hexOrNpub.startsWith("npub1");
+  try {
+    return nip19.decode(hexOrNpub).type === "npub";
+  } catch {
+    return false;
+  }
 };
 
 // TODO: Write this function fr
@@ -406,8 +409,8 @@ export const createZapRequest = async ({
     filter: "writable",
   });
   const relays = userRelayUrls
-    ? [...userRelayUrls, ...defaultRelayUrls]
-    : defaultRelayUrls;
+    ? [...userRelayUrls, ...DEFAULT_RELAY_URLS]
+    : DEFAULT_RELAY_URLS;
   const zapRequest = nip57.makeZapRequest({
     profile: zappedUser.hexpubkey(),
 
@@ -445,4 +448,39 @@ export const createZapRequest = async ({
   );
 
   return { invoice: data.pr, relays };
+};
+
+const extractMentionNpubs = (event: NDKEvent) => {
+  return (event.content.match(NPUB_NOSTR_URI_REGEX) ?? []).map((t) =>
+    t.replace(/^nostr:/, "")
+  );
+};
+
+export const convertNpubToHex = (npub: string) => {
+  try {
+    const { type, data } = nip19.decode(npub.replace(/^nostr:/, ""));
+
+    if (type === "npub" && typeof data === "string") {
+      return data;
+    } else {
+      throw new Error();
+    }
+  } catch {
+    throw new Error("Invalid npub");
+  }
+};
+
+export const extractMentionPubkeys = (event: NDKEvent) => {
+  const npubs = extractMentionNpubs(event);
+  const pubkeys: string[] = [];
+
+  npubs.forEach((npub) => {
+    try {
+      pubkeys.push(convertNpubToHex(npub));
+    } catch {
+      // fail silently
+    }
+  });
+
+  return pubkeys;
 };

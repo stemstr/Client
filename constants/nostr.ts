@@ -1,4 +1,4 @@
-export const defaultRelayUrls: string[] = [
+export const DEFAULT_RELAY_URLS: string[] = [
   // // paid relays
   "wss://eden.nostr.land",
   "wss://puravida.nostr.land",
@@ -11,3 +11,6 @@ export const defaultRelayUrls: string[] = [
   "wss://relay.current.fyi",
   "wss://relay.nostr.band",
 ];
+
+export const NPUB_NOSTR_URI_REGEX =
+  /(nostr:npub1[023456789acdefghjklmnpqrstuvwxyz]{58})/g;
