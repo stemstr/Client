@@ -28,6 +28,9 @@ export default function useNip05(
             } else {
               dispatch(setNip05Status({ key, value: Nip05Status.Invalid }));
             }
+          })
+          .catch((err) => {
+            dispatch(setNip05Status({ key, value: Nip05Status.Invalid }));
           });
       } else {
         dispatch(setNip05Status({ key, value: Nip05Status.Invalid }));

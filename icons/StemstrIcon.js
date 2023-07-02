@@ -44,6 +44,7 @@ import Key from "./Line icons/Security/key-01.svg";
 import Lock from "./Line icons/Security/lock-01.svg";
 
 import Follow from "./Line icons/Users/user-right-01.svg";
+import Following from "./Line icons/Users/user-check-01.svg";
 import Profile from "./Line icons/Users/user-circle.svg";
 import Unfollow from "./Line icons/Users/user-left-01.svg";
 
@@ -389,6 +390,14 @@ export const LockIcon = (props) => {
   return (
     <StemstrIcon>
       <Lock {...props} />
+    </StemstrIcon>
+  );
+};
+
+export const FollowingIcon = (props) => {
+  return (
+    <StemstrIcon>
+      <Following {...props} />
     </StemstrIcon>
   );
 };

@@ -8,6 +8,7 @@ import SoundPlayer from "../SoundPlayer/SoundPlayer";
 import useStyles from "./Note.styles";
 import { useRouter } from "next/router";
 import { useEvent } from "../../ndk/NDKEventProvider";
+import { Route } from "enums";
 import NoteActionZap from "../NoteActionZap/NoteActionZap";
 import NoteContent from "../NoteContent/NoteContent";
 
@@ -23,7 +24,10 @@ const Note = ({ type }) => {
   }, [event]);
 
   const handleClick = () => {
-    router.push(`/thread/${event.id}`);
+    router.push({
+      pathname: Route.Thread,
+      query: { noteId: event.id },
+    });
   };
 
   return (

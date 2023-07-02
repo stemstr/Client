@@ -87,7 +87,10 @@ export default function NotificationView(props: NotificationViewProps) {
 
   const handleClick = () => {
     if (notification.referencedEventId) {
-      router.push(`${Route.Thread}/${notification.referencedEventId}`);
+      router.push({
+        pathname: Route.Thread,
+        query: { noteId: notification.referencedEventId },
+      });
     }
   };
 

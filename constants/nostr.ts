@@ -10,6 +10,9 @@ export const DEFAULT_RELAY_URLS: string[] = [
   "wss://nos.lol",
   "wss://relay.current.fyi",
   "wss://relay.nostr.band",
+  // specialized relays
+  "wss://purplepag.es",
+  "wss://filter.nostr.wine",
 ];
 
 export const NPUB_NOSTR_URI_REGEX =

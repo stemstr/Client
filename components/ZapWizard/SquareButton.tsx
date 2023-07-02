@@ -47,4 +47,4 @@ const SquareButton = ({
   );
 };
 
-export default withStopClickPropagation(SquareButton);
+export default withStopClickPropagation<any>(SquareButton);

@@ -1,9 +1,7 @@
 import { Footer, Group } from "@mantine/core";
-import { useDispatch } from "react-redux";
 import { useRouter } from "next/router";
 
 import { Route } from "enums";
-import { openSheet } from "store/Sheets";
 
 import { CompassIcon, HomeIcon, BellIcon } from "icons/StemstrIcon";
 import BottomNavigationItem from "components/BottomNavigationItem/BottomNavigationItem";
@@ -14,17 +12,15 @@ import useStyles from "./BottomNavigation.styles";
 export default function BottomNavigation() {
   const { classes } = useStyles();
   const { pathname } = useRouter();
-  const dispatch = useDispatch();
-
-  const openPostSheet = () => {
-    dispatch(openSheet({ sheetKey: "postSheet" }));
-  };
 
   if (
-    [Route.Login, Route.Signup, Route.EditProfile].includes(
-      pathname as Route
-    ) ||
-    pathname.includes(Route.Thread)
+    [
+      Route.Login,
+      Route.Signup,
+      Route.EditProfile,
+      Route.Contacts,
+      Route.Thread,
+    ].includes(pathname as Route)
   )
     return null;
 

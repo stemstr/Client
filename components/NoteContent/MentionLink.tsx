@@ -43,8 +43,8 @@ export const MentionLink = ({ nostrUri }: { nostrUri: string }) => {
     <Anchor
       component={Link}
       href={`/user/${pubkey}`}
-      underline={false}
       onClick={(e) => e.stopPropagation()}
+      c="purple.4"
     >
       {anchorText}
     </Anchor>
