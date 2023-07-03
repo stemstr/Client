@@ -22,7 +22,7 @@ import {
   setIsZappedByCurrentUser,
 } from "../../store/Notes";
 import { selectAuthState } from "../../store/Auth";
-import { defaultRelayUrls } from "../../constants";
+import { DEFAULT_RELAY_URLS } from "../../constants";
 import { AppState } from "../../store/Store";
 
 const NoteActionRow = () => {
@@ -97,7 +97,7 @@ const NoteActionRow = () => {
     }
 
     const relaySet = createRelaySet(
-      [...defaultRelayUrls, process.env.NEXT_PUBLIC_STEMSTR_RELAY as string],
+      [...DEFAULT_RELAY_URLS, process.env.NEXT_PUBLIC_STEMSTR_RELAY as string],
       ndk
     );
 
