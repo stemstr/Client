@@ -426,7 +426,7 @@ export const createZapRequest = async ({
     event: null,
     amount: normalizedAmount,
     comment: comment ?? "",
-    relays,
+    relays: Array.from(new Set(relays)),
   });
 
   // add the event tag if it exists; this supports both 'e' and 'a' tags
