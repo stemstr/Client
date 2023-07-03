@@ -4,8 +4,12 @@ import NoteActionComment from "../NoteAction/NoteActionComment";
 import NoteActionLike from "../NoteAction/NoteActionLike";
 import NoteActionZap from "../NoteActionZap/NoteActionZap";
 import { useEvent } from "../../ndk/NDKEventProvider";
-import { Kind, nip57 } from "nostr-tools";
-import { NDKEvent, zapInvoiceFromEvent } from "@nostr-dev-kit/ndk";
+import { Kind } from "nostr-tools";
+import {
+  NDKEvent,
+  NDKZapInvoice,
+  zapInvoiceFromEvent,
+} from "@nostr-dev-kit/ndk";
 import { createRelaySet, fetchEvents } from "../../ndk/utils";
 import { useNDK } from "../../ndk/NDKProvider";
 import { useDispatch, useSelector } from "react-redux";
@@ -15,6 +19,7 @@ import {
   setCommentCount,
   setZapsAmountTotal,
   selectNoteState,
+  setIsZappedByCurrentUser,
 } from "../../store/Notes";
 import { selectAuthState } from "../../store/Auth";
 import { defaultRelayUrls } from "../../constants";
@@ -42,17 +47,11 @@ const NoteActionRow = () => {
       const newCommentCount = events.filter(({ kind, content }) =>
         [Kind.Text, 1808].includes(kind as Kind)
       ).length;
+      const validZapInvoices = events
+        .map(zapInvoiceFromEvent)
+        .filter((zi) => zi !== null) as NDKZapInvoice[];
       const getZapsAmountTotal = () => {
-        const validZaps = events.filter(
-          (event) =>
-            event.kind === Kind.Zap &&
-            nip57.validateZapRequest(
-              event.getMatchingTags("description")[0][1]
-            ) === null
-        );
-
-        return validZaps.reduce((acc, event) => {
-          const amountInMillisats = zapInvoiceFromEvent(event)?.amount;
+        return validZapInvoices.reduce((acc, { amount: amountInMillisats }) => {
           const amount = amountInMillisats ? amountInMillisats / 1000 : 0;
 
           return acc + amount;
@@ -80,6 +79,14 @@ const NoteActionRow = () => {
       );
       dispatch(setCommentCount({ id: noteId, value: newCommentCount }));
       dispatch(setZapsAmountTotal({ id: noteId, value: newZapsAmountTotal }));
+      dispatch(
+        setIsZappedByCurrentUser({
+          id: noteId,
+          value: Boolean(
+            validZapInvoices.find(({ zappee }) => zappee === auth.pk)
+          ),
+        })
+      );
     },
     [auth.pk, dispatch, noteId, commentCount, reactionCount, zapsAmountTotal]
   );

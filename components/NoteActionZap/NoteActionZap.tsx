@@ -16,8 +16,8 @@ import { selectNoteState } from "../../store/Notes";
 const NoteActionContentWithZapWizard = () => {
   const { start } = useZapWizard();
   const { event } = useEvent();
-  const { zapsAmountTotal } = useSelector((state: AppState) =>
-    selectNoteState(state, event.id)
+  const { zapsAmountTotal, isZappedByCurrentUser } = useSelector(
+    (state: AppState) => selectNoteState(state, event.id)
   );
   const formattedZapsTotal = (() => {
     const formatNumber = (num: number) => num.toFixed(1).replace(/\.0$/, "");
@@ -39,7 +39,16 @@ const NoteActionContentWithZapWizard = () => {
 
   return (
     <NoteAction onClick={start}>
-      <Group position="center" spacing={6} noWrap>
+      <Group
+        position="center"
+        spacing={6}
+        sx={(theme) => ({
+          color: isZappedByCurrentUser
+            ? theme.colors.orange[5]
+            : theme.colors.gray[1],
+        })}
+        noWrap
+      >
         <ZapIcon width={18} height={18} />
         {formattedZapsTotal && <Text lh="normal">{formattedZapsTotal}</Text>}
       </Group>
