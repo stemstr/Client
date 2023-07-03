@@ -412,13 +412,13 @@ export const createZapRequest = async ({
         filter: "writable",
       })
     : null;
+  const defaultRelays = [
+    ...DEFAULT_RELAY_URLS,
+    process.env.NEXT_PUBLIC_STEMSTR_RELAY as string,
+  ];
   const relays = currentUserRelayUrls
-    ? [
-        ...currentUserRelayUrls,
-        ...DEFAULT_RELAY_URLS,
-        process.env.NEXT_PUBLIC_STEMSTR_RELAY as string,
-      ]
-    : DEFAULT_RELAY_URLS;
+    ? [...currentUserRelayUrls, ...defaultRelays]
+    : defaultRelays;
   const zapRequest = nip57.makeZapRequest({
     profile: zappedUser.hexpubkey(),
 
