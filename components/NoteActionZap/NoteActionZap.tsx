@@ -13,11 +13,10 @@ import { useSelector } from "react-redux";
 import { AppState } from "../../store/Store";
 import { selectNoteState } from "../../store/Notes";
 
-const NoteActionContentWithZapWizard = () => {
-  const { start } = useZapWizard();
+const ZapsAmountTotal = () => {
   const { event } = useEvent();
-  const { zapsAmountTotal, isZappedByCurrentUser } = useSelector(
-    (state: AppState) => selectNoteState(state, event.id)
+  const { zapsAmountTotal } = useSelector((state: AppState) =>
+    selectNoteState(state, event.id)
   );
   const formattedZapsTotal = (() => {
     const formatNumber = (num: number) => num.toFixed(1).replace(/\.0$/, "");
@@ -37,6 +36,18 @@ const NoteActionContentWithZapWizard = () => {
     return formatNumber(zapsAmountTotal);
   })();
 
+  return formattedZapsTotal ? (
+    <Text lh="normal">{formattedZapsTotal}</Text>
+  ) : null;
+};
+
+const NoteActionContentWithZapWizard = () => {
+  const { start } = useZapWizard();
+  const { event } = useEvent();
+  const { isZappedByCurrentUser } = useSelector((state: AppState) =>
+    selectNoteState(state, event.id)
+  );
+
   return (
     <NoteAction onClick={start}>
       <Group
@@ -50,7 +61,7 @@ const NoteActionContentWithZapWizard = () => {
         noWrap
       >
         <ZapIcon width={18} height={18} />
-        {formattedZapsTotal && <Text lh="normal">{formattedZapsTotal}</Text>}
+        <ZapsAmountTotal />
       </Group>
       <ZapWizard />
     </NoteAction>
