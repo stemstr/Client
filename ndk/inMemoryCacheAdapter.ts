@@ -31,7 +31,7 @@ export const getCachedUser = (pubkey?: string, ndk?: NDK) => {
 
   if (ndk && cachedProfile) {
     const ndkEvent = new NDKEvent(ndk, cachedProfile);
-    const ndkUser = ndkEvent.author();
+    const ndkUser = ndkEvent.author;
 
     ndkUser.profile = mergeEvent(ndkEvent, {});
 
