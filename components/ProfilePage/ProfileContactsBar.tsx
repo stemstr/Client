@@ -25,7 +25,7 @@ export default function ContactsBar({ pubkey }: ContactsBarProps) {
 
 const FollowingButton = ({ pubkey }: { pubkey: string }) => {
   const { npub } = useMemo(() => getPublicKeys(pubkey as string), [pubkey]);
-  const { contactList } = useContactList({ hexpubkey: pubkey });
+  const { contactList } = useContactList({ pubkey: pubkey });
   const followingCount = useMemo(
     () => contactList?.tags.filter((tag) => tag[0] === "p").length,
     [contactList]

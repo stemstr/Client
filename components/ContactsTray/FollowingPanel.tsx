@@ -3,11 +3,11 @@ import { NDKEvent } from "@nostr-dev-kit/ndk";
 import { useMemo } from "react";
 import UserFeed from "./UserFeed";
 
-type FollowersPanelProps = {
+type FollowingPanelProps = {
   contactList?: NDKEvent;
 };
 
-export default function FollowingPanel({ contactList }: FollowersPanelProps) {
+export default function FollowingPanel({ contactList }: FollowingPanelProps) {
   const headerHeight = 111;
   const height = `calc(100vh - ${headerHeight}px)`;
   const followingPubkeys: string[] = useMemo(

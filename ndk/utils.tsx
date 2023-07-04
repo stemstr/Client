@@ -42,7 +42,6 @@ export const parseEventTags = (event: NDKEvent) => {
         result.root = eTags[0];
       }
       if (eTags.length > 1) {
-        console.log(eTags);
         result.reply = eTags[eTags.length - 1];
       }
       if (eTags.length > 2) {
