@@ -16,12 +16,16 @@ import ZapDrawer from "./ZapDrawer";
 import { createRelaySet, getNormalizedName } from "../../ndk/utils";
 import { useUser } from "../../ndk/hooks/useUser";
 import DrawerCloseButton from "./CloseButton";
-import { useSelector } from "react-redux";
-import { selectAuthState } from "../../store/Auth";
+import { useDispatch } from "react-redux";
 import { ArrowRightIcon, ProfileIcon } from "../../icons/StemstrIcon";
 import { useZapWizard } from "./ZapWizardProvider";
 import { useNDK } from "../../ndk/NDKProvider";
 import { NDKEvent } from "@nostr-dev-kit/ndk";
+import {
+  setIsZappedByCurrentUser,
+  updateZapsAmountTotal,
+} from "../../store/Notes";
+import useAuth from "../../hooks/useAuth";
 
 interface InvoiceDrawerProps {
   isOpen: boolean;
@@ -40,10 +44,11 @@ const InvoiceDrawer = ({
   invoice,
   zapReceiptRelays,
 }: InvoiceDrawerProps) => {
+  const dispatch = useDispatch();
   const { ndk } = useNDK();
-  const { zapRecipient, willShowCloseButton } = useZapWizard();
+  const { zapRecipient, willShowCloseButton, zappedEvent } = useZapWizard();
   const zapRecipientHexPubkey = zapRecipient.hexpubkey();
-  const authState = useSelector(selectAuthState);
+  const { authState, isAuthenticated } = useAuth();
   const zapper = useUser(authState.pk);
   const [hasDetectedZapReceipt, setHasDetectedZapReceipt] = useState(false);
   const [willDisplayCopiedMessage, setWillDisplayCopiedMessage] =
@@ -154,6 +159,18 @@ const InvoiceDrawer = ({
 
     subscription.on("event", (event: NDKEvent) => {
       if (event.tags.find((t) => t[0] === "bolt11" && t[1] === invoice)) {
+        if (zappedEvent) {
+          dispatch(
+            updateZapsAmountTotal({ id: zappedEvent.id, value: amount })
+          );
+        }
+
+        if (isAuthenticated && zappedEvent) {
+          dispatch(
+            setIsZappedByCurrentUser({ id: zappedEvent.id, value: true })
+          );
+        }
+
         setHasDetectedZapReceipt(true);
         subscription.stop();
       }
@@ -164,7 +181,17 @@ const InvoiceDrawer = ({
         subscription.stop();
       }
     };
-  }, [isOpen, zapReceiptRelays.length, ndk, invoice, zapRecipientHexPubkey]);
+  }, [
+    isOpen,
+    zapReceiptRelays.length,
+    ndk,
+    invoice,
+    zapRecipientHexPubkey,
+    dispatch,
+    amount,
+    zappedEvent,
+    isAuthenticated,
+  ]);
 
   return (
     <ZapDrawer isOpen={isOpen} onClose={handleOnClose} size={getSize()}>

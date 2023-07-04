@@ -382,6 +382,7 @@ interface CreateZapRequestParams {
   zappedEvent?: NDKEvent;
   ndk: NDK;
   isAnonymous?: boolean;
+  currentUser?: NDKUser;
 }
 
 export const createZapRequest = async ({
@@ -392,6 +393,7 @@ export const createZapRequest = async ({
   zappedEvent,
   ndk,
   isAnonymous,
+  currentUser,
 }: CreateZapRequestParams) => {
   const zapEndpoint = await getZapEndpoint(zappedUser.profile, zappedEvent);
 
@@ -405,12 +407,18 @@ export const createZapRequest = async ({
     throw new Error("No zap endpoint found");
   }
 
-  const userRelayUrls = await getUserRelayUrls(zappedUser, {
-    filter: "writable",
-  });
-  const relays = userRelayUrls
-    ? [...userRelayUrls, ...DEFAULT_RELAY_URLS]
-    : DEFAULT_RELAY_URLS;
+  const currentUserRelayUrls = currentUser
+    ? await getUserRelayUrls(currentUser, {
+        filter: "writable",
+      })
+    : null;
+  const defaultRelays = [
+    ...DEFAULT_RELAY_URLS,
+    process.env.NEXT_PUBLIC_STEMSTR_RELAY as string,
+  ];
+  const relays = currentUserRelayUrls
+    ? [...currentUserRelayUrls, ...defaultRelays]
+    : defaultRelays;
   const zapRequest = nip57.makeZapRequest({
     profile: zappedUser.hexpubkey(),
 
@@ -418,7 +426,7 @@ export const createZapRequest = async ({
     event: null,
     amount: normalizedAmount,
     comment: comment ?? "",
-    relays,
+    relays: Array.from(new Set(relays)),
   });
 
   // add the event tag if it exists; this supports both 'e' and 'a' tags

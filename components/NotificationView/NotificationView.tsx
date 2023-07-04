@@ -40,11 +40,9 @@ export default function NotificationView(props: NotificationViewProps) {
 
   useEffect(() => {
     if (ndk && notification.referencedEventId) {
-      ndk
-        ?.fetchEvent({ ids: [notification.referencedEventId] })
-        .then((event) => {
-          setReferencedEvent(event || undefined);
-        });
+      ndk?.fetchEvent(notification.referencedEventId).then((event) => {
+        setReferencedEvent(event || undefined);
+      });
     }
   }, [ndk, notification.referencedEventId, setReferencedEvent]);
 

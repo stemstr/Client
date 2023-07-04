@@ -31,7 +31,7 @@
     "@mantine/notifications": "5.10.2",
     "@mantine/prism": "5.10.2",
     "@next/bundle-analyzer": "^13.1.6",
-    "@nostr-dev-kit/ndk": "^0.3.27",
+    "@nostr-dev-kit/ndk": "^0.5.1",
     "@react-hook/resize-observer": "^1.2.6",
     "@reduxjs/toolkit": "^1.9.2",
     "@scure/base": "^1.1.1",

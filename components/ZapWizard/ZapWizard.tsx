@@ -6,10 +6,12 @@ import { createZapRequest } from "../../ndk/utils";
 import { useNDK } from "../../ndk/NDKProvider";
 import useAuth from "../../hooks/useAuth";
 import { useZapWizard } from "./ZapWizardProvider";
+import { useUser } from "../../ndk/hooks/useUser";
 
 export const ZapWizard = () => {
   const { ndk } = useNDK();
-  const { isAuthenticated } = useAuth();
+  const { authState, isAuthenticated } = useAuth();
+  const currentUser = useUser(authState.pk);
   const [invoice, setInvoice] = useState<string | null>(null);
   const [zapReceiptRelays, setZapReceiptRelays] = useState<string[]>([]);
   const amount = useRef<number>(0);
@@ -26,6 +28,7 @@ export const ZapWizard = () => {
         zappedEvent,
         ndk: ndk!,
         isAnonymous: !isAuthenticated,
+        currentUser,
       });
 
       setInvoice(invoice);

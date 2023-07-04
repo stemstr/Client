@@ -8,7 +8,7 @@ export default function usePreloadProfileCache(pubkeys: string[]) {
   const dedupedPubkeysHash = pubkeys.join();
 
   useEffect(() => {
-    if (!ndk || dedupedPubkeysHash.length === 0) {
+    if (!ndk || dedupedPubkeysHash.length === 0 || hasAttemptedPreload) {
       return;
     }
 
@@ -16,7 +16,7 @@ export default function usePreloadProfileCache(pubkeys: string[]) {
       .fetchEvents({ kinds: [0], authors: dedupedPubkeys })
       .catch(console.error)
       .finally(() => setHasAttemptedPreload(true));
-  }, [ndk, dedupedPubkeysHash]);
+  }, [ndk, dedupedPubkeysHash, hasAttemptedPreload]);
 
   return hasAttemptedPreload;
 }

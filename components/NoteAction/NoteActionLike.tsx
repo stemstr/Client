@@ -1,26 +1,27 @@
-import { useEffect, useState } from "react";
 import { Group, Text } from "@mantine/core";
 import { motion, useAnimation } from "framer-motion";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Kind } from "nostr-tools";
 import { HeartIcon } from "../../icons/StemstrIcon";
 import NoteAction from "./NoteAction";
-import { selectAuthState } from "store/Auth";
 import { formatETag, parseEventTags } from "../../ndk/utils";
 import { NDKEvent } from "@nostr-dev-kit/ndk";
 import { useNDK } from "../../ndk/NDKProvider";
 import { useEvent } from "../../ndk/NDKEventProvider";
-import { useNoteReactions } from "../../ndk/hooks/useNoteReactions";
 import useAuth from "hooks/useAuth";
+import { currentUserLikedNote, selectNoteState } from "../../store/Notes";
+import { AppState } from "../../store/Store";
 
-const NoteActionLike = ({ onClick }: any) => {
+const NoteActionLike = () => {
+  const dispatch = useDispatch();
   const { ndk } = useNDK();
   const { event } = useEvent();
+  const noteId = event.id;
   const { guardAuth } = useAuth();
-  const reactions = useNoteReactions();
   const controls = useAnimation();
-  const auth = useSelector(selectAuthState);
-  const [likedByCurrentUser, setLikedByCurrentUser] = useState(false);
+  const { isLikedByCurrentUser, reactionCount } = useSelector(
+    (state: AppState) => selectNoteState(state, noteId)
+  );
 
   const handleClickLike = () => {
     if (!guardAuth()) return;
@@ -47,7 +48,7 @@ const NoteActionLike = ({ onClick }: any) => {
     reactionEvent
       .publish()
       .then(() => {
-        setLikedByCurrentUser(true);
+        dispatch(currentUserLikedNote(noteId));
         controls.start({
           scale: [1, 1.25, 1],
           transition: {
@@ -59,14 +60,6 @@ const NoteActionLike = ({ onClick }: any) => {
       .catch(console.error);
   };
 
-  useEffect(() => {
-    if (!likedByCurrentUser) {
-      if (reactions.find((ev) => ev.pubkey === auth.pk)) {
-        setLikedByCurrentUser(true);
-      }
-    }
-  }, [reactions.length, auth.pk]);
-
   return (
     <NoteAction onClick={handleClickLike}>
       <Group
@@ -74,15 +67,16 @@ const NoteActionLike = ({ onClick }: any) => {
         spacing={6}
         sx={(theme) => ({
           transition: "color 1s ease",
-          color: likedByCurrentUser
+          color: isLikedByCurrentUser
             ? theme.colors.red[5]
             : theme.colors.gray[1],
         })}
+        noWrap
       >
         <motion.span animate={controls} style={{ lineHeight: 0 }}>
           <HeartIcon width={18} height={18} />
         </motion.span>{" "}
-        <Text lh="normal">{reactions.length > 0 ? reactions.length : ""}</Text>
+        {reactionCount > 0 && <Text lh="normal">{reactionCount}</Text>}
       </Group>
     </NoteAction>
   );

@@ -20,15 +20,7 @@ interface ZapWizardContextProps {
   willShowCloseButton: boolean;
 }
 
-const ZapWizardContext = createContext<ZapWizardContextProps>({
-  step: "idle",
-  setStep: () => {},
-  start: () => {},
-  end: () => {},
-  zapRecipient: {} as NDKUser,
-  verticalSectionGap: 21,
-  willShowCloseButton: true,
-});
+const ZapWizardContext = createContext<ZapWizardContextProps | null>(null);
 
 export const ZapWizardProvider = ({
   zapRecipient,
@@ -58,7 +50,7 @@ export const ZapWizardProvider = ({
 
 export const useZapWizard = () => {
   const context = useContext(ZapWizardContext);
-  if (context === undefined) {
+  if (context === null) {
     throw new Error("useStep must be used within an ZapWizardProvider");
   }
   return context;
