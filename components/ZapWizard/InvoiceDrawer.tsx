@@ -47,6 +47,8 @@ const InvoiceDrawer = ({
   const dispatch = useDispatch();
   const { ndk } = useNDK();
   const { zapRecipient, willShowCloseButton, zappedEvent } = useZapWizard();
+  const [isPayWithWalletButtonLoading, setIsPayWithWalletButtonLoading] =
+    useState(false);
   const zapRecipientHexPubkey = zapRecipient.hexpubkey();
   const { authState, isAuthenticated } = useAuth();
   const zapper = useUser(authState.pk);
@@ -56,6 +58,7 @@ const InvoiceDrawer = ({
   const handleOnClose = useCallback(() => {
     setWillDisplayCopiedMessage(false);
     setHasDetectedZapReceipt(false);
+    setIsPayWithWalletButtonLoading(false);
     onClose();
   }, [onClose]);
   const InitialHeader = () => {
@@ -81,6 +84,25 @@ const InvoiceDrawer = ({
     );
   };
   const Buttons = () => {
+    const willShowPayWithWalletButton = !isDesktop || window.webln;
+    const handlePayWithWalletButtonClick = async () => {
+      setIsPayWithWalletButtonLoading(true);
+
+      if (window.webln) {
+        try {
+          await window.webln.enable();
+          await window.webln.sendPayment(invoice);
+          setHasDetectedZapReceipt(true);
+        } catch (error) {
+          console.error(error);
+        }
+
+        setIsPayWithWalletButtonLoading(false);
+      } else if (!isDesktop) {
+        window.location.href = `lightning:${invoice}`;
+      }
+    };
+
     return (
       <Flex gap={16}>
         <CopyButton value={invoice}>
@@ -101,10 +123,12 @@ const InvoiceDrawer = ({
             </Button>
           )}
         </CopyButton>
-        {!isDesktop && (
+        {willShowPayWithWalletButton && (
           <Button
-            onClick={() => (window.location.href = `lightning:${invoice}`)}
+            onClick={handlePayWithWalletButtonClick}
             fullWidth
+            loading={isPayWithWalletButtonLoading}
+            disabled={isPayWithWalletButtonLoading}
           >
             Pay with wallet
           </Button>
@@ -172,6 +196,7 @@ const InvoiceDrawer = ({
         }
 
         setHasDetectedZapReceipt(true);
+        setIsPayWithWalletButtonLoading(false);
         subscription.stop();
       }
     });
