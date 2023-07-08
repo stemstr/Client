@@ -4858,6 +4858,11 @@
     "@webassemblyjs/wast-parser" "1.9.0"
     "@xtuc/long" "4.2.2"
 
+"@webbtc/webln-types@^1.0.12":
+  version "1.0.12"
+  resolved "https://registry.yarnpkg.com/@webbtc/webln-types/-/webln-types-1.0.12.tgz#ddb5f0dbaa0a853ef21a4f36a603199d43cc8682"
+  integrity sha512-uCsJt78RaW/UYDXwAjjs6aj7fiXyozwMknWvPROCaGMx+rXoPddtDjMIMbMFLvUJVQmnyzpqGkx/0jBIvVaVvA==
+
 "@xtuc/ieee754@^1.2.0":
   version "1.2.0"
   resolved "https://registry.npmjs.org/@xtuc/ieee754/-/ieee754-1.2.0.tgz"
