@@ -9,6 +9,7 @@ import { Kind } from "nostr-tools";
 const eventsCache: Record<string, Record<string, NostrEvent>> = {};
 
 const profileEventsCache: Record<string, NostrEvent> = {};
+const contactListEventsCache: Record<string, NostrEvent> = {};
 
 const relayListCache: Record<string, NostrEvent> = {};
 
@@ -39,6 +40,19 @@ export const getCachedUser = (pubkey?: string, ndk?: NDK) => {
   }
 };
 
+export const getCachedContactList = (pubkey?: string, ndk?: NDK) => {
+  if (!pubkey) {
+    return;
+  }
+
+  const cachedContactList = contactListEventsCache[pubkey];
+
+  if (ndk && cachedContactList) {
+    const ndkEvent = new NDKEvent(ndk, cachedContactList);
+    return ndkEvent;
+  }
+};
+
 const makeCacheKey = (pubkey: string, kind: number) => `${pubkey}:${kind}`;
 
 const inMemoryCacheAdapter = {
@@ -55,17 +69,17 @@ const inMemoryCacheAdapter = {
 
     authors.forEach((pubkey: string) => {
       kinds.forEach((kind: number) => {
-        if (![Kind.Metadata, Kind.RelayList].includes(kind)) {
+        if (![Kind.Metadata, Kind.RelayList, Kind.Contacts].includes(kind)) {
           return;
         }
 
-        const cache =
-          kind === Kind.Metadata ? profileEventsCache : relayListCache;
+        const cache = getCacheByKind(kind);
+        if (!cache) return;
+
         const cachedEvent = cache[pubkey];
 
         if (cachedEvent) {
           const ndkEvent = new NDKEvent(subscription.ndk, cachedEvent);
-
           subscription.eventReceived(ndkEvent, undefined, true);
         }
       });
@@ -73,17 +87,17 @@ const inMemoryCacheAdapter = {
   },
   async setEvent(event: NDKEvent) {
     // caching only certain types of kinds for now to make sure logic is correct
-    const whitelistedKinds = [Kind.Metadata, Kind.RelayList];
+    const whitelistedKinds = [Kind.Metadata, Kind.RelayList, Kind.Contacts];
 
     if (event.kind === undefined || !whitelistedKinds.includes(event.kind)) {
       return;
     }
 
-    // only cache the most recent event for kind 0 and kind 10002
-    if ([Kind.Metadata, Kind.RelayList].includes(event.kind)) {
+    // only cache the most recent event for kinds 0, 3, and 10002
+    if ([Kind.Metadata, Kind.Contacts, Kind.RelayList].includes(event.kind)) {
       const key = event.pubkey;
-      const cache =
-        event.kind === Kind.Metadata ? profileEventsCache : relayListCache;
+      const cache = getCacheByKind(event.kind);
+      if (!cache) return;
 
       if (
         !cache[key] ||
@@ -107,6 +121,22 @@ const inMemoryCacheAdapter = {
       eventsCache[key][event.id] = await event.toNostrEvent();
     }
   },
+};
+
+const getCacheByKind = (kind: Kind): Record<string, NostrEvent> | void => {
+  let cache: Record<string, NostrEvent> | undefined;
+  switch (kind) {
+    case Kind.Metadata:
+      cache = profileEventsCache;
+      break;
+    case Kind.RelayList:
+      cache = relayListCache;
+      break;
+    case Kind.Contacts:
+      cache = contactListEventsCache;
+      break;
+  }
+  return cache;
 };
 
 export default inMemoryCacheAdapter;

@@ -18,7 +18,7 @@ export default function ContactsTray({ pubkey, tab }: ContactsTrayProps) {
   const router = useRouter();
   const { classes } = useStyles();
   const { npub } = getPublicKeys(pubkey);
-  const { contactList } = useContactList({ hexpubkey: pubkey });
+  const { contactList } = useContactList({ pubkey: pubkey });
   const followingCount = useMemo(
     () => contactList?.tags.filter((tag) => tag[0] === "p").length,
     [contactList]

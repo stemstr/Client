@@ -1,20 +1,23 @@
 import { NDKEvent } from "@nostr-dev-kit/ndk";
 import { useNDK } from "ndk/NDKProvider";
+import { getCachedContactList } from "../inMemoryCacheAdapter";
 import { useCallback, useEffect, useState } from "react";
 
-export default function useContactList({ hexpubkey }: { hexpubkey?: string }) {
+export default function useContactList({ pubkey }: { pubkey?: string }) {
   const { ndk } = useNDK();
-  const [contactList, setContactList] = useState<NDKEvent>();
+  const [contactList, setContactList] = useState<NDKEvent | undefined>(
+    getCachedContactList(pubkey, ndk)
+  );
 
   useEffect(() => {
     fetchContactList();
-  }, [hexpubkey, ndk]);
+  }, [pubkey, ndk]);
 
   const fetchContactList = useCallback(async () => {
-    if (!ndk || !hexpubkey) return;
+    if (!ndk || !pubkey) return;
     const contactListEvents = await ndk.fetchEvents({
       kinds: [3],
-      authors: [hexpubkey],
+      authors: [pubkey],
     });
 
     if (contactListEvents.size) {
@@ -33,10 +36,10 @@ export default function useContactList({ hexpubkey }: { hexpubkey?: string }) {
     } else {
       const emptyContactList = new NDKEvent();
       emptyContactList.kind = 3;
-      emptyContactList.pubkey = hexpubkey;
+      emptyContactList.pubkey = pubkey;
       setContactList(emptyContactList);
     }
-  }, [hexpubkey, ndk, setContactList]);
+  }, [pubkey, ndk, setContactList]);
 
   return { contactList, setContactList };
 }

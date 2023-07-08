@@ -23,7 +23,7 @@ const FollowButton = ({ pubkey, children }: FollowButtonProps) => {
   const dispatch = useDispatch();
   const authState = useSelector(selectAuthState);
   const { contactList, setContactList } = useContactList({
-    hexpubkey: authState.pk,
+    pubkey: authState.pk,
   });
   const isFollowing = useMemo(
     () =>
