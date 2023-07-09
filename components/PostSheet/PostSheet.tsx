@@ -51,11 +51,13 @@ export default function PostSheet() {
   });
 
   const handleSubmit = async (values: PostSheetFormValues) => {
-    let hashtags = parseHashtags(values.tags);
-    let created_at = Math.floor(Date.now() / 1000);
-    let tags = [
+    const hashtags = parseHashtags(values.tags);
+    const created_at = Math.floor(Date.now() / 1000);
+    const uuid = crypto.randomUUID();
+    const tags = [
       ["client", "stemstr.app"],
       ["stemstr_version", "1.0"],
+      ["uuid", uuid],
     ];
     hashtags.forEach((hashtag) => {
       tags.push(["t", hashtag]);
