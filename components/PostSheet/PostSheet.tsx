@@ -14,6 +14,7 @@ import { useNDK } from "ndk/NDKProvider";
 import { NDKEvent } from "@nostr-dev-kit/ndk";
 import { useUser } from "ndk/hooks/useUser";
 import { AppState } from "store/Store";
+import { Kind } from "nostr-tools";
 
 type PostSheetFormValues = {
   file: File | null;
@@ -51,17 +52,26 @@ export default function PostSheet() {
   });
 
   const handleSubmit = async (values: PostSheetFormValues) => {
-    const hashtags = parseHashtags(values.tags);
     const created_at = Math.floor(Date.now() / 1000);
-    const uuid = crypto.randomUUID();
+
     const tags = [
       ["client", "stemstr.app"],
       ["stemstr_version", "1.0"],
-      ["uuid", uuid],
     ];
+
+    const uuid = crypto.randomUUID();
+    tags.push(["uuid", uuid]);
+
+    if (values.uploadResponse.streamUrl && values.uploadResponse.downloadUrl) {
+      tags.push(["download_url", values.uploadResponse.downloadUrl]);
+      tags.push(["stream_url", values.uploadResponse.streamUrl]);
+    }
+
+    const hashtags = parseHashtags(values.tags);
     hashtags.forEach((hashtag) => {
       tags.push(["t", hashtag]);
     });
+
     if (replyingTo?.id) {
       const { root } = parseEventTags(new NDKEvent(ndk, replyingTo));
       if (root) {
@@ -81,29 +91,15 @@ export default function PostSheet() {
       });
     }
 
-    if (values.uploadResponse.streamUrl && values.uploadResponse.downloadUrl) {
-      tags.push(["download_url", values.uploadResponse.downloadUrl]);
-      tags.push(["stream_url", values.uploadResponse.streamUrl]);
-      const event = new NDKEvent(ndk);
-      event.kind = 1808;
-      event.created_at = created_at;
-      event.tags = tags;
-      event.content = values.comment;
-      event.publish(stemstrRelaySet).then(() => {
-        form.reset();
-        dispatch(closeSheet(sheetKey));
-      });
-    } else {
-      const event = new NDKEvent(ndk);
-      event.kind = 1;
-      event.created_at = created_at;
-      event.tags = tags;
-      event.content = values.comment;
-      event.publish(stemstrRelaySet).then(() => {
-        form.reset();
-        dispatch(closeSheet(sheetKey));
-      });
-    }
+    const event = new NDKEvent(ndk);
+    event.kind = Kind.Text;
+    event.created_at = created_at;
+    event.tags = tags;
+    event.content = values.comment;
+    event.publish(stemstrRelaySet).then(() => {
+      form.reset();
+      dispatch(closeSheet(sheetKey));
+    });
   };
 
   const toggleSheet = () => {
