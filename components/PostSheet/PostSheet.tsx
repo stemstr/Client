@@ -61,9 +61,6 @@ export default function PostSheet() {
       ["stemstr_version", "1.0"],
     ];
 
-    const uuid = crypto.randomUUID();
-    tags.push(["uuid", uuid]);
-
     if (
       values.uploadResponse.streamUrl &&
       values.uploadResponse.downloadUrl &&
