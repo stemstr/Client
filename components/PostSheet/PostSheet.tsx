@@ -21,6 +21,7 @@ type PostSheetFormValues = {
   uploadResponse: {
     streamUrl: string | null;
     downloadUrl: string | null;
+    waveform: number[] | null;
   };
   comment: string;
   tags: string;
@@ -43,6 +44,7 @@ export default function PostSheet() {
       uploadResponse: {
         streamUrl: null,
         downloadUrl: null,
+        waveform: null,
       },
       comment: "",
       tags: "",
@@ -62,9 +64,14 @@ export default function PostSheet() {
     const uuid = crypto.randomUUID();
     tags.push(["uuid", uuid]);
 
-    if (values.uploadResponse.streamUrl && values.uploadResponse.downloadUrl) {
+    if (
+      values.uploadResponse.streamUrl &&
+      values.uploadResponse.downloadUrl &&
+      values.uploadResponse.waveform
+    ) {
       tags.push(["download_url", values.uploadResponse.downloadUrl]);
       tags.push(["stream_url", values.uploadResponse.streamUrl]);
+      tags.push(["waveform", JSON.stringify(values.uploadResponse.waveform)]);
     }
 
     const hashtags = parseHashtags(values.tags);
