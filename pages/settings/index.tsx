@@ -7,6 +7,7 @@ import useAuth from "hooks/useAuth";
 import { ChevronLeftIcon } from "icons/StemstrIcon";
 import Head from "next/head";
 import { SettingNsec } from "components/Settings/SettingNsec";
+import { SettingDefaultZapWallet } from "../../components/Settings/SettingDefaultZapWallet";
 
 export default function Settings() {
   const { guardAuth, isAuthenticated } = useAuth();
@@ -28,6 +29,7 @@ export default function Settings() {
       <Stack pt="md" pl="md" pr="md" spacing="sm" align="center">
         <SettingPubkey />
         <SettingNsec />
+        <SettingDefaultZapWallet />
         <SettingLogout />
       </Stack>
     </>
