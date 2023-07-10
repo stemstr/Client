@@ -3,11 +3,13 @@ import { type NostrEvent } from "@nostr-dev-kit/ndk";
 
 type SheetKey = "postSheet";
 
+export type PostSheetState = {
+  isOpen: boolean;
+  replyingTo?: NostrEvent;
+};
+
 interface SheetsState {
-  postSheet: {
-    isOpen: boolean;
-    replyingTo?: NostrEvent;
-  };
+  postSheet: PostSheetState;
 }
 
 const initialState: SheetsState = {

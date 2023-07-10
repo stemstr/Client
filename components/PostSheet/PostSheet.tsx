@@ -1,35 +1,50 @@
 import { Box, Button, Drawer, Stack } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useDispatch, useSelector } from "react-redux";
-import { closeSheet, openSheet } from "../../store/Sheets";
+import { PostSheetState, closeSheet, openSheet } from "../../store/Sheets";
 import SoundFieldGroup from "../FieldGroups/SoundFieldGroup";
 import CommentFieldGroup from "../FieldGroups/CommentFieldGroup";
 import TagsFieldGroup from "../FieldGroups/TagsFieldGroup";
 import ShareAcrossField from "../ShareAcrossField/ShareAcrossField";
 import { parseHashtags } from "../Fields/TagsField/TagsField";
-import { useState } from "react";
+import { DragEventHandler, useState } from "react";
 import { acceptedMimeTypes } from "../../utils/media";
 import { getNormalizedName, parseEventTags } from "../../ndk/utils";
 import { useNDK } from "ndk/NDKProvider";
 import { NDKEvent } from "@nostr-dev-kit/ndk";
 import { useUser } from "ndk/hooks/useUser";
+import { AppState } from "store/Store";
+import { Kind } from "nostr-tools";
+
+type PostSheetFormValues = {
+  file: File | null;
+  uploadResponse: {
+    streamUrl: string | null;
+    downloadUrl: string | null;
+    waveform: number[] | null;
+  };
+  comment: string;
+  tags: string;
+  shareAcross: boolean;
+};
 
 export default function PostSheet() {
   const { ndk, stemstrRelaySet } = useNDK();
   const sheetKey = "postSheet";
-  const auth = useSelector((state) => state.auth);
-  const relays = useSelector((state) => state.relays);
-  const { isOpen, replyingTo } = useSelector((state) => state.sheets[sheetKey]);
+  const { isOpen, replyingTo } = useSelector<AppState, PostSheetState>(
+    (state) => state.sheets.postSheet
+  );
   const user = useUser(replyingTo?.pubkey);
   const dispatch = useDispatch();
   const [isDragging, setIsDragging] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
-  const form = useForm({
+  const form = useForm<PostSheetFormValues>({
     initialValues: {
       file: null,
       uploadResponse: {
         streamUrl: null,
         downloadUrl: null,
+        waveform: null,
       },
       comment: "",
       tags: "",
@@ -38,17 +53,30 @@ export default function PostSheet() {
     validate: {},
   });
 
-  const handleSubmit = async (values) => {
-    let hashtags = parseHashtags(values.tags);
-    let created_at = Math.floor(Date.now() / 1000);
-    let tags = [
+  const handleSubmit = async (values: PostSheetFormValues) => {
+    const created_at = Math.floor(Date.now() / 1000);
+
+    const tags = [
       ["client", "stemstr.app"],
       ["stemstr_version", "1.0"],
     ];
+
+    if (
+      values.uploadResponse.streamUrl &&
+      values.uploadResponse.downloadUrl &&
+      values.uploadResponse.waveform
+    ) {
+      tags.push(["download_url", values.uploadResponse.downloadUrl]);
+      tags.push(["stream_url", values.uploadResponse.streamUrl]);
+      tags.push(["waveform", JSON.stringify(values.uploadResponse.waveform)]);
+    }
+
+    const hashtags = parseHashtags(values.tags);
     hashtags.forEach((hashtag) => {
       tags.push(["t", hashtag]);
     });
-    if (replyingTo) {
+
+    if (replyingTo?.id) {
       const { root } = parseEventTags(new NDKEvent(ndk, replyingTo));
       if (root) {
         tags.push(root);
@@ -67,29 +95,15 @@ export default function PostSheet() {
       });
     }
 
-    if (values.uploadResponse.streamUrl && values.uploadResponse.downloadUrl) {
-      tags.push(["download_url", values.uploadResponse.downloadUrl]);
-      tags.push(["stream_url", values.uploadResponse.streamUrl]);
-      const event = new NDKEvent(ndk);
-      event.kind = 1808;
-      event.created_at = created_at;
-      event.tags = tags;
-      event.content = values.comment;
-      event.publish(stemstrRelaySet).then(() => {
-        form.reset();
-        dispatch(closeSheet(sheetKey));
-      });
-    } else {
-      const event = new NDKEvent(ndk);
-      event.kind = 1;
-      event.created_at = created_at;
-      event.tags = tags;
-      event.content = values.comment;
-      event.publish(stemstrRelaySet).then(() => {
-        form.reset();
-        dispatch(closeSheet(sheetKey));
-      });
-    }
+    const event = new NDKEvent(ndk);
+    event.kind = Kind.Text;
+    event.created_at = created_at;
+    event.tags = tags;
+    event.content = values.comment;
+    event.publish(stemstrRelaySet).then(() => {
+      form.reset();
+      dispatch(closeSheet(sheetKey));
+    });
   };
 
   const toggleSheet = () => {
@@ -100,20 +114,20 @@ export default function PostSheet() {
     }
   };
 
-  const onDrop = (e) => {
-    e.preventDefault();
-    const file = e.dataTransfer.files[0];
+  const onDrop: DragEventHandler<HTMLDivElement> = (event) => {
+    event.preventDefault();
+    const file = event.dataTransfer?.files[0];
 
-    if (acceptedMimeTypes.includes(file.type)) {
+    if (file && acceptedMimeTypes.includes(file.type)) {
       form.setFieldValue("file", file);
     }
 
     setIsDragging(false);
   };
 
-  const onDragOver = (e) => {
-    e.preventDefault();
-    const item = e.dataTransfer.items[0];
+  const onDragOver: DragEventHandler<HTMLDivElement> = (event) => {
+    event.preventDefault();
+    const item = event.dataTransfer?.items[0];
 
     if (item && item.kind === "file" && acceptedMimeTypes.includes(item.type)) {
       setIsDragging(true);
@@ -123,9 +137,9 @@ export default function PostSheet() {
     }
   };
 
-  const onDragLeave = (e) => {
-    e.preventDefault();
-    if (e.relatedTarget === null) {
+  const onDragLeave: DragEventHandler<HTMLDivElement> = (event) => {
+    event.preventDefault();
+    if (event.relatedTarget === null) {
       setIsDragging(false);
     }
   };

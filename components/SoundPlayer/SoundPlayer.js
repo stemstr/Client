@@ -3,7 +3,7 @@ import axios from "axios";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ChevronRightIcon, PlayIcon, StopIcon } from "../../icons/StemstrIcon";
 import withStopClickPropagation from "../../utils/hoc/withStopClickPropagation";
-import WaveForm from "../WaveForm/WaveForm";
+import WaveForm, { generateWaveFormData } from "../WaveForm/WaveForm";
 import useStyles from "./SoundPlayer.styles";
 import Hls from "hls.js";
 
@@ -46,14 +46,14 @@ const SoundPlayer = ({ event, downloadStatus, setDownloadStatus }) => {
   const [blobUrl, setBlobUrl] = useState(null);
 
   useEffect(() => {
-    if (downloadUrl) {
-      axios
-        .get(`${process.env.NEXT_PUBLIC_STEMSTR_API}/metadata/${fileHash}`)
-        .then((response) => {
-          setWaveformData(response.data.waveform);
-        });
-    }
     if (streamUrl) {
+      const waveformTag = event.tags.find((tag) => tag[0] === "waveform");
+      if (waveformTag) {
+        const waveformData = JSON.parse(waveformTag[1]);
+        setWaveformData(waveformData);
+      } else {
+        setWaveformData(generateWaveFormData(64));
+      }
       if (Hls.isSupported()) {
         hlsRef.current = new Hls();
         hlsRef.current.loadSource(streamUrl);

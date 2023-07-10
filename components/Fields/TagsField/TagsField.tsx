@@ -1,6 +1,6 @@
-import { Group, Text, TextInput } from "@mantine/core";
+import { Group, Text, TextInput, TextInputProps } from "@mantine/core";
 
-export default function TagsField(props) {
+export default function TagsField(props: TextInputProps) {
   return (
     <>
       <TextInput
@@ -25,7 +25,7 @@ export default function TagsField(props) {
   );
 }
 
-export const parseHashtags = (hashtagsString) => {
+export const parseHashtags = (hashtagsString: string): string[] => {
   // Regular expression to match hashtags with alphanumeric characters only
   const hashtagRegex = /#[A-Za-z0-9]+/g;
   // Use match() method to find all occurrences of the hashtagRegex in the string

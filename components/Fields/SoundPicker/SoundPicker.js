@@ -45,6 +45,7 @@ export default function SoundPicker({
       ...prev,
       "uploadResponse.streamUrl": null,
       "uploadResponse.downloadUrl": null,
+      "uploadResponse.waveform": null,
     }));
     setIsPlaying(false);
     if (rest.value) {
@@ -78,6 +79,10 @@ export default function SoundPicker({
             form.setFieldValue(
               "uploadResponse.downloadUrl",
               response.data.download_url
+            );
+            form.setFieldValue(
+              "uploadResponse.waveform",
+              response.data.waveform
             );
           })
           .catch((error) => {

@@ -121,7 +121,7 @@ export default function WaveForm({ data, playProgress = 0 }) {
   );
 }
 
-function generateWaveFormData(n) {
+export function generateWaveFormData(n) {
   let result = [];
   let min = 16;
   let max = 64;
