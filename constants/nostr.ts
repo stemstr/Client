@@ -15,5 +15,8 @@ export const DEFAULT_RELAY_URLS: string[] = [
   "wss://filter.nostr.wine",
 ];
 
+export const NEVENT_NOSTR_URI_REGEX =
+  /(nostr:nevent1[023456789acdefghjklmnpqrstuvwxyz]*)/;
+
 export const NPUB_NOSTR_URI_REGEX =
   /(nostr:npub1[023456789acdefghjklmnpqrstuvwxyz]{58})/g;

@@ -1,19 +1,49 @@
-import { Box, Center, Group, Stack, Text } from "@mantine/core";
+import {
+  Box,
+  Center,
+  DefaultProps,
+  Group,
+  Stack,
+  Text,
+  clsx,
+} from "@mantine/core";
 import axios from "axios";
-import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  Dispatch,
+  DragEventHandler,
+  SetStateAction,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { ChevronRightIcon, PlayIcon, StopIcon } from "../../icons/StemstrIcon";
-import withStopClickPropagation from "../../utils/hoc/withStopClickPropagation";
+import withStopClickPropagation, {
+  WithStopClickPropagationProps,
+} from "../../utils/hoc/withStopClickPropagation";
 import WaveForm, { generateWaveFormData } from "../WaveForm/WaveForm";
 import useStyles from "./SoundPlayer.styles";
 import Hls from "hls.js";
+import { NDKEvent } from "@nostr-dev-kit/ndk";
 
-const SoundPlayer = ({ event, downloadStatus, setDownloadStatus }) => {
-  const audioRef = useRef();
-  const audioTimeUpdateTimeoutRef = useRef();
-  const hlsRef = useRef(null);
+interface SoundPlayerProps extends DefaultProps, WithStopClickPropagationProps {
+  event: NDKEvent;
+  downloadStatus: string;
+  setDownloadStatus: Dispatch<SetStateAction<string>>;
+}
+
+const SoundPlayer = ({
+  event,
+  downloadStatus,
+  setDownloadStatus,
+  ...rest
+}: SoundPlayerProps) => {
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const audioTimeUpdateTimeoutRef = useRef<NodeJS.Timeout>();
+  const hlsRef = useRef<Hls | null>(null);
   const [mediaAttached, setMediaAttached] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(null);
+  const [duration, setDuration] = useState<number | null>(null);
   const playProgress = useMemo(() => {
     return duration ? currentTime / duration : 0;
   }, [currentTime, duration]);
@@ -37,13 +67,13 @@ const SoundPlayer = ({ event, downloadStatus, setDownloadStatus }) => {
     return streamUrlTag ? streamUrlTag[1] : null;
   }, [event]);
   const { classes } = useStyles();
-  const [waveformData, setWaveformData] = useState([]);
+  const [waveformData, setWaveformData] = useState<number[]>([]);
   const dragImage = useMemo(() => {
     const img = document.createElement("img");
     img.src = "/img/drag-stem.svg";
     return img;
   }, []);
-  const [blobUrl, setBlobUrl] = useState(null);
+  const [blobUrl, setBlobUrl] = useState<string | null>(null);
 
   useEffect(() => {
     if (streamUrl) {
@@ -61,7 +91,7 @@ const SoundPlayer = ({ event, downloadStatus, setDownloadStatus }) => {
           // console.log("HLS manifest parsed");
         });
       } else if (
-        audioRef.current.canPlayType("application/vnd.apple.mpegurl")
+        audioRef.current?.canPlayType("application/vnd.apple.mpegurl")
       ) {
         audioRef.current.src = streamUrl;
       } else {
@@ -92,13 +122,17 @@ const SoundPlayer = ({ event, downloadStatus, setDownloadStatus }) => {
   };
 
   const handleAudioEnded = () => {
-    audioRef.current.currentTime = 0;
-    setIsPlaying(false);
+    if (audioRef.current) {
+      audioRef.current.currentTime = 0;
+      setIsPlaying(false);
+    }
   };
 
   const handleCanPlay = () => {
-    setDuration(audioRef.current.duration);
-    trackAudioTime();
+    if (audioRef.current) {
+      setDuration(audioRef.current.duration);
+      trackAudioTime();
+    }
   };
 
   const trackAudioTime = () => {
@@ -122,13 +156,13 @@ const SoundPlayer = ({ event, downloadStatus, setDownloadStatus }) => {
   }, []);
 
   const attachMedia = () => {
-    if (!mediaAttached && hlsRef.current) {
+    if (!mediaAttached && hlsRef.current && audioRef.current) {
       hlsRef.current.attachMedia(audioRef.current);
       setMediaAttached(true);
     }
   };
 
-  const handleDragStart = (event) => {
+  const handleDragStart: DragEventHandler<HTMLDivElement> = (event) => {
     console.log(`${mimeType}:${fileName}:${blobUrl}`);
     event.dataTransfer.setData(
       "DownloadURL",
@@ -142,20 +176,22 @@ const SoundPlayer = ({ event, downloadStatus, setDownloadStatus }) => {
   };
 
   const downloadAudio = async () => {
-    try {
-      const response = await axios.get(downloadUrl, {
-        responseType: "arraybuffer",
-      });
-      setMimeType(response.headers["content-type"]);
-      setFileName(response.headers["x-download-filename"]);
-      const blob = new Blob([response.data], {
-        type: response.headers["content-type"],
-      });
-      const url = URL.createObjectURL(blob);
-      setBlobUrl(url);
-      setDownloadStatus("ready");
-    } catch (error) {
-      console.error("Error downloading the audio file:", error);
+    if (downloadUrl) {
+      try {
+        const response = await axios.get(downloadUrl, {
+          responseType: "arraybuffer",
+        });
+        setMimeType(response.headers["content-type"]);
+        setFileName(response.headers["x-download-filename"]);
+        const blob = new Blob([response.data], {
+          type: response.headers["content-type"],
+        });
+        const url = URL.createObjectURL(blob);
+        setBlobUrl(url);
+        setDownloadStatus("ready");
+      } catch (error) {
+        console.error("Error downloading the audio file:", error);
+      }
     }
   };
 
@@ -164,9 +200,8 @@ const SoundPlayer = ({ event, downloadStatus, setDownloadStatus }) => {
       downloadAudio();
     }
   }, [downloadStatus]);
-
-  return (
-    downloadUrl && (
+  return downloadUrl ? (
+    <Box {...rest}>
       <Group spacing={0} className={classes.player}>
         <Stack justify="center" spacing={0} className={classes.playerSection}>
           <Group>
@@ -209,10 +244,10 @@ const SoundPlayer = ({ event, downloadStatus, setDownloadStatus }) => {
         <Box
           draggable
           onDragStart={handleDragStart}
-          className={{
+          className={clsx({
             [classes.dragHandle]: true,
             [classes.dragHandleReady]: downloadStatus === "ready",
-          }}
+          })}
         >
           <Box sx={{ display: "none" }}>
             <img ref={dragImageRef} src="/logo.svg" />
@@ -248,13 +283,15 @@ const SoundPlayer = ({ event, downloadStatus, setDownloadStatus }) => {
           )}
         </Box>
       </Group>
-    )
+    </Box>
+  ) : (
+    <></>
   );
 };
 
-export default withStopClickPropagation(SoundPlayer);
+export default withStopClickPropagation<SoundPlayerProps>(SoundPlayer);
 
-function getFormattedPlayTime(time) {
+function getFormattedPlayTime(time: number | null) {
   if (time === null) return "-:--";
   let seconds = Math.floor(time);
   let minutes = Math.floor(seconds / 60);
