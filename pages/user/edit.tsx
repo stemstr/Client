@@ -15,7 +15,6 @@ import useAuth from "hooks/useAuth";
 import { CheckIcon, ChevronLeftIcon } from "icons/StemstrIcon";
 import { useNDK } from "ndk/NDKProvider";
 import { useUser } from "ndk/hooks/useUser";
-import { fetchEvents } from "ndk/utils";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { Kind } from "nostr-tools";
@@ -55,7 +54,8 @@ export default function EditProfile() {
   useEffect(() => {
     if (authState.pk && ndk) {
       // Get raw profile event
-      fetchEvents({ kinds: [Kind.Metadata], authors: [authState.pk] }, ndk)
+      ndk
+        .fetchEvents({ kinds: [Kind.Metadata], authors: [authState.pk] })
         .then((events) => Array.from(events))
         .then((events) => {
           if (events.length) {
@@ -67,7 +67,7 @@ export default function EditProfile() {
         })
         .catch(console.error);
     }
-  }, [authState.pk]);
+  }, [authState.pk, ndk]);
 
   useEffect(() => {
     if (user?.profile) {

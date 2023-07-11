@@ -1,12 +1,10 @@
 import NDK, {
   NDKEvent,
-  NDKFilter,
   NDKRelay,
   NDKRelaySet,
   NDKTag,
   NDKUser,
   NDKUserProfile,
-  NDKSubscriptionOptions,
   NostrEvent,
 } from "@nostr-dev-kit/ndk";
 import {
@@ -218,42 +216,6 @@ export const createRelaySet = (relayUrls: string[], ndk: NDK) => {
   });
 
   return new NDKRelaySet(relays, ndk);
-};
-
-export const dedupeEvent = (event1: NDKEvent, event2: NDKEvent) => {
-  // return the newest of the two
-  if (event1.created_at! > event2.created_at!) {
-    return event1;
-  }
-
-  return event2;
-};
-
-export const fetchEvents = async (
-  filter: NDKFilter,
-  ndk: NDK,
-  relaySet?: NDKRelaySet,
-  opts?: NDKSubscriptionOptions
-): Promise<Set<NDKEvent>> => {
-  return new Promise((resolve) => {
-    const events: Map<string, NDKEvent> = new Map();
-    const relaySetSubscription = ndk.subscribe(filter, opts, relaySet);
-
-    relaySetSubscription.on("event", (event: NDKEvent) => {
-      const existingEvent = events.get(event.tagId());
-      if (existingEvent) {
-        event = dedupeEvent(existingEvent, event);
-      }
-
-      event.ndk = ndk;
-      events.set(event.tagId(), event);
-    });
-    relaySetSubscription.on("eose", () => {
-      resolve(new Set(events.values()));
-    });
-
-    relaySetSubscription.start();
-  });
 };
 
 export const getNormalizedName = (pubkey: string, user?: NDKUser) => {

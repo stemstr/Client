@@ -10,7 +10,7 @@ import {
   NDKZapInvoice,
   zapInvoiceFromEvent,
 } from "@nostr-dev-kit/ndk";
-import { createRelaySet, fetchEvents } from "../../ndk/utils";
+import { createRelaySet } from "../../ndk/utils";
 import { useNDK } from "../../ndk/NDKProvider";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -101,7 +101,8 @@ const NoteActionRow = () => {
       ndk
     );
 
-    fetchEvents(filter, ndk, relaySet)
+    ndk
+      .fetchEvents(filter, {}, relaySet)
       .then((events) => Array.from(events))
       .then(dispatchData)
       .catch(console.error);
