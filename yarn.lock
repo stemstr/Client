@@ -2190,10 +2190,10 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@nostr-dev-kit/ndk@^0.5.1":
-  version "0.5.13"
-  resolved "https://registry.yarnpkg.com/@nostr-dev-kit/ndk/-/ndk-0.5.13.tgz#054c1cad4e24d3d4d5a6fd56c2484261a3d4e7c9"
-  integrity sha512-Lu5vHzKmV3NrQyIxbneft7QlY2KpxOhsNOo1sN71z1b4plBSDrUT8xBgPTzm1itfL1Xw0kxy6pa/LSdVlsA3oQ==
+"@nostr-dev-kit/ndk@^0.7.4":
+  version "0.7.5"
+  resolved "https://registry.yarnpkg.com/@nostr-dev-kit/ndk/-/ndk-0.7.5.tgz#d8827c5b5f9d7e01271a38f8875a93ac8a59df41"
+  integrity sha512-P3hcvWq0jMlTBiasMtcqP2FclGwVks1LIwhRhyJb5XesLEYvnWh1wBWnx3+UQCj9uuu7fBMkmrY7AAi3CTuaXA==
   dependencies:
     "@noble/hashes" "^1.3.1"
     "@noble/secp256k1" "^2.0.0"
