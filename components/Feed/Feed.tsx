@@ -8,7 +8,7 @@ import { useMediaQuery } from "@mantine/hooks";
 import { EventProvider } from "../../ndk/NDKEventProvider";
 import { type NDKEvent, type NDKFilter } from "@nostr-dev-kit/ndk";
 import { useNDK } from "../../ndk/NDKProvider";
-import { extractMentionPubkeys, fetchEvents } from "../../ndk/utils";
+import { extractMentionPubkeys } from "../../ndk/utils";
 import usePreloadProfileCache from "../../ndk/hooks/usePreloadProfileCache";
 import { noop } from "../../utils/common";
 
@@ -116,7 +116,8 @@ export const Feed = memo(
         return;
       }
 
-      fetchEvents(filter, ndk, stemstrRelaySet)
+      ndk
+        .fetchEvents(filter, {}, stemstrRelaySet)
         .then((events) => Array.from(events))
         .then(processEvents)
         .catch(console.error);
@@ -135,9 +136,9 @@ export const Feed = memo(
       isLoadingMore.current = true;
 
       try {
-        const newEvents = await fetchEvents(
+        const newEvents = await ndk.fetchEvents(
           { ...filter, until: events[events.length - 1].created_at },
-          ndk,
+          {},
           stemstrRelaySet
         );
 
