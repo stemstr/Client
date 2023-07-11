@@ -7,14 +7,19 @@ import CommentFieldGroup from "../FieldGroups/CommentFieldGroup";
 import TagsFieldGroup from "../FieldGroups/TagsFieldGroup";
 import ShareAcrossField from "../ShareAcrossField/ShareAcrossField";
 import { parseHashtags } from "../Fields/TagsField/TagsField";
-import { DragEventHandler, useState } from "react";
+import { DragEventHandler, useCallback, useState } from "react";
 import { acceptedMimeTypes } from "../../utils/media";
-import { getNormalizedName, parseEventTags } from "../../ndk/utils";
+import {
+  encodeEventAsNostrUri,
+  getNormalizedName,
+  parseEventTags,
+} from "../../ndk/utils";
 import { useNDK } from "ndk/NDKProvider";
-import { NDKEvent } from "@nostr-dev-kit/ndk";
+import { NDKEvent, NDKTag } from "@nostr-dev-kit/ndk";
 import { useUser } from "ndk/hooks/useUser";
 import { AppState } from "store/Store";
-import { Kind } from "nostr-tools";
+import { Kind, nip19 } from "nostr-tools";
+import { EventPointer } from "nostr-tools/lib/nip19";
 
 type PostSheetFormValues = {
   file: File | null;
@@ -53,56 +58,101 @@ export default function PostSheet() {
     validate: {},
   });
 
-  const handleSubmit = async (values: PostSheetFormValues) => {
-    const created_at = Math.floor(Date.now() / 1000);
-
-    const tags = [
-      ["client", "stemstr.app"],
-      ["stemstr_version", "1.0"],
-    ];
-
-    if (
-      values.uploadResponse.streamUrl &&
-      values.uploadResponse.downloadUrl &&
-      values.uploadResponse.waveform
-    ) {
-      tags.push(["download_url", values.uploadResponse.downloadUrl]);
-      tags.push(["stream_url", values.uploadResponse.streamUrl]);
-      tags.push(["waveform", JSON.stringify(values.uploadResponse.waveform)]);
-    }
-
-    const hashtags = parseHashtags(values.tags);
-    hashtags.forEach((hashtag) => {
-      tags.push(["t", hashtag]);
-    });
-
-    if (replyingTo?.id) {
-      const { root } = parseEventTags(new NDKEvent(ndk, replyingTo));
-      if (root) {
-        tags.push(root);
-        tags.push(["e", replyingTo.id, "", "reply"]);
-      } else {
-        tags.push(["e", replyingTo.id, "", "root"]);
-      }
-      const pTagPKs = [replyingTo.pubkey];
-      replyingTo.tags.forEach((t) => {
-        if (t[0] === "p") {
-          pTagPKs.push(t[1]);
+  const publishSoundEvent = useCallback(
+    (values: PostSheetFormValues): Promise<NDKEvent | null> => {
+      return new Promise<NDKEvent | null>((resolve, reject) => {
+        if (
+          !values.uploadResponse.streamUrl ||
+          !values.uploadResponse.downloadUrl ||
+          !values.uploadResponse.waveform
+        ) {
+          resolve(null);
+          return;
         }
+        const created_at = Math.floor(Date.now() / 1000);
+        const tags: NDKTag[] = [
+          ["client", "stemstr.app"],
+          ["download_url", values.uploadResponse.downloadUrl],
+          ["m", "application/vnd.apple.mpegurl"],
+          ["url", values.uploadResponse.streamUrl],
+          ["waveform", JSON.stringify(values.uploadResponse.waveform)],
+        ];
+        const soundEvent = new NDKEvent(ndk);
+        soundEvent.kind = 1063;
+        soundEvent.created_at = created_at;
+        soundEvent.tags = tags;
+        soundEvent.content = values.comment;
+        soundEvent
+          .publish()
+          .then(() => {
+            resolve(soundEvent);
+          })
+          .catch(() => {
+            reject(new Error("Failed to publish sound event"));
+          });
       });
-      Array.from(new Set(pTagPKs)).forEach((pk) => {
-        tags.push(["p", pk]);
-      });
-    }
+    },
+    [form]
+  );
 
-    const event = new NDKEvent(ndk);
-    event.kind = Kind.Text;
-    event.created_at = created_at;
-    event.tags = tags;
-    event.content = values.comment;
-    event.publish(stemstrRelaySet).then(() => {
-      form.reset();
-      dispatch(closeSheet(sheetKey));
+  const handleSubmit = (values: PostSheetFormValues) => {
+    publishSoundEvent(values).then((soundEvent) => {
+      const created_at = Math.floor(Date.now() / 1000);
+
+      const tags = [
+        ["client", "stemstr.app"],
+        ["stemstr_version", "1.0"],
+      ];
+
+      if (
+        values.uploadResponse.streamUrl &&
+        values.uploadResponse.downloadUrl &&
+        values.uploadResponse.waveform
+      ) {
+        tags.push(["download_url", values.uploadResponse.downloadUrl]);
+        tags.push(["stream_url", values.uploadResponse.streamUrl]);
+        tags.push(["waveform", JSON.stringify(values.uploadResponse.waveform)]);
+      }
+
+      const hashtags = parseHashtags(values.tags);
+      hashtags.forEach((hashtag) => {
+        tags.push(["t", hashtag]);
+      });
+
+      if (replyingTo?.id) {
+        const { root } = parseEventTags(new NDKEvent(ndk, replyingTo));
+        if (root) {
+          tags.push(root);
+          tags.push(["e", replyingTo.id, "", "reply"]);
+        } else {
+          tags.push(["e", replyingTo.id, "", "root"]);
+        }
+        const pTagPKs = [replyingTo.pubkey];
+        replyingTo.tags.forEach((t) => {
+          if (t[0] === "p") {
+            pTagPKs.push(t[1]);
+          }
+        });
+        Array.from(new Set(pTagPKs)).forEach((pk) => {
+          tags.push(["p", pk]);
+        });
+      }
+
+      let content = values.comment;
+      if (soundEvent) {
+        const soundEventUri = encodeEventAsNostrUri(soundEvent);
+        content = `${soundEventUri} ${content}`;
+      }
+
+      const event = new NDKEvent(ndk);
+      event.kind = Kind.Text;
+      event.created_at = created_at;
+      event.tags = tags;
+      event.content = content;
+      event.publish(stemstrRelaySet).then(() => {
+        form.reset();
+        dispatch(closeSheet(sheetKey));
+      });
     });
   };
 

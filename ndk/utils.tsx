@@ -19,6 +19,7 @@ import {
 import axios from "axios";
 import { bech32 } from "@scure/base";
 import { DEFAULT_RELAY_URLS, NPUB_NOSTR_URI_REGEX } from "../constants";
+import { EventPointer } from "nostr-tools/lib/nip19";
 
 interface ParsedEventTags {
   root?: NDKTag;
@@ -490,4 +491,14 @@ export const extractMentionPubkeys = (event: NDKEvent) => {
   });
 
   return pubkeys;
+};
+
+export const encodeEventAsNostrUri = (event: NDKEvent): string => {
+  const pointer: EventPointer = {
+    id: event.id,
+    relays: [process.env.NEXT_PUBLIC_STEMSTR_RELAY as string],
+    author: event.pubkey,
+  };
+  const nevent = nip19.neventEncode(pointer);
+  return `nostr:${nevent}`;
 };
