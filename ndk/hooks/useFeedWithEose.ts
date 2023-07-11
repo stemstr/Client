@@ -27,7 +27,7 @@ export function useFeedWithEose(filter: NDKFilter, relayUrls: string[] = []) {
 
     const hasAuthorsInFilter = filter.authors && filter.authors.length > 0;
     const filters = hasAuthorsInFilter
-      ? chunkArray(filter.authors, maxAuthors).map((authors) => ({
+      ? chunkArray(filter.authors ?? [], maxAuthors).map((authors) => ({
           ...filter,
           authors,
         }))
