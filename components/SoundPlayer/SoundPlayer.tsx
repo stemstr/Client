@@ -194,13 +194,12 @@ const SoundPlayer = ({
   }, [downloadStatus]);
 
   return downloadUrl ? (
-    <Box {...rest}>
+    <Box onMouseOver={() => attachMedia()} {...rest}>
       <Group spacing={0} className={classes.player}>
         <Stack justify="center" spacing={0} className={classes.playerSection}>
           <Group>
             <Center
               onClick={isPlaying ? handlePauseClick : handlePlayClick}
-              onMouseOver={() => attachMedia()}
               sx={(theme) => ({
                 width: 36,
                 height: 36,
@@ -226,6 +225,8 @@ const SoundPlayer = ({
             <WaveForm
               data={waveformData}
               currentTime={currentTime}
+              play={handlePlayClick}
+              audioRef={audioRef}
               duration={duration}
             />
           </Group>

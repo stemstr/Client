@@ -3,7 +3,13 @@ import { motion } from "framer-motion";
 import useResizeObserver from "@react-hook/resize-observer";
 import { constrain } from "utils/common";
 
-export default function WaveForm({ data, currentTime, duration }) {
+export default function WaveForm({
+  data,
+  currentTime,
+  audioRef,
+  play,
+  duration,
+}) {
   const [scrubTime, setScrubTime] = useState(null);
   const scrubProgress = useMemo(() => {
     return duration && scrubTime !== null ? scrubTime / duration : null;
@@ -127,10 +133,18 @@ export default function WaveForm({ data, currentTime, duration }) {
     setScrubTime(null);
   };
 
+  const handleClick = () => {
+    if (scrubTime) {
+      audioRef.current.currentTime = scrubTime;
+      play();
+    }
+  };
+
   return (
     <div
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
+      onClick={handleClick}
       ref={containerRef}
       style={{
         flexGrow: 1,
