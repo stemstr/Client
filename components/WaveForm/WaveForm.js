@@ -1,8 +1,16 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useMemo } from "react";
 import { motion } from "framer-motion";
 import useResizeObserver from "@react-hook/resize-observer";
+import { constrain } from "utils/common";
 
-export default function WaveForm({ data, playProgress = 0 }) {
+export default function WaveForm({ data, currentTime, duration }) {
+  const [scrubTime, setScrubTime] = useState(null);
+  const scrubProgress = useMemo(() => {
+    return duration && scrubTime !== null ? scrubTime / duration : null;
+  }, [scrubTime, duration]);
+  const playProgress = useMemo(() => {
+    return duration ? currentTime / duration : 0;
+  }, [currentTime, duration]);
   const [currentData, setCurrentData] = useState(data);
   const [bars, setBars] = useState([]);
   const containerRef = useRef(null);
@@ -61,10 +69,29 @@ export default function WaveForm({ data, playProgress = 0 }) {
     });
 
     setBars(newBars);
-  }, [currentData, playProgress, width, setBars]);
+  }, [currentData, scrubProgress, playProgress, width, setBars]);
+
+  const handleMouseMove = (event) => {
+    if (duration) {
+      const mouseX = event.clientX - containerRef.current.offsetLeft;
+      const totalWidth = containerRef.current.offsetWidth;
+      const newScrubTime = constrain(
+        (mouseX / totalWidth) * duration,
+        0,
+        duration
+      );
+      setScrubTime(newScrubTime);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    setScrubTime(null);
+  };
 
   return (
     <div
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
       ref={containerRef}
       style={{
         flexGrow: 1,

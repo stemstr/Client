@@ -44,9 +44,6 @@ const SoundPlayer = ({
   const [mediaAttached, setMediaAttached] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState<number | null>(null);
-  const playProgress = useMemo(() => {
-    return duration ? currentTime / duration : 0;
-  }, [currentTime, duration]);
   const [isPlaying, setIsPlaying] = useState(false);
   const downloadUrl = useMemo(() => {
     const downloadUrlTag =
@@ -55,11 +52,6 @@ const SoundPlayer = ({
   }, [event]);
   const [mimeType, setMimeType] = useState("");
   const [fileName, setFileName] = useState("");
-  const fileHash = useMemo(() => {
-    if (!downloadUrl) return null;
-    let url = new URL(downloadUrl);
-    return url.pathname.split("/").pop();
-  }, [downloadUrl]);
   const dragImageRef = useRef(null);
   const streamUrl = useMemo(() => {
     const streamUrlTag =
@@ -231,7 +223,11 @@ const SoundPlayer = ({
               onEnded={handleAudioEnded}
             />
 
-            <WaveForm data={waveformData} playProgress={playProgress} />
+            <WaveForm
+              data={waveformData}
+              currentTime={currentTime}
+              duration={duration}
+            />
           </Group>
           <Group position="apart">
             <Text fz="xs" c="white">
