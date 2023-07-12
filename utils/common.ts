@@ -1,6 +1,6 @@
 export const noop = () => {};
 
-export const chunkArray = (array: [], chunkSize: number) => {
+export const chunkArray = (array: any[], chunkSize: number) => {
   const chunkedArray = [];
   const length = array.length;
 
