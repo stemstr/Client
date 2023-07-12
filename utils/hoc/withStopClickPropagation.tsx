@@ -1,8 +1,8 @@
 import { Box } from "@mantine/core";
 import { ComponentType } from "react";
 
-interface WithStopClickPropagationProps {
-  children: any;
+export interface WithStopClickPropagationProps {
+  children?: any;
 }
 
 const withStopClickPropagation = <P extends WithStopClickPropagationProps>(

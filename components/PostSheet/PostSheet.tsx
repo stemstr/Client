@@ -55,6 +55,7 @@ export default function PostSheet() {
 
   const handleSubmit = async (values: PostSheetFormValues) => {
     const created_at = Math.floor(Date.now() / 1000);
+    let kind: number = Kind.Text;
 
     const tags = [
       ["client", "stemstr.app"],
@@ -66,6 +67,7 @@ export default function PostSheet() {
       values.uploadResponse.downloadUrl &&
       values.uploadResponse.waveform
     ) {
+      kind = 1808;
       tags.push(["download_url", values.uploadResponse.downloadUrl]);
       tags.push(["stream_url", values.uploadResponse.streamUrl]);
       tags.push(["waveform", JSON.stringify(values.uploadResponse.waveform)]);
@@ -96,7 +98,7 @@ export default function PostSheet() {
     }
 
     const event = new NDKEvent(ndk);
-    event.kind = Kind.Text;
+    event.kind = kind;
     event.created_at = created_at;
     event.tags = tags;
     event.content = values.comment;
