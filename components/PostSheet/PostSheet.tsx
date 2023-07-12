@@ -68,8 +68,16 @@ export default function PostSheet() {
       values.uploadResponse.waveform
     ) {
       kind = 1808;
-      tags.push(["download_url", values.uploadResponse.downloadUrl]);
-      tags.push(["stream_url", values.uploadResponse.streamUrl]);
+      tags.push([
+        "download_url",
+        values.uploadResponse.downloadUrl,
+        "audio/wav",
+      ]);
+      tags.push([
+        "stream_url",
+        values.uploadResponse.streamUrl,
+        "application/vnd.apple.mpegurl",
+      ]);
       tags.push(["waveform", JSON.stringify(values.uploadResponse.waveform)]);
     }
 
