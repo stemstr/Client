@@ -37,6 +37,7 @@ import CameraPlus from "./Line icons/Images/camera-plus.svg";
 
 import Compass from "./Line icons/Maps & travel/compass-03.svg";
 
+import Pause from "./Line icons/Media & devices/pause.svg";
 import Play from "./Line icons/Media & devices/play.svg";
 import Stop from "./Line icons/Media & devices/stop.svg";
 
@@ -398,6 +399,14 @@ export const FollowingIcon = (props) => {
   return (
     <StemstrIcon>
       <Following {...props} />
+    </StemstrIcon>
+  );
+};
+
+export const PauseIcon = (props) => {
+  return (
+    <StemstrIcon>
+      <Pause {...props} />
     </StemstrIcon>
   );
 };

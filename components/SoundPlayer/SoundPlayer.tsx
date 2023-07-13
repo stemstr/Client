@@ -17,7 +17,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { ChevronRightIcon, PlayIcon, StopIcon } from "../../icons/StemstrIcon";
+import { ChevronRightIcon, PauseIcon, PlayIcon } from "../../icons/StemstrIcon";
 import withStopClickPropagation, {
   WithStopClickPropagationProps,
 } from "../../utils/hoc/withStopClickPropagation";
@@ -109,7 +109,6 @@ const SoundPlayer = ({
     if (audioRef.current && isPlaying) {
       setIsPlaying(false);
       audioRef.current.pause();
-      audioRef.current.currentTime = 0;
     }
   };
 
@@ -215,7 +214,7 @@ const SoundPlayer = ({
                 })}
               >
                 {isPlaying ? (
-                  <StopIcon width={16} height={16} />
+                  <PauseIcon width={16} height={16} />
                 ) : (
                   <PlayIcon width={16} height={16} />
                 )}
