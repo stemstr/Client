@@ -116,6 +116,27 @@ export default function WaveForm({
     setScrubBars,
   ]);
 
+  const handleTouchMove = (event) => {
+    const rect = containerRef.current.getBoundingClientRect();
+    const { touches } = event;
+    const touchX = touches[0].clientX - rect.left; // X-coordinate of the touch
+    const totalWidth = containerRef.current.offsetWidth;
+    const newScrubTime = constrain(
+      (touchX / totalWidth) * duration,
+      0,
+      duration
+    );
+    setScrubTime(newScrubTime);
+  };
+
+  const handleTouchEnd = () => {
+    if (scrubTime) {
+      audioRef.current.currentTime = scrubTime;
+      play();
+      setScrubTime(null);
+    }
+  };
+
   const handleMouseMove = (event) => {
     if (duration) {
       const rect = containerRef.current.getBoundingClientRect();
@@ -143,6 +164,8 @@ export default function WaveForm({
 
   return (
     <div
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       onClick={handleClick}

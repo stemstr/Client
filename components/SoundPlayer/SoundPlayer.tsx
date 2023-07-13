@@ -144,7 +144,7 @@ const SoundPlayer = ({
         clearTimeout(audioTimeUpdateTimeoutRef.current);
       }
     };
-  });
+  }, []);
 
   const attachMedia = () => {
     if (!mediaAttached && hlsRef.current && audioRef.current) {
