@@ -99,7 +99,6 @@ const SoundPlayer = ({
 
   const handlePlayClick = () => {
     if (audioRef.current && !isPlaying) {
-      attachMedia();
       setIsPlaying(true);
       audioRef.current.play();
     }
@@ -145,7 +144,7 @@ const SoundPlayer = ({
         clearTimeout(audioTimeUpdateTimeoutRef.current);
       }
     };
-  }, []);
+  });
 
   const attachMedia = () => {
     if (!mediaAttached && hlsRef.current && audioRef.current) {
@@ -153,6 +152,10 @@ const SoundPlayer = ({
       setMediaAttached(true);
     }
   };
+
+  useEffect(() => {
+    attachMedia();
+  }, [hlsRef.current, audioRef.current]);
 
   const handleDragStart: DragEventHandler<HTMLDivElement> = (event) => {
     console.log(`${mimeType}:${fileName}:${blobUrl}`);
@@ -194,7 +197,7 @@ const SoundPlayer = ({
   }, [downloadStatus]);
 
   return downloadUrl ? (
-    <Box onMouseOver={() => attachMedia()} {...rest}>
+    <Box {...rest}>
       <Group spacing={0} className={classes.player}>
         <Stack justify="center" spacing={0} className={classes.playerSection}>
           <Group>
