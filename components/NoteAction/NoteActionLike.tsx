@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Group, Text } from "@mantine/core";
 import { motion, useAnimation } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
@@ -22,9 +23,12 @@ const NoteActionLike = () => {
   const { isLikedByCurrentUser, reactionCount } = useSelector(
     (state: AppState) => selectNoteState(state, noteId)
   );
+  const [isProcessingLike, setIsProcessingLike] = useState(false);
 
   const handleClickLike = () => {
-    if (!guardAuth()) return;
+    if (!guardAuth() || isLikedByCurrentUser || isProcessingLike) return;
+
+    setIsProcessingLike(true);
 
     let created_at = Math.floor(Date.now() / 1000);
     const { root, mentions, reply } = parseEventTags(event);
@@ -57,7 +61,8 @@ const NoteActionLike = () => {
           },
         });
       })
-      .catch(console.error);
+      .catch(console.error)
+      .finally(() => setIsProcessingLike(false));
   };
 
   return (
