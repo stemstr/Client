@@ -197,93 +197,95 @@ const SoundPlayer = ({
   }, [downloadStatus]);
 
   return downloadUrl ? (
-    <Box {...rest}>
-      <Group spacing={0} className={classes.player}>
-        <Stack justify="center" spacing={0} className={classes.playerSection}>
-          <Group>
-            <Center
-              onClick={isPlaying ? handlePauseClick : handlePlayClick}
-              sx={(theme) => ({
-                width: 36,
-                height: 36,
-                backgroundColor: theme.colors.purple[5],
-                borderRadius: theme.radius.xl,
-                color: theme.white,
-                cursor: "pointer",
-              })}
-            >
-              {isPlaying ? (
-                <StopIcon width={16} height={16} />
-              ) : (
-                <PlayIcon width={16} height={16} />
-              )}
-            </Center>
-
-            <audio
-              ref={audioRef}
-              onCanPlay={handleCanPlay}
-              onEnded={handleAudioEnded}
-            />
-
-            <WaveForm
-              data={waveformData}
-              currentTime={currentTime}
-              play={handlePlayClick}
-              audioRef={audioRef}
-              duration={duration}
-            />
-          </Group>
-          <Group position="apart">
-            <Text fz="xs" c="white">
-              {getFormattedPlayTime(currentTime)}
-            </Text>
-            <Text fz="xs" c="white">
-              {getFormattedPlayTime(duration)}
-            </Text>
-          </Group>
-        </Stack>
-        <Box
-          draggable
-          onDragStart={handleDragStart}
-          className={clsx({
-            [classes.dragHandle]: true,
-            [classes.dragHandleReady]: downloadStatus === "ready",
-          })}
-        >
-          <Box sx={{ display: "none" }}>
-            <img ref={dragImageRef} src="/logo.svg" />
-          </Box>
-          {downloadStatus === "ready" && (
-            <Group
-              spacing={0}
-              position="right"
-              align="center"
-              sx={{ height: "100%", overflowX: "hidden", flexWrap: "nowrap" }}
-            >
-              <Center sx={{ marginRight: -8 }}>
-                <ChevronRightIcon width={14} height={14} />
-              </Center>
-              <Center sx={(theme) => ({ color: theme.white })}>
-                <ChevronRightIcon width={14} height={14} />
-              </Center>
-              <Box
+    <Box p={1} className={classes.playerBorder} {...rest}>
+      <Box className={classes.playerBackdrop}>
+        <Group spacing={0} className={classes.player}>
+          <Stack justify="center" spacing={0} className={classes.playerSection}>
+            <Group>
+              <Center
+                onClick={isPlaying ? handlePauseClick : handlePlayClick}
                 sx={(theme) => ({
-                  marginLeft: 6,
-                  height: 24,
-                  borderLeft: `2px solid ${theme.colors.purple[2]}`,
+                  width: 36,
+                  height: 36,
+                  backgroundColor: theme.colors.purple[5],
+                  borderRadius: theme.radius.xl,
+                  color: theme.white,
+                  cursor: "pointer",
                 })}
+              >
+                {isPlaying ? (
+                  <StopIcon width={16} height={16} />
+                ) : (
+                  <PlayIcon width={16} height={16} />
+                )}
+              </Center>
+
+              <audio
+                ref={audioRef}
+                onCanPlay={handleCanPlay}
+                onEnded={handleAudioEnded}
               />
-              <Box
-                sx={(theme) => ({
-                  marginLeft: 2,
-                  height: 24,
-                  borderLeft: `2px solid ${theme.colors.purple[2]}`,
-                })}
+
+              <WaveForm
+                data={waveformData}
+                currentTime={currentTime}
+                play={handlePlayClick}
+                audioRef={audioRef}
+                duration={duration}
               />
             </Group>
-          )}
-        </Box>
-      </Group>
+            <Group position="apart">
+              <Text fz="xs" c="white">
+                {getFormattedPlayTime(currentTime)}
+              </Text>
+              <Text fz="xs" c="white">
+                {getFormattedPlayTime(duration)}
+              </Text>
+            </Group>
+          </Stack>
+          <Box
+            draggable
+            onDragStart={handleDragStart}
+            className={clsx({
+              [classes.dragHandle]: true,
+              [classes.dragHandleReady]: downloadStatus === "ready",
+            })}
+          >
+            <Box sx={{ display: "none" }}>
+              <img ref={dragImageRef} src="/logo.svg" />
+            </Box>
+            {downloadStatus === "ready" && (
+              <Group
+                spacing={0}
+                position="right"
+                align="center"
+                sx={{ height: "100%", overflowX: "hidden", flexWrap: "nowrap" }}
+              >
+                <Center sx={{ marginRight: -8 }}>
+                  <ChevronRightIcon width={14} height={14} />
+                </Center>
+                <Center sx={(theme) => ({ color: theme.white })}>
+                  <ChevronRightIcon width={14} height={14} />
+                </Center>
+                <Box
+                  sx={(theme) => ({
+                    marginLeft: 6,
+                    height: 24,
+                    borderLeft: `2px solid ${theme.colors.purple[2]}`,
+                  })}
+                />
+                <Box
+                  sx={(theme) => ({
+                    marginLeft: 2,
+                    height: 24,
+                    borderLeft: `2px solid ${theme.colors.purple[2]}`,
+                  })}
+                />
+              </Group>
+            )}
+          </Box>
+        </Group>
+      </Box>
     </Box>
   ) : (
     <></>

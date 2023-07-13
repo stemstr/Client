@@ -97,10 +97,10 @@ export default function WaveForm({
       return;
     }
 
-    const emptyBars = getBars(0, 1, "rgba(134, 90, 226, 0.48)");
-    const progressBars = getBars(0, playProgress, "#9747FF");
+    const emptyBars = getBars(0, 1, "#3B2D5E");
+    const progressBars = getBars(0, playProgress, "#865AE2");
     const scrubBars = scrubProgress
-      ? getBars(playProgress, scrubProgress, "#865AE2")
+      ? getBars(playProgress, scrubProgress, "#513C86")
       : null;
 
     setEmptyBars(emptyBars);

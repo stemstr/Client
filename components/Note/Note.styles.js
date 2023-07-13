@@ -8,10 +8,10 @@ const useStyles = createStyles((theme, _params, getRef) => ({
     borderColor: theme.colors.gray[4],
     borderRadius: theme.radius.lg,
     padding: theme.spacing.lg,
-    transition: "background-color .5s ease",
+    transition: "background-color .5s ease, border-color .5s ease",
     "&:hover": {
       [theme.fn.largerThan("xs")]: {
-        backgroundColor: theme.colors.dark[7],
+        borderColor: theme.fn.rgba(theme.white, 0.4),
         [`.${getRef("tag")}`]: {
           label: {
             // backgroundColor: theme.fn.rgba(theme.white, 0.06),
