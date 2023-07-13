@@ -42,8 +42,8 @@ const SoundPlayer = ({
   const audioTimeUpdateTimeoutRef = useRef<NodeJS.Timeout>();
   const hlsRef = useRef<Hls | null>(null);
   const [mediaAttached, setMediaAttached] = useState(false);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [scrubTime, setScrubTime] = useState(null);
+  const [currentTime, setCurrentTime] = useState<number>(0);
+  const [scrubTime, setScrubTime] = useState<number | null>(null);
   const [duration, setDuration] = useState<number | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const downloadUrl = useMemo(() => {
@@ -67,6 +67,11 @@ const SoundPlayer = ({
     return img;
   }, []);
   const [blobUrl, setBlobUrl] = useState<string | null>(null);
+  const playButtonSpinVelocity = 1000;
+  const playButtonSpin = useMemo(() => {
+    if (!scrubTime || !duration) return 0;
+    return ((scrubTime - currentTime) / duration) * playButtonSpinVelocity;
+  }, [scrubTime, currentTime, duration]);
 
   useEffect(() => {
     if (streamUrl) {
@@ -211,6 +216,8 @@ const SoundPlayer = ({
                   borderRadius: theme.radius.xl,
                   color: theme.white,
                   cursor: "pointer",
+                  transition: "transform .1s ease",
+                  transform: `rotate(${playButtonSpin}deg)`,
                 })}
               >
                 {isPlaying ? (
