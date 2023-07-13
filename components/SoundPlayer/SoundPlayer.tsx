@@ -233,6 +233,7 @@ const SoundPlayer = ({
                 scrubTime={scrubTime}
                 setScrubTime={setScrubTime}
                 play={handlePlayClick}
+                pause={handlePauseClick}
                 audioRef={audioRef}
                 duration={duration}
               />

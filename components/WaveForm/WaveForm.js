@@ -10,6 +10,7 @@ export default function WaveForm({
   setScrubTime,
   audioRef,
   play,
+  pause,
   duration,
 }) {
   const scrubProgress = useMemo(() => {
@@ -128,14 +129,15 @@ export default function WaveForm({
       duration
     );
     setScrubTime(newScrubTime);
+    pause();
   };
 
   const handleTouchEnd = () => {
     if (scrubTime) {
       audioRef.current.currentTime = scrubTime;
       play();
-      setScrubTime(null);
     }
+    setScrubTime(null);
   };
 
   const handleMouseMove = (event) => {
