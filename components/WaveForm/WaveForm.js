@@ -163,6 +163,7 @@ export default function WaveForm({
       audioRef.current.currentTime = scrubTime;
       play();
     }
+    setScrubTime(null);
   };
 
   return (
