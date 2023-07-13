@@ -118,7 +118,8 @@ export default function WaveForm({
 
   const handleMouseMove = (event) => {
     if (duration) {
-      const mouseX = event.clientX - containerRef.current.offsetLeft;
+      const rect = containerRef.current.getBoundingClientRect();
+      const mouseX = event.clientX - rect.left;
       const totalWidth = containerRef.current.offsetWidth;
       const newScrubTime = constrain(
         (mouseX / totalWidth) * duration,
