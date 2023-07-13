@@ -6,11 +6,12 @@ import { constrain } from "utils/common";
 export default function WaveForm({
   data,
   currentTime,
+  scrubTime,
+  setScrubTime,
   audioRef,
   play,
   duration,
 }) {
-  const [scrubTime, setScrubTime] = useState(null);
   const scrubProgress = useMemo(() => {
     return duration && scrubTime !== null ? scrubTime / duration : null;
   }, [scrubTime, duration]);

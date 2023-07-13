@@ -43,6 +43,7 @@ const SoundPlayer = ({
   const hlsRef = useRef<Hls | null>(null);
   const [mediaAttached, setMediaAttached] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
+  const [scrubTime, setScrubTime] = useState(null);
   const [duration, setDuration] = useState<number | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const downloadUrl = useMemo(() => {
@@ -229,6 +230,8 @@ const SoundPlayer = ({
               <WaveForm
                 data={waveformData}
                 currentTime={currentTime}
+                scrubTime={scrubTime}
+                setScrubTime={setScrubTime}
                 play={handlePlayClick}
                 audioRef={audioRef}
                 duration={duration}
@@ -236,7 +239,7 @@ const SoundPlayer = ({
             </Group>
             <Group position="apart">
               <Text fz="xs" c="white">
-                {getFormattedPlayTime(currentTime)}
+                {getFormattedPlayTime(scrubTime || currentTime)}
               </Text>
               <Text fz="xs" c="white">
                 {getFormattedPlayTime(duration)}
