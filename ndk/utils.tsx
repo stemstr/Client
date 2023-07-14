@@ -390,6 +390,8 @@ export const createZapRequest = async ({
     relays: Array.from(new Set(relays)),
   });
 
+  zapRequest.tags.push(["client", "stemstr.app"]);
+
   // add the event tag if it exists; this supports both 'e' and 'a' tags
   if (zappedEvent) {
     const tag = zappedEvent.tagReference();
