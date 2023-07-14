@@ -16,7 +16,7 @@ export const MentionLink = ({ nostrUri }: { nostrUri: string }) => {
 
   const user = useUser(pubkey);
   const formatDisplayName = (user?: NDKUser) => {
-    if (!user?.profile || !user?.profile.name || !user?.profile.displayName) {
+    if (!user?.profile?.name && !user?.profile?.displayName) {
       return;
     }
 
@@ -25,6 +25,7 @@ export const MentionLink = ({ nostrUri }: { nostrUri: string }) => {
   const [anchorText, setAnchorText] = useState(
     formatDisplayName(user) ?? nostrUri
   );
+  console.log(anchorText);
   const isAnchorTextFormattedAsMention = anchorText[0] === "@";
 
   useEffect(() => {
@@ -33,6 +34,7 @@ export const MentionLink = ({ nostrUri }: { nostrUri: string }) => {
     }
 
     const mention = formatDisplayName(user);
+    console.log(formatDisplayName(user));
 
     if (mention) {
       setAnchorText(mention);
