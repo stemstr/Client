@@ -1,3 +1,4 @@
+import { isDesktop } from "react-device-detect";
 import { Group, Stack, Text } from "@mantine/core";
 import BackButton from "components/BackButton/BackButton";
 import { SettingPubkey } from "components/Settings/SettingPubkey";
@@ -29,7 +30,8 @@ export default function Settings() {
       <Stack pt="md" pl="md" pr="md" spacing="sm" align="center">
         <SettingPubkey />
         <SettingNsec />
-        <SettingDefaultZapWallet />
+        {/* wallet chooser is only used on mobile */}
+        {!isDesktop && <SettingDefaultZapWallet />}
         <SettingLogout />
       </Stack>
     </>

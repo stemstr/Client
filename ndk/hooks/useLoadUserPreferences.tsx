@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { isDesktop } from "react-device-detect";
 import { selectNip78State } from "../../store/Nip78";
 import { useNDK } from "../NDKProvider";
 import { NDKEvent, NDKKind } from "@nostr-dev-kit/ndk";
@@ -21,7 +22,8 @@ export default function useLoadUserPreferences() {
       hasCompletedInitialFetch ||
       !ndk ||
       !currentUser ||
-      isFetching.current
+      isFetching.current ||
+      isDesktop // currently, only need to fetch user preferences on mobile
     ) {
       return;
     }
