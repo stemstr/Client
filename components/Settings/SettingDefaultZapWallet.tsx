@@ -5,15 +5,18 @@ import { DEFAULT_LIGHTNING_WALLETS } from "../../constants";
 import { useNDK } from "../../ndk/NDKProvider";
 import useCurrentUser from "../../hooks/useCurrentUser";
 import { createAppDataEventTemplate } from "../../ndk/utils";
-import { useDispatch } from "react-redux";
-import { type UserPreferences, setUserPreferences } from "../../store/Nip78";
-import useUserPreferences from "../../ndk/hooks/useUserPreferences";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  type UserPreferences,
+  setUserPreferences,
+  selectNip78State,
+} from "../../store/Nip78";
 
 export function SettingDefaultZapWallet() {
   const { ndk, stemstrRelaySet } = useNDK();
   const dispatch = useDispatch();
   const currentUser = useCurrentUser();
-  const userPreferences = useUserPreferences();
+  const { userPreferences } = useSelector(selectNip78State);
   const handleChange = async (
     value: keyof typeof DEFAULT_LIGHTNING_WALLETS
   ) => {

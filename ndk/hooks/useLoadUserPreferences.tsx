@@ -9,10 +9,9 @@ import {
   setHasCompletedInitialFetch,
 } from "../../store/Nip78";
 
-export default function useUserPreferences() {
+export default function useLoadUserPreferences() {
   const { ndk, stemstrRelaySet } = useNDK();
-  const { userPreferences, hasCompletedInitialFetch } =
-    useSelector(selectNip78State);
+  const { hasCompletedInitialFetch } = useSelector(selectNip78State);
   const dispatch = useDispatch();
   const currentUser = useCurrentUser();
   const isFetching = useRef(false);
@@ -66,6 +65,4 @@ export default function useUserPreferences() {
         isFetching.current = false;
       });
   }, [hasCompletedInitialFetch, ndk, currentUser, stemstrRelaySet, dispatch]);
-
-  return userPreferences;
 }
