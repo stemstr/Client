@@ -1,5 +1,5 @@
 import { Anchor, Avatar, Box, Center, Group, Stack, Text } from "@mantine/core";
-import { NDKEvent, NDKUser } from "@nostr-dev-kit/ndk";
+import { NDKEvent, NDKUser, NostrEvent } from "@nostr-dev-kit/ndk";
 import { FeedNote } from "components/Note/Note";
 import useStyles from "components/NotificationView/NotificationView.styles";
 import { Route } from "enums";
@@ -29,10 +29,26 @@ export default function NotificationView(props: NotificationViewProps) {
   const { classes } = useStyles();
   const { notification } = props;
   const router = useRouter();
-  const profileIds = useMemo(
-    () => notification.events.map((event) => event.pubkey),
-    [notification.events, notification.events.length]
-  );
+  const profileIds = useMemo(() => {
+    // Get profile ids for zap events
+    if (notification.kind === Kind.Zap) {
+      const newProfileIds: string[] = [];
+      notification.events.forEach((event) => {
+        // Parse zap request event from description tag
+        const descriptionTag = event.tags.find(
+          (tag) => tag[0] === "description"
+        );
+        if (!descriptionTag) return;
+        try {
+          const description = JSON.parse(descriptionTag[1]) as NostrEvent;
+          if (description.pubkey) newProfileIds.push(description.pubkey);
+        } catch (err) {}
+      });
+      return newProfileIds;
+    }
+    // Get profile ids for all other events
+    return notification.events.map((event) => event.pubkey);
+  }, [notification.events, notification.events.length]);
   const users: NDKUser[] = useUsers(profileIds);
   const [referencedEvent, setReferencedEvent] = useState<
     NDKEvent | undefined
