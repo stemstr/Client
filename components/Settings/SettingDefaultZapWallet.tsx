@@ -2,9 +2,42 @@ import { Select } from "@mantine/core";
 import SettingsItem from "./SettingsItem";
 import { WalletIcon } from "icons/StemstrIcon";
 import { DEFAULT_LIGHTNING_WALLETS } from "../../constants";
+import { useNDK } from "../../ndk/NDKProvider";
+import useCurrentUser from "../../hooks/useCurrentUser";
+import { createAppDataEventTemplate } from "../../ndk/utils";
+import { useDispatch } from "react-redux";
+import { type UserPreferences, setUserPreferences } from "../../store/Nip78";
+import useUserPreferences from "../../ndk/hooks/useUserPreferences";
 
 export function SettingDefaultZapWallet() {
-  // TODO: load saved default wallet and save default wallet on selection using nip-78
+  const { ndk, stemstrRelaySet } = useNDK();
+  const dispatch = useDispatch();
+  const currentUser = useCurrentUser();
+  const userPreferences = useUserPreferences();
+  const handleChange = async (
+    value: keyof typeof DEFAULT_LIGHTNING_WALLETS
+  ) => {
+    if (!currentUser || !ndk?.signer) {
+      return;
+    }
+
+    const unencryptedContent: UserPreferences = {
+      ...userPreferences,
+      defaultLightningWallet: value,
+    };
+    const customAppDataEvent = createAppDataEventTemplate({
+      ndk,
+      content: await ndk.signer.encrypt(
+        currentUser,
+        JSON.stringify(unencryptedContent)
+      ),
+    });
+
+    customAppDataEvent
+      .publish(stemstrRelaySet)
+      .then(() => dispatch(setUserPreferences(unencryptedContent)))
+      .catch(console.error);
+  };
 
   return (
     <SettingsItem
@@ -12,10 +45,12 @@ export function SettingDefaultZapWallet() {
       title="Default zap wallet"
       description={
         <Select
+          value={userPreferences.defaultLightningWallet}
           placeholder="Select wallet"
           data={Object.entries(DEFAULT_LIGHTNING_WALLETS).map(
             ([value, { displayName }]) => ({ value, label: displayName })
           )}
+          onChange={handleChange}
         />
       }
     />

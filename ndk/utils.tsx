@@ -6,6 +6,7 @@ import NDK, {
   NDKUser,
   NDKUserProfile,
   NostrEvent,
+  NDKKind,
 } from "@nostr-dev-kit/ndk";
 import {
   nip19,
@@ -452,4 +453,47 @@ export const extractMentionPubkeys = (event: NDKEvent) => {
   });
 
   return pubkeys;
+};
+
+interface CreateEventTemplateParams {
+  ndk: NDK;
+  kind: NDKKind;
+  content?: string;
+  tags?: NDKTag[];
+}
+
+export const createEventTemplate = ({
+  ndk,
+  kind,
+  content = "",
+  tags,
+}: CreateEventTemplateParams) => {
+  const eventTemplate = new NDKEvent(ndk);
+
+  eventTemplate.kind = kind;
+  eventTemplate.created_at = Math.floor(Date.now() / 1000);
+  eventTemplate.content = content;
+
+  if (tags) {
+    eventTemplate.tags = tags;
+  }
+
+  return eventTemplate;
+};
+
+export const createAppDataEventTemplate = ({
+  ndk,
+  content,
+}: {
+  ndk: NDK;
+  content: string;
+}) => {
+  const eventTemplate = createEventTemplate({
+    ndk,
+    kind: NDKKind.AppSpecificData,
+    content,
+    tags: [["d", "stemstr"]],
+  });
+
+  return eventTemplate;
 };
