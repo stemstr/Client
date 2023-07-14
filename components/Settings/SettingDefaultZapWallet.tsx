@@ -28,6 +28,9 @@ export function SettingDefaultZapWallet() {
       ...userPreferences,
       defaultLightningWallet: value,
     };
+
+    dispatch(setUserPreferences(unencryptedContent));
+
     const customAppDataEvent = createAppDataEventTemplate({
       ndk,
       content: await ndk.signer.encrypt(
@@ -36,10 +39,7 @@ export function SettingDefaultZapWallet() {
       ),
     });
 
-    customAppDataEvent
-      .publish(stemstrRelaySet)
-      .then(() => dispatch(setUserPreferences(unencryptedContent)))
-      .catch(console.error);
+    customAppDataEvent.publish(stemstrRelaySet).catch(console.error);
   };
 
   return (
