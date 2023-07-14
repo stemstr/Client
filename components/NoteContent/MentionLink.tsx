@@ -25,7 +25,6 @@ export const MentionLink = ({ nostrUri }: { nostrUri: string }) => {
   const [anchorText, setAnchorText] = useState(
     formatDisplayName(user) ?? nostrUri
   );
-  console.log(anchorText);
   const isAnchorTextFormattedAsMention = anchorText[0] === "@";
 
   useEffect(() => {
