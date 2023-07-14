@@ -1,3 +1,4 @@
+import { isDesktop } from "react-device-detect";
 import { Group, Stack, Text } from "@mantine/core";
 import BackButton from "components/BackButton/BackButton";
 import { SettingPubkey } from "components/Settings/SettingPubkey";
@@ -7,6 +8,7 @@ import useAuth from "hooks/useAuth";
 import { ChevronLeftIcon } from "icons/StemstrIcon";
 import Head from "next/head";
 import { SettingNsec } from "components/Settings/SettingNsec";
+import { SettingDefaultZapWallet } from "../../components/Settings/SettingDefaultZapWallet";
 
 export default function Settings() {
   const { guardAuth, isAuthenticated } = useAuth();
@@ -28,6 +30,8 @@ export default function Settings() {
       <Stack pt="md" pl="md" pr="md" spacing="sm" align="center">
         <SettingPubkey />
         <SettingNsec />
+        {/* wallet chooser is only used on mobile */}
+        {!isDesktop && <SettingDefaultZapWallet />}
         <SettingLogout />
       </Stack>
     </>

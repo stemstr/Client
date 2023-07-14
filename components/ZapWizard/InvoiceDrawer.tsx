@@ -26,6 +26,7 @@ import {
   updateZapsAmountTotal,
 } from "../../store/Notes";
 import useAuth from "../../hooks/useAuth";
+import useLightningWalletUri from "../../hooks/useLightningWalletUri";
 
 interface InvoiceDrawerProps {
   isOpen: boolean;
@@ -47,6 +48,7 @@ const InvoiceDrawer = ({
   const dispatch = useDispatch();
   const { ndk } = useNDK();
   const { zapRecipient, willShowCloseButton, zappedEvent } = useZapWizard();
+  const lightningWalletUri = useLightningWalletUri(invoice);
   const [isPayWithWalletButtonLoading, setIsPayWithWalletButtonLoading] =
     useState(false);
   const zapRecipientHexPubkey = zapRecipient.hexpubkey();
@@ -99,7 +101,7 @@ const InvoiceDrawer = ({
 
         setIsPayWithWalletButtonLoading(false);
       } else if (!isDesktop) {
-        window.location.href = `lightning:${invoice}`;
+        window.location.href = lightningWalletUri;
       }
     };
 

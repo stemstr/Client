@@ -1,5 +1,5 @@
 import { Anchor, Box, Group, Stack, Text } from "@mantine/core";
-import { MouseEventHandler } from "react";
+import { type MouseEventHandler, type ReactNode } from "react";
 import useStyles from "components/Settings/Settings.styles";
 import { ChevronRightIcon } from "icons/StemstrIcon";
 import Link from "next/link";
@@ -7,7 +7,7 @@ import Link from "next/link";
 export type SettingsItemProps = {
   Icon: (props: any) => JSX.Element;
   title: string;
-  description: string;
+  description: ReactNode;
   href?: string;
   onClick?: MouseEventHandler<HTMLDivElement>;
   extra?: JSX.Element;

@@ -1,15 +1,18 @@
-import { AppShell, Box } from "@mantine/core";
+import { AppShell } from "@mantine/core";
 import { useRouter } from "next/router";
 
 import BottomNavigation from "../BottomNavigation/BottomNavigation";
 import PostSheet from "../PostSheet/PostSheet";
 import FileDropOverlay from "../FileDropOverlay/FileDropOverlay";
 import { Route } from "enums/routes";
+import useLoadUserPreferences from "../../ndk/hooks/useLoadUserPreferences";
 
 export const ApplicationContainer = ({
   children,
 }: React.PropsWithChildren<{}>) => {
   const router = useRouter();
+
+  useLoadUserPreferences();
 
   return (
     <AppShell
