@@ -17,7 +17,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { ChevronRightIcon, PlayIcon, StopIcon } from "../../icons/StemstrIcon";
+import { ChevronRightIcon, PauseIcon, PlayIcon } from "../../icons/StemstrIcon";
 import withStopClickPropagation, {
   WithStopClickPropagationProps,
 } from "../../utils/hoc/withStopClickPropagation";
@@ -42,11 +42,9 @@ const SoundPlayer = ({
   const audioTimeUpdateTimeoutRef = useRef<NodeJS.Timeout>();
   const hlsRef = useRef<Hls | null>(null);
   const [mediaAttached, setMediaAttached] = useState(false);
-  const [currentTime, setCurrentTime] = useState(0);
+  const [currentTime, setCurrentTime] = useState<number>(0);
+  const [scrubTime, setScrubTime] = useState<number | null>(null);
   const [duration, setDuration] = useState<number | null>(null);
-  const playProgress = useMemo(() => {
-    return duration ? currentTime / duration : 0;
-  }, [currentTime, duration]);
   const [isPlaying, setIsPlaying] = useState(false);
   const downloadUrl = useMemo(() => {
     const downloadUrlTag =
@@ -55,11 +53,6 @@ const SoundPlayer = ({
   }, [event]);
   const [mimeType, setMimeType] = useState("");
   const [fileName, setFileName] = useState("");
-  const fileHash = useMemo(() => {
-    if (!downloadUrl) return null;
-    let url = new URL(downloadUrl);
-    return url.pathname.split("/").pop();
-  }, [downloadUrl]);
   const dragImageRef = useRef(null);
   const streamUrl = useMemo(() => {
     const streamUrlTag =
@@ -74,6 +67,11 @@ const SoundPlayer = ({
     return img;
   }, []);
   const [blobUrl, setBlobUrl] = useState<string | null>(null);
+  const playButtonSpinVelocity = 1000;
+  const playButtonSpin = useMemo(() => {
+    if (!scrubTime || !duration) return 0;
+    return ((scrubTime - currentTime) / duration) * playButtonSpinVelocity;
+  }, [scrubTime, currentTime, duration]);
 
   useEffect(() => {
     if (streamUrl) {
@@ -107,7 +105,6 @@ const SoundPlayer = ({
 
   const handlePlayClick = () => {
     if (audioRef.current && !isPlaying) {
-      attachMedia();
       setIsPlaying(true);
       audioRef.current.play();
     }
@@ -117,7 +114,6 @@ const SoundPlayer = ({
     if (audioRef.current && isPlaying) {
       setIsPlaying(false);
       audioRef.current.pause();
-      audioRef.current.currentTime = 0;
     }
   };
 
@@ -162,6 +158,10 @@ const SoundPlayer = ({
     }
   };
 
+  useEffect(() => {
+    attachMedia();
+  }, [hlsRef.current, audioRef.current]);
+
   const handleDragStart: DragEventHandler<HTMLDivElement> = (event) => {
     console.log(`${mimeType}:${fileName}:${blobUrl}`);
     event.dataTransfer.setData(
@@ -202,88 +202,100 @@ const SoundPlayer = ({
   }, [downloadStatus]);
 
   return downloadUrl ? (
-    <Box {...rest}>
-      <Group spacing={0} className={classes.player}>
-        <Stack justify="center" spacing={0} className={classes.playerSection}>
-          <Group>
-            <Center
-              onClick={isPlaying ? handlePauseClick : handlePlayClick}
-              onMouseOver={() => attachMedia()}
-              sx={(theme) => ({
-                width: 36,
-                height: 36,
-                backgroundColor: theme.colors.purple[5],
-                borderRadius: theme.radius.xl,
-                color: theme.white,
-                cursor: "pointer",
-              })}
-            >
-              {isPlaying ? (
-                <StopIcon width={16} height={16} />
-              ) : (
-                <PlayIcon width={16} height={16} />
-              )}
-            </Center>
-
-            <audio
-              ref={audioRef}
-              onCanPlay={handleCanPlay}
-              onEnded={handleAudioEnded}
-            />
-
-            <WaveForm data={waveformData} playProgress={playProgress} />
-          </Group>
-          <Group position="apart">
-            <Text fz="xs" c="white">
-              {getFormattedPlayTime(currentTime)}
-            </Text>
-            <Text fz="xs" c="white">
-              {getFormattedPlayTime(duration)}
-            </Text>
-          </Group>
-        </Stack>
-        <Box
-          draggable
-          onDragStart={handleDragStart}
-          className={clsx({
-            [classes.dragHandle]: true,
-            [classes.dragHandleReady]: downloadStatus === "ready",
-          })}
-        >
-          <Box sx={{ display: "none" }}>
-            <img ref={dragImageRef} src="/logo.svg" />
-          </Box>
-          {downloadStatus === "ready" && (
-            <Group
-              spacing={0}
-              position="right"
-              align="center"
-              sx={{ height: "100%", overflowX: "hidden", flexWrap: "nowrap" }}
-            >
-              <Center sx={{ marginRight: -8 }}>
-                <ChevronRightIcon width={14} height={14} />
-              </Center>
-              <Center sx={(theme) => ({ color: theme.white })}>
-                <ChevronRightIcon width={14} height={14} />
-              </Center>
-              <Box
+    <Box p={1} className={classes.playerBorder} {...rest}>
+      <Box className={classes.playerBackdrop}>
+        <Group spacing={0} className={classes.player}>
+          <Stack justify="center" spacing={0} className={classes.playerSection}>
+            <Group>
+              <Center
+                onClick={isPlaying ? handlePauseClick : handlePlayClick}
                 sx={(theme) => ({
-                  marginLeft: 6,
-                  height: 24,
-                  borderLeft: `2px solid ${theme.colors.purple[2]}`,
+                  width: 36,
+                  height: 36,
+                  backgroundColor: theme.colors.purple[5],
+                  borderRadius: theme.radius.xl,
+                  color: theme.white,
+                  cursor: "pointer",
+                  transition: "transform .1s ease",
+                  transform: `rotate(${playButtonSpin}deg)`,
                 })}
+              >
+                {isPlaying ? (
+                  <PauseIcon width={16} height={16} />
+                ) : (
+                  <PlayIcon width={16} height={16} />
+                )}
+              </Center>
+
+              <audio
+                ref={audioRef}
+                onCanPlay={handleCanPlay}
+                onEnded={handleAudioEnded}
               />
-              <Box
-                sx={(theme) => ({
-                  marginLeft: 2,
-                  height: 24,
-                  borderLeft: `2px solid ${theme.colors.purple[2]}`,
-                })}
+
+              <WaveForm
+                data={waveformData}
+                currentTime={currentTime}
+                scrubTime={scrubTime}
+                setScrubTime={setScrubTime}
+                play={handlePlayClick}
+                pause={handlePauseClick}
+                audioRef={audioRef}
+                duration={duration}
               />
             </Group>
-          )}
-        </Box>
-      </Group>
+            <Group position="apart">
+              <Text fz="xs" c="white">
+                {getFormattedPlayTime(scrubTime || currentTime)}
+              </Text>
+              <Text fz="xs" c="white">
+                {getFormattedPlayTime(duration)}
+              </Text>
+            </Group>
+          </Stack>
+          <Box
+            draggable
+            onDragStart={handleDragStart}
+            className={clsx({
+              [classes.dragHandle]: true,
+              [classes.dragHandleReady]: downloadStatus === "ready",
+            })}
+          >
+            <Box sx={{ display: "none" }}>
+              <img ref={dragImageRef} src="/logo.svg" />
+            </Box>
+            {downloadStatus === "ready" && (
+              <Group
+                spacing={0}
+                position="right"
+                align="center"
+                sx={{ height: "100%", overflowX: "hidden", flexWrap: "nowrap" }}
+              >
+                <Center sx={{ marginRight: -8 }}>
+                  <ChevronRightIcon width={14} height={14} />
+                </Center>
+                <Center sx={(theme) => ({ color: theme.white })}>
+                  <ChevronRightIcon width={14} height={14} />
+                </Center>
+                <Box
+                  sx={(theme) => ({
+                    marginLeft: 6,
+                    height: 24,
+                    borderLeft: `2px solid ${theme.colors.purple[2]}`,
+                  })}
+                />
+                <Box
+                  sx={(theme) => ({
+                    marginLeft: 2,
+                    height: 24,
+                    borderLeft: `2px solid ${theme.colors.purple[2]}`,
+                  })}
+                />
+              </Group>
+            )}
+          </Box>
+        </Group>
+      </Box>
     </Box>
   ) : (
     <></>
