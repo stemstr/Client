@@ -10,7 +10,7 @@ export function useNotifications({ pubkey }: { pubkey: string }) {
   );
   const filter = useMemo<NDKFilter>(
     () => ({
-      kinds: [Kind.Reaction, Kind.Text, Kind.Zap, 1808 as Kind, 6 as Kind],
+      kinds: [Kind.Reaction, Kind.Text, 1808 as Kind, 6 as Kind],
       "#p": [pubkey],
     }),
     []
