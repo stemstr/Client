@@ -16,7 +16,7 @@ export const MentionLink = ({ nostrUri }: { nostrUri: string }) => {
 
   const user = useUser(pubkey);
   const formatDisplayName = (user?: NDKUser) => {
-    if (!user?.profile || !user?.profile.name || !user?.profile.displayName) {
+    if (!user?.profile?.name && !user?.profile?.displayName) {
       return;
     }
 
