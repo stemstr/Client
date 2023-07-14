@@ -33,7 +33,6 @@ export const MentionLink = ({ nostrUri }: { nostrUri: string }) => {
     }
 
     const mention = formatDisplayName(user);
-    console.log(formatDisplayName(user));
 
     if (mention) {
       setAnchorText(mention);
