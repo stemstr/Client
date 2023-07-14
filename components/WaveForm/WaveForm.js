@@ -194,32 +194,35 @@ export default function WaveForm({
         preserveAspectRatio="none"
       >
         {[emptyBars, progressBars, scrubBars].map(
-          (bars) =>
+          (bars, barsIndex) =>
             bars &&
-            bars.map((bar, index) => (
-              <g key={index}>
+            bars.map((bar, barIndex) => (
+              <g key={`${barsIndex}-${barIndex}`}>
+                {/* Filled part of bar */}
                 <motion.rect
                   initial={{ scaleY: 1 }}
-                  x={bar.x}
-                  y={bar.y}
-                  width={bar.filledWidth}
-                  height={bar.barHeight}
-                  fill={bar.fillColor}
-                />
-                <motion.rect
-                  initial={{ scaleY: 1 }}
+                  // Upload animation
                   animate={
-                    !data
+                    !data && barsIndex === 0
                       ? {
                           scaleY: [1, 0.5, 1],
                           transition: {
-                            duration: 0.5 + index * 0.05,
+                            duration: 0.5 + barIndex * 0.05,
                             repeat: Infinity,
                             repeatType: "loop",
                           },
                         }
                       : undefined
                   }
+                  x={bar.x}
+                  y={bar.y}
+                  width={bar.filledWidth}
+                  height={bar.barHeight}
+                  fill={bar.fillColor}
+                />
+                {/* Empty part of bar */}
+                <motion.rect
+                  initial={{ scaleY: 1 }}
                   x={bar.x + bar.filledWidth}
                   y={bar.y}
                   width={bar.emptyWidth}

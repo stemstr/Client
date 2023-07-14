@@ -5,8 +5,8 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   PlusIcon,
   PlayIcon,
-  StopIcon,
   CompassIcon,
+  PauseIcon,
 } from "../../../icons/StemstrIcon";
 import WaveForm from "../../WaveForm/WaveForm";
 import Hls from "hls.js";
@@ -14,6 +14,7 @@ import { useRouter } from "next/router";
 import { closeSheet } from "../../../store/Sheets";
 import { acceptedMimeTypes } from "../../../utils/media";
 import { Route } from "../../../enums";
+import useStyles from "components/Fields/SoundPicker/SoundPicker.styles";
 
 export default function SoundPicker({
   form,
@@ -32,13 +33,17 @@ export default function SoundPicker({
   const hlsRef = useRef(null);
   const inputRef = useRef(null);
   const [currentTime, setCurrentTime] = useState(0);
+  const [scrubTime, setScrubTime] = useState(null);
   const [duration, setDuration] = useState(null);
-  const playProgress = useMemo(() => {
-    return duration ? currentTime / duration : 0;
-  }, [currentTime, duration]);
+  const { classes } = useStyles();
   const [streamUrl, setStreamUrl] = useState(null);
   const [mediaAttached, setMediaAttached] = useState(false);
   const [soundPickerFocused, setSoundPickerFocused] = useState(false);
+  const playButtonSpinVelocity = 1000;
+  const playButtonSpin = useMemo(() => {
+    if (!scrubTime || !duration) return 0;
+    return ((scrubTime - currentTime) / duration) * playButtonSpinVelocity;
+  }, [scrubTime, currentTime, duration]);
 
   const handleAudioChange = async () => {
     form.setValues((prev) => ({
@@ -161,7 +166,6 @@ export default function SoundPicker({
     if (audioRef.current && isPlaying) {
       setIsPlaying(false);
       audioRef.current.pause();
-      audioRef.current.currentTime = 0;
     }
   };
 
@@ -219,86 +223,102 @@ export default function SoundPicker({
           onBlur={() => setSoundPickerFocused(false)}
         />
       </Box>
-      <Group
-        spacing={(isUploading || !rest.value) && 0}
+      <Box
+        p={1}
+        className={classes.pickerBorder}
         sx={(theme) => ({
-          background: isDragging
-            ? "linear-gradient(180deg, #383864 0%, rgba(71, 47, 111, 0.21) 100%)"
-            : "linear-gradient(180deg, rgba(44, 44, 44, 0) 0%, rgba(134, 90, 226, 0.4) 100%);",
-          padding: "14px 16px",
-          borderRadius: 8,
-          border: "1px solid",
-          borderColor: soundPickerFocused
+          background: soundPickerFocused
             ? theme.colors.purple[5]
-            : "rgba(187, 134, 252, 0.4)",
-          height: 96,
-          transition: "gap .5s ease",
+            : "linear-gradient(180deg, rgba(187, 134, 252, 0.4), rgba(151, 71, 255, 1));",
         })}
       >
-        <audio
-          ref={audioRef}
-          onEnded={handleAudioEnded}
-          onCanPlay={handleCanPlay}
-        />
-        {(isUploading || streamUrl) && (
-          <Center
-            onClick={isPlaying ? handlePauseClick : handlePlayClick}
+        <Box className={classes.pickerBackdrop}>
+          <Group
+            spacing={(isUploading || !rest.value) && 0}
+            className={classes.picker}
             sx={(theme) => ({
-              opacity: !!streamUrl,
-              width: isUploading || !rest.value ? 0 : 36,
-              height: 36,
-              backgroundColor: theme.colors.purple[5],
-              borderRadius: theme.radius.xl,
-              color: theme.white,
-              cursor: "pointer",
-              transition: "width .5s ease, opacity .5s ease",
+              background: isDragging
+                ? "linear-gradient(180deg, #383864 0%, rgba(71, 47, 111, 0.21) 100%)"
+                : "linear-gradient(180deg, rgba(44, 44, 44, 0) 50%, rgba(134, 90, 226, 0.4) 100%);",
             })}
           >
-            {isPlaying ? (
-              <StopIcon width={16} height={16} />
-            ) : (
-              <PlayIcon width={16} height={16} />
+            <audio
+              ref={audioRef}
+              onEnded={handleAudioEnded}
+              onCanPlay={handleCanPlay}
+            />
+            {(isUploading || streamUrl) && (
+              <Center
+                onClick={isPlaying ? handlePauseClick : handlePlayClick}
+                sx={(theme) => ({
+                  opacity: !!streamUrl,
+                  width: isUploading || !rest.value ? 0 : 36,
+                  height: 36,
+                  backgroundColor: theme.colors.purple[5],
+                  borderRadius: theme.radius.xl,
+                  color: theme.white,
+                  cursor: "pointer",
+                  transition:
+                    "width .5s ease, opacity .5s ease, transform .1s ease",
+                  transform: `rotate(${playButtonSpin}deg)`,
+                })}
+              >
+                {isPlaying ? (
+                  <PauseIcon width={16} height={16} />
+                ) : (
+                  <PlayIcon width={16} height={16} />
+                )}
+              </Center>
             )}
-          </Center>
-        )}
-        {rest.value && (
-          <WaveForm data={waveformData} playProgress={playProgress} />
-        )}
-        {(isUploading || !rest.value) && (
-          <Group
-            position="center"
-            sx={{ position: "absolute", left: 0, right: 0 }}
-          >
-            <Center
-              onClick={!isUploading ? handleSelectClick : () => {}}
-              sx={(theme) => ({
-                padding: `4px 8px`,
-                backgroundColor: theme.colors.purple[4],
-                borderRadius: theme.radius.xl,
-                color: theme.white,
-                cursor: !isUploading && "pointer",
-                color: theme.colors.purple[5],
-                border: `1px solid ${theme.colors.purple[5]}`,
-                background: `linear-gradient(135deg, #F9F5FF 0%, #A17BF0 100%)`,
-              })}
-            >
-              {isUploading ? (
-                <CompassIcon color="white" width={16} height={16} />
-              ) : (
-                <PlusIcon width={16} height={16} />
-              )}
+            {rest.value && (
+              <WaveForm
+                data={waveformData}
+                currentTime={currentTime}
+                scrubTime={scrubTime}
+                setScrubTime={setScrubTime}
+                audioRef={audioRef}
+                play={handlePlayClick}
+                pause={handlePauseClick}
+                duration={duration}
+              />
+            )}
+            {(isUploading || !rest.value) && (
+              <Group
+                position="center"
+                sx={{ position: "absolute", left: 0, right: 0 }}
+              >
+                <Center
+                  onClick={!isUploading ? handleSelectClick : () => {}}
+                  sx={(theme) => ({
+                    padding: `4px 8px`,
+                    backgroundColor: theme.colors.purple[4],
+                    borderRadius: theme.radius.xl,
+                    color: theme.white,
+                    cursor: !isUploading && "pointer",
+                    color: theme.colors.purple[5],
+                    border: `1px solid ${theme.colors.purple[5]}`,
+                    background: `linear-gradient(135deg, #F9F5FF 0%, #A17BF0 100%)`,
+                  })}
+                >
+                  {isUploading ? (
+                    <CompassIcon color="white" width={16} height={16} />
+                  ) : (
+                    <PlusIcon width={16} height={16} />
+                  )}
 
-              <Text fz="xs" ml={2}>
-                {isUploading
-                  ? "Processing sound"
-                  : isDragging
-                  ? "Drop sound"
-                  : "Add sound"}
-              </Text>
-            </Center>
+                  <Text fz="xs" ml={2}>
+                    {isUploading
+                      ? "Processing sound"
+                      : isDragging
+                      ? "Drop sound"
+                      : "Add sound"}
+                  </Text>
+                </Center>
+              </Group>
+            )}
           </Group>
-        )}
-      </Group>
+        </Box>
+      </Box>
     </>
   );
 }
