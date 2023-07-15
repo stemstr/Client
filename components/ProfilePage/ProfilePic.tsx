@@ -4,21 +4,22 @@ import { useUser } from "ndk/hooks/useUser";
 
 type ProfilePicProps = {
   pubkey: string;
+  size?: number;
 };
 
-export default function ProfilePic({ pubkey }: ProfilePicProps) {
+export default function ProfilePic({ pubkey, size }: ProfilePicProps) {
   const user = useUser(pubkey);
   const theme = useMantineTheme();
   const isDesktop = useMediaQuery(`(min-width: ${theme.breakpoints.xs}px`);
-  const size = isDesktop ? 100 : 64;
+  const renderedSize = size ? size : isDesktop ? 100 : 64;
 
   return (
     <Avatar
       src={user?.profile?.image}
       alt={user?.profile?.name}
-      size={size}
-      radius={size / 2}
-      mt={-size / 2}
+      size={renderedSize}
+      radius={renderedSize / 2}
+      mt={-renderedSize / 2}
     />
   );
 }
