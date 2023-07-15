@@ -1,17 +1,37 @@
-import { useEffect, useMemo, useState } from "react";
-import { useFeed } from "./useFeed";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  PropsWithChildren,
+  useMemo,
+} from "react";
 import { NDKEvent, NDKFilter, NostrEvent } from "@nostr-dev-kit/ndk";
+import { useSelector } from "react-redux";
+import { selectAuthState } from "store/Auth";
 import { Kind } from "nostr-tools";
-import { parseEventTags } from "ndk/utils";
+import { parseEventTags } from "./utils";
+import { useFeed } from "./hooks/useFeed";
 
-export function useNotifications({ pubkey }: { pubkey: string }) {
+interface NostrNotificationsContext {
+  notifications: NotificationsMap;
+}
+
+// Create a context to store the NostrNotifications instance
+const NostrNotificationsContext = createContext<NostrNotificationsContext>({
+  notifications: new Map(),
+});
+
+// NostrNotificationsProvider function component
+const NostrNotificationsProvider = ({ children }: PropsWithChildren) => {
+  const { pk: pubkey } = useSelector(selectAuthState);
   const [notifications, setNotifications] = useState<NotificationsMap>(
     new Map()
   );
   const filter = useMemo<NDKFilter>(
     () => ({
       kinds: [Kind.Reaction, Kind.Text, 1808 as Kind, 6 as Kind],
-      "#p": [pubkey],
+      "#p": pubkey ? [pubkey] : [],
     }),
     []
   );
@@ -21,7 +41,7 @@ export function useNotifications({ pubkey }: { pubkey: string }) {
   const zapFilter = useMemo<NDKFilter>(
     () => ({
       kinds: [Kind.Zap],
-      "#p": [pubkey],
+      "#p": pubkey ? [pubkey] : [],
     }),
     []
   );
@@ -76,11 +96,25 @@ export function useNotifications({ pubkey }: { pubkey: string }) {
     setNotifications(notifications);
   }, [events.length]);
 
-  return notifications;
-}
+  // Return the provider with the NDK instance
+  return (
+    <NostrNotificationsContext.Provider value={{ notifications }}>
+      {children}
+    </NostrNotificationsContext.Provider>
+  );
+};
 
-// Index is stringified [kind, referencedEventId]
-// Kinds 1 and 1808 aren't grouped, so we just use the eventId
+// Custom hook to access NDK instance from the context
+const useNotifications = () => {
+  const context = useContext(NostrNotificationsContext);
+  if (context === undefined) {
+    throw new Error("NostrNotificationsContext is undefined");
+  }
+  return context;
+};
+
+export { NostrNotificationsProvider, useNotifications };
+
 export type NotificationsMapIndex = string;
 export type NotificationsMap = Map<NotificationsMapIndex, Notification>;
 
