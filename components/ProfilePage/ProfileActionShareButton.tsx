@@ -33,7 +33,6 @@ export default function ProfileActionShareButton({
       // Define the data you want to share
       const shareData = {
         title: "Share profile",
-        text: user?.profile?.displayName ?? user?.profile?.name,
         url: url,
       };
 
