@@ -93,6 +93,10 @@ const NostrNotificationsProvider = ({ children }: PropsWithChildren) => {
       if (notificationsStatus.get(index) === undefined) {
         setNotificationsStatus((prev) => {
           prev.set(index, false);
+          localStorage.setItem(
+            "stemstr:cachedNotificationsStatus",
+            JSON.stringify([...prev])
+          );
           return new Map(prev);
         });
       }
@@ -116,11 +120,23 @@ const NostrNotificationsProvider = ({ children }: PropsWithChildren) => {
     setNotifications(notifications);
   }, [events.length]);
 
+  useEffect(() => {
+    var storedData = localStorage.getItem("stemstr:cachedNotificationsStatus");
+    if (storedData) {
+      var restoredMap: NotificationsStatus = new Map(JSON.parse(storedData));
+      setNotificationsStatus(restoredMap);
+    }
+  }, []);
+
   const markAllAsRead = useCallback(() => {
     setNotificationsStatus((prev) => {
       prev.forEach((value, key) => {
         prev.set(key, true);
       });
+      localStorage.setItem(
+        "stemstr:cachedNotificationsStatus",
+        JSON.stringify([...prev])
+      );
       return new Map(prev);
     });
   }, [setNotificationsStatus]);
