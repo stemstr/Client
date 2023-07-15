@@ -223,7 +223,7 @@ export const getNormalizedName = (pubkey: string, user?: NDKUser) => {
   const profile = user?.profile;
 
   return (
-    profile?.displayName ?? profile?.name ?? `${pubkey.substring(0, 5)}...`
+    profile?.displayName || profile?.name || `${pubkey.substring(0, 5)}...`
   );
 };
 
