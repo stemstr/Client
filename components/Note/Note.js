@@ -1,5 +1,5 @@
 import { Box, Group, Stack } from "@mantine/core";
-import React, { useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import NoteTags from "../NoteTags/NoteTags";
 import NoteHeader from "../NoteHeader/NoteHeader";
 import SoundPlayer from "../SoundPlayer/SoundPlayer";
@@ -14,7 +14,6 @@ const Note = ({ type }) => {
   const { event } = useEvent();
   const { classes } = useStyles();
   const router = useRouter();
-  const [downloadStatus, setDownloadStatus] = useState("initial");
   const downloadUrl = useMemo(() => {
     const downloadUrlTag =
       event.tags?.find((tag) => tag[0] === "download_url") || null;
@@ -30,11 +29,7 @@ const Note = ({ type }) => {
 
   return (
     <Stack onClick={handleClick} sx={{ cursor: "pointer" }}>
-      <NoteHeader
-        downloadUrl={downloadUrl}
-        downloadStatus={downloadStatus}
-        setDownloadStatus={setDownloadStatus}
-      />
+      <NoteHeader downloadUrl={downloadUrl} />
       <Group noWrap>
         {type === "parent" && (
           <Box
@@ -47,11 +42,7 @@ const Note = ({ type }) => {
           />
         )}
         <Stack sx={{ flexGrow: 1, overflowX: "auto" }}>
-          <SoundPlayer
-            event={event}
-            downloadStatus={downloadStatus}
-            setDownloadStatus={setDownloadStatus}
-          />
+          <SoundPlayer event={event} />
           <NoteContent content={event.content} />
           <NoteTags classes={classes} />
           <NoteActionRow />
