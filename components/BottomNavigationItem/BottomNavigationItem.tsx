@@ -6,6 +6,7 @@ import useStyles from "./BottomNavigationItem.styles";
 import useAuth from "hooks/useAuth";
 import { useMemo } from "react";
 import { Route } from "enums";
+import { useNotifications } from "ndk/NostrNotificationsProvider";
 
 interface BottomNavigationItemProps extends BoxProps {
   href?: string;
@@ -22,7 +23,8 @@ const BottomNavigationItem = ({
 }: React.PropsWithChildren<BottomNavigationItemProps>) => {
   const { pathname } = useRouter();
   const { classes } = useStyles();
-  const { guardAuth, isAuthenticated } = useAuth();
+  const { isAuthenticated } = useAuth();
+  const { hasUnreadNotifications } = useNotifications();
   const linkTo = useMemo(() => {
     if (!href) return;
     return requiresAuth && !isAuthenticated ? Route.Login : href;
@@ -47,7 +49,9 @@ const BottomNavigationItem = ({
     <Box
       {...rest}
       className={`${classes.root} ${pathname === href ? classes.active : ""} ${
-        href === Route.Notifications && classes.hasNotifications
+        href === Route.Notifications &&
+        hasUnreadNotifications &&
+        classes.hasNotifications
       }`}
     >
       {linkTo ? (

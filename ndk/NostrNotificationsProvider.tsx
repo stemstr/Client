@@ -5,6 +5,7 @@ import React, {
   useEffect,
   PropsWithChildren,
   useMemo,
+  useCallback,
 } from "react";
 import { NDKEvent, NDKFilter, NostrEvent } from "@nostr-dev-kit/ndk";
 import { useSelector } from "react-redux";
@@ -15,16 +16,29 @@ import { useFeed } from "./hooks/useFeed";
 
 interface NostrNotificationsContext {
   notifications: NotificationsMap;
+  hasUnreadNotifications: boolean;
+  markAllAsRead: () => void;
 }
 
 // Create a context to store the NostrNotifications instance
 const NostrNotificationsContext = createContext<NostrNotificationsContext>({
   notifications: new Map(),
+  hasUnreadNotifications: false,
+  markAllAsRead: () => {},
 });
 
 // NostrNotificationsProvider function component
 const NostrNotificationsProvider = ({ children }: PropsWithChildren) => {
   const { pk: pubkey } = useSelector(selectAuthState);
+  const [notificationsStatus, setNotificationsStatus] =
+    useState<NotificationsStatus>(new Map());
+  const hasUnreadNotifications = useMemo(
+    () =>
+      Array.from(notificationsStatus.entries()).some(
+        ([_, value]) => value === false
+      ),
+    [notificationsStatus]
+  );
   const [notifications, setNotifications] = useState<NotificationsMap>(
     new Map()
   );
@@ -76,6 +90,12 @@ const NostrNotificationsProvider = ({ children }: PropsWithChildren) => {
       const index: NotificationsMapIndex = isGrouped
         ? JSON.stringify([event.kind as Kind, referencedEventId])
         : event.id;
+      if (notificationsStatus.get(index) === undefined) {
+        setNotificationsStatus((prev) => {
+          prev.set(index, false);
+          return new Map(prev);
+        });
+      }
       const notification = notifications.get(index);
       if (notification) {
         notification.created_at = Math.max(
@@ -96,9 +116,20 @@ const NostrNotificationsProvider = ({ children }: PropsWithChildren) => {
     setNotifications(notifications);
   }, [events.length]);
 
+  const markAllAsRead = useCallback(() => {
+    setNotificationsStatus((prev) => {
+      prev.forEach((value, key) => {
+        prev.set(key, true);
+      });
+      return new Map(prev);
+    });
+  }, [setNotificationsStatus]);
+
   // Return the provider with the NDK instance
   return (
-    <NostrNotificationsContext.Provider value={{ notifications }}>
+    <NostrNotificationsContext.Provider
+      value={{ notifications, hasUnreadNotifications, markAllAsRead }}
+    >
       {children}
     </NostrNotificationsContext.Provider>
   );
@@ -117,6 +148,8 @@ export { NostrNotificationsProvider, useNotifications };
 
 export type NotificationsMapIndex = string;
 export type NotificationsMap = Map<NotificationsMapIndex, Notification>;
+// Maps notifications to read status
+export type NotificationsStatus = Map<NotificationsMapIndex, boolean>;
 
 export type Notification = {
   created_at: number;
