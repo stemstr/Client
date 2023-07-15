@@ -1,4 +1,4 @@
-import { Group, Space } from "@mantine/core";
+import { Group } from "@mantine/core";
 import { useMemo, useEffect, useCallback } from "react";
 import NoteActionComment from "../NoteAction/NoteActionComment";
 import NoteActionLike from "../NoteAction/NoteActionLike";
@@ -24,6 +24,7 @@ import {
 import { selectAuthState } from "../../store/Auth";
 import { DEFAULT_RELAY_URLS } from "../../constants";
 import { AppState } from "../../store/Store";
+import NoteActionRepost from "components/NoteAction/NoteActionRepost";
 
 const NoteActionRow = () => {
   const dispatch = useDispatch();
@@ -111,7 +112,7 @@ const NoteActionRow = () => {
   return (
     <Group position="apart" noWrap spacing="xs" sx={{ overflowX: "hidden" }}>
       <NoteActionComment />
-      <Space w={59} />
+      <NoteActionRepost />
       <NoteActionLike />
       <NoteActionZap />
     </Group>
