@@ -146,7 +146,7 @@ const UserDetails = ({ userData, sx }) => {
   );
 };
 
-const NoteHeader = ({ downloadUrl, downloadStatus, setDownloadStatus }) => {
+const NoteHeader = ({ downloadUrl }) => {
   const { event } = useEvent();
   const user = useUser(event.pubkey);
 
@@ -157,11 +157,7 @@ const NoteHeader = ({ downloadUrl, downloadStatus, setDownloadStatus }) => {
         sx={{ flexWrap: "nowrap", overflow: "hidden" }}
       />
       <Group position="right" sx={{ minWidth: 68 }}>
-        <DownloadSoundButton
-          href={downloadUrl}
-          downloadStatus={downloadStatus}
-          setDownloadStatus={setDownloadStatus}
-        />
+        <DownloadSoundButton href={downloadUrl} />
         <Center
           sx={(theme) => ({
             width: 24,
