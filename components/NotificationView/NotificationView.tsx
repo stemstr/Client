@@ -1,12 +1,12 @@
 import { Anchor, Avatar, Box, Center, Group, Stack, Text } from "@mantine/core";
-import { NDKEvent, NDKUser, NostrEvent } from "@nostr-dev-kit/ndk";
+import { NDKEvent, NDKTag, NDKUser, NostrEvent } from "@nostr-dev-kit/ndk";
 import { FeedNote } from "components/Note/Note";
 import useStyles from "components/NotificationView/NotificationView.styles";
 import { Route } from "enums";
 import { HeartIcon, ProfileIcon, RepostIcon, ZapIcon } from "icons/StemstrIcon";
 import { EventProvider } from "ndk/NDKEventProvider";
 import { useNDK } from "ndk/NDKProvider";
-import { Notification } from "ndk/hooks/useNotifications";
+import { Notification } from "ndk/NostrNotificationsProvider";
 import { useUsers } from "ndk/hooks/useUsers";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -33,10 +33,10 @@ export default function NotificationView(props: NotificationViewProps) {
     // Get profile ids for zap events
     if (notification.kind === Kind.Zap) {
       const newProfileIds: string[] = [];
-      notification.events.forEach((event) => {
+      notification.events.forEach((event: NDKEvent) => {
         // Parse zap request event from description tag
         const descriptionTag = event.tags.find(
-          (tag) => tag[0] === "description"
+          (tag: NDKTag) => tag[0] === "description"
         );
         if (!descriptionTag) return;
         try {
@@ -47,7 +47,7 @@ export default function NotificationView(props: NotificationViewProps) {
       return newProfileIds;
     }
     // Get profile ids for all other events
-    return notification.events.map((event) => event.pubkey);
+    return notification.events.map((event: NDKEvent) => event.pubkey);
   }, [notification.events, notification.events.length]);
   const users: NDKUser[] = useUsers(profileIds);
   const [referencedEvent, setReferencedEvent] = useState<
