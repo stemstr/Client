@@ -185,7 +185,7 @@ export default function PostSheet() {
         header: {
           paddingTop: theme.spacing.lg,
           paddingBottom: theme.spacing.lg,
-          backgroundColor: theme.colors.dark[7],
+          backgroundColor: theme.colors.dark[8],
           color: theme.white,
           fontSize: 24,
           fontWeight: 700,
@@ -206,8 +206,8 @@ export default function PostSheet() {
         drawer: {
           backgroundColor: theme.colors.dark[8],
           paddingTop: "0!important",
-          borderTopLeftRadius: 20,
-          borderTopRightRadius: 20,
+          borderTopLeftRadius: 40,
+          borderTopRightRadius: 40,
           maxWidth: 600,
           margin: "auto",
           overflowY: "scroll",
