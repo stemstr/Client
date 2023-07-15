@@ -84,6 +84,8 @@ function App(props: AppProps & { colorScheme: ColorScheme }) {
           crossOrigin=""
           type="font/woff"
         />
+
+        <link rel="manifest" href="/manifest.json" />
       </Head>
 
       <ColorSchemeProvider

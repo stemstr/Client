@@ -22,3 +22,7 @@ yarn-error.log*
 
 # TypeScript
 tsconfig.tsbuildinfo
+
+# PWA stuff
+public/sw.js
+public/workbox*.js
