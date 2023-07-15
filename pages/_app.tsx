@@ -15,6 +15,7 @@ import { ApplicationContainer } from "components/ApplicationContainer/Applicatio
 import { NDKProvider } from "ndk/NDKProvider";
 import { reduxWrapper } from "store/Store";
 import { DEFAULT_RELAY_URLS } from "../constants";
+import { NostrNotificationsProvider } from "ndk/NostrNotificationsProvider";
 
 if (process.env.NEXT_PUBLIC_STEMSTR_RELAY)
   DEFAULT_RELAY_URLS.push(process.env.NEXT_PUBLIC_STEMSTR_RELAY);
@@ -108,11 +109,13 @@ function App(props: AppProps & { colorScheme: ColorScheme }) {
         >
           <CustomFonts />
           <NDKProvider explicitRelayUrls={DEFAULT_RELAY_URLS}>
-            <NotificationsProvider>
-              <ApplicationContainer>
-                <Component {...pageProps} />
-              </ApplicationContainer>
-            </NotificationsProvider>
+            <NostrNotificationsProvider>
+              <NotificationsProvider>
+                <ApplicationContainer>
+                  <Component {...pageProps} />
+                </ApplicationContainer>
+              </NotificationsProvider>
+            </NostrNotificationsProvider>
           </NDKProvider>
         </MantineProvider>
       </ColorSchemeProvider>

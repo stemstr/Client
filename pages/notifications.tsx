@@ -1,15 +1,20 @@
 import { Stack } from "@mantine/core";
-import { useNotifications } from "ndk/hooks/useNotifications";
 import NotificationView from "components/NotificationView/NotificationView";
 import Head from "next/head";
 import FeedHeader from "../components/FeedHeader/FeedHeader";
 import useAuth from "hooks/useAuth";
+import { useNotifications } from "ndk/NostrNotificationsProvider";
+import { useEffect } from "react";
 
 export default function Notifications() {
-  const { authState, guardAuth } = useAuth();
+  const { guardAuth } = useAuth();
   guardAuth();
 
-  const notifications = useNotifications({ pubkey: authState.pk as string });
+  const { notifications, markAllAsRead } = useNotifications();
+
+  useEffect(() => {
+    markAllAsRead();
+  }, []);
 
   return (
     <>
