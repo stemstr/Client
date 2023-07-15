@@ -8,6 +8,8 @@ const useStyles = createStyles((theme, _params, getRef) => ({
     svg: {
       color: "white",
     },
+  },
+  hasNotifications: {
     "&::after": {
       content: '""',
       display: "block",

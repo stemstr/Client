@@ -46,7 +46,9 @@ const BottomNavigationItem = ({
   return (
     <Box
       {...rest}
-      className={`${classes.root} ${pathname === href ? classes.active : ""}`}
+      className={`${classes.root} ${pathname === href ? classes.active : ""} ${
+        href === Route.Notifications && classes.hasNotifications
+      }`}
     >
       {linkTo ? (
         <Anchor component={Link} c="gray.2" href={linkTo}>
