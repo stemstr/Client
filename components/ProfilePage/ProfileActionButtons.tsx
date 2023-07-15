@@ -3,12 +3,13 @@ import FollowButton from "components/FollowButton/FollowButton";
 import ProfileActionButton from "components/ProfileActionButton/ProfileActionButton";
 import useStyles from "components/ProfilePage/ProfilePage.styles";
 import { Route } from "enums";
-import { EditIcon, ShareIcon } from "icons/StemstrIcon";
+import { EditIcon } from "icons/StemstrIcon";
 import { useRouter } from "next/router";
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { selectAuthState } from "store/Auth";
 import ProfileActionZapButton from "./ProfileActionZapButton";
+import ProfileActionShareButton from "./ProfileActionShareButton";
 
 type ProfileActionButtonsProps = {
   pubkey: string;
@@ -27,9 +28,7 @@ export default function ProfileActionButtons({
 
   return (
     <Group spacing={12} className={classes.profileActionButtons}>
-      <ProfileActionButton>
-        <ShareIcon width={16} height={16} />
-      </ProfileActionButton>
+      <ProfileActionShareButton pubkey={pubkey} />
       <ProfileActionZapButton pubkey={pubkey} />
       {isCurrentUser && (
         <ProfileActionButton onClick={() => router.push(Route.EditProfile)}>
