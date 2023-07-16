@@ -13,9 +13,12 @@ const profileEventsCacheKey = "stemstr:profileEventsCache";
 let profileEventsCache: Record<string, NostrEvent> = {};
 // Load cache from localStorage if using browser
 if (typeof window !== "undefined") {
-  localforage.getItem(profileEventsCacheKey).then((value) => {
-    profileEventsCache = value as Record<string, NostrEvent>;
-  });
+  localforage
+    .getItem(profileEventsCacheKey)
+    .then((value) => {
+      profileEventsCache = value as Record<string, NostrEvent>;
+    })
+    .catch();
 }
 
 const contactListEventsCache: Record<string, NostrEvent> = {};
