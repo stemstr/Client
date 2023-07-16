@@ -16,7 +16,8 @@ if (typeof window !== "undefined") {
   localforage
     .getItem(profileEventsCacheKey)
     .then((value) => {
-      if (typeof value === "object") {
+      console.log(value);
+      if (typeof value === "object" && value !== null) {
         profileEventsCache = value as Record<string, NostrEvent>;
       }
     })
