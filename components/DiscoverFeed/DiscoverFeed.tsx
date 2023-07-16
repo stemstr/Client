@@ -1,4 +1,3 @@
-import { useMemo, useState } from "react";
 import { Feed } from "../Feed";
 import { type NDKFilter } from "@nostr-dev-kit/ndk";
 import { Kind } from "nostr-tools";
