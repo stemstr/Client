@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import NextApp, { AppProps, AppContext } from "next/app";
 import { getCookie, setCookie } from "cookies-next";
 import Head from "next/head";
@@ -16,6 +16,8 @@ import { NDKProvider } from "ndk/NDKProvider";
 import { reduxWrapper } from "store/Store";
 import { DEFAULT_RELAY_URLS } from "../constants";
 import { NostrNotificationsProvider } from "ndk/NostrNotificationsProvider";
+import { useRouter } from "next/router";
+import { Route } from "enums";
 
 if (process.env.NEXT_PUBLIC_STEMSTR_RELAY)
   DEFAULT_RELAY_URLS.push(process.env.NEXT_PUBLIC_STEMSTR_RELAY);
@@ -34,6 +36,14 @@ function App(props: AppProps & { colorScheme: ColorScheme }) {
       maxAge: 60 * 60 * 24 * 30,
     });
   };
+
+  // TODO: Remove this when we add home feed
+  const router = useRouter();
+  useEffect(() => {
+    if (router.pathname === Route.Home) {
+      router.replace(Route.Discover);
+    }
+  }, []);
 
   return (
     <>

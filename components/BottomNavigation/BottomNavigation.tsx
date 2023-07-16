@@ -41,23 +41,24 @@ export default function BottomNavigation() {
       className={classes.footer}
     >
       <Group
-        position="apart"
+        // position="apart"
         align="center"
         spacing="xl"
         className={classes.group}
         maw={600}
         mx="auto"
+        sx={{ justifyContent: "space-around" }}
       >
-        <BottomNavigationItem href={Route.Home} requiresAuth>
-          <HomeIcon />
-        </BottomNavigationItem>
+        {/* <BottomNavigationItem href={Route.Home} requiresAuth>
+          <HomeIcon width={32} height={32} />
+        </BottomNavigationItem> */}
         <BottomNavigationItem href={Route.Discover}>
-          <CompassIcon />
+          <CompassIcon width={32} height={32} />
         </BottomNavigationItem>
         <BottomNavigationMiddleItem />
-        <BottomNavigationItem />
+        {/* <BottomNavigationItem /> */}
         <BottomNavigationItem href={Route.Notifications} requiresAuth>
-          <BellIcon />
+          <BellIcon width={32} height={32} />
         </BottomNavigationItem>
       </Group>
     </Footer>
