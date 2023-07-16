@@ -3,9 +3,8 @@ import { CheckIcon, RepostIcon } from "../../icons/StemstrIcon";
 import { useDisclosure } from "@mantine/hooks";
 import { Button, Center, Drawer, Group, Stack, Text } from "@mantine/core";
 import { useEvent } from "ndk/NDKEventProvider";
-import { Kind } from "nostr-tools";
-import { NDKEvent, NDKTag } from "@nostr-dev-kit/ndk";
 import { useNDK } from "ndk/NDKProvider";
+import { createRepostEvent } from "ndk/utils";
 
 export default function NoteActionRepost() {
   const { ndk, stemstrRelaySet } = useNDK();
@@ -13,24 +12,12 @@ export default function NoteActionRepost() {
   const [opened, { open, close }] = useDisclosure(false);
 
   const handleRepost = () => {
-    let created_at = Math.floor(Date.now() / 1000);
-    let tags: NDKTag[] = [
-      ["e", event.id, process.env.NEXT_PUBLIC_STEMSTR_RELAY as string],
-      ["p", event.pubkey],
-    ];
-    let kind = 6;
-    if (event.kind !== Kind.Text) {
-      kind = 16;
-      tags.push(["k", `${event.kind}`]);
+    if (ndk) {
+      const repostEvent = createRepostEvent(ndk, event);
+      repostEvent.publish(stemstrRelaySet).then(() => {
+        close();
+      });
     }
-    let repostEvent = new NDKEvent(ndk);
-    repostEvent.kind = kind;
-    repostEvent.created_at = created_at;
-    repostEvent.tags = tags;
-    repostEvent.content = JSON.stringify(event.rawEvent());
-    repostEvent.publish(stemstrRelaySet).then(() => {
-      close();
-    });
   };
 
   return (
