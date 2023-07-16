@@ -171,7 +171,7 @@ export default function PostSheet() {
       onClose={handleClose}
       position="bottom"
       title={title}
-      size="80%"
+      size="auto"
       onDrop={onDrop}
       onDragOver={onDragOver}
       onDragLeave={onDragLeave}
@@ -214,21 +214,34 @@ export default function PostSheet() {
         },
       })}
     >
-      <Box pl="md" pr="md" pb="md">
+      <Box
+        sx={(theme) => ({
+          paddingLeft: theme.spacing.md,
+          paddingRight: theme.spacing.md,
+          paddingBottom: theme.spacing.md,
+          [`${theme.fn.largerThan("xs")}`]: {
+            paddingLeft: 24,
+            paddingRight: 24,
+            paddingBottom: 40,
+          },
+        })}
+      >
         <form onSubmit={form.onSubmit(handleSubmit)}>
           <Stack spacing={28}>
-            <SoundFieldGroup
-              form={form}
-              isDragging={isDragging}
-              isUploading={isUploading}
-              setIsUploading={setIsUploading}
-              {...form.getInputProps("file")}
-            />
+            {!replyingTo && (
+              <SoundFieldGroup
+                form={form}
+                isDragging={isDragging}
+                isUploading={isUploading}
+                setIsUploading={setIsUploading}
+                {...form.getInputProps("file")}
+              />
+            )}
             <CommentFieldGroup
               data-autofocus
               {...form.getInputProps("comment")}
             />
-            <TagsFieldGroup {...form.getInputProps("tags")} />
+            {!replyingTo && <TagsFieldGroup {...form.getInputProps("tags")} />}
             {/* <ShareAcrossField {...form.getInputProps("shareAcross")} /> */}
             <Button disabled={isUploading} type="submit">
               {replyingTo ? "Reply" : "Share"}
