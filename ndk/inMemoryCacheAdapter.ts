@@ -18,7 +18,7 @@ if (typeof window !== "undefined") {
     .then((value) => {
       profileEventsCache = value as Record<string, NostrEvent>;
     })
-    .catch();
+    .catch((error) => {});
 }
 
 const contactListEventsCache: Record<string, NostrEvent> = {};
