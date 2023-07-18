@@ -4,6 +4,7 @@ import { useEvent } from "../../ndk/NDKEventProvider";
 
 const NoteTags = ({ classes, ...rest }) => {
   const { event } = useEvent();
+
   return (
     <Group
       position="left"
@@ -11,15 +12,15 @@ const NoteTags = ({ classes, ...rest }) => {
       sx={(theme) => ({
         [theme.fn.smallerThan("xs")]: {
           flexWrap: "nowrap",
-          overflowX: "auto"
-        }
+          overflowX: "auto",
+        },
       })}
       {...rest}
     >
       {event?.tags
         ?.filter((tag) => tag[0] == "t")
         .map((tag, index) => (
-          <Chip radius="md" key={index} className={classes.tag}>
+          <Chip radius="md" key={index} className={classes.tag} checked={false}>
             #{tag[1]}
           </Chip>
         ))}
