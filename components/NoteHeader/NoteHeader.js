@@ -47,21 +47,39 @@ const UserDetailsAvatar = ({ userData }) => (
 
 const UserDetailsDisplayName = ({ userData, ...rest }) => {
   const { event } = useEvent();
+  const getDisplayName = () => {
+    if (userData?.displayName) {
+      return userData.displayName;
+    }
+
+    if (!userData?.displayName && userData?.name) {
+      return userData.name;
+    }
+
+    return `@${event.pubkey.substring(0, 5)}...`;
+  };
 
   return (
     <Text color="white" {...rest}>
-      {userData?.displayName
-        ? userData.displayName
-        : `@${event.pubkey.substring(0, 5)}...`}
+      {getDisplayName()}
     </Text>
   );
 };
 
-const UserDetailsName = ({ userData, ...rest }) => (
-  <Text size="xs" color="rgba(255, 255, 255, 0.74)" {...rest}>
-    {userData?.name ? `@${userData.name}` : ""}
-  </Text>
-);
+const UserDetailsName = ({ userData, ...rest }) => {
+  const willDisplay = userData?.name && userData?.displayName;
+
+  return (
+    <Text
+      size="xs"
+      color="rgba(255, 255, 255, 0.74)"
+      {...rest}
+      display={willDisplay ? undefined : "none"}
+    >
+      {willDisplay ? `@${userData.name}` : ""}
+    </Text>
+  );
+};
 
 const RelativeTime = (props) => {
   const { event } = useEvent();
@@ -78,7 +96,7 @@ const RelativeTime = (props) => {
   );
 };
 
-const DesktopUserDetails = ({ userData, sx }) => (
+const SingleRowUserDetails = ({ userData, sx }) => (
   <Group spacing={6} sx={sx}>
     <UserDetailsAnchorWrapper>
       <UserDetailsAvatar userData={userData} />
@@ -90,7 +108,7 @@ const DesktopUserDetails = ({ userData, sx }) => (
   </Group>
 );
 
-const MobileUserDetails = ({ userData, sx }) => {
+const DoubleRowUserDetails = ({ userData, sx }) => {
   const isReallySmallScreen = useMediaQuery("(max-width: 400px)");
   const nameStyles = {
     whiteSpace: "nowrap",
@@ -134,9 +152,10 @@ const UserDetails = ({ userData, sx }) => {
       getInitialValueInEffect: !isScreenSmallOnInitialLoad,
     }
   );
-  const UserDetailsComponent = isSmallScreen
-    ? MobileUserDetails
-    : DesktopUserDetails;
+  const UserDetailsComponent =
+    isSmallScreen && userData?.name && userData?.displayName
+      ? DoubleRowUserDetails
+      : SingleRowUserDetails;
 
   return (
     <UserDetailsComponent
