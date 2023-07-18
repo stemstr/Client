@@ -55,8 +55,8 @@ const NoteActionMore = () => {
         })}
       >
         <Stack spacing="md" mb="md">
-          <NoteActionMoreShare onDone={close} />
-          <NoteActionMoreCopyRawEvent onDone={close} />
+          <NoteActionMoreShare />
+          <NoteActionMoreCopyRawEvent />
         </Stack>
         <Button
           onClick={close}
@@ -83,41 +83,46 @@ const NoteActionMore = () => {
   );
 };
 
-const NoteActionMoreCopyRawEvent = ({ onDone }: { onDone: () => void }) => {
+const NoteActionMoreCopyRawEvent = () => {
   const { event } = useEvent();
 
-  const handleClick = () => {
-    if (navigator?.clipboard) {
-      navigator.clipboard.writeText(JSON.stringify(event.rawEvent()));
-      onDone();
-    }
-  };
-
   return (
-    <Group
-      onClick={handleClick}
-      sx={(theme) => ({
-        paddingLeft: theme.spacing.md,
-        paddingRight: theme.spacing.md,
-        cursor: "pointer",
-      })}
-    >
-      <Center
-        sx={(theme) => ({
-          borderRadius: theme.radius.xl,
-          backgroundColor: theme.colors.dark[7],
-          width: 32,
-          height: 32,
-        })}
-      >
-        <BracketsEllipsesIcon width={16} height={16} />
-      </Center>
-      <Text>Copy Raw Event</Text>
-    </Group>
+    <CopyButton value={JSON.stringify(event.rawEvent())}>
+      {({ copied, copy }) => (
+        <Group
+          onClick={copy}
+          sx={(theme) => ({
+            paddingLeft: theme.spacing.md,
+            paddingRight: theme.spacing.md,
+            cursor: "pointer",
+          })}
+        >
+          <Center
+            sx={(theme) => ({
+              borderRadius: theme.radius.xl,
+              backgroundColor: theme.colors.dark[7],
+              width: 32,
+              height: 32,
+            })}
+          >
+            <BracketsEllipsesIcon width={16} height={16} />
+          </Center>
+          <Group spacing={6}>
+            {copied ? (
+              <>
+                Copied <CheckCircleIcon width={16} height={16} />
+              </>
+            ) : (
+              "Copy Raw Event"
+            )}
+          </Group>
+        </Group>
+      )}
+    </CopyButton>
   );
 };
 
-const NoteActionMoreShare = ({ onDone }: { onDone: () => void }) => {
+const NoteActionMoreShare = () => {
   const { event } = useEvent();
   const url = `https://stemstr.app/thread/${event.id}`;
   const canShare = Boolean(navigator.share);
