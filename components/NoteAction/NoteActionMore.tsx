@@ -1,6 +1,20 @@
-import { Button, Center, Drawer, Group, Stack, Text } from "@mantine/core";
+import {
+  Button,
+  Center,
+  CopyButton,
+  Drawer,
+  Group,
+  Stack,
+  Text,
+} from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { BracketsEllipsesIcon, MoreIcon } from "icons/StemstrIcon";
+import {
+  BracketsEllipsesIcon,
+  CheckCircleIcon,
+  CopyIcon,
+  MoreIcon,
+  ShareIcon,
+} from "icons/StemstrIcon";
 import withStopClickPropagation from "utils/hoc/withStopClickPropagation";
 import { useEvent } from "../../ndk/NDKEventProvider";
 
@@ -41,6 +55,7 @@ const NoteActionMore = () => {
         })}
       >
         <Stack spacing="md" mb="md">
+          <NoteActionMoreShare onDone={close} />
           <NoteActionMoreCopyRawEvent onDone={close} />
         </Stack>
         <Button
@@ -70,6 +85,7 @@ const NoteActionMore = () => {
 
 const NoteActionMoreCopyRawEvent = ({ onDone }: { onDone: () => void }) => {
   const { event } = useEvent();
+
   const handleClick = () => {
     if (navigator?.clipboard) {
       navigator.clipboard.writeText(JSON.stringify(event.rawEvent()));
@@ -81,7 +97,8 @@ const NoteActionMoreCopyRawEvent = ({ onDone }: { onDone: () => void }) => {
     <Group
       onClick={handleClick}
       sx={(theme) => ({
-        padding: theme.spacing.md,
+        paddingLeft: theme.spacing.md,
+        paddingRight: theme.spacing.md,
         cursor: "pointer",
       })}
     >
@@ -97,6 +114,68 @@ const NoteActionMoreCopyRawEvent = ({ onDone }: { onDone: () => void }) => {
       </Center>
       <Text>Copy Raw Event</Text>
     </Group>
+  );
+};
+
+const NoteActionMoreShare = ({ onDone }: { onDone: () => void }) => {
+  const { event } = useEvent();
+  const url = `https://stemstr.app/thread/${event.id}`;
+  const canShare = Boolean(navigator.share);
+
+  const handleClick = () => {
+    if (canShare) {
+      const shareData = {
+        title: "Share note",
+        url: url,
+      };
+
+      // Trigger the system share sheet
+      navigator
+        .share(shareData)
+        .then(() => {
+          console.log("Successfully shared");
+        })
+        .catch((error) => {
+          console.log("Error sharing:", error);
+        });
+    }
+  };
+
+  return (
+    <CopyButton value={url}>
+      {({ copied, copy }) => (
+        <Group
+          onClick={canShare ? handleClick : copy}
+          sx={(theme) => ({
+            paddingLeft: theme.spacing.md,
+            paddingRight: theme.spacing.md,
+            cursor: "pointer",
+          })}
+        >
+          <Center
+            sx={(theme) => ({
+              borderRadius: theme.radius.xl,
+              backgroundColor: theme.colors.dark[7],
+              width: 32,
+              height: 32,
+            })}
+          >
+            <ShareIcon width={16} height={16} />
+          </Center>
+          <Group spacing={6}>
+            {canShare ? (
+              "Share Note"
+            ) : copied ? (
+              <>
+                Copied <CheckCircleIcon width={16} height={16} />
+              </>
+            ) : (
+              "Copy Note URL"
+            )}
+          </Group>
+        </Group>
+      )}
+    </CopyButton>
   );
 };
 
