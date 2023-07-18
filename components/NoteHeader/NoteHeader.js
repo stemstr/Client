@@ -4,7 +4,7 @@ import { VerifiedIcon } from "../../icons/StemstrIcon";
 import DownloadSoundButton from "../DownloadSoundButton/DownloadSoundButton";
 import Link from "next/link";
 import withStopClickPropagation from "../../utils/hoc/withStopClickPropagation";
-import { getRelativeTimeString } from "../../ndk/utils";
+import { getNormalizedName, getRelativeTimeString } from "../../ndk/utils";
 import NoteActionMore from "components/NoteAction/NoteActionMore";
 import { useEvent } from "../../ndk/NDKEventProvider";
 import { useUser } from "ndk/hooks/useUser";
@@ -32,36 +32,57 @@ const UserDetailsAnchorWrapper = ({ children }) => {
   );
 };
 
-const UserDetailsNip05 = ({ userData }) => {
+const UserDetailsNip05 = () => {
   const { event } = useEvent();
-  const nip05Status = useNip05(event.pubkey, userData?.nip05);
+  const user = useUser(event.pubkey);
+  const nip05Status = useNip05(event.pubkey, user?.profile?.nip05);
 
   return nip05Status === Nip05Status.Valid ? (
     <VerifiedIcon width={14} height={14} />
   ) : null;
 };
 
-const UserDetailsAvatar = ({ userData }) => (
-  <Avatar src={userData?.image} alt={userData?.name} size={42} radius="50%" />
-);
-
-const UserDetailsDisplayName = ({ userData, ...rest }) => {
+const UserDetailsAvatar = () => {
   const { event } = useEvent();
+  const user = useUser(event.pubkey);
 
   return (
-    <Text color="white" {...rest}>
-      {userData?.displayName
-        ? userData.displayName
-        : `@${event.pubkey.substring(0, 5)}...`}
+    <Avatar
+      src={user?.profile?.image}
+      alt={user?.profile?.name}
+      size={42}
+      radius="50%"
+    />
+  );
+};
+
+const UserDetailsDisplayName = (props) => {
+  const { event } = useEvent();
+  const user = useUser(event.pubkey);
+
+  return (
+    <Text color="white" {...props}>
+      {getNormalizedName(event.pubkey, user)}
     </Text>
   );
 };
 
-const UserDetailsName = ({ userData, ...rest }) => (
-  <Text size="xs" color="rgba(255, 255, 255, 0.74)" {...rest}>
-    {userData?.name ? `@${userData.name}` : ""}
-  </Text>
-);
+const UserDetailsName = (props) => {
+  const { event } = useEvent();
+  const user = useUser(event.pubkey);
+  const willDisplay = user?.profile?.name && user?.profile?.displayName;
+
+  return (
+    <Text
+      size="xs"
+      color="rgba(255, 255, 255, 0.74)"
+      {...props}
+      display={willDisplay ? undefined : "none"}
+    >
+      {willDisplay ? `@${user?.profile?.name}` : ""}
+    </Text>
+  );
+};
 
 const RelativeTime = (props) => {
   const { event } = useEvent();
@@ -78,19 +99,19 @@ const RelativeTime = (props) => {
   );
 };
 
-const DesktopUserDetails = ({ userData, sx }) => (
+const SingleRowUserDetails = ({ sx }) => (
   <Group spacing={6} sx={sx}>
     <UserDetailsAnchorWrapper>
-      <UserDetailsAvatar userData={userData} />
-      <UserDetailsDisplayName size="lg" userData={userData} />
-      <UserDetailsNip05 userData={userData} />
-      <UserDetailsName userData={userData} />
+      <UserDetailsAvatar />
+      <UserDetailsDisplayName size="lg" />
+      <UserDetailsNip05 />
+      <UserDetailsName />
     </UserDetailsAnchorWrapper>
     <RelativeTime />
   </Group>
 );
 
-const MobileUserDetails = ({ userData, sx }) => {
+const DoubleRowUserDetails = ({ sx }) => {
   const isReallySmallScreen = useMediaQuery("(max-width: 400px)");
   const nameStyles = {
     whiteSpace: "nowrap",
@@ -99,7 +120,9 @@ const MobileUserDetails = ({ userData, sx }) => {
     flex: 1,
     maxWidth: isReallySmallScreen ? 140 : "auto",
   };
-  const hasUserName = Boolean(userData?.name);
+  const { event } = useEvent();
+  const user = useUser(event.pubkey);
+  const hasUserName = Boolean(user?.profile?.name);
 
   return (
     <Group
@@ -107,17 +130,13 @@ const MobileUserDetails = ({ userData, sx }) => {
       sx={{ ...sx, alignItems: hasUserName ? "flex-start" : "center" }}
     >
       <UserDetailsAnchorWrapper>
-        <UserDetailsAvatar userData={userData} />
+        <UserDetailsAvatar />
         <Stack spacing={0} sx={{ overflow: "hidden" }}>
           <Group spacing={6}>
-            <UserDetailsDisplayName
-              size="sm"
-              userData={userData}
-              sx={nameStyles}
-            />
-            <UserDetailsNip05 userData={userData} />
+            <UserDetailsDisplayName size="sm" sx={nameStyles} />
+            <UserDetailsNip05 />
           </Group>
-          <UserDetailsName userData={userData} sx={nameStyles} />
+          <UserDetailsName sx={nameStyles} />
         </Stack>
       </UserDetailsAnchorWrapper>
       <RelativeTime mt={hasUserName ? 1 : 0} />
@@ -125,7 +144,7 @@ const MobileUserDetails = ({ userData, sx }) => {
   );
 };
 
-const UserDetails = ({ userData, sx }) => {
+const UserDetails = ({ sx }) => {
   const isScreenSmallOnInitialLoad = document.documentElement.clientWidth < 600;
   const isSmallScreen = useMediaQuery(
     "(max-width: 600px)",
@@ -134,41 +153,36 @@ const UserDetails = ({ userData, sx }) => {
       getInitialValueInEffect: !isScreenSmallOnInitialLoad,
     }
   );
-  const UserDetailsComponent = isSmallScreen
-    ? MobileUserDetails
-    : DesktopUserDetails;
+  const { event } = useEvent();
+  const user = useUser(event.pubkey);
+  const UserDetailsComponent =
+    isSmallScreen && user?.profile?.name && user?.profile?.displayName
+      ? DoubleRowUserDetails
+      : SingleRowUserDetails;
 
   return (
     <UserDetailsComponent
-      userData={userData}
       sx={{ flexWrap: "nowrap", overflow: "hidden", ...sx }}
     />
   );
 };
 
-const NoteHeader = ({ downloadUrl }) => {
-  const { event } = useEvent();
-  const user = useUser(event.pubkey);
-
-  return (
-    <Group position="apart" sx={{ flexWrap: "nowrap" }}>
-      <UserDetails
-        userData={user?.profile}
-        sx={{ flexWrap: "nowrap", overflow: "hidden" }}
-      />
-      <Group position="right" sx={{ minWidth: 68 }}>
-        <DownloadSoundButton href={downloadUrl} />
-        <Center
-          sx={(theme) => ({
-            width: 24,
-            height: 24,
-            color: theme.colors.gray[2],
-          })}
-        >
-          <NoteActionMore />
-        </Center>
-      </Group>
+const NoteHeader = ({ downloadUrl }) => (
+  <Group position="apart" sx={{ flexWrap: "nowrap" }}>
+    <UserDetails sx={{ flexWrap: "nowrap", overflow: "hidden" }} />
+    <Group position="right" sx={{ minWidth: 68 }}>
+      <DownloadSoundButton href={downloadUrl} />
+      <Center
+        sx={(theme) => ({
+          width: 24,
+          height: 24,
+          color: theme.colors.gray[2],
+        })}
+      >
+        <NoteActionMore />
+      </Center>
     </Group>
-  );
-};
+  </Group>
+);
+
 export default withStopClickPropagation(NoteHeader);
