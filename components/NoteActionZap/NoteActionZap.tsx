@@ -78,9 +78,7 @@ const NoteActionZap = () => {
     <ZapWizardProvider zapRecipient={zapRecipient} zappedEvent={event}>
       <NoteActionContentWithZapWizard />
     </ZapWizardProvider>
-  ) : (
-    <Space w={44} />
-  );
+  ) : null;
 };
 
 export default NoteActionZap;
