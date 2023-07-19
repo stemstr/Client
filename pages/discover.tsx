@@ -10,7 +10,7 @@ export default function HomePage() {
         <title>Stemstr - Discover</title>
       </Head>
       <Stack spacing={0}>
-        <FeedHeader>Discover</FeedHeader>
+        <FeedHeader>Stemstr</FeedHeader>
         <DiscoverFeed />
       </Stack>
     </>

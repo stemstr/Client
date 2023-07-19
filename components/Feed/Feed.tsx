@@ -167,6 +167,7 @@ export const Feed = memo(
               hasMoreEvents.current ? events.length + 1 : events.length
             }
             loadMoreItems={loadMoreItems}
+            threshold={10}
           >
             {({ onItemsRendered, ref }) => (
               <VariableSizeList
@@ -175,7 +176,7 @@ export const Feed = memo(
                 itemCount={events.length}
                 itemSize={getRowHeight}
                 width={width}
-                overscanCount={10}
+                overscanCount={5}
                 ref={(_ref) => {
                   ref(_ref);
                   // @ts-ignore

@@ -4,6 +4,7 @@ import NDK, {
   NDKRelay,
   NDKRelaySet,
   NDKSubscription,
+  NDKSubscriptionOptions,
 } from "@nostr-dev-kit/ndk";
 import { useNDK } from "ndk/NDKProvider";
 import { uniqBy } from "ndk/utils";
@@ -33,7 +34,9 @@ export function useFeed(filter: NDKFilter, relayUrls: string[] = []) {
   }, [500, processEventBatch]);
 
   useEffect(() => {
-    let subscription: NDKSubscription, opts, relaySet;
+    let subscription: NDKSubscription;
+    let opts: NDKSubscriptionOptions = { closeOnEose: false };
+    let relaySet: NDKRelaySet | undefined;
     if (ndk) {
       if (relayUrls.length) {
         const relays: Set<NDKRelay> = new Set();
@@ -46,7 +49,6 @@ export function useFeed(filter: NDKFilter, relayUrls: string[] = []) {
       }
       subscription = ndk.subscribe(filter, opts, relaySet);
       subscription.on("event", (event: NDKEvent) => {
-        // setFeed((prev) => uniqBy([...prev, event], "id"));
         eventBatch.current.push(event);
       });
     }

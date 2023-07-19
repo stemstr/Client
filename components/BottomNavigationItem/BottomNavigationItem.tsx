@@ -33,8 +33,8 @@ const BottomNavigationItem = ({
   const inner = (
     <Center
       sx={(theme) => ({
-        width: 32,
-        height: 32,
+        width: middleButton ? 32 : 28,
+        height: middleButton ? 32 : 28,
         [`${theme.fn.largerThan("xs")}`]: {
           width: middleButton ? 66 : 32,
           height: middleButton ? 66 : 32,

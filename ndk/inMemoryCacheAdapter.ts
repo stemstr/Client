@@ -5,10 +5,24 @@ import NDK, {
   mergeEvent,
 } from "@nostr-dev-kit/ndk";
 import { Kind } from "nostr-tools";
+import localforage from "localforage";
 
 const eventsCache: Record<string, Record<string, NostrEvent>> = {};
 
-const profileEventsCache: Record<string, NostrEvent> = {};
+const profileEventsCacheKey = "stemstr:profileEventsCache";
+let profileEventsCache: Record<string, NostrEvent> = {};
+// Load cache from localStorage if using browser
+if (typeof window !== "undefined") {
+  localforage
+    .getItem(profileEventsCacheKey)
+    .then((value) => {
+      if (typeof value === "object" && value !== null) {
+        profileEventsCache = value as Record<string, NostrEvent>;
+      }
+    })
+    .catch((error) => {});
+}
+
 const contactListEventsCache: Record<string, NostrEvent> = {};
 
 const relayListCache: Record<string, NostrEvent> = {};
@@ -106,6 +120,10 @@ const inMemoryCacheAdapter = {
           event.created_at > cache[key].created_at)
       ) {
         cache[key] = await event.toNostrEvent();
+      }
+
+      if ([Kind.Metadata].includes(event.kind)) {
+        localforage.setItem(profileEventsCacheKey, profileEventsCache);
       }
 
       return;

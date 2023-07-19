@@ -29,10 +29,10 @@ export default function BottomNavigationMiddleItem() {
         }}
       >
         <MediaQuery smallerThan="xs" styles={{ display: "none" }}>
-          <PlusIcon width={34} height={34} />
+          <PlusIcon width={40} height={40} />
         </MediaQuery>
         <MediaQuery largerThan="xs" styles={{ display: "none" }}>
-          <PlusIcon width={16} height={16} />
+          <PlusIcon width={20} height={20} />
         </MediaQuery>
       </Center>
     </BottomNavigationItem>

@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface ReferrerInfo {
   referrer: string | null;
@@ -7,7 +7,7 @@ interface ReferrerInfo {
 
 const useReferrer = (): ReferrerInfo => {
   const referrer = useRef<string | null>(null);
-  const isFromSameOrigin = useRef<boolean>(false);
+  const [isFromSameOrigin, setIsFromSameOrigin] = useState<boolean>(false);
 
   useEffect(() => {
     // Get the referrer URL when the component mounts
@@ -17,20 +17,19 @@ const useReferrer = (): ReferrerInfo => {
     if (referrer.current) {
       try {
         const referrerUrl = new URL(referrer.current);
-        isFromSameOrigin.current =
-          referrerUrl.origin === window.location.origin;
+        setIsFromSameOrigin(referrerUrl.origin === window.location.origin);
       } catch (e) {
         // If the referrer URL is not a valid URL, it's not from the same origin
-        isFromSameOrigin.current = false;
+        setIsFromSameOrigin(false);
       }
     } else {
-      isFromSameOrigin.current = false;
+      setIsFromSameOrigin(false);
     }
   }, []);
 
   return {
     referrer: referrer.current,
-    isFromSameOrigin: isFromSameOrigin.current,
+    isFromSameOrigin: isFromSameOrigin,
   };
 };
 
