@@ -11,15 +11,22 @@ import { useNDK } from "../../ndk/NDKProvider";
 import { extractMentionPubkeys } from "../../ndk/utils";
 import usePreloadProfileCache from "../../ndk/hooks/usePreloadProfileCache";
 import { noop } from "../../utils/common";
+import { Kind } from "nostr-tools";
 
 interface FeedProps {
   filter: NDKFilter;
+  feedFilter: (event: NDKEvent) => boolean;
   heightOffset?: number;
   onEventsLoaded?: (events: NDKEvent[]) => void;
 }
 
 export const Feed = memo(
-  ({ filter, heightOffset = 0, onEventsLoaded = noop }: FeedProps) => {
+  ({
+    filter,
+    feedFilter = (event) => true,
+    heightOffset = 0,
+    onEventsLoaded = noop,
+  }: FeedProps) => {
     const { ndk, stemstrRelaySet } = useNDK();
     const [events, setEvents] = useState<NDKEvent[]>([]);
     const hasMoreEvents = useRef(true);
@@ -78,9 +85,7 @@ export const Feed = memo(
 
     const processEvents = useCallback(
       (events: NDKEvent[]) => {
-        const rootEvents = events.filter(
-          (event) => !event.tags.find((tag) => tag[0] === "e")
-        );
+        const rootEvents = events.filter(feedFilter);
         let mentionedPubkeys: string[] = [];
 
         rootEvents.forEach((event) => {
