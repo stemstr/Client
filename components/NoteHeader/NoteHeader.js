@@ -61,7 +61,7 @@ const UserDetailsDisplayName = (props) => {
   const user = useUser(event.pubkey);
 
   return (
-    <Text color="white" {...props}>
+    <Text color="white" fw={500} {...props}>
       {getNormalizedName(event.pubkey, user)}
     </Text>
   );

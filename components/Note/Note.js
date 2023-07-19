@@ -9,9 +9,10 @@ import { useEvent } from "../../ndk/NDKEventProvider";
 import NoteActionRow from "../NoteActionRow/NoteActionRow";
 import { Route } from "enums";
 import NoteContent from "../NoteContent/NoteContent";
+import NoteRepostHeader from "components/NoteHeader/NoteRepostHeader";
 
 const Note = ({ type }) => {
-  const { event } = useEvent();
+  const { event, repostedBy } = useEvent();
   const { classes } = useStyles();
   const router = useRouter();
   const downloadUrl = useMemo(() => {
@@ -29,6 +30,7 @@ const Note = ({ type }) => {
 
   return (
     <Stack onClick={handleClick} sx={{ cursor: "pointer" }}>
+      {repostedBy && <NoteRepostHeader />}
       <NoteHeader downloadUrl={downloadUrl} />
       <Group noWrap>
         {type === "parent" && (

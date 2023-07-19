@@ -1,36 +1,29 @@
-import NoteAction from "../NoteAction/NoteAction";
+import NoteAction from "./NoteAction";
 import { CheckIcon, RepostIcon } from "../../icons/StemstrIcon";
 import { useDisclosure } from "@mantine/hooks";
 import { Button, Center, Drawer, Group, Stack, Text } from "@mantine/core";
-import { useSelector } from "react-redux";
+import { useEvent } from "ndk/NDKEventProvider";
+import { useNDK } from "ndk/NDKProvider";
+import { createRepostEvent } from "ndk/utils";
 
-export default function RepostButton({ note }) {
-  const auth = useSelector((state) => state.auth);
+export default function NoteActionRepost() {
+  const { ndk, stemstrRelaySet } = useNDK();
+  const { event } = useEvent();
   const [opened, { open, close }] = useDisclosure(false);
 
   const handleRepost = () => {
-    let created_at = Math.floor(Date.now() / 1000);
-    let tags = [
-      ["e", note.event.id],
-      ["p", note.event.pubkey],
-    ];
-    let event = {
-      kind: 6,
-      created_at: created_at,
-      tags: tags,
-      content: "",
-    };
-    signEvent(event).then((event) => {
-      if (event) {
-        publish(event, [process.env.NEXT_PUBLIC_STEMSTR_RELAY]);
+    if (ndk) {
+      const repostEvent = createRepostEvent(ndk, event);
+      repostEvent.publish(stemstrRelaySet).then(() => {
         close();
-      }
-    });
+      });
+    }
   };
 
   return (
     <>
       <Drawer
+        onClick={(event) => event.stopPropagation()}
         opened={opened}
         onClose={close}
         title="Ready to repost?"
@@ -99,7 +92,7 @@ export default function RepostButton({ note }) {
         </Button>
       </Drawer>
       <NoteAction onClick={open}>
-        <RepostIcon width={18} height={18} /> 4
+        <RepostIcon width={18} height={18} />
       </NoteAction>
     </>
   );
