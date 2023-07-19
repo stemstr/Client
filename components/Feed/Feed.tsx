@@ -11,11 +11,10 @@ import { useNDK } from "../../ndk/NDKProvider";
 import { extractMentionPubkeys } from "../../ndk/utils";
 import usePreloadProfileCache from "../../ndk/hooks/usePreloadProfileCache";
 import { noop } from "../../utils/common";
-import { Kind } from "nostr-tools";
 
 interface FeedProps {
   filter: NDKFilter;
-  feedFilter: (event: NDKEvent) => boolean;
+  feedFilter?: (event: NDKEvent) => boolean;
   heightOffset?: number;
   onEventsLoaded?: (events: NDKEvent[]) => void;
 }
