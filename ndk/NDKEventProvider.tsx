@@ -1,8 +1,16 @@
-import { createContext, type PropsWithChildren, useContext } from "react";
-import { type NDKEvent } from "@nostr-dev-kit/ndk";
+import {
+  createContext,
+  type PropsWithChildren,
+  useContext,
+  useMemo,
+} from "react";
+import { NDKUser, NDKEvent, NostrEvent } from "@nostr-dev-kit/ndk";
+import { useUser } from "./hooks/useUser";
+import { useNDK } from "./NDKProvider";
 
 interface EventContextProps {
   event: NDKEvent;
+  repostedBy?: NDKUser;
 }
 
 const EventContext = createContext<EventContextProps>({
@@ -12,9 +20,28 @@ const EventContext = createContext<EventContextProps>({
 export const EventProvider = ({
   children,
   event,
-}: PropsWithChildren<EventContextProps>) => (
-  <EventContext.Provider value={{ event }}>{children}</EventContext.Provider>
-);
+}: PropsWithChildren<EventContextProps>) => {
+  const { ndk } = useNDK();
+  const repostedBy = useUser(
+    event.kind && [6, 16].includes(event.kind) ? event.pubkey : undefined
+  );
+  const displayedEvent = useMemo(() => {
+    if (event.kind && [6, 16].includes(event.kind)) {
+      try {
+        const rawEvent = JSON.parse(event.content) as NostrEvent;
+        const displayedEvent = new NDKEvent(ndk, rawEvent);
+        return displayedEvent;
+      } catch (error) {}
+    }
+    return event;
+  }, [event.kind]);
+
+  return (
+    <EventContext.Provider value={{ event: displayedEvent, repostedBy }}>
+      {children}
+    </EventContext.Provider>
+  );
+};
 
 export const useEvent = () => {
   const context = useContext(EventContext);

@@ -1,4 +1,4 @@
-import { Box, Group, Stack } from "@mantine/core";
+import { Box, Group, Stack, Text } from "@mantine/core";
 import React, { useMemo } from "react";
 import NoteTags from "../NoteTags/NoteTags";
 import NoteHeader from "../NoteHeader/NoteHeader";
@@ -11,7 +11,7 @@ import { Route } from "enums";
 import NoteContent from "../NoteContent/NoteContent";
 
 const Note = ({ type }) => {
-  const { event } = useEvent();
+  const { event, repostedBy } = useEvent();
   const { classes } = useStyles();
   const router = useRouter();
   const downloadUrl = useMemo(() => {
@@ -29,6 +29,7 @@ const Note = ({ type }) => {
 
   return (
     <Stack onClick={handleClick} sx={{ cursor: "pointer" }}>
+      {repostedBy && <Text>Reposted by {repostedBy.profile.displayName}</Text>}
       <NoteHeader downloadUrl={downloadUrl} />
       <Group noWrap>
         {type === "parent" && (
