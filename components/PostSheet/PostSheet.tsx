@@ -7,7 +7,7 @@ import CommentFieldGroup from "../FieldGroups/CommentFieldGroup";
 import TagsFieldGroup from "../FieldGroups/TagsFieldGroup";
 import ShareAcrossField from "../ShareAcrossField/ShareAcrossField";
 import { parseHashtags } from "../Fields/TagsField/TagsField";
-import { DragEventHandler, useState } from "react";
+import { DragEventHandler, useMemo, useState } from "react";
 import { acceptedMimeTypes } from "../../utils/media";
 import { getNormalizedName, parseEventTags } from "../../ndk/utils";
 import { useNDK } from "ndk/NDKProvider";
@@ -52,6 +52,11 @@ export default function PostSheet() {
     },
     validate: {},
   });
+  const hasContent =
+    form.values.comment ||
+    (form.values.uploadResponse.streamUrl &&
+      form.values.uploadResponse.downloadUrl &&
+      form.values.uploadResponse.waveform);
 
   const handleSubmit = async (values: PostSheetFormValues) => {
     const created_at = Math.floor(Date.now() / 1000);
@@ -243,7 +248,7 @@ export default function PostSheet() {
             />
             {!replyingTo && <TagsFieldGroup {...form.getInputProps("tags")} />}
             {/* <ShareAcrossField {...form.getInputProps("shareAcross")} /> */}
-            <Button disabled={isUploading} type="submit">
+            <Button disabled={isUploading || !hasContent} type="submit">
               {replyingTo ? "Reply" : "Share"}
             </Button>
           </Stack>
