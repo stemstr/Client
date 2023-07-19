@@ -9,9 +9,16 @@ import { useEvent } from "../../ndk/NDKEventProvider";
 import NoteActionRow from "../NoteActionRow/NoteActionRow";
 import { Route } from "enums";
 import NoteContent from "../NoteContent/NoteContent";
+import { RepostIcon, VerifiedIcon } from "icons/StemstrIcon";
+import useNip05 from "ndk/hooks/useNip05";
+import { Nip05Status } from "store/Nip05";
 
 const Note = ({ type }) => {
   const { event, repostedBy } = useEvent();
+  const repostedByNip05Status = useNip05(
+    repostedBy?.hexpubkey(),
+    repostedBy?.profile?.nip05
+  );
   const { classes } = useStyles();
   const router = useRouter();
   const downloadUrl = useMemo(() => {
@@ -29,7 +36,23 @@ const Note = ({ type }) => {
 
   return (
     <Stack onClick={handleClick} sx={{ cursor: "pointer" }}>
-      {repostedBy && <Text>Reposted by {repostedBy.profile.displayName}</Text>}
+      {repostedBy && (
+        <Group spacing={0} c="white" fz="sm" lh="normal">
+          <RepostIcon />
+          <Text ml={8} fw="bold" span>
+            @{repostedBy.profile.name}
+          </Text>
+          {repostedByNip05Status === Nip05Status.Valid && (
+            <>
+              &nbsp;
+              <VerifiedIcon width={14} height={14} />
+            </>
+          )}
+          <Text c="gray.3" span>
+            &nbsp;reposted
+          </Text>
+        </Group>
+      )}
       <NoteHeader downloadUrl={downloadUrl} />
       <Group noWrap>
         {type === "parent" && (
