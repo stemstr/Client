@@ -8,10 +8,12 @@ import BottomNavigationItem from "components/BottomNavigationItem/BottomNavigati
 import BottomNavigationMiddleItem from "./BottomNavigationMiddleItem";
 
 import useStyles from "./BottomNavigation.styles";
+import { isPwa } from "../../utils/common";
 
 export default function BottomNavigation() {
   const { classes } = useStyles();
   const { pathname } = useRouter();
+  const pwaBottomBuffer = 48;
 
   if (
     [
@@ -27,10 +29,10 @@ export default function BottomNavigation() {
   return (
     <Footer
       height={{
-        base: 64,
-        xs: 96,
+        base: isPwa() ? 64 + pwaBottomBuffer : 64,
+        xs: isPwa() ? 96 + pwaBottomBuffer : 96,
       }}
-      p="0 16px"
+      p={isPwa() ? `0 16px ${pwaBottomBuffer}px 16px` : "0 16px"}
       styles={{
         root: {
           width: "100%",

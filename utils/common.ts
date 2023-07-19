@@ -20,3 +20,11 @@ export function constrain(value: number, min: number, max: number) {
   }
   return value;
 }
+
+export const isPwa = () => {
+  return (
+    window.matchMedia("(display-mode: standalone)").matches ||
+    // @ts-expect-error - standalone exists on navigator on iOS
+    window.navigator.standalone === true
+  );
+};
