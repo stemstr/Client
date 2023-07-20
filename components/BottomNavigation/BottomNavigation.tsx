@@ -13,7 +13,7 @@ import { isPwa } from "../../utils/common";
 export default function BottomNavigation() {
   const { classes } = useStyles();
   const { pathname } = useRouter();
-  const pwaBottomBuffer = 48;
+  const pwaBottomBuffer = 32;
 
   if (
     [
