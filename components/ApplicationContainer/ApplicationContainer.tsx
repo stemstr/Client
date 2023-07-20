@@ -5,7 +5,7 @@ import BottomNavigation from "../BottomNavigation/BottomNavigation";
 import PostSheet from "../PostSheet/PostSheet";
 import FileDropOverlay from "../FileDropOverlay/FileDropOverlay";
 import { Route } from "enums/routes";
-import useLoadUserPreferences from "../../ndk/hooks/useLoadUserPreferences";
+import useLoadUserPreferences from "../../hooks/useLoadUserPreferences";
 
 export const ApplicationContainer = ({
   children,

@@ -1,3 +1,6 @@
+import localforage from "localforage";
+
+const userPreferencesKey = "stemstr:userPreferences";
 export const DEFAULT_LIGHTNING_WALLETS = {
   strike: { displayName: "Strike", uriPrefix: "strike:lightning:" },
   cashapp: {
@@ -25,3 +28,13 @@ export const DEFAULT_LIGHTNING_WALLETS = {
   },
   river: { displayName: "River", uriPrefix: "river://" },
 };
+
+export interface UserPreferences {
+  defaultLightningWallet?: keyof typeof DEFAULT_LIGHTNING_WALLETS;
+}
+
+export const getUserPreferences = () =>
+  localforage.getItem<UserPreferences>(userPreferencesKey);
+
+export const setUserPreferences = (userPreferences: UserPreferences) =>
+  localforage.setItem(userPreferencesKey, userPreferences);
