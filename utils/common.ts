@@ -1,3 +1,5 @@
+import { isIOS } from "react-device-detect";
+
 export const noop = () => {};
 
 export const chunkArray = (array: any[], chunkSize: number) => {
@@ -28,3 +30,22 @@ export const isPwa = () => {
     window.navigator.standalone === true
   );
 };
+
+export function hasNotch() {
+  const screenWidth = window.screen.width;
+  const screenHeight = window.screen.height;
+  const viewportSizes = [
+    { width: 375, height: 812 }, // iPhone X, XS, 11 Pro
+    { width: 414, height: 896 }, // iPhone XS Max, 11 Pro Max
+    { width: 414, height: 896 }, // iPhone XR, 11
+    { width: 390, height: 844 }, // iPhone 12, 13 mini
+    { width: 428, height: 926 }, // iPhone 12 Pro Max, 13 Pro Max
+  ];
+
+  return (
+    viewportSizes.some(
+      (aspectRatio) =>
+        screenWidth === aspectRatio.width && screenHeight === aspectRatio.height
+    ) && isIOS
+  );
+}

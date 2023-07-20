@@ -16,7 +16,7 @@ import { useUser } from "ndk/hooks/useUser";
 import { AppState } from "store/Store";
 import { Kind } from "nostr-tools";
 import { AddSoundIcon, TrashIcon } from "icons/StemstrIcon";
-import { isPwa } from "../../utils/common";
+import { hasNotch, isPwa } from "../../utils/common";
 
 type PostSheetFormValues = {
   file: File | null;
@@ -214,7 +214,7 @@ export default function PostSheet() {
         drawer: {
           backgroundColor: theme.colors.dark[8],
           paddingTop: "0!important",
-          paddingBottom: isPwa() ? "32px !important" : 0,
+          paddingBottom: isPwa() && hasNotch() ? "32px !important" : 0,
           borderTopLeftRadius: 40,
           borderTopRightRadius: 40,
           maxWidth: 600,
