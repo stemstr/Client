@@ -1,4 +1,4 @@
-import { Box, Button, Drawer, Group, Stack, Text } from "@mantine/core";
+import { Box, Button, Center, Drawer, Group, Stack, Text } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useDispatch, useSelector } from "react-redux";
 import { PostSheetState, closeSheet, openSheet } from "../../store/Sheets";
@@ -15,7 +15,7 @@ import { NDKEvent } from "@nostr-dev-kit/ndk";
 import { useUser } from "ndk/hooks/useUser";
 import { AppState } from "store/Store";
 import { Kind } from "nostr-tools";
-import { AddSoundIcon } from "icons/StemstrIcon";
+import { AddSoundIcon, TrashIcon } from "icons/StemstrIcon";
 
 type PostSheetFormValues = {
   file: File | null;
@@ -251,13 +251,37 @@ export default function PostSheet() {
             {replyingTo && (
               <>
                 {replyHasSound ? (
-                  <SoundFieldGroup
-                    form={form}
-                    isDragging={isDragging}
-                    isUploading={isUploading}
-                    setIsUploading={setIsUploading}
-                    {...form.getInputProps("file")}
-                  />
+                  <Box pos="relative">
+                    <SoundFieldGroup
+                      form={form}
+                      isDragging={isDragging}
+                      isUploading={isUploading}
+                      setIsUploading={setIsUploading}
+                      {...form.getInputProps("file")}
+                    />
+                    <Center
+                      onClick={() => {
+                        setReplyHasSound(false);
+                        form.setValues({
+                          file: null,
+                          uploadResponse: {
+                            streamUrl: null,
+                            downloadUrl: null,
+                            waveform: null,
+                          },
+                        });
+                      }}
+                      pos="absolute"
+                      bg="gray.6"
+                      p={4}
+                      right={-10}
+                      top={23}
+                      c="white"
+                      sx={{ borderRadius: "50%", cursor: "pointer" }}
+                    >
+                      <TrashIcon width={18} height={18} />
+                    </Center>
+                  </Box>
                 ) : (
                   <Group
                     onClick={() => setReplyHasSound(true)}

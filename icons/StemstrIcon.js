@@ -31,6 +31,7 @@ import Plus from "./Line icons/General/plus.svg";
 import Search from "./Line icons/General/search-sm.svg";
 import Settings from "./Line icons/General/settings-02.svg";
 import Share from "./Line icons/General/share-02.svg";
+import Trash from "./Line icons/General/trash-03.svg";
 import XClose from "./Line icons/General/x-close.svg";
 import Zap from "./Line icons/General/zap.svg";
 
@@ -425,6 +426,14 @@ export const AddSoundIcon = (props) => {
   return (
     <StemstrIcon>
       <AddSound {...props} />
+    </StemstrIcon>
+  );
+};
+
+export const TrashIcon = (props) => {
+  return (
+    <StemstrIcon>
+      <Trash {...props} />
     </StemstrIcon>
   );
 };
