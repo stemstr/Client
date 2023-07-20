@@ -1,4 +1,4 @@
-import { Box, Button, Drawer, Stack } from "@mantine/core";
+import { Box, Button, Drawer, Group, Stack, Text } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useDispatch, useSelector } from "react-redux";
 import { PostSheetState, closeSheet, openSheet } from "../../store/Sheets";
@@ -7,7 +7,7 @@ import CommentFieldGroup from "../FieldGroups/CommentFieldGroup";
 import TagsFieldGroup from "../FieldGroups/TagsFieldGroup";
 import ShareAcrossField from "../ShareAcrossField/ShareAcrossField";
 import { parseHashtags } from "../Fields/TagsField/TagsField";
-import { DragEventHandler, useMemo, useState } from "react";
+import { DragEventHandler, useState } from "react";
 import { acceptedMimeTypes } from "../../utils/media";
 import { getNormalizedName, parseEventTags } from "../../ndk/utils";
 import { useNDK } from "ndk/NDKProvider";
@@ -15,6 +15,7 @@ import { NDKEvent } from "@nostr-dev-kit/ndk";
 import { useUser } from "ndk/hooks/useUser";
 import { AppState } from "store/Store";
 import { Kind } from "nostr-tools";
+import { AddSoundIcon } from "icons/StemstrIcon";
 
 type PostSheetFormValues = {
   file: File | null;
@@ -38,6 +39,7 @@ export default function PostSheet() {
   const dispatch = useDispatch();
   const [isDragging, setIsDragging] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [replyHasSound, setReplyHasSound] = useState(false);
   const form = useForm<PostSheetFormValues>({
     initialValues: {
       file: null,
@@ -116,8 +118,7 @@ export default function PostSheet() {
     event.tags = tags;
     event.content = values.comment;
     event.publish(stemstrRelaySet).then(() => {
-      form.reset();
-      dispatch(closeSheet(sheetKey));
+      handleClose();
     });
   };
 
@@ -161,6 +162,7 @@ export default function PostSheet() {
 
   const handleClose = () => {
     toggleSheet();
+    setReplyHasSound(false);
     form.reset();
   };
 
@@ -246,6 +248,30 @@ export default function PostSheet() {
               data-autofocus
               {...form.getInputProps("comment")}
             />
+            {replyingTo && (
+              <>
+                {replyHasSound ? (
+                  <SoundFieldGroup
+                    form={form}
+                    isDragging={isDragging}
+                    isUploading={isUploading}
+                    setIsUploading={setIsUploading}
+                    {...form.getInputProps("file")}
+                  />
+                ) : (
+                  <Group
+                    onClick={() => setReplyHasSound(true)}
+                    spacing={8}
+                    c="white"
+                    fw={500}
+                    sx={{ cursor: "pointer" }}
+                  >
+                    <AddSoundIcon width={16} height={16} />
+                    <Text>Add a sound</Text>
+                  </Group>
+                )}
+              </>
+            )}
             {!replyingTo && <TagsFieldGroup {...form.getInputProps("tags")} />}
             {/* <ShareAcrossField {...form.getInputProps("shareAcross")} /> */}
             <Button disabled={isUploading || !hasContent} type="submit">
