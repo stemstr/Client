@@ -8,6 +8,7 @@ import ArrowRight from "./Line icons/Arrows/arrow-right.svg";
 import Comment from "./Line icons/Communication/message-square-02.svg";
 
 import BracketsEllipses from "./Line icons/Development/brackets-ellipses.svg";
+import Code from "./Line icons/Development/code-02.svg";
 
 import AlignLeft from "./Line icons/Editor/align-left.svg";
 
@@ -407,6 +408,14 @@ export const PauseIcon = (props) => {
   return (
     <StemstrIcon>
       <Pause {...props} />
+    </StemstrIcon>
+  );
+};
+
+export const CodeIcon = (props) => {
+  return (
+    <StemstrIcon>
+      <Code {...props} />
     </StemstrIcon>
   );
 };

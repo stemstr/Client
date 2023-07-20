@@ -5,21 +5,22 @@ import {
   Drawer,
   Group,
   Stack,
-  Text,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import {
   BracketsEllipsesIcon,
   CheckCircleIcon,
-  CopyIcon,
   MoreIcon,
   ShareIcon,
 } from "icons/StemstrIcon";
 import withStopClickPropagation from "utils/hoc/withStopClickPropagation";
 import { useEvent } from "../../ndk/NDKEventProvider";
+import { selectUserPreferencesState } from "store/UserPreferences";
+import { useSelector } from "react-redux";
 
 const NoteActionMore = () => {
   const [opened, { open, close }] = useDisclosure(false);
+  const { userPreferences } = useSelector(selectUserPreferencesState);
 
   return (
     <>
@@ -56,7 +57,9 @@ const NoteActionMore = () => {
       >
         <Stack spacing="md" mb="md">
           <NoteActionMoreShare />
-          <NoteActionMoreCopyRawEvent />
+          {userPreferences.isDeveloperModeEnabled && (
+            <NoteActionMoreCopyRawEvent />
+          )}
         </Stack>
         <Button
           onClick={close}

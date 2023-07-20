@@ -9,6 +9,7 @@ import { ChevronLeftIcon } from "icons/StemstrIcon";
 import Head from "next/head";
 import { SettingNsec } from "components/Settings/SettingNsec";
 import { SettingDefaultZapWallet } from "../../components/Settings/SettingDefaultZapWallet";
+import { SettingDeveloperMode } from "components/Settings/SettingDeveloperMode";
 
 export default function Settings() {
   const { guardAuth, isAuthenticated } = useAuth();
@@ -32,6 +33,7 @@ export default function Settings() {
         <SettingNsec />
         {/* wallet chooser is only used on mobile */}
         {!isDesktop && <SettingDefaultZapWallet />}
+        <SettingDeveloperMode />
         <SettingLogout />
       </Stack>
     </>
