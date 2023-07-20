@@ -9,11 +9,13 @@ import BottomNavigationMiddleItem from "./BottomNavigationMiddleItem";
 
 import useStyles from "./BottomNavigation.styles";
 import { isPwa } from "../../utils/common";
+import useFooterHeight from "../../ndk/hooks/useFooterHeight";
+import { PWA_BOTTOM_BUFFER } from "../../constants/styles";
 
 export default function BottomNavigation() {
   const { classes } = useStyles();
   const { pathname } = useRouter();
-  const pwaBottomBuffer = 48;
+  const footerHeight = useFooterHeight();
 
   if (
     [
@@ -28,11 +30,8 @@ export default function BottomNavigation() {
 
   return (
     <Footer
-      height={{
-        base: isPwa() ? 64 + pwaBottomBuffer : 64,
-        xs: isPwa() ? 96 + pwaBottomBuffer : 96,
-      }}
-      p={isPwa() ? `0 16px ${pwaBottomBuffer}px 16px` : "0 16px"}
+      height={footerHeight}
+      p={isPwa() ? `0 16px ${PWA_BOTTOM_BUFFER}px 16px` : "0 16px"}
       styles={{
         root: {
           width: "100%",
