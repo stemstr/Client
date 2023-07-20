@@ -1,9 +1,9 @@
+import { DEFAULT_LIGHTNING_WALLETS } from "../utils/userPreferences";
 import { useSelector } from "react-redux";
-import { selectNip78State } from "../store/Nip78";
-import { DEFAULT_LIGHTNING_WALLETS } from "../constants";
+import { selectUserPreferencesState } from "../store/UserPreferences";
 
 export default function useLightningWalletUri(invoice: string) {
-  const { userPreferences } = useSelector(selectNip78State);
+  const { userPreferences } = useSelector(selectUserPreferencesState);
   const { uriPrefix = "lightning:" } = userPreferences.defaultLightningWallet
     ? DEFAULT_LIGHTNING_WALLETS[userPreferences.defaultLightningWallet]
     : {};

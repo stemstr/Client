@@ -7,7 +7,7 @@ import { relaysSlice } from "./Relays";
 import { eventsSlice } from "./Events";
 import { nip05Slice } from "./Nip05";
 import { notesSlice } from "./Notes";
-import { nip78Slice } from "./Nip78";
+import { userPreferencesSlice } from "./UserPreferences";
 
 const makeStore = () =>
   configureStore({
@@ -19,7 +19,7 @@ const makeStore = () =>
       [eventsSlice.name]: eventsSlice.reducer,
       [nip05Slice.name]: nip05Slice.reducer,
       [notesSlice.name]: notesSlice.reducer,
-      [nip78Slice.name]: nip78Slice.reducer,
+      [userPreferencesSlice.name]: userPreferencesSlice.reducer,
     },
     devTools: true,
   });
