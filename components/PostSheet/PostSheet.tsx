@@ -214,7 +214,7 @@ export default function PostSheet() {
         drawer: {
           backgroundColor: theme.colors.dark[8],
           paddingTop: "0!important",
-          paddingBottom: isPwa() ? "32px !important" : undefined,
+          paddingBottom: isPwa() ? "32px !important" : 0,
           borderTopLeftRadius: 40,
           borderTopRightRadius: 40,
           maxWidth: 600,
