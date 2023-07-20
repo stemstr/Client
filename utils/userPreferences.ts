@@ -31,6 +31,7 @@ export const DEFAULT_LIGHTNING_WALLETS = {
 
 export interface UserPreferences {
   defaultLightningWallet?: keyof typeof DEFAULT_LIGHTNING_WALLETS;
+  isDeveloperModeEnabled?: boolean;
 }
 
 export const getUserPreferences = () =>

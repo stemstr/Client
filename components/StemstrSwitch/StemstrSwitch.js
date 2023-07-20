@@ -2,7 +2,7 @@ import useStyles from "./StemstrSwitch.styles";
 import { Switch } from "@mantine/core";
 import { IconCheck, IconX } from "@tabler/icons";
 
-export default function StemstrSwitch({ children, ...rest }) {
+export default function StemstrSwitch({ checked, ...rest }) {
   const { classes } = useStyles();
   return (
     <Switch
@@ -13,15 +13,14 @@ export default function StemstrSwitch({ children, ...rest }) {
         input: classes.input,
       }}
       thumbIcon={
-        rest.checked ? (
+        checked ? (
           <IconCheck size={16} color="#EADDFF" stroke={3} />
         ) : (
           <IconX size={16} color="#49454F" stroke={3} />
         )
       }
+      checked={checked}
       {...rest}
-    >
-      {children}
-    </Switch>
+    />
   );
 }
