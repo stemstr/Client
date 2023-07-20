@@ -4,13 +4,13 @@ import { VariableSizeList, areEqual } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import InfiniteLoader from "react-window-infinite-loader";
 import { Box } from "@mantine/core";
-import { useMediaQuery } from "@mantine/hooks";
 import { EventProvider } from "../../ndk/NDKEventProvider";
 import { type NDKEvent, type NDKFilter } from "@nostr-dev-kit/ndk";
 import { useNDK } from "../../ndk/NDKProvider";
 import { extractMentionPubkeys } from "../../ndk/utils";
 import usePreloadProfileCache from "../../ndk/hooks/usePreloadProfileCache";
 import { noop } from "../../utils/common";
+import useFooterHeight from "../../ndk/hooks/useFooterHeight";
 
 interface FeedProps {
   filter: NDKFilter;
@@ -31,7 +31,7 @@ export const Feed = memo(
     const hasMoreEvents = useRef(true);
     const isLoadingMore = useRef(false);
     const headerHeight = 68;
-    const footerHeight = useMediaQuery("(max-width: 480px)") ? 64 : 96;
+    const footerHeight = useFooterHeight();
     const listRef = useRef<VariableSizeList>(null);
     const rowHeights = useRef<number[]>([]);
     const getRowHeight = (index: number) =>
