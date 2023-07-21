@@ -135,11 +135,11 @@ const DoubleRowUserDetails = ({ sx }) => {
           <Group spacing={6}>
             <UserDetailsDisplayName size="sm" sx={nameStyles} />
             <UserDetailsNip05 />
+            <RelativeTime mt={hasUserName ? 1 : 0} />
           </Group>
           <UserDetailsName sx={nameStyles} />
         </Stack>
       </UserDetailsAnchorWrapper>
-      <RelativeTime mt={hasUserName ? 1 : 0} />
     </Group>
   );
 };
