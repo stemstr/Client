@@ -348,6 +348,10 @@ interface CreateZapRequestParams {
   currentUser?: NDKUser;
 }
 
+export const normalizeRelayUrl = (relayUrl: string): string => {
+  return relayUrl.replace(/\/+$/, "");
+};
+
 export const createZapRequest = async ({
   amount,
   comment,
@@ -379,9 +383,12 @@ export const createZapRequest = async ({
     ...DEFAULT_RELAY_URLS,
     process.env.NEXT_PUBLIC_STEMSTR_RELAY as string,
   ];
-  const relays = currentUserRelayUrls
+  let relays = currentUserRelayUrls
     ? [...currentUserRelayUrls, ...defaultRelays]
     : defaultRelays;
+  // normalize relay urls
+  relays = relays.map(normalizeRelayUrl);
+
   const zapRequest = nip57.makeZapRequest({
     profile: zappedUser.hexpubkey(),
 
