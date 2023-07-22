@@ -12,8 +12,8 @@ type ZapWizardStep = "idle" | "defaultAmounts" | "customAmount" | "invoice";
 interface ZapWizardContextProps {
   step: ZapWizardStep;
   setStep: (step: ZapWizardStep) => void;
-  start: Function;
-  end: Function;
+  start: () => void;
+  end: () => void;
   zapRecipient: NDKUser;
   zappedEvent?: NDKEvent;
   verticalSectionGap: number;
