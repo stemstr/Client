@@ -15,7 +15,7 @@ import { useMediaQuery } from "@mantine/hooks";
 
 const MantineDrawer = withStopClickPropagation<any>(BaseDrawer);
 
-interface DrawerProps extends BaseDrawerProp {
+export interface DrawerProps extends BaseDrawerProp {
   onDragEnd?: () => void;
 }
 

@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import useAuth from "hooks/useAuth";
 import { AppState } from "../../store/Store";
 import { selectNoteState } from "../../store/Notes";
+import { useSubscribeWizard } from "components/SubscribeWizard/SubscribeWizardProvider";
 
 const NoteActionComment = () => {
   const { event } = useEvent();
@@ -15,9 +16,17 @@ const NoteActionComment = () => {
   const { commentCount } = useSelector((state: AppState) =>
     selectNoteState(state, event.id)
   );
+  const { start: startSubscribeWizard } = useSubscribeWizard();
 
   const handleClickComment = () => {
     if (!guardAuth()) return;
+    if (
+      true
+      // !isSubscribed()
+    ) {
+      startSubscribeWizard();
+      return;
+    }
 
     dispatch(
       openSheet({
