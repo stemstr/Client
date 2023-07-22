@@ -1,10 +1,10 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import { createZapRequest } from "../../ndk/utils";
+import { useCallback, useEffect } from "react";
 import { useNDK } from "../../ndk/NDKProvider";
 import useAuth from "../../hooks/useAuth";
 import { useUser } from "../../ndk/hooks/useUser";
 import { useSubscribeWizard } from "./SubscribeWizardProvider";
 import SubscribeIntroDrawer from "./SubscribeIntroDrawer";
+import SubscribeSelectPassDrawer from "./SubscribeSelectPassDrawer";
 
 export const SubscribeWizard = () => {
   const { ndk } = useNDK();
@@ -28,6 +28,12 @@ export const SubscribeWizard = () => {
         opened={step === "intro"}
         onClose={handleDrawerClose}
         onContinue={() => setStep("selectPass")}
+      />
+      <SubscribeSelectPassDrawer
+        position="bottom"
+        opened={step === "selectPass"}
+        onClose={handleDrawerClose}
+        onBack={() => setStep("intro")}
       />
       {/* <CustomAmountDrawer
         isOpen={step === "customAmount"}

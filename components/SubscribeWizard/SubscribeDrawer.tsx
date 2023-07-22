@@ -11,7 +11,7 @@ export default function SubscribeDrawer({
   return (
     <Drawer
       withCloseButton={false}
-      trapFocus={false}
+      trapFocus={true}
       styles={(theme: MantineTheme) => ({
         overlay: {
           backgroundColor: `${theme.colors.dark[7]} !important`,
