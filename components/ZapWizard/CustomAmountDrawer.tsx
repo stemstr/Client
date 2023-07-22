@@ -68,11 +68,7 @@ const CustomAmountDrawer = ({
   }, [isOpen, resetValues]);
 
   return (
-    <ZapDrawer
-      isOpen={isOpen}
-      onClose={handleOnClose}
-      size={willShowCloseButton ? 876 : 613}
-    >
+    <ZapDrawer isOpen={isOpen} onClose={handleOnClose}>
       <Stack spacing={verticalSectionGap}>
         <SendSatsHeader />
         <Text

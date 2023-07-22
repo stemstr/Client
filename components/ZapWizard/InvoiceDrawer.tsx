@@ -159,13 +159,6 @@ const InvoiceDrawer = ({
       };
     }
   };
-  const getSize = () => {
-    if (isDesktop) {
-      return hasDetectedZapReceipt ? 379 : 467;
-    } else {
-      return hasDetectedZapReceipt ? 312 : 352;
-    }
-  };
 
   useEffect(() => {
     if (!ndk || !isOpen || zapReceiptRelays.length === 0) {
@@ -221,7 +214,7 @@ const InvoiceDrawer = ({
   ]);
 
   return (
-    <ZapDrawer isOpen={isOpen} onClose={handleOnClose} size={getSize()}>
+    <ZapDrawer isOpen={isOpen} onClose={handleOnClose}>
       <Stack spacing={24} px={8}>
         <Text
           color="white"

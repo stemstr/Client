@@ -1,4 +1,4 @@
-import { Box, Button, Center, Drawer, Group, Stack, Text } from "@mantine/core";
+import { Box, Button, Center, Group, Stack, Text } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useDispatch, useSelector } from "react-redux";
 import { PostSheetState, closeSheet, openSheet } from "../../store/Sheets";
@@ -17,6 +17,7 @@ import { AppState } from "store/Store";
 import { Kind } from "nostr-tools";
 import { AddSoundIcon, TrashIcon } from "icons/StemstrIcon";
 import { hasNotch, isPwa } from "../../utils/common";
+import Drawer from "../Drawer/Drawer";
 
 type PostSheetFormValues = {
   file: File | null;
@@ -177,9 +178,8 @@ export default function PostSheet() {
     <Drawer
       opened={isOpen}
       onClose={handleClose}
+      onDragEnd={handleClose}
       position="bottom"
-      title={title}
-      size="auto"
       onDrop={onDrop}
       onDragOver={onDragOver}
       onDragLeave={onDragLeave}
@@ -189,20 +189,6 @@ export default function PostSheet() {
           backgroundColor: "rgba(44, 44, 44, 0.2)!important",
           backdropFilter: "blur(12px)",
           opacity: "1!important",
-        },
-        header: {
-          paddingTop: theme.spacing.lg,
-          paddingBottom: theme.spacing.lg,
-          backgroundColor: theme.colors.dark[8],
-          color: theme.white,
-          fontSize: 24,
-          fontWeight: 700,
-          marginBottom: theme.spacing.md,
-        },
-        title: {
-          textAlign: "center",
-          width: "100%",
-          margin: 0,
         },
         closeButton: {
           color: theme.white,
@@ -219,10 +205,12 @@ export default function PostSheet() {
           borderTopRightRadius: 40,
           maxWidth: 600,
           margin: "auto",
-          overflowY: "scroll",
         },
       })}
     >
+      <Text color="white" ta="center" size={24} fw="bold" truncate mb={36}>
+        {title}
+      </Text>
       <Box
         sx={(theme) => ({
           paddingLeft: theme.spacing.md,
