@@ -2,17 +2,16 @@ import { DrawerProps } from "components/Drawer/Drawer";
 import SubscribeDrawer from "./SubscribeDrawer";
 import { Box, Button, Group, Radio, Stack, Text } from "@mantine/core";
 import { ChevronLeftIcon } from "icons/StemstrIcon";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { PassOption, useSubscribeWizard } from "./SubscribeWizardProvider";
 
 type SubscribeSelectPassDrawerProps = DrawerProps & {
   onBack: () => void;
+  onContinue: () => void;
 };
 
-type PassOptionProps = {
+type PassOptionProps = PassOption & {
   value: string;
-  numDays: number;
-  priceSATS: number;
-  priceUSD: number;
   selected: boolean;
 };
 
@@ -20,15 +19,22 @@ export default function SubscribeSelectPassDrawer({
   opened,
   onClose,
   onBack,
+  onContinue,
   ...rest
 }: SubscribeSelectPassDrawerProps) {
+  const { setPassOption } = useSubscribeWizard();
   const [selectedPass, setSelectedPass] = useState("0");
-  const passOptions = [
+  const passOptions: PassOption[] = [
     { numDays: 1, priceSATS: 100, priceUSD: 0.02 },
     { numDays: 7, priceSATS: 1000, priceUSD: 0.2 },
     { numDays: 30, priceSATS: 10000, priceUSD: 2 },
     { numDays: 180, priceSATS: 60000, priceUSD: 12 },
   ];
+
+  useEffect(() => {
+    const index = parseInt(selectedPass);
+    setPassOption(passOptions[index]);
+  }, [selectedPass]);
 
   return (
     <SubscribeDrawer opened={opened} onClose={onClose} {...rest}>
@@ -76,7 +82,7 @@ export default function SubscribeSelectPassDrawer({
       <Button mt={64} variant="light" fullWidth>
         Copy Invoice
       </Button>
-      <Button mt="md" fullWidth>
+      <Button onClick={onContinue} mt="md" fullWidth>
         Pay with Wallet
       </Button>
     </SubscribeDrawer>
@@ -120,7 +126,7 @@ const PassOption = ({
       styles={(theme) => ({
         labelWrapper: { width: "100%" },
         label: {
-          padding: theme.spacing.sm,
+          padding: theme.spacing.md,
           borderRadius: theme.radius.lg,
           outline: isFocused
             ? `2px solid ${theme.colors.purple[5]}`

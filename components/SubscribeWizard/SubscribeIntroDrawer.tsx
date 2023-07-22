@@ -24,17 +24,7 @@ export default function SubscribeIntroDrawer({
         Purchasing a pass helps to kee the quality of content on Stemstr at it's
         highest level and also limits any spam on the service.
       </Text>
-      <Button
-        onClick={onContinue}
-        mt={64}
-        fullWidth
-        sx={(theme) => ({
-          backgroundColor: theme.colors.green[5],
-          "&:hover": {
-            backgroundColor: theme.colors.green[8],
-          },
-        })}
-      >
+      <Button onClick={onContinue} mt={64} color="green" fullWidth>
         Explore passes starting at 100 sats (~$0.02)
       </Button>
     </SubscribeDrawer>

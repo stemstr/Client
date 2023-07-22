@@ -3,15 +3,25 @@ import {
   type PropsWithChildren,
   useContext,
   useState,
+  Dispatch,
+  SetStateAction,
 } from "react";
 
 type SubscribeWizardStep = "idle" | "intro" | "selectPass" | "paymentComplete";
+
+export type PassOption = {
+  numDays: number;
+  priceSATS: number;
+  priceUSD: number;
+};
 
 interface SubscribeWizardContextProps {
   step: SubscribeWizardStep;
   setStep: (step: SubscribeWizardStep) => void;
   start: () => void;
   end: () => void;
+  passOption?: PassOption;
+  setPassOption: Dispatch<SetStateAction<PassOption | undefined>>;
 }
 
 const SubscribeWizardContext =
@@ -19,6 +29,7 @@ const SubscribeWizardContext =
 
 export const SubscribeWizardProvider = ({ children }: PropsWithChildren) => {
   const [step, setStep] = useState<SubscribeWizardStep>("idle");
+  const [passOption, setPassOption] = useState<PassOption>();
 
   return (
     <SubscribeWizardContext.Provider
@@ -27,6 +38,8 @@ export const SubscribeWizardProvider = ({ children }: PropsWithChildren) => {
         setStep,
         start: () => setStep("intro"),
         end: () => setStep("idle"),
+        passOption,
+        setPassOption,
       }}
     >
       {children}

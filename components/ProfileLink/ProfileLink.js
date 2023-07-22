@@ -5,7 +5,7 @@ import { ProfileIcon } from "../../icons/StemstrIcon";
 import { selectAuthState } from "../../store/Auth";
 import { useUser } from "ndk/hooks/useUser";
 
-export default function ProfileLink() {
+export default function ProfileLink({ size = 36 }) {
   const authState = useSelector(selectAuthState);
   const user = useUser(authState.pk);
 
@@ -14,7 +14,7 @@ export default function ProfileLink() {
       <Avatar
         src={user?.profile?.image}
         alt={user?.profile?.name}
-        size={36}
+        size={size}
         radius="50%"
       >
         <ProfileIcon />
