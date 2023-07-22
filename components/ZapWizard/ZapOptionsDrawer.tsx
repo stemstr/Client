@@ -62,11 +62,7 @@ const ZapOptionsDrawer = ({
   }, [isOpen, resetValues]);
 
   return (
-    <ZapDrawer
-      isOpen={isOpen}
-      onClose={handleOnClose}
-      size={willShowCloseButton ? 578 : 421}
-    >
+    <ZapDrawer isOpen={isOpen} onClose={handleOnClose}>
       <Stack spacing={verticalSectionGap}>
         <SendSatsHeader />
         <SquareButtonRow>

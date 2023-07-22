@@ -3,7 +3,12 @@ import {
   type DrawerProps as BaseDrawerProp,
 } from "@mantine/core";
 import withStopClickPropagation from "../../utils/hoc/withStopClickPropagation";
-import { type PropsWithChildren, type SyntheticEvent, useState } from "react";
+import {
+  type PropsWithChildren,
+  type SyntheticEvent,
+  useRef,
+  useState,
+} from "react";
 import DrawerHandle from "./DrawerHandle";
 import { noop } from "../../utils/common";
 import { useMediaQuery } from "@mantine/hooks";
@@ -11,12 +16,10 @@ import { useMediaQuery } from "@mantine/hooks";
 const MantineDrawer = withStopClickPropagation<any>(BaseDrawer);
 
 interface DrawerProps extends BaseDrawerProp {
-  size: number;
   onDragEnd?: () => void;
 }
 
 const Drawer = ({
-  size,
   onDragEnd = noop,
   children,
   ...rest
@@ -26,6 +29,8 @@ const Drawer = ({
   const [currentY, setCurrentY] = useState(0);
   const isHeightSmall = useMediaQuery("(max-height: 896px)");
   const isOpened = rest.opened;
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [size, setSize] = useState<number | string>("auto");
 
   const getClientY = (event: SyntheticEvent) => {
     if (event.nativeEvent instanceof TouchEvent) {
@@ -52,6 +57,10 @@ const Drawer = ({
 
     if (isDragging && clientY > startY) {
       setCurrentY(clientY);
+
+      if (containerRef.current) {
+        setSize(containerRef.current.clientHeight - (currentY - startY));
+      }
     }
   };
 
@@ -66,6 +75,7 @@ const Drawer = ({
         setStartY(0);
         setCurrentY(0);
         setIsDragging(false);
+        setSize("auto");
       }, 500);
     } else {
       setStartY(currentY);
@@ -73,19 +83,21 @@ const Drawer = ({
   };
 
   return (
-    <MantineDrawer {...rest} size={size - (currentY - startY)}>
-      <DrawerHandle
-        pt={24}
-        pb={isHeightSmall ? 16 : 21}
-        onMouseDown={isOpened ? handleDragStart : noop}
-        onMouseMove={isOpened ? handleDrag : noop}
-        onMouseUp={isOpened ? handleDragEnd : noop}
-        onMouseOut={isOpened ? handleDragEnd : noop}
-        onTouchStart={isOpened ? handleDragStart : noop}
-        onTouchMove={isOpened ? handleDrag : noop}
-        onTouchEnd={isOpened ? handleDragEnd : noop}
-      />
-      {children}
+    <MantineDrawer {...rest} size={size}>
+      <div ref={containerRef}>
+        <DrawerHandle
+          pt={24}
+          pb={isHeightSmall ? 16 : 21}
+          onMouseDown={isOpened ? handleDragStart : noop}
+          onMouseMove={isOpened ? handleDrag : noop}
+          onMouseUp={isOpened ? handleDragEnd : noop}
+          onMouseOut={isOpened ? handleDragEnd : noop}
+          onTouchStart={isOpened ? handleDragStart : noop}
+          onTouchMove={isOpened ? handleDrag : noop}
+          onTouchEnd={isOpened ? handleDragEnd : noop}
+        />
+        {children}
+      </div>
     </MantineDrawer>
   );
 };

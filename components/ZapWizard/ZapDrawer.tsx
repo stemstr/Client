@@ -6,13 +6,11 @@ import { MantineTheme } from "@mantine/core";
 interface ZapDrawerProps {
   isOpen: boolean;
   onClose: () => void;
-  size: number;
 }
 
 const ZapDrawer = ({
   isOpen,
   onClose,
-  size,
   children,
 }: PropsWithChildren<ZapDrawerProps>) => {
   const { end, willShowCloseButton } = useZapWizard();
@@ -24,7 +22,6 @@ const ZapDrawer = ({
       position="bottom"
       withCloseButton={false}
       trapFocus={false}
-      size={size}
       styles={(theme: MantineTheme) => ({
         overlay: {
           backgroundColor: `${theme.colors.dark[7]} !important`,

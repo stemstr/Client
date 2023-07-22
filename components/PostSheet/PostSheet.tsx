@@ -180,7 +180,6 @@ export default function PostSheet() {
       onClose={handleClose}
       onDragEnd={handleClose}
       position="bottom"
-      size={replyingTo ? 360 : 600}
       onDrop={onDrop}
       onDragOver={onDragOver}
       onDragLeave={onDragLeave}
