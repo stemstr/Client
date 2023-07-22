@@ -5,6 +5,8 @@ interface NoteMetada {
   reactionCount: number;
   isLikedByCurrentUser: boolean;
   commentCount: number;
+  repostCount: number;
+  isRepostedByCurrentUser: boolean;
   zapsAmountTotal: number;
   isZappedByCurrentUser: boolean;
 }
@@ -13,6 +15,8 @@ const defaultNoteMetadata: NoteMetada = {
   reactionCount: 0,
   isLikedByCurrentUser: false,
   commentCount: 0,
+  repostCount: 0,
+  isRepostedByCurrentUser: false,
   zapsAmountTotal: 0,
   isZappedByCurrentUser: false,
 };
@@ -39,6 +43,18 @@ export const notesSlice = createSlice({
         reactionCount: value,
       };
     },
+    setRepostCount: (
+      state,
+      action: PayloadAction<{ id: string; value: number }>
+    ) => {
+      const { id, value } = action.payload;
+
+      state[id] = {
+        ...defaultNoteMetadata,
+        ...state[id],
+        repostCount: value,
+      };
+    },
     setIsLikedByCurrentUser: (
       state,
       action: PayloadAction<{ id: string; value: boolean }>
@@ -49,6 +65,18 @@ export const notesSlice = createSlice({
         ...defaultNoteMetadata,
         ...state[id],
         isLikedByCurrentUser: value,
+      };
+    },
+    setIsRepostedByCurrentUser: (
+      state,
+      action: PayloadAction<{ id: string; value: boolean }>
+    ) => {
+      const { id, value } = action.payload;
+
+      state[id] = {
+        ...defaultNoteMetadata,
+        ...state[id],
+        isRepostedByCurrentUser: value,
       };
     },
     setCommentCount: (
@@ -111,8 +139,10 @@ export const notesSlice = createSlice({
 export const {
   setReactionCount,
   setIsLikedByCurrentUser,
+  setIsRepostedByCurrentUser,
   currentUserLikedNote,
   setCommentCount,
+  setRepostCount,
   setZapsAmountTotal,
   updateZapsAmountTotal,
   setIsZappedByCurrentUser,

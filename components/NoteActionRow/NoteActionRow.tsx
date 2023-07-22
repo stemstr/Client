@@ -20,6 +20,8 @@ import {
   setZapsAmountTotal,
   selectNoteState,
   setIsZappedByCurrentUser,
+  setRepostCount,
+  setIsRepostedByCurrentUser,
 } from "../../store/Notes";
 import { selectAuthState } from "../../store/Auth";
 import { DEFAULT_RELAY_URLS } from "../../constants";
@@ -37,7 +39,7 @@ const NoteActionRow = () => {
   );
   const filter = useMemo(
     () => ({
-      kinds: [Kind.Text, 1808 as Kind, Kind.Reaction, Kind.Zap],
+      kinds: [Kind.Text, 1808 as Kind, Kind.Reaction, Kind.Zap, 6, 16],
       "#e": [noteId],
     }),
     [noteId]
@@ -45,6 +47,9 @@ const NoteActionRow = () => {
   const dispatchData = useCallback(
     async (events: NDKEvent[]) => {
       const reactions = events.filter(({ kind }) => kind === Kind.Reaction);
+      const reposts = events.filter(
+        ({ kind }) => kind && [6, 16].includes(kind)
+      );
       const newCommentCount = events.filter(({ kind, content }) =>
         [Kind.Text, 1808].includes(kind as Kind)
       ).length;
@@ -76,6 +81,13 @@ const NoteActionRow = () => {
         setIsLikedByCurrentUser({
           id: noteId,
           value: Boolean(reactions.find((ev) => ev.pubkey === auth.pk)),
+        })
+      );
+      dispatch(setRepostCount({ id: noteId, value: reposts.length }));
+      dispatch(
+        setIsRepostedByCurrentUser({
+          id: noteId,
+          value: Boolean(reposts.find((ev) => ev.pubkey === auth.pk)),
         })
       );
       dispatch(setCommentCount({ id: noteId, value: newCommentCount }));
