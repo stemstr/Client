@@ -5,16 +5,24 @@ import { Button, Center, Drawer, Group, Stack, Text } from "@mantine/core";
 import { useEvent } from "ndk/NDKEventProvider";
 import { useNDK } from "ndk/NDKProvider";
 import { createRepostEvent } from "ndk/utils";
+import { selectNoteState, setIsRepostedByCurrentUser } from "store/Notes";
+import { useDispatch, useSelector } from "react-redux";
+import { AppState } from "store/Store";
 
 export default function NoteActionRepost() {
   const { ndk, stemstrRelaySet } = useNDK();
   const { event } = useEvent();
   const [opened, { open, close }] = useDisclosure(false);
+  const dispatch = useDispatch();
+  const { isRepostedByCurrentUser, repostCount } = useSelector(
+    (state: AppState) => selectNoteState(state, event.id)
+  );
 
   const handleRepost = () => {
     if (ndk) {
       const repostEvent = createRepostEvent(ndk, event);
       repostEvent.publish(stemstrRelaySet).then(() => {
+        dispatch(setIsRepostedByCurrentUser({ id: event.id, value: true }));
         close();
       });
     }
@@ -94,7 +102,20 @@ export default function NoteActionRepost() {
         </Button>
       </Drawer>
       <NoteAction onClick={open}>
-        <RepostIcon width={18} height={18} />
+        <Group
+          position="center"
+          spacing={6}
+          sx={(theme) => ({
+            transition: "color 1s ease",
+            color: isRepostedByCurrentUser
+              ? theme.colors.green[5]
+              : theme.colors.gray[1],
+          })}
+          noWrap
+        >
+          <RepostIcon width={18} height={18} />
+          {repostCount > 0 && <Text lh="normal">{repostCount}</Text>}
+        </Group>
       </NoteAction>
     </>
   );
