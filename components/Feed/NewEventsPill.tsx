@@ -16,6 +16,10 @@ export function NewEventsPill({ onClick }: NewEventsPillProps) {
   const [users, setUsers] = useState<NDKUser[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const handleClick = async () => {
+    if (isLoading) {
+      return;
+    }
+
     setIsLoading(true);
     await onClick(events);
     setIsLoading(false);
@@ -59,7 +63,6 @@ export function NewEventsPill({ onClick }: NewEventsPillProps) {
       if (!newUser.profile) {
         await newUser.fetchProfile();
       }
-      console.log({ newUser, event });
 
       setEvents((prev) => [...prev, newEvent]);
       setUsers((prev) => [...prev, newUser]);
