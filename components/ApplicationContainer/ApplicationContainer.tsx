@@ -7,7 +7,7 @@ import FileDropOverlay from "../FileDropOverlay/FileDropOverlay";
 import { Route } from "enums/routes";
 import useLoadUserPreferences from "../../hooks/useLoadUserPreferences";
 import { SubscribeWizard } from "components/SubscribeWizard/SubscribeWizard";
-import useSubscriptionStatus from "hooks/useSubscriptionStatus";
+import useLoadSubscriptionStatus from "hooks/useLoadSubscriptionStatus";
 
 export const ApplicationContainer = ({
   children,
@@ -15,7 +15,7 @@ export const ApplicationContainer = ({
   const router = useRouter();
 
   useLoadUserPreferences();
-  useSubscriptionStatus();
+  useLoadSubscriptionStatus();
 
   return (
     <AppShell

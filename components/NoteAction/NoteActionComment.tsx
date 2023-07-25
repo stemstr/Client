@@ -12,7 +12,7 @@ import { useSubscribeWizard } from "components/SubscribeWizard/SubscribeWizardPr
 const NoteActionComment = () => {
   const { event } = useEvent();
   const dispatch = useDispatch();
-  const { guardAuth } = useAuth();
+  const { guardAuth, isSubscribed } = useAuth();
   const { commentCount } = useSelector((state: AppState) =>
     selectNoteState(state, event.id)
   );
@@ -20,10 +20,7 @@ const NoteActionComment = () => {
 
   const handleClickComment = () => {
     if (!guardAuth()) return;
-    if (
-      true
-      // !isSubscribed()
-    ) {
+    if (!isSubscribed()) {
       startSubscribeWizard();
       return;
     }

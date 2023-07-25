@@ -20,5 +20,10 @@ export default function useAuth() {
     [authState.type]
   );
 
-  return { authState, guardAuth, isAuthenticated };
+  const isSubscribed = useCallback(() => {
+    if (!authState.subscriptionStatus?.expires_at) return false;
+    return Date.now() < authState.subscriptionStatus.expires_at;
+  }, [authState.subscriptionStatus?.expires_at]);
+
+  return { authState, guardAuth, isAuthenticated, isSubscribed };
 }

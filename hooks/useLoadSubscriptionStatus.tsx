@@ -11,7 +11,6 @@ export default function useSubscriptionStatus() {
     if (authState.pk) {
       fetchSubscriptionStatus(authState.pk)
         .then((subscriptionStatus) => {
-          console.log(subscriptionStatus);
           dispatch(setSubscriptionStatus(subscriptionStatus));
         })
         .catch((err) => {

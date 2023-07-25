@@ -130,7 +130,7 @@ export const fetchSubscriptionStatus = (
         // TODO: Fix this
         // reject(err);
         const subscriptionStatus = {
-          expires_at: Date.now() + 60 * 60 * 24 * 365,
+          expires_at: Date.now(),
         };
         resolve(subscriptionStatus);
       });
