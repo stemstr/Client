@@ -14,9 +14,9 @@ export default function SubscribePaymentCompleteDrawer({
   onClose,
   ...rest
 }: SubscribePaymentCompleteDrawerProps) {
-  const { passOption } = useSubscribeWizard();
+  const { selectedPassOption } = useSubscribeWizard();
 
-  if (!passOption) return null;
+  if (!selectedPassOption) return null;
 
   return (
     <SubscribeDrawer opened={opened} onClose={onClose} {...rest}>
@@ -29,10 +29,10 @@ export default function SubscribePaymentCompleteDrawer({
         <Image src="/logo.svg" width={44} />
       </Group>
       <Text c="white" fz={20} fw="bold" mt="md">
-        {passOption.priceSATS.toLocaleString()} sats
+        {selectedPassOption.priceSATS.toLocaleString()} sats
       </Text>
       <Text color="green.6" fz={48} fw="bold">
-        {passOption.numDays} days
+        {selectedPassOption.numDays} days
       </Text>
       <Group spacing={10} mt="md">
         <Center

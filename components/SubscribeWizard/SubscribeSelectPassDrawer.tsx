@@ -10,7 +10,7 @@ type SubscribeSelectPassDrawerProps = DrawerProps & {
   onContinue: () => void;
 };
 
-type PassOptionProps = PassOption & {
+type PassOptionInputProps = PassOption & {
   value: string;
   selected: boolean;
 };
@@ -22,18 +22,12 @@ export default function SubscribeSelectPassDrawer({
   onContinue,
   ...rest
 }: SubscribeSelectPassDrawerProps) {
-  const { setPassOption } = useSubscribeWizard();
+  const { setSelectedPassOption, passOptions } = useSubscribeWizard();
   const [selectedPass, setSelectedPass] = useState("0");
-  const passOptions: PassOption[] = [
-    { numDays: 1, priceSATS: 100, priceUSD: 0.02 },
-    { numDays: 7, priceSATS: 1000, priceUSD: 0.2 },
-    { numDays: 30, priceSATS: 10000, priceUSD: 2 },
-    { numDays: 180, priceSATS: 60000, priceUSD: 12 },
-  ];
 
   useEffect(() => {
     const index = parseInt(selectedPass);
-    setPassOption(passOptions[index]);
+    setSelectedPassOption(passOptions[index]);
   }, [selectedPass]);
 
   return (
@@ -70,7 +64,7 @@ export default function SubscribeSelectPassDrawer({
           sx={{ flexDirection: "column" }}
         >
           {passOptions.map((passOption, index) => (
-            <PassOption
+            <PassOptionInput
               key={index}
               value={`${index}`}
               selected={selectedPass === `${index}`}
@@ -89,13 +83,13 @@ export default function SubscribeSelectPassDrawer({
   );
 }
 
-const PassOption = ({
+const PassOptionInput = ({
   value,
   numDays,
   priceSATS,
   priceUSD,
   selected,
-}: PassOptionProps) => {
+}: PassOptionInputProps) => {
   const [isFocused, setIsFocused] = useState(false);
   return (
     <Radio
@@ -114,10 +108,12 @@ const PassOption = ({
             </Text>
             <Text ta="right">
               ~
-              {priceUSD.toLocaleString("en-US", {
-                style: "currency",
-                currency: "USD",
-              })}{" "}
+              {priceUSD
+                ? priceUSD.toLocaleString("en-US", {
+                    style: "currency",
+                    currency: "USD",
+                  })
+                : "$-.--"}{" "}
               USD
             </Text>
           </Stack>
@@ -131,10 +127,10 @@ const PassOption = ({
           outline: isFocused
             ? `2px solid ${theme.colors.purple[5]}`
             : undefined,
+          outlineOffset: 2,
           borderWidth: 1,
           borderStyle: "solid",
-          borderColor:
-            selected && !isFocused ? theme.white : theme.colors.gray[4],
+          borderColor: selected ? theme.white : theme.colors.gray[4],
           cursor: "pointer",
         },
         inner: {
