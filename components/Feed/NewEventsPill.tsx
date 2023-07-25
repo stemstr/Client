@@ -28,6 +28,7 @@ export function NewEventsPill({ onClick }: NewEventsPillProps) {
     setIsLoading(false);
     setEvents([]);
     setUsers([]);
+    setWillShow(false);
   };
 
   useEffect(() => {
@@ -83,23 +84,27 @@ export function NewEventsPill({ onClick }: NewEventsPillProps) {
           style={styles}
           sx={{ bottom: footerHeight + 8 }}
         >
-          {!isLoading && users.length > 0 && (
-            <Avatar.Group spacing="sm">
-              {users.slice(0, 3).map((user, index) => (
-                <Avatar
-                  key={index}
-                  src={user.profile?.image}
-                  alt={user.profile?.name}
-                  size="md"
-                  radius="xl"
-                  styles={{ root: { borderColor: "white" } }}
-                />
-              ))}
-            </Avatar.Group>
+          {events.length > 0 && (
+            <>
+              {!isLoading && users.length > 0 && (
+                <Avatar.Group spacing="sm">
+                  {users.slice(0, 3).map((user, index) => (
+                    <Avatar
+                      key={index}
+                      src={user.profile?.image}
+                      alt={user.profile?.name}
+                      size="md"
+                      radius="xl"
+                      styles={{ root: { borderColor: "white" } }}
+                    />
+                  ))}
+                </Avatar.Group>
+              )}
+              {isLoading
+                ? "loading..."
+                : `${events.length} new event${events.length > 1 ? "s" : ""}`}
+            </>
           )}
-          {isLoading
-            ? "loading..."
-            : `${events.length} new event${events.length > 1 ? "s" : ""}`}
         </Center>
       )}
     </Transition>
