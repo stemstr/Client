@@ -102,7 +102,7 @@ export function NewEventsPill({ onClick }: NewEventsPillProps) {
               )}
               {isLoading
                 ? "loading..."
-                : `${events.length} new event${events.length > 1 ? "s" : ""}`}
+                : `${events.length} new note${events.length > 1 ? "s" : ""}`}
             </>
           )}
         </Center>
