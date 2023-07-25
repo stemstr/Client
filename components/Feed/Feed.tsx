@@ -23,7 +23,7 @@ interface FeedProps {
 export const Feed = memo(
   ({
     filter,
-    feedFilter = (event) => true,
+    feedFilter = () => true,
     heightOffset = 0,
     onEventsLoaded = noop,
   }: FeedProps) => {
@@ -116,7 +116,7 @@ export const Feed = memo(
           }
         });
       },
-      [onEventsLoaded, ndk]
+      [onEventsLoaded, ndk, feedFilter]
     );
 
     // initial load
@@ -182,7 +182,14 @@ export const Feed = memo(
               position: "relative",
             }}
           >
-            <NewEventsPill onClick={handleNewEventsPillClick} />
+            {events.length > 0 && (
+              <NewEventsPill
+                filter={filter}
+                eventsFilter={feedFilter}
+                since={events[0].created_at!}
+                onClick={handleNewEventsPillClick}
+              />
+            )}
             <InfiniteLoader
               isItemLoaded={(index: number) => index < events.length}
               itemCount={
