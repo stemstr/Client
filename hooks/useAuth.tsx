@@ -3,10 +3,12 @@ import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
 import { selectAuthState } from "store/Auth";
 import { Route } from "enums";
+import { useSubscribeWizard } from "components/SubscribeWizard/SubscribeWizardProvider";
 
 export default function useAuth() {
   const router = useRouter();
   const authState = useSelector(selectAuthState);
+  const { start: startSubscribeWizard } = useSubscribeWizard();
   const isAuthenticated = useMemo(
     () => Boolean(authState.type),
     [authState.type]
@@ -25,5 +27,16 @@ export default function useAuth() {
     return Date.now() < authState.subscriptionStatus.expires_at;
   }, [authState.subscriptionStatus?.expires_at]);
 
-  return { authState, guardAuth, isAuthenticated, isSubscribed };
+  const guardSubscribed = useCallback((): boolean => {
+    if (!isSubscribed()) startSubscribeWizard();
+    return isSubscribed();
+  }, [authState.type]);
+
+  return {
+    authState,
+    guardAuth,
+    isAuthenticated,
+    guardSubscribed,
+    isSubscribed,
+  };
 }

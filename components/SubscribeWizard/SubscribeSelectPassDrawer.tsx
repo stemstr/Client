@@ -28,7 +28,7 @@ export default function SubscribeSelectPassDrawer({
   useEffect(() => {
     const index = parseInt(selectedPass);
     setSelectedPassOption(passOptions[index]);
-  }, [selectedPass]);
+  }, [selectedPass, passOptions]);
 
   return (
     <SubscribeDrawer opened={opened} onClose={onClose} {...rest}>

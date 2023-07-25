@@ -12,18 +12,14 @@ import { useSubscribeWizard } from "components/SubscribeWizard/SubscribeWizardPr
 const NoteActionComment = () => {
   const { event } = useEvent();
   const dispatch = useDispatch();
-  const { guardAuth, isSubscribed } = useAuth();
+  const { guardAuth, guardSubscribed } = useAuth();
   const { commentCount } = useSelector((state: AppState) =>
     selectNoteState(state, event.id)
   );
-  const { start: startSubscribeWizard } = useSubscribeWizard();
 
   const handleClickComment = () => {
     if (!guardAuth()) return;
-    if (!isSubscribed()) {
-      startSubscribeWizard();
-      return;
-    }
+    if (!guardSubscribed()) return;
 
     dispatch(
       openSheet({
