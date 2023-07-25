@@ -1,9 +1,10 @@
-import { Avatar, Center } from "@mantine/core";
+import { Avatar, Center, Transition } from "@mantine/core";
 import { NDKEvent, NDKUser } from "@nostr-dev-kit/ndk";
 import useStyles from "./NewEventsPill.styles";
 import { useEffect, useState } from "react";
 import { useNDK } from "../../ndk/NDKProvider";
 import { getCachedUser } from "../../ndk/inMemoryCacheAdapter";
+import useFooterHeight from "../../ndk/hooks/useFooterHeight";
 
 interface NewEventsPillProps {
   onClick: (events: NDKEvent[]) => void;
@@ -15,6 +16,8 @@ export function NewEventsPill({ onClick }: NewEventsPillProps) {
   const [events, setEvents] = useState<NDKEvent[]>([]);
   const [users, setUsers] = useState<NDKUser[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [willShow, setWillShow] = useState(false);
+  const footerHeight = useFooterHeight();
   const handleClick = async () => {
     if (isLoading) {
       return;
@@ -66,28 +69,39 @@ export function NewEventsPill({ onClick }: NewEventsPillProps) {
 
       setEvents((prev) => [...prev, newEvent]);
       setUsers((prev) => [...prev, newUser]);
+      setWillShow(true);
+      setTimeout(() => setWillShow(false), 10000);
     }, 5000);
   }, [ndk]);
 
-  return events.length > 0 ? (
-    <Center className={classes.newEventsPill} onClick={handleClick}>
-      {!isLoading && users.length > 0 && (
-        <Avatar.Group spacing="sm">
-          {users.slice(0, 3).map((user, index) => (
-            <Avatar
-              key={index}
-              src={user.profile?.image}
-              alt={user.profile?.name}
-              size="md"
-              radius="xl"
-              styles={{ root: { borderColor: "white" } }}
-            />
-          ))}
-        </Avatar.Group>
+  return (
+    <Transition transition="slide-up" mounted={willShow}>
+      {(styles) => (
+        <Center
+          className={classes.newEventsPill}
+          onClick={handleClick}
+          style={styles}
+          sx={{ bottom: footerHeight + 8 }}
+        >
+          {!isLoading && users.length > 0 && (
+            <Avatar.Group spacing="sm">
+              {users.slice(0, 3).map((user, index) => (
+                <Avatar
+                  key={index}
+                  src={user.profile?.image}
+                  alt={user.profile?.name}
+                  size="md"
+                  radius="xl"
+                  styles={{ root: { borderColor: "white" } }}
+                />
+              ))}
+            </Avatar.Group>
+          )}
+          {isLoading
+            ? "loading..."
+            : `${events.length} new event${events.length > 1 ? "s" : ""}`}
+        </Center>
       )}
-      {isLoading
-        ? "loading..."
-        : `${events.length} new event${events.length > 1 ? "s" : ""}`}
-    </Center>
-  ) : null;
+    </Transition>
+  );
 }

@@ -2,8 +2,7 @@ import { createStyles } from "@mantine/core";
 
 const useStyles = createStyles((theme) => ({
   newEventsPill: {
-    position: "absolute",
-    top: -20,
+    position: "fixed",
     left: "calc(50% - 130px)",
     width: 260,
     height: 50,
