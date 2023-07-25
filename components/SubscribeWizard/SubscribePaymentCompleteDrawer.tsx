@@ -20,24 +20,24 @@ export default function SubscribePaymentCompleteDrawer({
 
   return (
     <SubscribeDrawer opened={opened} onClose={onClose} {...rest}>
-      <Text c="white" ta="center" fz={24} fw="bold" mt={8}>
+      <Text c="white" ta="center" fz={20} fw="bold" mt={8}>
         You're on your way!
       </Text>
-      <Group spacing={4} mt="xl">
-        <ProfileLink size={44} />
-        <ArrowRightIcon />
-        <Image src="/logo.svg" width={44} />
+      <Group spacing={4} mt={32} c="white">
+        <ProfileLink size={42} />
+        <ArrowRightIcon width={16} height={16} />
+        <Image src="/logo.svg" width={42} />
       </Group>
-      <Text c="white" fz={20} fw="bold" mt="md">
+      <Text c="white" fz={20} fw="bold" mt={24} lh={1}>
         {selectedPassOption.priceSATS.toLocaleString()} sats
       </Text>
-      <Text color="green.6" fz={48} fw="bold">
+      <Text color="green.6" fz={50} fw="bold">
         {selectedPassOption.numDays} days
       </Text>
-      <Group spacing={10} mt="md">
+      <Group spacing={10} mt="xs">
         <Center
-          w={36}
-          h={36}
+          w={38}
+          h={38}
           c="green.5"
           sx={(theme) => ({
             border: "2px solid",
@@ -47,13 +47,15 @@ export default function SubscribePaymentCompleteDrawer({
         >
           <CheckIcon />
         </Center>
-        <Text fw="bold">Payment successful</Text>
+        <Text fz="sm" fw="bold">
+          Payment successful
+        </Text>
       </Group>
-      <Text mt={40}>
+      <Text mt={40} fz="sm">
         You're good to go! Once your time is up, you can pay again to regain
         access to sharing and commenting on Stemstr.
       </Text>
-      <Button onClick={onClose} mt={96} fullWidth>
+      <Button onClick={onClose} mt={90} fullWidth>
         Let's go!
       </Button>
     </SubscribeDrawer>

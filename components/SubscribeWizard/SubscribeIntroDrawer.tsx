@@ -14,7 +14,7 @@ export default function SubscribeIntroDrawer({
 }: SubscribeIntroDrawerProps) {
   return (
     <SubscribeDrawer opened={opened} onClose={onClose} {...rest}>
-      <Text c="white" ta="center" fz={24} fw="bold" mt={8}>
+      <Text c="white" ta="center" fz={20} fw="bold" mt={8}>
         Stemstr Share Pass
       </Text>
       <Image
@@ -28,10 +28,10 @@ export default function SubscribeIntroDrawer({
           },
         }}
       />
-      <Text c="white" ta="center" fz={20} fw={500} mt={28}>
+      <Text c="white" ta="center" fz={18} fw={500} mt={28}>
         Gain access to unlimited sharing of sounds and commenting on Stemstr
       </Text>
-      <Text ta="center" fz="md" mt={8}>
+      <Text ta="center" fz="sm" mt={8}>
         Purchasing a pass helps to kee the quality of content on Stemstr at it's
         highest level and also limits any spam on the service.
       </Text>

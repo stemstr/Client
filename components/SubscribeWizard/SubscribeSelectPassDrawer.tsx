@@ -32,14 +32,14 @@ export default function SubscribeSelectPassDrawer({
 
   return (
     <SubscribeDrawer opened={opened} onClose={onClose} {...rest}>
-      <Box pos="relative" c="white" mt={8} h={24}>
+      <Box pos="relative" c="white" mt={8} h={20}>
         <Text
           pos="absolute"
           top={0}
           left={0}
           right={0}
           ta="center"
-          fz={24}
+          fz={20}
           fw="bold"
           lh={1}
         >
@@ -52,28 +52,28 @@ export default function SubscribeSelectPassDrawer({
           onClick={onBack}
           sx={{ cursor: "pointer" }}
         >
-          <ChevronLeftIcon width={24} height={24} />
+          <ChevronLeftIcon width={20} height={20} />
         </Box>
       </Box>
-      <Stack mt="md">
-        <Radio.Group
-          name="pass"
-          value={selectedPass}
-          onChange={setSelectedPass}
-          orientation="vertical"
-          sx={{ flexDirection: "column" }}
-        >
-          {passOptions.map((passOption, index) => (
-            <PassOptionInput
-              key={index}
-              value={`${index}`}
-              selected={selectedPass === `${index}`}
-              {...passOption}
-            />
-          ))}
-        </Radio.Group>
-      </Stack>
-      <Button mt={64} variant="light" fullWidth>
+      <Radio.Group
+        name="pass"
+        value={selectedPass}
+        onChange={setSelectedPass}
+        orientation="vertical"
+        mt="md"
+        spacing="md"
+        sx={{ flexDirection: "column" }}
+      >
+        {passOptions.map((passOption, index) => (
+          <PassOptionInput
+            key={index}
+            value={`${index}`}
+            selected={selectedPass === `${index}`}
+            {...passOption}
+          />
+        ))}
+      </Radio.Group>
+      <Button mt={52} variant="light" fullWidth>
         Copy Invoice
       </Button>
       <Button onClick={onContinue} mt="md" fullWidth>
@@ -101,7 +101,7 @@ const PassOptionInput = ({
           </Text>
           <Stack spacing={4}>
             <Text ta="right">
-              <Text c="green.5" fz={20} fw={500} span>
+              <Text c="green.5" fz={20} fw={700} span>
                 {priceSATS.toLocaleString()}
               </Text>{" "}
               SATS
@@ -122,7 +122,7 @@ const PassOptionInput = ({
       styles={(theme) => ({
         labelWrapper: { width: "100%" },
         label: {
-          padding: theme.spacing.md,
+          padding: `4px ${theme.spacing.md}px`,
           borderRadius: theme.radius.lg,
           outline: isFocused
             ? `2px solid ${theme.colors.purple[5]}`
