@@ -8,6 +8,7 @@ import { createRepostEvent } from "ndk/utils";
 import { selectNoteState, setIsRepostedByCurrentUser } from "store/Notes";
 import { useDispatch, useSelector } from "react-redux";
 import { AppState } from "store/Store";
+import useAuth from "hooks/useAuth";
 
 export default function NoteActionRepost() {
   const { ndk, stemstrRelaySet } = useNDK();
@@ -17,6 +18,14 @@ export default function NoteActionRepost() {
   const { isRepostedByCurrentUser, repostCount } = useSelector(
     (state: AppState) => selectNoteState(state, event.id)
   );
+  const { guardAuth, guardSubscribed } = useAuth();
+
+  const handleClick = () => {
+    if (!guardAuth()) return;
+    if (!guardSubscribed()) return;
+
+    open();
+  };
 
   const handleRepost = () => {
     if (ndk) {
@@ -101,7 +110,7 @@ export default function NoteActionRepost() {
           Close
         </Button>
       </Drawer>
-      <NoteAction onClick={open}>
+      <NoteAction onClick={handleClick}>
         <Group
           position="center"
           spacing={6}
