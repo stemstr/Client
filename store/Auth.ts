@@ -7,7 +7,7 @@ import { getPublicKeys } from "../ndk/utils";
 import axios, { AxiosError } from "axios";
 
 type StemstrSubscriptionStatus = {
-  expires_at: number;
+  expires_at: number; // unix time in seconds
 };
 
 // Type for our state
@@ -115,9 +115,8 @@ export const fetchSubscriptionStatus = (
       .get(`${process.env.NEXT_PUBLIC_STEMSTR_API}/subscription/${pubkey}`)
       .then((response) => {
         try {
-          const data = JSON.parse(response.data);
-          if (data.expires_at !== undefined) {
-            const subscriptionStatus = { expires_at: data.expires_at };
+          if (response.data.expires_at !== undefined) {
+            const subscriptionStatus = { expires_at: response.data.expires_at };
             resolve(subscriptionStatus);
           } else {
             reject("invalid reponse");
@@ -127,12 +126,7 @@ export const fetchSubscriptionStatus = (
         }
       })
       .catch((err) => {
-        // TODO: Fix this
-        // reject(err);
-        const subscriptionStatus = {
-          expires_at: Date.now(),
-        };
-        resolve(subscriptionStatus);
+        reject(err);
       });
   });
 };

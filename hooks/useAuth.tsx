@@ -24,7 +24,7 @@ export default function useAuth() {
 
   const isSubscribed = useCallback(() => {
     if (!authState.subscriptionStatus?.expires_at) return false;
-    return Date.now() < authState.subscriptionStatus.expires_at;
+    return authState.subscriptionStatus.expires_at > Date.now() / 1000;
   }, [authState.subscriptionStatus?.expires_at]);
 
   const guardSubscribed = useCallback((): boolean => {

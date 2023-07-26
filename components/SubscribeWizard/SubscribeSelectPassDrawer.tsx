@@ -20,6 +20,8 @@ import {
 } from "store/Auth";
 import useAuth from "hooks/useAuth";
 import { useDispatch } from "react-redux";
+import useLightningWalletUri from "hooks/useLightningWalletUri";
+import { isDesktop } from "react-device-detect";
 
 type SubscribeSelectPassDrawerProps = DrawerProps & {
   onBack: () => void;
@@ -43,6 +45,8 @@ export default function SubscribeSelectPassDrawer({
     useSubscribeWizard();
   const [selectedPass, setSelectedPass] = useState("0");
   const [invoice, setInvoice] = useState<string | null>(null);
+  const lightningWalletUri = useLightningWalletUri(invoice ?? "");
+  const [isPayingWithWallet, setIsPayingWithWallet] = useState(false);
   const [isFetchingInvoice, setIsFetchingInvoice] = useState(false);
   const [invoiceError, setInvoiceError] = useState<string | null>(null);
   const dispatch = useDispatch();
@@ -54,7 +58,7 @@ export default function SubscribeSelectPassDrawer({
       interval = setInterval(() => {
         if (authState.pk) {
           fetchSubscriptionStatus(authState.pk).then((subscriptionStatus) => {
-            if (subscriptionStatus.expires_at > Date.now()) {
+            if (subscriptionStatus.expires_at > Date.now() / 1000) {
               dispatch(setSubscriptionStatus(subscriptionStatus));
               onContinue();
             }
@@ -105,6 +109,27 @@ export default function SubscribeSelectPassDrawer({
     setInvoice,
     setIsFetchingInvoice,
   ]);
+
+  useEffect(() => {
+    const payWithWallet = async () => {
+      if (!invoice) return;
+      if (window.webln) {
+        try {
+          await window.webln.enable();
+          await window.webln.sendPayment(invoice);
+        } catch (error) {
+          console.error(error);
+        }
+      } else if (!isDesktop) {
+        window.location.href = lightningWalletUri;
+      }
+      setIsPayingWithWallet(false);
+    };
+
+    if (isPayingWithWallet) {
+      payWithWallet();
+    }
+  }, [isPayingWithWallet]);
 
   const handleChange = (value: string) => {
     setSelectedPass(value);
@@ -191,7 +216,20 @@ export default function SubscribeSelectPassDrawer({
         )}
       </CopyButton>
 
-      <Button onClick={onContinue} mt="md" disabled={!invoice} fullWidth>
+      <Button
+        onClick={() => {
+          if (invoice) {
+            setIsPayingWithWallet(true);
+          } else {
+            fetchInvoice().then((invoice) => {
+              setIsPayingWithWallet(true);
+            });
+          }
+        }}
+        mt="md"
+        disabled={isFetchingInvoice}
+        fullWidth
+      >
         {invoiceError || "Pay with Wallet"}
         {isFetchingInvoice && (
           <>

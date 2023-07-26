@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import useAuth from "./useAuth";
 import { fetchSubscriptionStatus, setSubscriptionStatus } from "store/Auth";
 
-export default function useSubscriptionStatus() {
+export default function useLoadSubscriptionStatus() {
   const { authState } = useAuth();
   const dispatch = useDispatch();
 
@@ -11,6 +11,7 @@ export default function useSubscriptionStatus() {
     if (authState.pk) {
       fetchSubscriptionStatus(authState.pk)
         .then((subscriptionStatus) => {
+          console.log(subscriptionStatus);
           dispatch(setSubscriptionStatus(subscriptionStatus));
         })
         .catch((err) => {
