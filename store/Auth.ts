@@ -153,17 +153,16 @@ export const fetchSubscriptionInvoice = (
       .post(
         `${process.env.NEXT_PUBLIC_STEMSTR_API}/subscription/${pubkey}?days=${days}`
       )
-      .then((response) => {
-        const data = response.data as FetchSubscriptionInvoiceResponse;
-        if (data.lightning_invoice) {
-          resolve(data);
-        } else {
-          reject("no invoice found");
-        }
-      })
       .catch((err: AxiosError) => {
         if (err.response) {
-          if (err.response.status === 409) {
+          if (err.response.status === 402) {
+            const data = err.response.data as FetchSubscriptionInvoiceResponse;
+            if (data.lightning_invoice) {
+              resolve(data);
+            } else {
+              reject("no invoice found");
+            }
+          } else if (err.response.status === 409) {
             reject("Conflict: user has an active subscription");
           } else {
             reject(err);

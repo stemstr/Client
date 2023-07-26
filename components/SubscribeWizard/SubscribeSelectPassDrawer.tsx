@@ -60,7 +60,7 @@ export default function SubscribeSelectPassDrawer({
             }
           });
         }
-      }, 1000);
+      }, 3000);
     }
     return () => {
       if (interval) clearInterval(interval);
