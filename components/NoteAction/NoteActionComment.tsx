@@ -7,7 +7,6 @@ import { useDispatch, useSelector } from "react-redux";
 import useAuth from "hooks/useAuth";
 import { AppState } from "../../store/Store";
 import { selectNoteState } from "../../store/Notes";
-import { useSubscribeWizard } from "components/SubscribeWizard/SubscribeWizardProvider";
 
 const NoteActionComment = () => {
   const { event } = useEvent();

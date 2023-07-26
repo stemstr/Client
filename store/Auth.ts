@@ -4,7 +4,7 @@ import { HYDRATE } from "next-redux-wrapper";
 import { nip19, getPublicKey } from "nostr-tools";
 import { cacheAuthState } from "../cache/cache";
 import { getPublicKeys } from "../ndk/utils";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 
 type StemstrSubscriptionStatus = {
   expires_at: number;
@@ -133,6 +133,50 @@ export const fetchSubscriptionStatus = (
           expires_at: Date.now(),
         };
         resolve(subscriptionStatus);
+      });
+  });
+};
+
+type FetchSubscriptionInvoiceResponse = {
+  created_at: number;
+  days: number;
+  expires_at: number;
+  lightning_invoice: string;
+};
+
+export const fetchSubscriptionInvoice = (
+  pubkey: string,
+  days: number
+): Promise<FetchSubscriptionInvoiceResponse> => {
+  return new Promise((resolve, reject) => {
+    axios
+      .post(`${process.env.NEXT_PUBLIC_STEMSTR_API}/subscription/${pubkey}`, {
+        days,
+      })
+      .then((response) => {
+        try {
+          const data = JSON.parse(
+            response.data
+          ) as FetchSubscriptionInvoiceResponse;
+          if (data.lightning_invoice) {
+            resolve(data);
+          } else {
+            reject("no invoice found");
+          }
+        } catch (err) {
+          reject(err);
+        }
+      })
+      .catch((err: AxiosError) => {
+        if (err.response) {
+          if (err.response.status === 409) {
+            reject("Conflict: user has an active subscription");
+          } else {
+            reject(err);
+          }
+        } else {
+          reject(err.message);
+        }
       });
   });
 };
