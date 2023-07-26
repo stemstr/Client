@@ -40,31 +40,16 @@ export const SubscribeWizardProvider = ({ children }: PropsWithChildren) => {
       axios
         .get(`${process.env.NEXT_PUBLIC_STEMSTR_API}/subscription`)
         .then((response) => {
-          try {
-            const data = JSON.parse(response.data);
-            const fetchedPassOptions: PassOption[] = data.map(
-              (option: any) => ({
-                numDays: option.days,
-                priceSATS: option.sats,
-              })
-            );
-            resolve(fetchedPassOptions);
-          } catch (err) {
-            reject(err);
-          }
+          const fetchedPassOptions: PassOption[] = response.data.map(
+            (option: any) => ({
+              numDays: option.days,
+              priceSATS: option.sats,
+            })
+          );
+          resolve(fetchedPassOptions);
         })
         .catch((err) => {
-          // TODO: Uncomment this
-          // reject(err);
-        })
-        .finally(() => {
-          // TODO: Remove this
-          resolve([
-            { numDays: 1, priceSATS: 100, priceUSD: 0.02 },
-            { numDays: 7, priceSATS: 1000, priceUSD: 0.2 },
-            { numDays: 30, priceSATS: 10000, priceUSD: 2 },
-            { numDays: 180, priceSATS: 60000, priceUSD: 12 },
-          ]);
+          reject(err);
         });
     });
   };

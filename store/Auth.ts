@@ -150,21 +150,15 @@ export const fetchSubscriptionInvoice = (
 ): Promise<FetchSubscriptionInvoiceResponse> => {
   return new Promise((resolve, reject) => {
     axios
-      .post(`${process.env.NEXT_PUBLIC_STEMSTR_API}/subscription/${pubkey}`, {
-        days,
-      })
+      .post(
+        `${process.env.NEXT_PUBLIC_STEMSTR_API}/subscription/${pubkey}?days=${days}`
+      )
       .then((response) => {
-        try {
-          const data = JSON.parse(
-            response.data
-          ) as FetchSubscriptionInvoiceResponse;
-          if (data.lightning_invoice) {
-            resolve(data);
-          } else {
-            reject("no invoice found");
-          }
-        } catch (err) {
-          reject(err);
+        const data = response.data as FetchSubscriptionInvoiceResponse;
+        if (data.lightning_invoice) {
+          resolve(data);
+        } else {
+          reject("no invoice found");
         }
       })
       .catch((err: AxiosError) => {
