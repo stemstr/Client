@@ -60,7 +60,7 @@ export default function SubscribeSelectPassDrawer({
             }
           });
         }
-      }, 3000);
+      }, 10000);
     }
     return () => {
       if (interval) clearInterval(interval);
@@ -73,29 +73,32 @@ export default function SubscribeSelectPassDrawer({
   }, [selectedPass, passOptions]);
 
   useEffect(() => {
-    if (opened) {
-      fetchInvoice();
-    }
-  }, [selectedPassOption, opened]);
-
-  const fetchInvoice = useCallback(() => {
     setInvoice(null);
-    if (!authState.pk || !selectedPassOption?.numDays) {
-      return;
-    }
-    setIsFetchingInvoice(true);
-    setInvoiceError(null);
-    fetchSubscriptionInvoice(authState.pk, selectedPassOption.numDays)
-      .then((response) => {
-        setInvoice(response.lightning_invoice);
-      })
-      .catch((err) => {
-        setInvoice(null);
-        setInvoiceError("Error Fetching Invoice");
-      })
-      .finally(() => {
-        setIsFetchingInvoice(false);
-      });
+  }, [selectedPassOption]);
+
+  const fetchInvoice = useCallback((): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      setInvoice(null);
+      if (!authState.pk || !selectedPassOption?.numDays) {
+        reject("no option selected");
+        return;
+      }
+      setIsFetchingInvoice(true);
+      setInvoiceError(null);
+      fetchSubscriptionInvoice(authState.pk, selectedPassOption.numDays)
+        .then((response) => {
+          setInvoice(response.lightning_invoice);
+          resolve(response.lightning_invoice);
+        })
+        .catch((err) => {
+          setInvoice(null);
+          setInvoiceError("Error Fetching Invoice");
+          reject("Error Fetching Invoice");
+        })
+        .finally(() => {
+          setIsFetchingInvoice(false);
+        });
+    });
   }, [
     authState.pk,
     selectedPassOption?.numDays,
@@ -155,9 +158,20 @@ export default function SubscribeSelectPassDrawer({
           <Button
             mt={52}
             variant="light"
-            onClick={copy}
+            onClick={() => {
+              if (invoice) {
+                copy();
+              } else {
+                fetchInvoice().then((invoice) => {
+                  if (navigator?.clipboard) {
+                    copy();
+                    navigator.clipboard.writeText(invoice);
+                  }
+                });
+              }
+            }}
             fullWidth
-            disabled={!invoice}
+            disabled={isFetchingInvoice}
           >
             {invoiceError ||
               (copied ? (
