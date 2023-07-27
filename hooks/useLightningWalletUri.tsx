@@ -8,5 +8,5 @@ export default function useLightningWalletUri(invoice: string) {
     ? DEFAULT_LIGHTNING_WALLETS[userPreferences.defaultLightningWallet]
     : {};
 
-  return `${uriPrefix}${invoice}`;
+  return invoice ? `${uriPrefix}${invoice}` : "";
 }

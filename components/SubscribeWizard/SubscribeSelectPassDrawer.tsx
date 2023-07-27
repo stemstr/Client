@@ -6,7 +6,6 @@ import { useCallback, useEffect, useState } from "react";
 import { PassOption, useSubscribeWizard } from "./SubscribeWizardProvider";
 import { fetchSubscriptionInvoice } from "store/Auth";
 import useAuth from "hooks/useAuth";
-import useLightningWalletUri from "hooks/useLightningWalletUri";
 
 type SubscribeSelectPassDrawerProps = DrawerProps & {
   onBack: () => void;
@@ -34,28 +33,7 @@ export default function SubscribeSelectPassDrawer({
     setInvoice,
   } = useSubscribeWizard();
   const [selectedPass, setSelectedPass] = useState("0");
-  const lightningWalletUri = useLightningWalletUri(invoice ?? "");
   const [isFetchingInvoice, setIsFetchingInvoice] = useState(false);
-
-  // useEffect(() => {
-  //   let interval: NodeJS.Timer | undefined;
-  //   if (opened) {
-  //     // poll subscription status after invoice has been generated
-  //     interval = setInterval(() => {
-  //       if (authState.pk) {
-  //         fetchSubscriptionStatus(authState.pk).then((subscriptionStatus) => {
-  //           if (subscriptionStatus.expires_at > Date.now() / 1000) {
-  //             dispatch(setSubscriptionStatus(subscriptionStatus));
-  //             onContinue();
-  //           }
-  //         });
-  //       }
-  //     }, 10000);
-  //   }
-  //   return () => {
-  //     if (interval) clearInterval(interval);
-  //   };
-  // }, [opened, authState.pk, dispatch, setSubscriptionStatus]);
 
   useEffect(() => {
     const index = parseInt(selectedPass);
@@ -152,7 +130,7 @@ export default function SubscribeSelectPassDrawer({
         {isFetchingInvoice && (
           <>
             &nbsp;
-            <Loader size={16} />
+            <Loader size={14} />
           </>
         )}
       </Button>
