@@ -38,7 +38,18 @@ export default function SubscribeIntroDrawer({
         Purchasing a pass helps to kee the quality of content on Stemstr at it's
         highest level and also limits any spam on the service.
       </Text>
-      <Button onClick={onContinue} mt={58} color="green" fullWidth>
+      <Button
+        onClick={onContinue}
+        mt={58}
+        color="green"
+        sx={(theme) => ({
+          fontSize: theme.fontSizes.xs,
+          [`${theme.fn.largerThan("xs")}`]: {
+            fontSize: theme.fontSizes.sm,
+          },
+        })}
+        fullWidth
+      >
         Explore passes
         {passOptions.length &&
           ` starting at ${passOptions[0].priceSATS.toLocaleString()} sats ${
