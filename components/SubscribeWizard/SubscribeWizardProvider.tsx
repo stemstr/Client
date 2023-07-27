@@ -47,7 +47,8 @@ export const SubscribeWizardProvider = ({ children }: PropsWithChildren) => {
   const btcPrice = useGetBtcPrice(step !== "idle");
 
   useEffect(() => {
-    if (btcPrice && !passOptions[0].priceUSD) {
+    // set USD prices for pass options
+    if (btcPrice && passOptions.length && !passOptions[0].priceUSD) {
       setPassOptions((prev) => [
         ...prev.map((option) => {
           option.priceUSD = btcPrice
