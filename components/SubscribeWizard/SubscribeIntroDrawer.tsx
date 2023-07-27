@@ -1,6 +1,7 @@
 import { DrawerProps } from "components/Drawer/Drawer";
 import SubscribeDrawer from "./SubscribeDrawer";
 import { Button, Image, Text } from "@mantine/core";
+import { useSubscribeWizard } from "./SubscribeWizardProvider";
 
 type SubscribeIntroDrawerProps = DrawerProps & {
   onContinue: () => void;
@@ -12,6 +13,8 @@ export default function SubscribeIntroDrawer({
   onContinue,
   ...rest
 }: SubscribeIntroDrawerProps) {
+  const { passOptions } = useSubscribeWizard();
+
   return (
     <SubscribeDrawer opened={opened} onClose={onClose} {...rest}>
       <Text c="white" ta="center" fz={20} fw="bold" mt={8}>
@@ -36,7 +39,16 @@ export default function SubscribeIntroDrawer({
         highest level and also limits any spam on the service.
       </Text>
       <Button onClick={onContinue} mt={58} color="green" fullWidth>
-        Explore passes starting at 100 sats (~$0.02)
+        Explore passes
+        {passOptions.length &&
+          ` starting at ${passOptions[0].priceSATS.toLocaleString()} sats ${
+            passOptions[0]?.priceUSD
+              ? `(~${passOptions[0].priceUSD.toLocaleString("en-US", {
+                  style: "currency",
+                  currency: "USD",
+                })})`
+              : ""
+          }`}
       </Button>
     </SubscribeDrawer>
   );
