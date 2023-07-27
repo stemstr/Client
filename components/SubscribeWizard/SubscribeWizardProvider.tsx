@@ -1,4 +1,5 @@
 import axios from "axios";
+import useGetBtcPrice from "components/ZapWizard/useGetBtcPrice";
 import {
   createContext,
   type PropsWithChildren,
@@ -6,6 +7,7 @@ import {
   useState,
   Dispatch,
   SetStateAction,
+  useEffect,
 } from "react";
 
 type SubscribeWizardStep = "idle" | "intro" | "selectPass" | "paymentComplete";
@@ -42,6 +44,18 @@ export const SubscribeWizardProvider = ({ children }: PropsWithChildren) => {
   const [invoice, setInvoice] = useState<string>();
   const [selectedPass, setSelectedPass] = useState("0");
   const [isFetchingInvoice, setIsFetchingInvoice] = useState(false);
+  const btcPrice = useGetBtcPrice(step !== "idle");
+
+  useEffect(() => {
+    setPassOptions((prev) => [
+      ...prev.map((option) => {
+        option.priceUSD = btcPrice
+          ? btcPrice / (100_000_000 / option.priceSATS)
+          : undefined;
+        return option;
+      }),
+    ]);
+  }, [passOptions, btcPrice]);
 
   const fetchPassOptions = (): Promise<PassOption[]> => {
     return new Promise((resolve, reject) => {
