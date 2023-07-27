@@ -31,9 +31,11 @@ export default function SubscribeSelectPassDrawer({
     passOptions,
     invoice,
     setInvoice,
+    selectedPass,
+    setSelectedPass,
+    isFetchingInvoice,
+    setIsFetchingInvoice,
   } = useSubscribeWizard();
-  const [selectedPass, setSelectedPass] = useState("0");
-  const [isFetchingInvoice, setIsFetchingInvoice] = useState(false);
 
   useEffect(() => {
     const index = parseInt(selectedPass);

@@ -6,7 +6,6 @@ import {
   useState,
   Dispatch,
   SetStateAction,
-  useEffect,
 } from "react";
 
 type SubscribeWizardStep = "idle" | "intro" | "selectPass" | "paymentComplete";
@@ -27,6 +26,10 @@ interface SubscribeWizardContextProps {
   setSelectedPassOption: Dispatch<SetStateAction<PassOption | undefined>>;
   invoice?: string;
   setInvoice: Dispatch<SetStateAction<string | undefined>>;
+  selectedPass: string;
+  setSelectedPass: Dispatch<SetStateAction<string>>;
+  isFetchingInvoice: boolean;
+  setIsFetchingInvoice: Dispatch<SetStateAction<boolean>>;
 }
 
 const SubscribeWizardContext =
@@ -37,6 +40,8 @@ export const SubscribeWizardProvider = ({ children }: PropsWithChildren) => {
   const [passOptions, setPassOptions] = useState<PassOption[]>([]);
   const [selectedPassOption, setSelectedPassOption] = useState<PassOption>();
   const [invoice, setInvoice] = useState<string>();
+  const [selectedPass, setSelectedPass] = useState("0");
+  const [isFetchingInvoice, setIsFetchingInvoice] = useState(false);
 
   const fetchPassOptions = (): Promise<PassOption[]> => {
     return new Promise((resolve, reject) => {
@@ -57,7 +62,8 @@ export const SubscribeWizardProvider = ({ children }: PropsWithChildren) => {
     });
   };
 
-  useEffect(() => {
+  const start = () => {
+    setStep("intro");
     fetchPassOptions()
       .then((fetchedPassOptions) => {
         setPassOptions(fetchedPassOptions);
@@ -65,20 +71,33 @@ export const SubscribeWizardProvider = ({ children }: PropsWithChildren) => {
       .catch((err) => {
         console.error(err);
       });
-  }, []);
+  };
+
+  const end = () => {
+    setStep("idle");
+    setPassOptions([]);
+    setSelectedPassOption(undefined);
+    setInvoice(undefined);
+    setSelectedPass("0");
+    setIsFetchingInvoice(false);
+  };
 
   return (
     <SubscribeWizardContext.Provider
       value={{
         step,
         setStep,
-        start: () => setStep("intro"),
-        end: () => setStep("idle"),
+        start,
+        end,
         passOptions,
         selectedPassOption,
         setSelectedPassOption,
         invoice,
         setInvoice,
+        selectedPass,
+        setSelectedPass,
+        isFetchingInvoice,
+        setIsFetchingInvoice,
       }}
     >
       {children}

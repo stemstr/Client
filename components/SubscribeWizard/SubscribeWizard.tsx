@@ -5,10 +5,10 @@ import SubscribeSelectPassDrawer from "./SubscribeSelectPassDrawer";
 import SubscribePaymentCompleteDrawer from "./SubscribePaymentCompleteDrawer";
 
 export const SubscribeWizard = () => {
-  const { step, setStep } = useSubscribeWizard();
+  const { step, setStep, end } = useSubscribeWizard();
 
   const handleDrawerClose = useCallback(() => {
-    setStep("idle");
+    end();
   }, [setStep]);
 
   useEffect(() => {

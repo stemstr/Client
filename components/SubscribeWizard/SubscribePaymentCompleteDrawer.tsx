@@ -65,9 +65,7 @@ export default function SubscribePaymentCompleteDrawer({
   ]);
 
   useEffect(() => {
-    if (isSubscribed()) {
-      setIsPaymentComplete(true);
-    }
+    setIsPaymentComplete(isSubscribed());
   }, [authState.subscriptionStatus]);
 
   const refreshPaymentStatus = () => {
