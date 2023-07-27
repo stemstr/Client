@@ -47,15 +47,17 @@ export const SubscribeWizardProvider = ({ children }: PropsWithChildren) => {
   const btcPrice = useGetBtcPrice(step !== "idle");
 
   useEffect(() => {
-    setPassOptions((prev) => [
-      ...prev.map((option) => {
-        option.priceUSD = btcPrice
-          ? btcPrice / (100_000_000 / option.priceSATS)
-          : undefined;
-        return option;
-      }),
-    ]);
-  }, [passOptions, btcPrice]);
+    if (btcPrice && !passOptions[0].priceUSD) {
+      setPassOptions((prev) => [
+        ...prev.map((option) => {
+          option.priceUSD = btcPrice
+            ? btcPrice / (100_000_000 / option.priceSATS)
+            : undefined;
+          return option;
+        }),
+      ]);
+    }
+  }, [passOptions, btcPrice, setPassOptions]);
 
   const fetchPassOptions = (): Promise<PassOption[]> => {
     return new Promise((resolve, reject) => {
