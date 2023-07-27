@@ -25,6 +25,8 @@ interface SubscribeWizardContextProps {
   passOptions: PassOption[];
   selectedPassOption?: PassOption;
   setSelectedPassOption: Dispatch<SetStateAction<PassOption | undefined>>;
+  invoice?: string;
+  setInvoice: Dispatch<SetStateAction<string | undefined>>;
 }
 
 const SubscribeWizardContext =
@@ -34,6 +36,7 @@ export const SubscribeWizardProvider = ({ children }: PropsWithChildren) => {
   const [step, setStep] = useState<SubscribeWizardStep>("idle");
   const [passOptions, setPassOptions] = useState<PassOption[]>([]);
   const [selectedPassOption, setSelectedPassOption] = useState<PassOption>();
+  const [invoice, setInvoice] = useState<string>();
 
   const fetchPassOptions = (): Promise<PassOption[]> => {
     return new Promise((resolve, reject) => {
@@ -74,6 +77,8 @@ export const SubscribeWizardProvider = ({ children }: PropsWithChildren) => {
         passOptions,
         selectedPassOption,
         setSelectedPassOption,
+        invoice,
+        setInvoice,
       }}
     >
       {children}

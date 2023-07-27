@@ -72,7 +72,7 @@ export const authSlice = createSlice({
     },
     setSubscriptionStatus: (
       state,
-      action: PayloadAction<StemstrSubscriptionStatus>
+      action: PayloadAction<StemstrSubscriptionStatus | undefined>
     ) => {
       state.subscriptionStatus = action.payload;
       cacheAuthState(state);

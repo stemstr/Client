@@ -1,27 +1,12 @@
 import { DrawerProps } from "components/Drawer/Drawer";
 import SubscribeDrawer from "./SubscribeDrawer";
-import {
-  Box,
-  Button,
-  CopyButton,
-  Group,
-  Loader,
-  Radio,
-  Stack,
-  Text,
-} from "@mantine/core";
-import { CheckCircleIcon, ChevronLeftIcon } from "icons/StemstrIcon";
+import { Box, Button, Group, Loader, Radio, Stack, Text } from "@mantine/core";
+import { ChevronLeftIcon } from "icons/StemstrIcon";
 import { useCallback, useEffect, useState } from "react";
 import { PassOption, useSubscribeWizard } from "./SubscribeWizardProvider";
-import {
-  fetchSubscriptionInvoice,
-  fetchSubscriptionStatus,
-  setSubscriptionStatus,
-} from "store/Auth";
+import { fetchSubscriptionInvoice } from "store/Auth";
 import useAuth from "hooks/useAuth";
-import { useDispatch } from "react-redux";
 import useLightningWalletUri from "hooks/useLightningWalletUri";
-import { isDesktop } from "react-device-detect";
 
 type SubscribeSelectPassDrawerProps = DrawerProps & {
   onBack: () => void;
@@ -41,35 +26,36 @@ export default function SubscribeSelectPassDrawer({
   ...rest
 }: SubscribeSelectPassDrawerProps) {
   const { authState } = useAuth();
-  const { selectedPassOption, setSelectedPassOption, passOptions } =
-    useSubscribeWizard();
+  const {
+    selectedPassOption,
+    setSelectedPassOption,
+    passOptions,
+    invoice,
+    setInvoice,
+  } = useSubscribeWizard();
   const [selectedPass, setSelectedPass] = useState("0");
-  const [invoice, setInvoice] = useState<string | null>(null);
   const lightningWalletUri = useLightningWalletUri(invoice ?? "");
-  const [isPayingWithWallet, setIsPayingWithWallet] = useState(false);
   const [isFetchingInvoice, setIsFetchingInvoice] = useState(false);
-  const [invoiceError, setInvoiceError] = useState<string | null>(null);
-  const dispatch = useDispatch();
 
-  useEffect(() => {
-    let interval: NodeJS.Timer | undefined;
-    if (opened) {
-      // poll subscription status after invoice has been generated
-      interval = setInterval(() => {
-        if (authState.pk) {
-          fetchSubscriptionStatus(authState.pk).then((subscriptionStatus) => {
-            if (subscriptionStatus.expires_at > Date.now() / 1000) {
-              dispatch(setSubscriptionStatus(subscriptionStatus));
-              onContinue();
-            }
-          });
-        }
-      }, 10000);
-    }
-    return () => {
-      if (interval) clearInterval(interval);
-    };
-  }, [opened, authState.pk, dispatch, setSubscriptionStatus]);
+  // useEffect(() => {
+  //   let interval: NodeJS.Timer | undefined;
+  //   if (opened) {
+  //     // poll subscription status after invoice has been generated
+  //     interval = setInterval(() => {
+  //       if (authState.pk) {
+  //         fetchSubscriptionStatus(authState.pk).then((subscriptionStatus) => {
+  //           if (subscriptionStatus.expires_at > Date.now() / 1000) {
+  //             dispatch(setSubscriptionStatus(subscriptionStatus));
+  //             onContinue();
+  //           }
+  //         });
+  //       }
+  //     }, 10000);
+  //   }
+  //   return () => {
+  //     if (interval) clearInterval(interval);
+  //   };
+  // }, [opened, authState.pk, dispatch, setSubscriptionStatus]);
 
   useEffect(() => {
     const index = parseInt(selectedPass);
@@ -77,32 +63,25 @@ export default function SubscribeSelectPassDrawer({
   }, [selectedPass, passOptions]);
 
   useEffect(() => {
-    setInvoice(null);
+    setInvoice(undefined);
   }, [selectedPassOption]);
 
-  const fetchInvoice = useCallback((): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      setInvoice(null);
-      if (!authState.pk || !selectedPassOption?.numDays) {
-        reject("no option selected");
-        return;
-      }
-      setIsFetchingInvoice(true);
-      setInvoiceError(null);
-      fetchSubscriptionInvoice(authState.pk, selectedPassOption.numDays)
-        .then((response) => {
-          setInvoice(response.lightning_invoice);
-          resolve(response.lightning_invoice);
-        })
-        .catch((err) => {
-          setInvoice(null);
-          setInvoiceError("Error Fetching Invoice");
-          reject("Error Fetching Invoice");
-        })
-        .finally(() => {
-          setIsFetchingInvoice(false);
-        });
-    });
+  const fetchInvoice = useCallback(() => {
+    setInvoice(undefined);
+    if (!authState.pk || !selectedPassOption?.numDays) {
+      return;
+    }
+    setIsFetchingInvoice(true);
+    fetchSubscriptionInvoice(authState.pk, selectedPassOption.numDays)
+      .then((response) => {
+        setInvoice(response.lightning_invoice);
+      })
+      .catch((err) => {
+        setInvoice(undefined);
+      })
+      .finally(() => {
+        setIsFetchingInvoice(false);
+      });
   }, [
     authState.pk,
     selectedPassOption?.numDays,
@@ -111,25 +90,10 @@ export default function SubscribeSelectPassDrawer({
   ]);
 
   useEffect(() => {
-    const payWithWallet = async () => {
-      if (!invoice) return;
-      if (window.webln) {
-        try {
-          await window.webln.enable();
-          await window.webln.sendPayment(invoice);
-        } catch (error) {
-          console.error(error);
-        }
-      } else if (!isDesktop) {
-        window.location.href = lightningWalletUri;
-      }
-      setIsPayingWithWallet(false);
-    };
-
-    if (isPayingWithWallet) {
-      payWithWallet();
+    if (invoice) {
+      onContinue();
     }
-  }, [isPayingWithWallet]);
+  }, [invoice]);
 
   const handleChange = (value: string) => {
     setSelectedPass(value);
@@ -178,59 +142,13 @@ export default function SubscribeSelectPassDrawer({
           />
         ))}
       </Radio.Group>
-      <CopyButton value={invoice ?? ""}>
-        {({ copied, copy }) => (
-          <Button
-            mt={52}
-            variant="light"
-            onClick={() => {
-              if (invoice) {
-                copy();
-              } else {
-                fetchInvoice().then((invoice) => {
-                  if (navigator?.clipboard) {
-                    copy();
-                    navigator.clipboard.writeText(invoice);
-                  }
-                });
-              }
-            }}
-            fullWidth
-            disabled={isFetchingInvoice}
-          >
-            {invoiceError ||
-              (copied ? (
-                <>
-                  Copied <CheckCircleIcon />
-                </>
-              ) : (
-                "Copy Invoice"
-              ))}
-            {isFetchingInvoice && (
-              <>
-                &nbsp;
-                <Loader size={16} />
-              </>
-            )}
-          </Button>
-        )}
-      </CopyButton>
-
       <Button
-        onClick={() => {
-          if (invoice) {
-            setIsPayingWithWallet(true);
-          } else {
-            fetchInvoice().then((invoice) => {
-              setIsPayingWithWallet(true);
-            });
-          }
-        }}
-        mt="md"
-        disabled={isFetchingInvoice}
+        onClick={fetchInvoice}
+        mt={52}
+        disabled={isFetchingInvoice || !selectedPassOption}
         fullWidth
       >
-        {invoiceError || "Pay with Wallet"}
+        Continue to Payment
         {isFetchingInvoice && (
           <>
             &nbsp;

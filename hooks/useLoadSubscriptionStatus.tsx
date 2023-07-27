@@ -11,11 +11,11 @@ export default function useLoadSubscriptionStatus() {
     if (authState.pk) {
       fetchSubscriptionStatus(authState.pk)
         .then((subscriptionStatus) => {
-          console.log(subscriptionStatus);
           dispatch(setSubscriptionStatus(subscriptionStatus));
         })
         .catch((err) => {
           console.error(err);
+          dispatch(setSubscriptionStatus(undefined));
         });
     }
   }, [authState.pk, dispatch]);
