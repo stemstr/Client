@@ -1,5 +1,5 @@
-import { Fragment } from "react";
-import { Text } from "@mantine/core";
+import { Fragment, type MouseEvent } from "react";
+import { Text, Anchor } from "@mantine/core";
 import MentionLink from "./MentionLink";
 import { NPUB_NOSTR_URI_REGEX } from "../../constants";
 
@@ -23,14 +23,15 @@ export const NoteContent = ({ content }: { content: string }) => {
 
     if (HYPERLINK_REGEX.test(part)) {
       return (
-        <a
+        <Anchor
           href={part}
-          onClick={(e) => e.stopPropagation()}
+          onClick={(e: MouseEvent) => e.stopPropagation()}
           target="_blank"
           rel="noreferrer"
+          c="purple.4"
         >
           {part}
-        </a>
+        </Anchor>
       );
     }
 
