@@ -1,6 +1,6 @@
 import { DrawerProps } from "components/Drawer/Drawer";
 import SubscribeDrawer from "./SubscribeDrawer";
-import { Button, Image, Text } from "@mantine/core";
+import { Button, Image, Loader, Text } from "@mantine/core";
 import { useSubscribeWizard } from "./SubscribeWizardProvider";
 
 type SubscribeIntroDrawerProps = DrawerProps & {
@@ -49,9 +49,10 @@ export default function SubscribeIntroDrawer({
           },
         })}
         fullWidth
+        disabled={!passOptions.length}
       >
         Explore passes
-        {passOptions.length &&
+        {passOptions.length > 0 &&
           ` starting at ${passOptions[0].priceSATS.toLocaleString()} sats ${
             passOptions[0]?.priceUSD
               ? `(~${passOptions[0].priceUSD.toLocaleString("en-US", {
@@ -60,6 +61,12 @@ export default function SubscribeIntroDrawer({
                 })})`
               : ""
           }`}
+        {!passOptions.length && (
+          <>
+            &nbsp;
+            <Loader size={14} />
+          </>
+        )}
       </Button>
     </SubscribeDrawer>
   );
