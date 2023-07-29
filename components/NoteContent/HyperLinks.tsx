@@ -1,5 +1,5 @@
 import { MouseEvent } from "react";
-import { Anchor, Box } from "@mantine/core";
+import { Anchor } from "@mantine/core";
 import useStyles from "./NoteContent.styles";
 
 export const HyperLink = ({ href }: { href: string }) => {
@@ -7,13 +7,11 @@ export const HyperLink = ({ href }: { href: string }) => {
 
   if (/(gif|jpe?g|tiff?|png|webp|bmp)$/i.test(href)) {
     return (
-      <Box w="fit-content" sx={{ maxHeight: 200, overflow: "hidden" }}>
-        <img
-          src={href}
-          alt={href}
-          style={{ maxWidth: "50%", borderRadius: 12 }}
-        />
-      </Box>
+      <img
+        src={href}
+        alt={href}
+        style={{ maxHeight: 400, maxWidth: "50%", borderRadius: 12 }}
+      />
     );
   }
 
