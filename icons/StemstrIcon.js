@@ -52,6 +52,8 @@ import Following from "./Line icons/Users/user-check-01.svg";
 import Profile from "./Line icons/Users/user-circle.svg";
 import Unfollow from "./Line icons/Users/user-left-01.svg";
 
+import StarsSolid from "./Solid icons/Weather/stars-02.svg";
+
 import Collection from "./collection.svg";
 import Repost from "./repost.svg";
 import Shaka from "./shaka.svg";
@@ -434,6 +436,14 @@ export const TrashIcon = (props) => {
   return (
     <StemstrIcon>
       <Trash {...props} />
+    </StemstrIcon>
+  );
+};
+
+export const StarsSolidIcon = (props) => {
+  return (
+    <StemstrIcon>
+      <StarsSolid {...props} />
     </StemstrIcon>
   );
 };
