@@ -321,7 +321,7 @@ function NotificationBody(props: NotificationProps) {
   const { classes } = useStyles();
 
   return (
-    <Box c="white" mt="md">
+    <Box c="white" mt="md" sx={{ overflowWrap: "anywhere" }}>
       <Text>{props.referencedEvent?.content}</Text>
     </Box>
   );
