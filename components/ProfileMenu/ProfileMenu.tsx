@@ -14,6 +14,13 @@ export default function ProfileMenu() {
         : undefined,
     [subscriptionTimeRemaining]
   );
+  const timeSinceSubscriptionStart =
+    authState.subscriptionStatus?.created_at &&
+    Date.now() / 1000 - authState.subscriptionStatus?.created_at;
+  const isHighlightingSubscriptionStatus =
+    timeSinceSubscriptionStart &&
+    timeSinceSubscriptionStart > 0 &&
+    timeSinceSubscriptionStart < 10;
 
   useEffect(() => {
     let interval: NodeJS.Timeout | undefined;
@@ -42,11 +49,16 @@ export default function ProfileMenu() {
       spacing={8}
       sx={(theme) => ({
         border: "1px solid",
-        borderColor: theme.colors.gray[2],
+        borderColor: isHighlightingSubscriptionStatus
+          ? theme.colors.green[5]
+          : theme.colors.gray[2],
         outline: "3px solid",
-        outlineColor: theme.colors.gray[4],
+        outlineColor: isHighlightingSubscriptionStatus
+          ? theme.colors.green[8]
+          : theme.colors.gray[4],
         padding: 3,
         borderRadius: 19,
+        transition: "border-color .5s ease, outline-color .5s ease",
       })}
     >
       <Transition
@@ -56,7 +68,14 @@ export default function ProfileMenu() {
         timingFunction="ease"
       >
         {(styles) => (
-          <Box c="white" style={{ ...styles, cursor: "pointer" }}>
+          <Box
+            c={isHighlightingSubscriptionStatus ? "green" : "white"}
+            style={{
+              ...styles,
+              cursor: "pointer",
+              transition: "color .5s ease",
+            }}
+          >
             <Text fw="bold" ml={10} span>
               {formattedSubscriptionTimeRemaining?.amount}
             </Text>{" "}
