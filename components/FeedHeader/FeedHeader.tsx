@@ -1,13 +1,12 @@
 import { Box, Group, Text } from "@mantine/core";
-import ProfileLink from "../ProfileLink/ProfileLink";
 import { PropsWithChildren } from "react";
 import { MaxWidthContainer } from "../Feed";
+import ProfileMenu from "components/ProfileMenu/ProfileMenu";
 
 export default function FeedHeader({ children }: PropsWithChildren) {
   return (
     <MaxWidthContainer>
-      <Box
-        component={Group}
+      <Group
         position="apart"
         sx={(theme) => ({
           backgroundColor: theme.colors.dark[7],
@@ -30,10 +29,8 @@ export default function FeedHeader({ children }: PropsWithChildren) {
         >
           {children}
         </Text>
-        <Group spacing={20}>
-          <ProfileLink />
-        </Group>
-      </Box>
+        <ProfileMenu />
+      </Group>
     </MaxWidthContainer>
   );
 }
