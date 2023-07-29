@@ -1,14 +1,13 @@
-import { Fragment, type MouseEvent } from "react";
-import { Text, Anchor } from "@mantine/core";
+import { Fragment } from "react";
+import { Text } from "@mantine/core";
 import MentionLink from "./MentionLink";
 import { NPUB_NOSTR_URI_REGEX } from "../../constants";
-import useStyles from "./NoteContent.styles";
+import HyperLink from "./HyperLinks";
 
 const HYPERLINK_REGEX =
   /(https?:\/\/[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|])/;
 
 export const NoteContent = ({ content }: { content: string }) => {
-  const { classes } = useStyles();
   const formattingRegEx = new RegExp(
     `(?:${NPUB_NOSTR_URI_REGEX.source}|${HYPERLINK_REGEX.source})`,
     "gi"
@@ -24,17 +23,7 @@ export const NoteContent = ({ content }: { content: string }) => {
     }
 
     if (HYPERLINK_REGEX.test(part)) {
-      return (
-        <Anchor
-          className={classes.anchor}
-          href={part}
-          onClick={(e: MouseEvent) => e.stopPropagation()}
-          target="_blank"
-          rel="noreferrer"
-        >
-          {part}
-        </Anchor>
-      );
+      return <HyperLink key={index} href={part} />;
     }
 
     return <Fragment key={index}>{part}</Fragment>;
