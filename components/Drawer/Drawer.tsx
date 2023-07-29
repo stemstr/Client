@@ -67,18 +67,15 @@ const Drawer = ({
   const handleDragEnd = () => {
     setIsDragging(false);
 
-    if (currentY - startY > 50) {
+    if (currentY - startY > 0) {
       onDragEnd();
 
       // reset values after transition to prevent flash of content
       setTimeout(() => {
         setStartY(0);
         setCurrentY(0);
-        setIsDragging(false);
         setSize("auto");
       }, 500);
-    } else {
-      setStartY(currentY);
     }
   };
 
