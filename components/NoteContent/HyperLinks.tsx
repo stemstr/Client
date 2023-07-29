@@ -8,7 +8,11 @@ export const HyperLink = ({ href }: { href: string }) => {
   if (/(gif|jpe?g|tiff?|png|webp|bmp)$/i.test(href)) {
     return (
       <Box sx={{ maxHeight: 200, overflow: "hidden" }}>
-        <img src={href} alt={href} style={{ maxWidth: "50%" }} />
+        <img
+          src={href}
+          alt={href}
+          style={{ maxWidth: "50%", borderRadius: 12 }}
+        />
       </Box>
     );
   }
