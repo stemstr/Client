@@ -34,6 +34,8 @@ export function useFeed(filter: NDKFilter, relayUrls: string[] = []) {
   }, [500, processEventBatch]);
 
   useEffect(() => {
+    setFeed([]);
+    eventBatch.current = [];
     let subscription: NDKSubscription;
     let opts: NDKSubscriptionOptions = { closeOnEose: false };
     let relaySet: NDKRelaySet | undefined;
@@ -55,7 +57,7 @@ export function useFeed(filter: NDKFilter, relayUrls: string[] = []) {
     return () => {
       if (subscription) subscription.stop();
     };
-  }, [filter, setFeed]);
+  }, [filter]);
 
   return feed;
 }

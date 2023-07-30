@@ -4,13 +4,16 @@ import SettingsItem from "./SettingsItem";
 import { LogoutIcon } from "icons/StemstrIcon";
 import { Route } from "enums";
 import { reset as logout } from "store/Auth";
+import { useNotifications } from "ndk/NostrNotificationsProvider";
 
 export function SettingLogout() {
   const dispatch = useDispatch();
   const router = useRouter();
+  const { reset: resetNotifications } = useNotifications();
 
   const handleLogout = () => {
     dispatch(logout());
+    resetNotifications();
     router.push(Route.Login);
   };
 

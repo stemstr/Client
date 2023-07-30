@@ -26,6 +26,7 @@ export const NoteContent = ({ content }: { content: string }) => {
     if (HYPERLINK_REGEX.test(part)) {
       return (
         <Anchor
+          key={index}
           className={classes.anchor}
           href={part}
           onClick={(e: MouseEvent) => e.stopPropagation()}
