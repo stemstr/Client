@@ -18,7 +18,7 @@ export default function ContactsBar({ pubkey }: ContactsBarProps) {
     <Group spacing="xl" position="center" className={classes.contactsBar}>
       <FollowingButton pubkey={pubkey} />
       <FollowersButton pubkey={pubkey} />
-      <RelaysButton pubkey={pubkey} />
+      {/* <RelaysButton pubkey={pubkey} /> */}
     </Group>
   );
 }
