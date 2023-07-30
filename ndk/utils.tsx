@@ -369,11 +369,6 @@ export const createZapRequest = async ({
   }
 
   const normalizedAmount = amount * 1000; // convert to millisats
-
-  if (!zapEndpoint) {
-    throw new Error("No zap endpoint found");
-  }
-
   const currentUserRelayUrls = currentUser
     ? await getUserRelayUrls(currentUser, {
         filter: "writable",
