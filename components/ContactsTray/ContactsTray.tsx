@@ -55,13 +55,13 @@ export default function ContactsTray({ pubkey, tab }: ContactsTrayProps) {
         <Tabs.Tab value="followers" rightSection={<Count count={"?"} />}>
           Followers
         </Tabs.Tab>
-        <Tabs.Tab value="relays" rightSection={<Count count={"?"} />}>
+        {/* <Tabs.Tab value="relays" rightSection={<Count count={"?"} />}>
           Relays
-        </Tabs.Tab>
+        </Tabs.Tab> */}
       </Tabs.List>
       <FollowingPanel contactList={contactList} />
       <FollowersPanel />
-      <RelaysPanel />
+      {/* <RelaysPanel /> */}
     </Tabs>
   );
 }
