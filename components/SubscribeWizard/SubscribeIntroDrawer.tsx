@@ -52,15 +52,6 @@ export default function SubscribeIntroDrawer({
         disabled={!passOptions.length}
       >
         Explore passes
-        {passOptions.length > 0 &&
-          ` starting at ${passOptions[0].priceSATS.toLocaleString()} sats ${
-            passOptions[0]?.priceUSD
-              ? `(~${passOptions[0].priceUSD.toLocaleString("en-US", {
-                  style: "currency",
-                  currency: "USD",
-                })})`
-              : ""
-          }`}
         {!passOptions.length && (
           <>
             &nbsp;
