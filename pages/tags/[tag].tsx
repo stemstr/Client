@@ -1,4 +1,4 @@
-import { Flex, Stack } from "@mantine/core";
+import { Flex, Stack, Text } from "@mantine/core";
 import Head from "next/head";
 import FeedHeader from "components/FeedHeader/FeedHeader";
 import { useRouter } from "next/router";
@@ -22,7 +22,7 @@ export default function Tag() {
             <BackButton defaultUrl={Route.Home}>
               <ChevronLeftIcon width={24} height={24} />
             </BackButton>
-            #{tag}
+            <Text truncate>#{tag}</Text>
           </Flex>
         </FeedHeader>
         <TagFeed key={tag as string} tag={tag as string} />

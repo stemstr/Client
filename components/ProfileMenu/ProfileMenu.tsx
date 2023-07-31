@@ -100,6 +100,7 @@ export default function ProfileMenu() {
         </Text>
       </Drawer>
       <Group
+        noWrap
         spacing={8}
         pos="relative"
         sx={(theme) => ({
@@ -176,7 +177,7 @@ const Stars = ({ mounted }: { mounted: boolean }) => {
   return (
     <>
       {stars.map((star, index) => (
-        <AnimatePresence>
+        <AnimatePresence key={index}>
           {mounted && (
             <Box
               component={motion.div}
