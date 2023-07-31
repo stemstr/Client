@@ -36,7 +36,7 @@ export default function SubscribeIntroDrawer({
       </Text>
       <Text ta="center" fz="sm" mt={8}>
         Purchasing a pass helps keep the quality of content on Stemstr at it's
-        highest level and also limits any spam on the service.
+        highest and limits spam.
       </Text>
       <Button
         onClick={onContinue}
