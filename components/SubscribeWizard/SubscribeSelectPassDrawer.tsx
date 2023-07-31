@@ -148,6 +148,11 @@ const PassOptionInput = ({
   selected,
 }: PassOptionInputProps) => {
   const [isFocused, setIsFocused] = useState(false);
+
+  useEffect(() => {
+    setIsFocused(false);
+  }, []);
+
   return (
     <Radio
       value={value}
