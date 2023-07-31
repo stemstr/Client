@@ -34,7 +34,6 @@ const NoteTags = ({ classes, ...rest }) => {
                 query: { tag: tag[1] },
               })
             }
-            styles={{ label: { cursor: "pointer !important" } }}
           >
             #{tag[1]}
           </Chip>

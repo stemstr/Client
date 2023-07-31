@@ -23,9 +23,6 @@ const useStyles = createStyles((theme, _params, getRef) => ({
   tag: {
     ref: getRef("tag"),
     transition: "background-color .5s ease",
-    label: {
-      cursor: "default",
-    },
   },
   player: {
     backgroundColor: theme.colors.dark[7],
