@@ -101,7 +101,7 @@ const NDKProvider = ({
   // Return the provider with the NDK instance
   return (
     <NDKContext.Provider value={{ ndk, stemstrRelaySet, canPublishEvents }}>
-      {ndk ? children : "Loading..."}
+      {ndk ? children : null}
     </NDKContext.Provider>
   );
 };
