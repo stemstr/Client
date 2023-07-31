@@ -15,7 +15,7 @@ const isTagFeedEvent = (event: NDKEvent): boolean => {
     case 16:
       return true;
     case 1808:
-      return isRootEvent(event);
+      return true;
     default:
       return false;
   }
