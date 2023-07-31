@@ -12,6 +12,7 @@ import usePreloadProfileCache from "../../ndk/hooks/usePreloadProfileCache";
 import { noop } from "../../utils/common";
 import useFooterHeight from "../../ndk/hooks/useFooterHeight";
 import { NewEventsPill } from "./NewEventsPill";
+import { GhostFeed } from "./GhostFeed";
 
 interface FeedProps {
   filter: NDKFilter;
@@ -221,7 +222,9 @@ export const Feed = memo(
           </Box>
         )}
       </AutoSizer>
-    ) : null;
+    ) : (
+      <GhostFeed headerHeight={headerHeight} headerOffset={heightOffset} />
+    );
   }
 );
 
