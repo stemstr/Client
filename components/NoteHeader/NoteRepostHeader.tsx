@@ -2,6 +2,7 @@ import { Group, Text } from "@mantine/core";
 import { RepostIcon, VerifiedIcon } from "icons/StemstrIcon";
 import { useEvent } from "ndk/NDKEventProvider";
 import useNip05 from "ndk/hooks/useNip05";
+import { getFormattedName } from "ndk/utils";
 import { Nip05Status } from "store/Nip05";
 
 export default function NoteRepostHeader() {
@@ -15,7 +16,7 @@ export default function NoteRepostHeader() {
     <Group spacing={0} c="white" fz="sm" lh="normal">
       <RepostIcon />
       <Text ml={8} fw="bold" span>
-        @{repostedBy?.profile?.name}
+        {getFormattedName(repostedBy)}
       </Text>
       {repostedByNip05Status === Nip05Status.Valid && (
         <>
