@@ -35,7 +35,7 @@ export default function SubscribeIntroDrawer({
         Gain access to unlimited sharing of sounds and commenting on Stemstr
       </Text>
       <Text ta="center" fz="sm" mt={8}>
-        Purchasing a pass helps to kee the quality of content on Stemstr at it's
+        Purchasing a pass helps keep the quality of content on Stemstr at it's
         highest level and also limits any spam on the service.
       </Text>
       <Button
