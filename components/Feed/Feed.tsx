@@ -3,7 +3,7 @@ import { FeedNote } from "../Note/Note";
 import { VariableSizeList, areEqual } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import InfiniteLoader from "react-window-infinite-loader";
-import { Box } from "@mantine/core";
+import { Box, Transition } from "@mantine/core";
 import { EventProvider } from "../../ndk/NDKEventProvider";
 import { type NDKEvent, type NDKFilter } from "@nostr-dev-kit/ndk";
 import { useNDK } from "../../ndk/NDKProvider";
@@ -172,58 +172,73 @@ export const Feed = memo(
       listRef.current?.scrollToItem(0);
     };
 
-    return hasAttemptedProfileCachePreload ? (
-      <AutoSizer
-        style={{ height: `calc(100vh - ${headerHeight}px - ${heightOffset}px` }}
-      >
-        {({ height, width }: { height: number; width: number }) => (
-          <Box
-            w="100vw"
-            sx={{
-              position: "relative",
-            }}
-          >
-            {events.length > 0 && (
-              <NewEventsPill
-                filter={filter}
-                eventsFilter={feedFilter}
-                since={events[0].created_at!}
-                onClick={handleNewEventsPillClick}
-              />
-            )}
-            <InfiniteLoader
-              isItemLoaded={(index: number) => index < events.length}
-              itemCount={
-                hasMoreEvents.current ? events.length + 1 : events.length
-              }
-              loadMoreItems={loadMoreItems}
-              threshold={10}
-            >
-              {({ onItemsRendered, ref }) => (
-                <VariableSizeList
-                  height={height - headerHeight - heightOffset - footerHeight}
-                  itemKey={(index: number) => events[index].id}
-                  itemCount={events.length}
-                  itemSize={getRowHeight}
-                  width={width}
-                  overscanCount={5}
-                  ref={(_ref) => {
-                    ref(_ref);
-                    // @ts-ignore
-                    // TODO: figure out why TS thinks current is immutable
-                    listRef.current = _ref;
-                  }}
-                  onItemsRendered={onItemsRendered}
-                >
-                  {FeedRow}
-                </VariableSizeList>
-              )}
-            </InfiniteLoader>
-          </Box>
+    return (
+      <>
+        {!hasAttemptedProfileCachePreload && (
+          <GhostFeed headerHeight={headerHeight} headerOffset={heightOffset} />
         )}
-      </AutoSizer>
-    ) : (
-      <GhostFeed headerHeight={headerHeight} headerOffset={heightOffset} />
+        <Transition
+          transition="slide-up"
+          mounted={hasAttemptedProfileCachePreload}
+        >
+          {(styles) => (
+            <AutoSizer
+              style={{
+                height: `calc(100vh - ${headerHeight}px - ${heightOffset}px`,
+                ...styles,
+              }}
+            >
+              {({ height, width }: { height: number; width: number }) => (
+                <Box
+                  w="100vw"
+                  sx={{
+                    position: "relative",
+                  }}
+                >
+                  {events.length > 0 && (
+                    <NewEventsPill
+                      filter={filter}
+                      eventsFilter={feedFilter}
+                      since={events[0].created_at!}
+                      onClick={handleNewEventsPillClick}
+                    />
+                  )}
+                  <InfiniteLoader
+                    isItemLoaded={(index: number) => index < events.length}
+                    itemCount={
+                      hasMoreEvents.current ? events.length + 1 : events.length
+                    }
+                    loadMoreItems={loadMoreItems}
+                    threshold={10}
+                  >
+                    {({ onItemsRendered, ref }) => (
+                      <VariableSizeList
+                        height={
+                          height - headerHeight - heightOffset - footerHeight
+                        }
+                        itemKey={(index: number) => events[index].id}
+                        itemCount={events.length}
+                        itemSize={getRowHeight}
+                        width={width}
+                        overscanCount={5}
+                        ref={(_ref) => {
+                          ref(_ref);
+                          // @ts-ignore
+                          // TODO: figure out why TS thinks current is immutable
+                          listRef.current = _ref;
+                        }}
+                        onItemsRendered={onItemsRendered}
+                      >
+                        {FeedRow}
+                      </VariableSizeList>
+                    )}
+                  </InfiniteLoader>
+                </Box>
+              )}
+            </AutoSizer>
+          )}
+        </Transition>
+      </>
     );
   }
 );
