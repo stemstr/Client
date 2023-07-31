@@ -30,7 +30,7 @@ export default function useAuth() {
   const guardSubscribed = useCallback((): boolean => {
     if (!isSubscribed()) startSubscribeWizard();
     return isSubscribed();
-  }, [authState.type]);
+  }, [authState.subscriptionStatus?.expires_at, startSubscribeWizard]);
 
   return {
     authState,
