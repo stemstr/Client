@@ -1,12 +1,27 @@
-import { Box, Center, Group, Text, Transition } from "@mantine/core";
+import {
+  Box,
+  Center,
+  Group,
+  MantineTheme,
+  Text,
+  Transition,
+} from "@mantine/core";
 import ProfileLink from "components/ProfileLink/ProfileLink";
 import useAuth from "hooks/useAuth";
 import { InfinityIcon, StarsSolidIcon } from "icons/StemstrIcon";
 import { useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { useDisclosure } from "@mantine/hooks";
+import Drawer from "components/Drawer/Drawer";
+
+const INFINITE_SUBSCRIPTION_TIME = 21_000_000_000;
 
 export default function ProfileMenu() {
   const { authState } = useAuth();
+  const [
+    subscriptionDrawerOpened,
+    { open: openSubscriptionDrawer, close: closeSubscriptionDrawer },
+  ] = useDisclosure(false);
   const [subscriptionTimeRemaining, setSubscriptionTimeRemaining] =
     useState<number>(); // in seconds
   const formattedSubscriptionTimeRemaining = useMemo(
@@ -48,58 +63,97 @@ export default function ProfileMenu() {
   }, [authState.subscriptionStatus?.expires_at, setSubscriptionTimeRemaining]);
 
   return (
-    <Group
-      spacing={8}
-      pos="relative"
-      sx={(theme) => ({
-        color: isHighlightingSubscriptionStatus
-          ? theme.colors.green[5]
-          : theme.white,
-        border: "1px solid",
-        borderColor: isHighlightingSubscriptionStatus
-          ? theme.colors.green[5]
-          : theme.colors.gray[2],
-        outline: "3px solid",
-        outlineColor: isHighlightingSubscriptionStatus
-          ? theme.colors.green[8]
-          : theme.colors.gray[4],
-        padding: 3,
-        borderRadius: 19,
-        transition:
-          "color 0.5s ease, border-color 0.5s ease, outline-color 0.5s ease",
-      })}
-    >
-      {true && <Stars mounted={isHighlightingSubscriptionStatus} />}
-      <Transition
-        mounted={Boolean(formattedSubscriptionTimeRemaining)}
-        transition="slide-left"
-        duration={500}
-        timingFunction="ease"
+    <>
+      <Drawer
+        opened={subscriptionDrawerOpened}
+        position="bottom"
+        onClose={closeSubscriptionDrawer}
+        withCloseButton={false}
+        onDragEnd={closeSubscriptionDrawer}
+        styles={(theme: MantineTheme) => ({
+          overlay: {
+            backgroundColor: `${theme.colors.dark[7]} !important`,
+            backdropFilter: "blur(16px)",
+            opacity: `${0.5} !important`,
+          },
+          drawer: {
+            background:
+              "linear-gradient(135deg, rgb(96, 208, 176), rgb(80, 152, 240))",
+            borderTopLeftRadius: 40,
+            borderTopRightRadius: 40,
+            maxWidth: 600,
+            margin: "auto",
+            padding: `0 16px 24px 16px !important`,
+          },
+        })}
       >
-        {(styles) => (
-          <Box
-            style={{
-              ...styles,
-              cursor: "pointer",
-            }}
-          >
-            {authState.subscriptionStatus?.expires_at === 21_000_000_000 ? (
-              <Center ml={10}>
-                <InfinityIcon width={20} height={20} />
-              </Center>
-            ) : (
-              <>
-                <Text fw="bold" ml={10} span>
-                  {formattedSubscriptionTimeRemaining?.amount}
-                </Text>{" "}
-                {formattedSubscriptionTimeRemaining?.unit}
-              </>
-            )}
-          </Box>
-        )}
-      </Transition>
-      <ProfileLink size={30} />
-    </Group>
+        <Text component="h2" c="dark.8" fz={20} align="center">
+          {authState.subscriptionStatus?.expires_at ===
+          INFINITE_SUBSCRIPTION_TIME ? (
+            <>Lifetime Pass</>
+          ) : (
+            <>
+              {formattedSubscriptionTimeRemaining?.amount}{" "}
+              {formattedSubscriptionTimeRemaining?.unit} remaining
+            </>
+          )}
+        </Text>
+      </Drawer>
+      <Group
+        spacing={8}
+        pos="relative"
+        sx={(theme) => ({
+          color: isHighlightingSubscriptionStatus
+            ? theme.colors.green[5]
+            : theme.white,
+          border: "1px solid",
+          borderColor: isHighlightingSubscriptionStatus
+            ? theme.colors.green[5]
+            : theme.colors.gray[2],
+          outline: "3px solid",
+          outlineColor: isHighlightingSubscriptionStatus
+            ? theme.colors.green[8]
+            : theme.colors.gray[4],
+          padding: 3,
+          borderRadius: 19,
+          transition:
+            "color 0.5s ease, border-color 0.5s ease, outline-color 0.5s ease",
+        })}
+      >
+        <Stars mounted={isHighlightingSubscriptionStatus} />
+        <Transition
+          mounted={Boolean(formattedSubscriptionTimeRemaining)}
+          transition="slide-left"
+          duration={500}
+          timingFunction="ease"
+        >
+          {(styles) => (
+            <Box
+              onClick={openSubscriptionDrawer}
+              style={{
+                ...styles,
+                cursor: "pointer",
+              }}
+            >
+              {authState.subscriptionStatus?.expires_at ===
+              INFINITE_SUBSCRIPTION_TIME ? (
+                <Center ml={10}>
+                  <InfinityIcon width={20} height={20} />
+                </Center>
+              ) : (
+                <>
+                  <Text fw="bold" ml={10} span>
+                    {formattedSubscriptionTimeRemaining?.amount}
+                  </Text>{" "}
+                  {formattedSubscriptionTimeRemaining?.unit}
+                </>
+              )}
+            </Box>
+          )}
+        </Transition>
+        <ProfileLink size={30} />
+      </Group>
+    </>
   );
 }
 
