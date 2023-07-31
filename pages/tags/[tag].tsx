@@ -10,12 +10,11 @@ import BackButton from "../../components/BackButton/BackButton";
 export default function Tag() {
   const router = useRouter();
   const { tag } = router.query;
-  const title = `Stemstr - #${tag}`;
 
   return (
     <>
       <Head>
-        <title>{title}</title>
+        <title>Stemstr - #{tag}</title>
       </Head>
       <Stack spacing={0}>
         <FeedHeader>
@@ -23,7 +22,7 @@ export default function Tag() {
             <BackButton defaultUrl={Route.Home}>
               <ChevronLeftIcon width={24} height={24} />
             </BackButton>
-            {title}
+            #{tag}
           </Flex>
         </FeedHeader>
         <TagFeed tag={tag as string} />
