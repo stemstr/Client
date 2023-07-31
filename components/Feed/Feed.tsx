@@ -1,4 +1,11 @@
-import { useRef, useEffect, memo, useState, useCallback } from "react";
+import {
+  useRef,
+  useEffect,
+  memo,
+  useState,
+  useCallback,
+  RefObject,
+} from "react";
 import { FeedNote } from "../Note/Note";
 import { VariableSizeList, areEqual } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
@@ -19,6 +26,7 @@ interface FeedProps {
   feedFilter?: (event: NDKEvent) => boolean;
   heightOffset?: number;
   onEventsLoaded?: (events: NDKEvent[]) => void;
+  listRef: RefObject<VariableSizeList<any>>;
 }
 
 export const Feed = memo(
@@ -27,6 +35,7 @@ export const Feed = memo(
     feedFilter = () => true,
     heightOffset = 0,
     onEventsLoaded = noop,
+    listRef,
   }: FeedProps) => {
     const { ndk, stemstrRelaySet } = useNDK();
     const [events, setEvents] = useState<NDKEvent[]>([]);
@@ -34,7 +43,6 @@ export const Feed = memo(
     const isLoadingMore = useRef(false);
     const headerHeight = 68;
     const footerHeight = useFooterHeight();
-    const listRef = useRef<VariableSizeList>(null);
     const rowHeights = useRef<number[]>([]);
     const getRowHeight = (index: number) =>
       rowHeights.current[index] + 16 || 300;

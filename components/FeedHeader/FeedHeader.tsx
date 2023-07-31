@@ -3,7 +3,14 @@ import { PropsWithChildren } from "react";
 import { MaxWidthContainer } from "../Feed";
 import ProfileMenu from "components/ProfileMenu/ProfileMenu";
 
-export default function FeedHeader({ children }: PropsWithChildren) {
+type FeedHeaderProps = PropsWithChildren & {
+  onClickTitle?: () => void;
+};
+
+export default function FeedHeader({
+  onClickTitle,
+  children,
+}: FeedHeaderProps) {
   return (
     <MaxWidthContainer>
       <Group
@@ -20,10 +27,12 @@ export default function FeedHeader({ children }: PropsWithChildren) {
         })}
       >
         <Text
+          onClick={onClickTitle}
           sx={(theme) => ({
             color: theme.white,
             fontWeight: 700,
             fontSize: 24,
+            cursor: onClickTitle && "pointer",
           })}
           lh="normal"
         >

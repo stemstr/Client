@@ -1,6 +1,8 @@
 import { Feed } from "../Feed";
 import { NDKEvent, type NDKFilter } from "@nostr-dev-kit/ndk";
 import { Kind } from "nostr-tools";
+import { RefObject } from "react";
+import { VariableSizeList } from "react-window";
 
 const filter: NDKFilter = {
   kinds: [1, 6, 16 as Kind, 1808 as Kind],
@@ -26,6 +28,12 @@ const isDiscoverFeedEvent = (event: NDKEvent): boolean => {
   }
 };
 
-export default function DiscoverFeed() {
-  return <Feed filter={filter} feedFilter={isDiscoverFeedEvent} />;
+export default function DiscoverFeed({
+  listRef,
+}: {
+  listRef: RefObject<VariableSizeList<any>>;
+}) {
+  return (
+    <Feed filter={filter} feedFilter={isDiscoverFeedEvent} listRef={listRef} />
+  );
 }
