@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { selectAuthState, setSK } from "../../store/Auth";
+import { Route } from "enums";
 
 export default function LoginForm() {
   const authState = useSelector(selectAuthState);
@@ -24,7 +25,7 @@ export default function LoginForm() {
 
   useEffect(() => {
     if (authState.pk) {
-      router.push(`/user/${authState.pk}`);
+      router.push(Route.Discover);
     }
   }, [authState.pk]);
 

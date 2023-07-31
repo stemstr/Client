@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { showNotification } from "@mantine/notifications";
 import ZapOptionsDrawer from "./ZapOptionsDrawer";
 import CustomAmountDrawer from "./CustomAmountDrawer";
 import InvoiceDrawer from "./InvoiceDrawer";
@@ -35,8 +36,14 @@ export const ZapWizard = () => {
       setZapReceiptRelays(relays);
       setStep("invoice");
     } catch (error) {
-      // TODO: let user know that something went wrong
-      console.error(error);
+      showNotification({
+        title: "Oh sh*t, lightning on a zapcation! 😯",
+        message:
+          "Sending the electric squirrel in for repairs. 🐿️⚡️🪛 Try again soon.",
+        color: "red",
+        autoClose: 5000,
+        onClose: () => setTimeout(handleDrawerClose, 500),
+      });
     }
   };
   const handleCommentChange = (value: string) => {

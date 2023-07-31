@@ -11,6 +11,7 @@ import { extractMentionPubkeys } from "../../ndk/utils";
 import usePreloadProfileCache from "../../ndk/hooks/usePreloadProfileCache";
 import { noop } from "../../utils/common";
 import useFooterHeight from "../../ndk/hooks/useFooterHeight";
+import { NewEventsPill } from "./NewEventsPill";
 
 interface FeedProps {
   filter: NDKFilter;
@@ -22,7 +23,7 @@ interface FeedProps {
 export const Feed = memo(
   ({
     filter,
-    feedFilter = (event) => true,
+    feedFilter = () => true,
     heightOffset = 0,
     onEventsLoaded = noop,
   }: FeedProps) => {
@@ -84,34 +85,38 @@ export const Feed = memo(
 
     const processEvents = useCallback(
       (events: NDKEvent[]) => {
-        const rootEvents = events.filter(feedFilter);
-        let mentionedPubkeys: string[] = [];
+        return new Promise<void>((resolve) => {
+          const rootEvents = events.filter(feedFilter);
+          let mentionedPubkeys: string[] = [];
 
-        rootEvents.forEach((event) => {
-          const mentionNpubs = extractMentionPubkeys(event);
+          rootEvents.forEach((event) => {
+            const mentionNpubs = extractMentionPubkeys(event);
 
-          if (mentionNpubs.length > 0) {
-            mentionedPubkeys.push(...mentionNpubs);
+            if (mentionNpubs.length > 0) {
+              mentionedPubkeys.push(...mentionNpubs);
+            }
+          });
+
+          if (mentionedPubkeys.length > 0 && ndk) {
+            ndk
+              .fetchEvents({
+                kinds: [0],
+                authors: Array.from(new Set(mentionedPubkeys)).slice(0, 50),
+              })
+              .catch(console.error)
+              .finally(() => {
+                setEvents(rootEvents);
+                onEventsLoaded(rootEvents);
+                resolve();
+              });
+          } else {
+            setEvents(rootEvents);
+            onEventsLoaded(rootEvents);
+            resolve();
           }
         });
-
-        if (mentionedPubkeys.length > 0 && ndk) {
-          ndk
-            .fetchEvents({
-              kinds: [0],
-              authors: Array.from(new Set(mentionedPubkeys)).slice(0, 50),
-            })
-            .catch(console.error)
-            .finally(() => {
-              setEvents(rootEvents);
-              onEventsLoaded(rootEvents);
-            });
-        } else {
-          setEvents(rootEvents);
-          onEventsLoaded(rootEvents);
-        }
       },
-      [onEventsLoaded, ndk]
+      [onEventsLoaded, ndk, feedFilter]
     );
 
     // initial load
@@ -159,40 +164,61 @@ export const Feed = memo(
 
       isLoadingMore.current = false;
     };
+    const handleNewEventsPillClick = async (
+      eventsWaitingToBeRendered: NDKEvent[]
+    ) => {
+      await processEvents([...eventsWaitingToBeRendered, ...events]);
+      listRef.current?.scrollToItem(0);
+    };
 
     return hasAttemptedProfileCachePreload ? (
       <AutoSizer
         style={{ height: `calc(100vh - ${headerHeight}px - ${heightOffset}px` }}
       >
         {({ height, width }: { height: number; width: number }) => (
-          <InfiniteLoader
-            isItemLoaded={(index: number) => index < events.length}
-            itemCount={
-              hasMoreEvents.current ? events.length + 1 : events.length
-            }
-            loadMoreItems={loadMoreItems}
-            threshold={10}
+          <Box
+            w="100vw"
+            sx={{
+              position: "relative",
+            }}
           >
-            {({ onItemsRendered, ref }) => (
-              <VariableSizeList
-                height={height - headerHeight - heightOffset - footerHeight}
-                itemKey={(index: number) => events[index].id}
-                itemCount={events.length}
-                itemSize={getRowHeight}
-                width={width}
-                overscanCount={5}
-                ref={(_ref) => {
-                  ref(_ref);
-                  // @ts-ignore
-                  // TODO: figure out why TS thinks current is immutable
-                  listRef.current = _ref;
-                }}
-                onItemsRendered={onItemsRendered}
-              >
-                {FeedRow}
-              </VariableSizeList>
+            {events.length > 0 && (
+              <NewEventsPill
+                filter={filter}
+                eventsFilter={feedFilter}
+                since={events[0].created_at!}
+                onClick={handleNewEventsPillClick}
+              />
             )}
-          </InfiniteLoader>
+            <InfiniteLoader
+              isItemLoaded={(index: number) => index < events.length}
+              itemCount={
+                hasMoreEvents.current ? events.length + 1 : events.length
+              }
+              loadMoreItems={loadMoreItems}
+              threshold={10}
+            >
+              {({ onItemsRendered, ref }) => (
+                <VariableSizeList
+                  height={height - headerHeight - heightOffset - footerHeight}
+                  itemKey={(index: number) => events[index].id}
+                  itemCount={events.length}
+                  itemSize={getRowHeight}
+                  width={width}
+                  overscanCount={5}
+                  ref={(_ref) => {
+                    ref(_ref);
+                    // @ts-ignore
+                    // TODO: figure out why TS thinks current is immutable
+                    listRef.current = _ref;
+                  }}
+                  onItemsRendered={onItemsRendered}
+                >
+                  {FeedRow}
+                </VariableSizeList>
+              )}
+            </InfiniteLoader>
+          </Box>
         )}
       </AutoSizer>
     ) : null;

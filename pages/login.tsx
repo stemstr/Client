@@ -17,13 +17,10 @@ import { Route } from "enums";
 
 import { setNIP07 } from "store/Auth";
 import LoginForm from "components/LoginForm/LoginForm";
-import NDK, { NDKNip07Signer } from "@nostr-dev-kit/ndk";
-import { useNDK } from "ndk/NDKProvider";
-
-const LEARN_MORE_URL = "https://www.stemstr.app/";
+import { NDKNip07Signer } from "@nostr-dev-kit/ndk";
+import TermsOfService from "components/LoginForm/TermsOfService";
 
 export default function Login() {
-  const { ndk } = useNDK();
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -99,6 +96,7 @@ export default function Login() {
         </Flex>
 
         <Stack
+          spacing={0}
           sx={{
             width: "100%",
             maxWidth: 342,
@@ -130,6 +128,7 @@ export default function Login() {
             </Group>
           </Box>
           <Box
+            mt="md"
             sx={(theme) => ({
               border: `1px solid ${theme.colors.gray[4]}`,
               borderRadius: theme.radius.lg,
@@ -149,6 +148,7 @@ export default function Login() {
               </>
             )}
           </Box>
+          <TermsOfService />
         </Stack>
       </Stack>
     </>

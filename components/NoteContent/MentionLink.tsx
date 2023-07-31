@@ -4,8 +4,10 @@ import { Anchor } from "@mantine/core";
 import { useUser } from "../../ndk/hooks/useUser";
 import { type NDKUser } from "@nostr-dev-kit/ndk";
 import { convertNpubToHex } from "../../ndk/utils";
+import useStyles from "./NoteContent.styles";
 
 export const MentionLink = ({ nostrUri }: { nostrUri: string }) => {
+  const { classes } = useStyles();
   let pubkey;
 
   try {
@@ -41,10 +43,10 @@ export const MentionLink = ({ nostrUri }: { nostrUri: string }) => {
 
   return pubkey ? (
     <Anchor
+      className={classes.anchor}
       component={Link}
       href={`/user/${pubkey}`}
       onClick={(e) => e.stopPropagation()}
-      c="purple.4"
     >
       {anchorText}
     </Anchor>

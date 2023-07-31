@@ -1,10 +1,19 @@
-import { Fragment } from "react";
-import { Text } from "@mantine/core";
+import { Fragment, type MouseEvent } from "react";
+import { Text, Anchor } from "@mantine/core";
 import MentionLink from "./MentionLink";
 import { NPUB_NOSTR_URI_REGEX } from "../../constants";
+import useStyles from "./NoteContent.styles";
+
+const HYPERLINK_REGEX =
+  /(https?:\/\/[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|])/;
 
 export const NoteContent = ({ content }: { content: string }) => {
-  const parts = content.split(NPUB_NOSTR_URI_REGEX);
+  const { classes } = useStyles();
+  const formattingRegEx = new RegExp(
+    `(?:${NPUB_NOSTR_URI_REGEX.source}|${HYPERLINK_REGEX.source})`,
+    "gi"
+  );
+  const parts = content.split(formattingRegEx);
   const formattedContent = parts.map((part, index) => {
     if (part === undefined) {
       return null;
@@ -14,12 +23,27 @@ export const NoteContent = ({ content }: { content: string }) => {
       return <MentionLink key={index} nostrUri={part} />;
     }
 
+    if (HYPERLINK_REGEX.test(part)) {
+      return (
+        <Anchor
+          key={index}
+          className={classes.anchor}
+          href={part}
+          onClick={(e: MouseEvent) => e.stopPropagation()}
+          target="_blank"
+          rel="noreferrer"
+        >
+          {part}
+        </Anchor>
+      );
+    }
+
     return <Fragment key={index}>{part}</Fragment>;
   });
 
   return (
     <Text c="white" sx={{ overflowWrap: "anywhere" }}>
-      {NPUB_NOSTR_URI_REGEX.test(content) ? formattedContent : content}
+      {formattingRegEx.test(content) ? formattedContent : content}
     </Text>
   );
 };

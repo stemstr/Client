@@ -18,6 +18,7 @@ interface NostrNotificationsContext {
   notifications: NotificationsMap;
   hasUnreadNotifications: boolean;
   markAllAsRead: () => void;
+  reset: () => void;
 }
 
 // Create a context to store the NostrNotifications instance
@@ -25,6 +26,7 @@ const NostrNotificationsContext = createContext<NostrNotificationsContext>({
   notifications: new Map(),
   hasUnreadNotifications: false,
   markAllAsRead: () => {},
+  reset: () => {},
 });
 
 // NostrNotificationsProvider function component
@@ -47,7 +49,7 @@ const NostrNotificationsProvider = ({ children }: PropsWithChildren) => {
       kinds: [Kind.Reaction, Kind.Text, 1808 as Kind, 6 as Kind],
       "#p": pubkey ? [pubkey] : [],
     }),
-    []
+    [pubkey]
   );
   const events = useFeed(filter, [
     process.env.NEXT_PUBLIC_STEMSTR_RELAY as string,
@@ -57,7 +59,7 @@ const NostrNotificationsProvider = ({ children }: PropsWithChildren) => {
       kinds: [Kind.Zap],
       "#p": pubkey ? [pubkey] : [],
     }),
-    []
+    [pubkey]
   );
   const zapEvents = useFeed(zapFilter);
 
@@ -141,10 +143,14 @@ const NostrNotificationsProvider = ({ children }: PropsWithChildren) => {
     });
   }, [setNotificationsStatus]);
 
+  const reset = () => {
+    setNotifications(new Map());
+  };
+
   // Return the provider with the NDK instance
   return (
     <NostrNotificationsContext.Provider
-      value={{ notifications, hasUnreadNotifications, markAllAsRead }}
+      value={{ notifications, hasUnreadNotifications, markAllAsRead, reset }}
     >
       {children}
     </NostrNotificationsContext.Provider>

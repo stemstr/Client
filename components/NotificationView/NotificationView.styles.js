@@ -28,6 +28,7 @@ const useStyles = createStyles((theme, _params, getRef) => ({
   notificationHeaderProfilePics: {},
   notificationHeaderProfileNames: { whiteSpace: "pre-wrap" },
   kindIcon: {
+    flexShrink: 0,
     width: 42,
     height: 42,
     borderRadius: theme.radius.xl,

@@ -27,9 +27,9 @@ export default function Contacts() {
       case "followers":
         title += " - Followers";
         break;
-      case "relays":
-        title += " - Relays";
-        break;
+      // case "relays":
+      //   title += " - Relays";
+      //   break;
     }
     if (user?.profile?.displayName) title += ` - ${user.profile.displayName}`;
     return title;
