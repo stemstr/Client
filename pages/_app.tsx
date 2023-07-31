@@ -18,6 +18,7 @@ import { DEFAULT_RELAY_URLS } from "../constants";
 import { NostrNotificationsProvider } from "ndk/NostrNotificationsProvider";
 import { useRouter } from "next/router";
 import { Route } from "enums";
+import { SubscribeWizardProvider } from "components/SubscribeWizard/SubscribeWizardProvider";
 
 if (process.env.NEXT_PUBLIC_STEMSTR_RELAY)
   DEFAULT_RELAY_URLS.push(process.env.NEXT_PUBLIC_STEMSTR_RELAY);
@@ -121,9 +122,11 @@ function App(props: AppProps & { colorScheme: ColorScheme }) {
           <NDKProvider explicitRelayUrls={DEFAULT_RELAY_URLS}>
             <NostrNotificationsProvider>
               <NotificationsProvider>
-                <ApplicationContainer>
-                  <Component {...pageProps} />
-                </ApplicationContainer>
+                <SubscribeWizardProvider>
+                  <ApplicationContainer>
+                    <Component {...pageProps} />
+                  </ApplicationContainer>
+                </SubscribeWizardProvider>
               </NotificationsProvider>
             </NostrNotificationsProvider>
           </NDKProvider>

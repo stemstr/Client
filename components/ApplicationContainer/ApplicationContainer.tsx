@@ -6,6 +6,8 @@ import PostSheet from "../PostSheet/PostSheet";
 import FileDropOverlay from "../FileDropOverlay/FileDropOverlay";
 import { Route } from "enums/routes";
 import useLoadUserPreferences from "../../hooks/useLoadUserPreferences";
+import { SubscribeWizard } from "components/SubscribeWizard/SubscribeWizard";
+import useLoadSubscriptionStatus from "hooks/useLoadSubscriptionStatus";
 
 export const ApplicationContainer = ({
   children,
@@ -13,6 +15,7 @@ export const ApplicationContainer = ({
   const router = useRouter();
 
   useLoadUserPreferences();
+  useLoadSubscriptionStatus();
 
   return (
     <AppShell
@@ -38,6 +41,7 @@ export const ApplicationContainer = ({
     >
       {children}
       <PostSheet />
+      <SubscribeWizard />
       <FileDropOverlay />
     </AppShell>
   );

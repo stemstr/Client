@@ -7,10 +7,12 @@ import { openSheet } from "store/Sheets";
 
 export default function BottomNavigationMiddleItem() {
   const dispatch = useDispatch();
-  const { guardAuth } = useAuth();
+  const { guardAuth, guardSubscribed } = useAuth();
 
   const handleClick = () => {
     if (!guardAuth()) return;
+    if (!guardSubscribed()) return;
+
     dispatch(openSheet({ sheetKey: "postSheet" }));
   };
 

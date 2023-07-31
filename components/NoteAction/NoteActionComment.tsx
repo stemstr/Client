@@ -11,13 +11,14 @@ import { selectNoteState } from "../../store/Notes";
 const NoteActionComment = () => {
   const { event } = useEvent();
   const dispatch = useDispatch();
-  const { guardAuth } = useAuth();
+  const { guardAuth, guardSubscribed } = useAuth();
   const { commentCount } = useSelector((state: AppState) =>
     selectNoteState(state, event.id)
   );
 
   const handleClickComment = () => {
     if (!guardAuth()) return;
+    if (!guardSubscribed()) return;
 
     dispatch(
       openSheet({
