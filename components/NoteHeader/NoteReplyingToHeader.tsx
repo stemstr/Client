@@ -1,11 +1,10 @@
 import { Text } from "@mantine/core";
 import { Group } from "@mantine/core";
-import { CommentIcon, VerifiedIcon } from "icons/StemstrIcon";
+import { CommentIcon } from "icons/StemstrIcon";
 import { useEvent } from "ndk/NDKEventProvider";
-import useNip05 from "ndk/hooks/useNip05";
 import { useUser } from "ndk/hooks/useUser";
+import { getFormattedName } from "ndk/utils";
 import { useMemo } from "react";
-import { Nip05Status } from "store/Nip05";
 
 export default function NoteReplyingToHeader() {
   const { event } = useEvent();
@@ -22,13 +21,13 @@ export default function NoteReplyingToHeader() {
     <Group spacing={0} c="white" fz="sm" lh="normal">
       <CommentIcon width={16} height={16} />
       <Text ml={8} fw="bold" span>
-        @{user?.profile?.name}
+        {getFormattedName(user)}
       </Text>
       <Text c="gray.3" span>
         &nbsp;remixed
       </Text>
       <Text fw="bold" span>
-        &nbsp;@{replyingTo?.profile?.name}
+        &nbsp;{getFormattedName(replyingTo)}
       </Text>
     </Group>
   ) : null;

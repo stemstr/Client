@@ -228,6 +228,13 @@ export const getNormalizedName = (pubkey: string, user?: NDKUser) => {
   );
 };
 
+export const getFormattedName = (user?: NDKUser) => {
+  if (user?.profile?.name) return `@${user.profile.name}`;
+  return (
+    user?.profile?.displayName || `${user?.hexpubkey().substring(0, 5)}...`
+  );
+};
+
 export const getLnurlServiceEndpoint = (
   zappedUserProfile?: NDKUserProfile,
   zappedEvent?: NDKEvent
