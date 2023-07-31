@@ -154,7 +154,7 @@ const PassOptionInput = ({
       label={
         <Group position="apart">
           <Text c="white" fz={20} fw={700}>
-            {numDays} days
+            {numDays} day{numDays > 1 && "s"}
           </Text>
           <Stack spacing={4}>
             <Text ta="right">
