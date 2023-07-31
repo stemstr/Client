@@ -10,6 +10,8 @@ import NoteActionRow from "../NoteActionRow/NoteActionRow";
 import { Route } from "enums";
 import NoteContent from "../NoteContent/NoteContent";
 import NoteRepostHeader from "components/NoteHeader/NoteRepostHeader";
+import { useNDK } from "ndk/NDKProvider";
+import NoteReplyingToHeader from "components/NoteHeader/NoteReplyingToHeader";
 
 const Note = ({ type }) => {
   const { event, repostedBy } = useEvent();
@@ -20,6 +22,7 @@ const Note = ({ type }) => {
       event.tags?.find((tag) => tag[0] === "download_url") || null;
     return downloadUrlTag ? downloadUrlTag[1] : null;
   }, [event]);
+  const isInThread = type !== undefined;
 
   const handleClick = () => {
     router.push({
@@ -30,6 +33,7 @@ const Note = ({ type }) => {
 
   return (
     <Stack onClick={handleClick} sx={{ cursor: "pointer" }}>
+      {!isInThread && !repostedBy && <NoteReplyingToHeader />}
       {repostedBy && <NoteRepostHeader />}
       <NoteHeader downloadUrl={downloadUrl} />
       <Group noWrap>
