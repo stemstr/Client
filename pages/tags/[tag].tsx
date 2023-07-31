@@ -25,7 +25,7 @@ export default function Tag() {
             #{tag}
           </Flex>
         </FeedHeader>
-        <TagFeed tag={tag as string} />
+        <TagFeed key={tag as string} tag={tag as string} />
       </Stack>
     </>
   );
