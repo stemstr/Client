@@ -97,7 +97,11 @@ export default function ProfilePage() {
             </>
           )}
         </Group>
-        <Text size="sm" mb={8} sx={{ whiteSpace: "pre-wrap" }}>
+        <Text
+          size="sm"
+          mb={8}
+          sx={{ whiteSpace: "pre-wrap", overflowWrap: "anywhere" }}
+        >
           {user?.profile?.about}
         </Text>
         <CopyNpub npub={npub} />
