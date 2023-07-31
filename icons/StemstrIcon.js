@@ -1,9 +1,10 @@
 import Bell from "./Line icons/Alerts & feedback/bell-02.svg";
 
-import Download from "./Line icons/Arrows/arrow-down.svg";
+import ArrowRight from "./Line icons/Arrows/arrow-right.svg";
 import ChevronLeft from "./Line icons/Arrows/chevron-left.svg";
 import ChevronRight from "./Line icons/Arrows/chevron-right.svg";
-import ArrowRight from "./Line icons/Arrows/arrow-right.svg";
+import Download from "./Line icons/Arrows/arrow-down.svg";
+import Infinity from "./Line icons/Arrows/infinity.svg";
 
 import Comment from "./Line icons/Communication/message-square-02.svg";
 
@@ -444,6 +445,14 @@ export const StarsSolidIcon = (props) => {
   return (
     <StemstrIcon>
       <StarsSolid {...props} />
+    </StemstrIcon>
+  );
+};
+
+export const InfinityIcon = (props) => {
+  return (
+    <StemstrIcon>
+      <Infinity {...props} />
     </StemstrIcon>
   );
 };

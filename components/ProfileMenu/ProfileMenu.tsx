@@ -1,7 +1,7 @@
-import { Box, Group, Text, Transition } from "@mantine/core";
+import { Box, Center, Group, Text, Transition } from "@mantine/core";
 import ProfileLink from "components/ProfileLink/ProfileLink";
 import useAuth from "hooks/useAuth";
-import { StarsSolidIcon } from "icons/StemstrIcon";
+import { InfinityIcon, StarsSolidIcon } from "icons/StemstrIcon";
 import { useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
@@ -83,10 +83,18 @@ export default function ProfileMenu() {
               cursor: "pointer",
             }}
           >
-            <Text fw="bold" ml={10} span>
-              {formattedSubscriptionTimeRemaining?.amount}
-            </Text>{" "}
-            {formattedSubscriptionTimeRemaining?.unit}
+            {authState.subscriptionStatus?.expires_at === 21_000_000_000 ? (
+              <Center ml={10}>
+                <InfinityIcon width={20} height={20} />
+              </Center>
+            ) : (
+              <>
+                <Text fw="bold" ml={10} span>
+                  {formattedSubscriptionTimeRemaining?.amount}
+                </Text>{" "}
+                {formattedSubscriptionTimeRemaining?.unit}
+              </>
+            )}
           </Box>
         )}
       </Transition>
