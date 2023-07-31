@@ -1,4 +1,4 @@
-import { Box, Group, Text } from "@mantine/core";
+import { Group, Text } from "@mantine/core";
 import { PropsWithChildren } from "react";
 import { MaxWidthContainer } from "../Feed";
 import ProfileMenu from "components/ProfileMenu/ProfileMenu";
@@ -8,6 +8,7 @@ export default function FeedHeader({ children }: PropsWithChildren) {
     <MaxWidthContainer>
       <Group
         position="apart"
+        noWrap
         sx={(theme) => ({
           backgroundColor: theme.colors.dark[7],
           paddingTop: theme.spacing.md,
@@ -26,6 +27,7 @@ export default function FeedHeader({ children }: PropsWithChildren) {
             fontSize: 24,
           })}
           lh="normal"
+          truncate
         >
           {children}
         </Text>

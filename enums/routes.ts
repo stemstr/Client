@@ -11,4 +11,5 @@ export enum Route {
   EditProfile = "/user/edit",
   Profile = "/profile",
   Contacts = "/user/[hexOrNpub]/contacts/[tab]",
+  Tags = "/tag/[tag]",
 }
