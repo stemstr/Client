@@ -42,12 +42,7 @@ export default function SubscribeIntroDrawer({
         onClick={onContinue}
         mt={58}
         color="green"
-        sx={(theme) => ({
-          fontSize: theme.fontSizes.xs,
-          [`${theme.fn.largerThan("xs")}`]: {
-            fontSize: theme.fontSizes.sm,
-          },
-        })}
+        fz="sm"
         fullWidth
         disabled={!passOptions.length}
       >
