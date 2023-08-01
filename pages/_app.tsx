@@ -46,7 +46,7 @@ function App(props: AppProps & { colorScheme: ColorScheme }) {
         />
         <meta
           name="description"
-          content="A social experience for music producers to connect, collaborate and share amazing music - powered by nostr."
+          content="A social experience for music artists to connect, collaborate and share amazing music - powered by nostr."
         />
         <meta
           name="keywords"
