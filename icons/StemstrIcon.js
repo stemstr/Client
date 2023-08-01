@@ -53,7 +53,7 @@ import Following from "./Line icons/Users/user-check-01.svg";
 import Profile from "./Line icons/Users/user-circle.svg";
 import Unfollow from "./Line icons/Users/user-left-01.svg";
 
-import CalendarSolid from "./Solid icons/time/calendar.svg";
+import CalendarSolid from "./Solid icons/Time/calendar.svg";
 
 import StarsSolid from "./Solid icons/Weather/stars-02.svg";
 
