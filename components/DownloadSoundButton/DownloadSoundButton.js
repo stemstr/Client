@@ -1,23 +1,18 @@
-import { Anchor, Center } from "@mantine/core";
-import { DownloadCloudIcon } from "../../icons/StemstrIcon";
+import { Anchor, Box, Group } from "@mantine/core";
+import { RemixIcon } from "../../icons/StemstrIcon";
+import useStyles from "components/DownloadSoundButton/DownloadSoundButton.styles";
 
 export default function DownloadSoundButton({ href }) {
+  const { classes } = useStyles();
+
   const buttonElement = href && (
-    <Center
-      sx={(theme) => ({
-        width: 28,
-        height: 28,
-        backgroundColor: "rgba(9, 213, 176, 0.08)",
-        borderRadius: "50%",
-        border: "1px solid",
-        borderColor: theme.colors.green[2],
-        color: theme.colors.green[2],
-        cursor: "pointer",
-        transition: "all 0.3s",
-      })}
-    >
-      <DownloadCloudIcon width={16} height={16} />
-    </Center>
+    <Box className={classes.root}>
+      <Box className={classes.gradientBorder}></Box>
+      <Group spacing={5} className={classes.inner}>
+        Remix
+        <RemixIcon width={16} height={16} />
+      </Group>
+    </Box>
   );
 
   return (

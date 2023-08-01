@@ -56,6 +56,7 @@ import Unfollow from "./Line icons/Users/user-left-01.svg";
 import StarsSolid from "./Solid icons/Weather/stars-02.svg";
 
 import Collection from "./collection.svg";
+import Remix from "./remix.svg";
 import Repost from "./repost.svg";
 import Shaka from "./shaka.svg";
 import Stem from "./stem.svg";
@@ -453,6 +454,14 @@ export const InfinityIcon = (props) => {
   return (
     <StemstrIcon>
       <Infinity {...props} />
+    </StemstrIcon>
+  );
+};
+
+export const RemixIcon = (props) => {
+  return (
+    <StemstrIcon>
+      <Remix {...props} />
     </StemstrIcon>
   );
 };
