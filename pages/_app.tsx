@@ -17,6 +17,7 @@ import { reduxWrapper } from "store/Store";
 import { DEFAULT_RELAY_URLS } from "../constants";
 import { NostrNotificationsProvider } from "ndk/NostrNotificationsProvider";
 import { SubscribeWizardProvider } from "components/SubscribeWizard/SubscribeWizardProvider";
+import { Analytics } from "@vercel/analytics/react";
 
 if (process.env.NEXT_PUBLIC_STEMSTR_RELAY)
   DEFAULT_RELAY_URLS.push(process.env.NEXT_PUBLIC_STEMSTR_RELAY);
@@ -115,6 +116,7 @@ function App(props: AppProps & { colorScheme: ColorScheme }) {
                 <SubscribeWizardProvider>
                   <ApplicationContainer>
                     <Component {...pageProps} />
+                    <Analytics />
                   </ApplicationContainer>
                 </SubscribeWizardProvider>
               </NotificationsProvider>
