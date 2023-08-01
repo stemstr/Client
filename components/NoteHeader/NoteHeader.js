@@ -61,7 +61,7 @@ const UserDetailsDisplayName = (props) => {
   const user = useUser(event.pubkey);
 
   return (
-    <Text color="white" fw={500} {...props}>
+    <Text color="white" fw={500} truncate {...props}>
       {getNormalizedName(event.pubkey, user)}
     </Text>
   );
@@ -170,7 +170,7 @@ const UserDetails = ({ sx }) => {
 const NoteHeader = ({ downloadUrl }) => (
   <Group position="apart" sx={{ flexWrap: "nowrap" }}>
     <UserDetails sx={{ flexWrap: "nowrap", overflow: "hidden" }} />
-    <Group spacing={8} position="right" sx={{ minWidth: 68 }}>
+    <Group spacing={8} position="right" sx={{ minWidth: 68, flexShrink: 0 }}>
       <DownloadSoundButton href={downloadUrl} />
       <Center
         sx={(theme) => ({
