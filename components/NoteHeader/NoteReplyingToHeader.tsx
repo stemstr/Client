@@ -1,6 +1,6 @@
 import { Text } from "@mantine/core";
 import { Group } from "@mantine/core";
-import { CommentIcon } from "icons/StemstrIcon";
+import { CommentIcon, RemixIcon } from "icons/StemstrIcon";
 import { useEvent } from "ndk/NDKEventProvider";
 import { useUser } from "ndk/hooks/useUser";
 import { getFormattedName } from "ndk/utils";
@@ -17,10 +17,11 @@ export default function NoteReplyingToHeader() {
   const user = useUser(event.pubkey);
   const replyingTo = useUser(replyingToPubkey);
   const verb = event.kind === 1808 ? "remixed" : "replied to";
+  const Icon = event.kind === 1808 ? RemixIcon : CommentIcon;
 
   return replyingToPubkey ? (
     <Group spacing={0} c="white" fz="sm" lh="normal">
-      <CommentIcon width={16} height={16} />
+      <Icon width={16} height={16} />
       <Text ml={8} fw="bold" span>
         {getFormattedName(user)}
       </Text>
