@@ -170,7 +170,7 @@ const UserDetails = ({ sx }) => {
 const NoteHeader = ({ downloadUrl }) => (
   <Group position="apart" sx={{ flexWrap: "nowrap" }}>
     <UserDetails sx={{ flexWrap: "nowrap", overflow: "hidden" }} />
-    <Group position="right" sx={{ minWidth: 68 }}>
+    <Group spacing={8} position="right" sx={{ minWidth: 68 }}>
       <DownloadSoundButton href={downloadUrl} />
       <Center
         sx={(theme) => ({
