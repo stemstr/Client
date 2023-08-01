@@ -53,9 +53,12 @@ import Following from "./Line icons/Users/user-check-01.svg";
 import Profile from "./Line icons/Users/user-circle.svg";
 import Unfollow from "./Line icons/Users/user-left-01.svg";
 
+import CalendarSolid from "./Solid icons/time/calendar.svg";
+
 import StarsSolid from "./Solid icons/Weather/stars-02.svg";
 
 import Collection from "./collection.svg";
+import ElectricSquirrel from "./electric-squirrel.svg";
 import Remix from "./remix.svg";
 import Repost from "./repost.svg";
 import Shaka from "./shaka.svg";
@@ -462,6 +465,22 @@ export const RemixIcon = (props) => {
   return (
     <StemstrIcon>
       <Remix {...props} />
+    </StemstrIcon>
+  );
+};
+
+export const ElectricSquirrelIcon = (props) => {
+  return (
+    <StemstrIcon>
+      <ElectricSquirrel {...props} />
+    </StemstrIcon>
+  );
+};
+
+export const CalendarSolidIcon = (props) => {
+  return (
+    <StemstrIcon>
+      <CalendarSolid {...props} />
     </StemstrIcon>
   );
 };
