@@ -1,18 +1,28 @@
 import {
   Box,
+  Button,
   Center,
   Group,
   MantineTheme,
+  Stack,
   Text,
   Transition,
 } from "@mantine/core";
 import ProfileLink from "components/ProfileLink/ProfileLink";
 import useAuth from "hooks/useAuth";
-import { InfinityIcon, StarsSolidIcon } from "icons/StemstrIcon";
+import {
+  CalendarSolidIcon,
+  ElectricSquirrelIcon,
+  InfinityIcon,
+  StarsSolidIcon,
+} from "icons/StemstrIcon";
 import { useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useDisclosure } from "@mantine/hooks";
 import Drawer from "components/Drawer/Drawer";
+import { AddSoundIcon } from "icons/StemstrIcon";
+import { RepostIcon } from "icons/StemstrIcon";
+import { CommentIcon } from "icons/StemstrIcon";
 
 const INFINITE_SUBSCRIPTION_TIME = 21_000_000_000;
 
@@ -24,13 +34,14 @@ export default function ProfileMenu() {
   ] = useDisclosure(false);
   const [subscriptionTimeRemaining, setSubscriptionTimeRemaining] =
     useState<number>(); // in seconds
-  const formattedSubscriptionTimeRemaining = useMemo(
+  const formattedSubscriptionTimeData = useMemo(
     () =>
       subscriptionTimeRemaining
         ? formatTime(subscriptionTimeRemaining)
         : undefined,
     [subscriptionTimeRemaining]
   );
+  const formattedSubscriptionTime = `${formattedSubscriptionTimeData?.amount} ${formattedSubscriptionTimeData?.unit}`;
   const timeSinceSubscriptionStart =
     authState.subscriptionStatus?.created_at &&
     Date.now() / 1000 - authState.subscriptionStatus?.created_at;
@@ -39,6 +50,11 @@ export default function ProfileMenu() {
       timeSinceSubscriptionStart > 0 &&
       timeSinceSubscriptionStart < 20
   );
+  const hasLifetimePass =
+    authState.subscriptionStatus?.expires_at === INFINITE_SUBSCRIPTION_TIME;
+  const bgGradient = hasLifetimePass
+    ? "linear-gradient(135deg, #F9F5FF 0%, #A17BF0 100%)"
+    : "linear-gradient(134deg, #09D4B0 0%, #2F9AF8 100%)";
 
   useEffect(() => {
     let interval: NodeJS.Timeout | undefined;
@@ -70,6 +86,7 @@ export default function ProfileMenu() {
         onClose={closeSubscriptionDrawer}
         withCloseButton={false}
         onDragEnd={closeSubscriptionDrawer}
+        trapFocus={false}
         styles={(theme: MantineTheme) => ({
           overlay: {
             backgroundColor: `${theme.colors.dark[7]} !important`,
@@ -77,27 +94,89 @@ export default function ProfileMenu() {
             opacity: `${0.5} !important`,
           },
           drawer: {
-            background:
-              "linear-gradient(135deg, rgb(96, 208, 176), rgb(80, 152, 240))",
+            background: bgGradient,
             borderTopLeftRadius: 40,
             borderTopRightRadius: 40,
             maxWidth: 600,
             margin: "auto",
             padding: `0 16px 24px 16px !important`,
+            color: theme.colors.dark[8],
           },
         })}
       >
-        <Text component="h2" c="dark.8" fz={20} align="center">
-          {authState.subscriptionStatus?.expires_at ===
-          INFINITE_SUBSCRIPTION_TIME ? (
-            <>Lifetime Pass</>
-          ) : (
-            <>
-              {formattedSubscriptionTimeRemaining?.amount}{" "}
-              {formattedSubscriptionTimeRemaining?.unit} remaining
-            </>
-          )}
+        {hasLifetimePass ? (
+          <Box m="auto" w={62} mt={8}>
+            <ElectricSquirrelIcon width={62} height={52} />
+          </Box>
+        ) : (
+          <Box m="auto" w={48} mt={8} c="dark.7" pos="relative">
+            <CalendarSolidIcon width={48} height={54} />
+            <Text
+              c="white"
+              fw="bold"
+              pos="absolute"
+              bottom={14}
+              w={50}
+              align="center"
+              left="calc(50% - 25px)"
+            >
+              {formattedSubscriptionTimeData?.numDays}
+            </Text>
+            <Box c="purple.5" pos="absolute" top={-1} left={-1}>
+              <StarsSolidIcon width={12} height={12} />
+            </Box>
+            <Box c="white" pos="absolute" bottom={1} left={1}>
+              <StarsSolidIcon width={10} height={10} />
+            </Box>
+            <Box c="orange.5" pos="absolute" bottom={1} right={-3}>
+              <StarsSolidIcon width={14} height={14} />
+            </Box>
+          </Box>
+        )}
+        <Text fz={20} fw="bold" align="center" mt={8}>
+          {hasLifetimePass
+            ? "Lifetime Pass"
+            : `${formattedSubscriptionTime} remaining`}
         </Text>
+        <Text align="center" fz="sm" mt={4}>
+          {hasLifetimePass
+            ? "You have been granted a life time pass since you’re a Stemstr supporter. Enjoy!"
+            : `You currently have ${formattedSubscriptionTime} remaining. This pass allows you to:`}
+        </Text>
+        <Stack spacing={24} mt={24}>
+          <SubscriptionDrawerItem
+            title="Post Sounds"
+            content="Share your music with the world and receive ⚡️ sats for it"
+            Icon={AddSoundIcon}
+          />
+          <SubscriptionDrawerItem
+            title="Repost"
+            content="You will be able to repost sounds"
+            Icon={RepostIcon}
+          />
+          <SubscriptionDrawerItem
+            title="Comment"
+            content="You can make comments and reply to sounds with your own remixed version"
+            Icon={CommentIcon}
+          />
+        </Stack>
+        <Button
+          onClick={closeSubscriptionDrawer}
+          variant="subtle"
+          c="white"
+          fz="md"
+          mt={24}
+          fullWidth
+          sx={(theme) => ({
+            borderTop: `1px solid ${theme.fn.rgba(theme.colors.gray[4], 0.2)}`,
+            borderRadius: 0,
+            margin: "auto",
+            display: "block",
+            height: 58,
+          })}
+        >
+          Close
+        </Button>
       </Drawer>
       <Group
         noWrap
@@ -123,7 +202,7 @@ export default function ProfileMenu() {
       >
         <Stars mounted={isHighlightingSubscriptionStatus} />
         <Transition
-          mounted={Boolean(formattedSubscriptionTimeRemaining)}
+          mounted={Boolean(formattedSubscriptionTimeData)}
           transition="slide-left"
           duration={500}
           timingFunction="ease"
@@ -136,17 +215,16 @@ export default function ProfileMenu() {
                 cursor: "pointer",
               }}
             >
-              {authState.subscriptionStatus?.expires_at ===
-              INFINITE_SUBSCRIPTION_TIME ? (
+              {hasLifetimePass ? (
                 <Center ml={10}>
                   <InfinityIcon width={20} height={20} />
                 </Center>
               ) : (
                 <>
                   <Text fw="bold" ml={10} span>
-                    {formattedSubscriptionTimeRemaining?.amount}
+                    {formattedSubscriptionTimeData?.amount}
                   </Text>{" "}
-                  {formattedSubscriptionTimeRemaining?.unit}
+                  {formattedSubscriptionTimeData?.unit}
                 </>
               )}
             </Box>
@@ -157,6 +235,38 @@ export default function ProfileMenu() {
     </>
   );
 }
+
+type SubscriptionDrawerItemProps = {
+  title: string;
+  content: string;
+  Icon: (props: any) => JSX.Element;
+};
+
+const SubscriptionDrawerItem = ({
+  title,
+  content,
+  Icon,
+}: SubscriptionDrawerItemProps) => {
+  return (
+    <Group sx={{ flexWrap: "nowrap" }}>
+      <Center
+        w={48}
+        h={48}
+        sx={(theme) => ({
+          background: "rgba(30, 30, 30, 0.24)",
+          borderRadius: "50%",
+          flexShrink: 0,
+        })}
+      >
+        <Icon width={24} height={24} />
+      </Center>
+      <Box>
+        <Text fw="bold">{title}</Text>
+        <Text fz="sm">{content}</Text>
+      </Box>
+    </Group>
+  );
+};
 
 type StarSprite = {
   size: number;
@@ -206,24 +316,32 @@ const Stars = ({ mounted }: { mounted: boolean }) => {
   );
 };
 
-const formatTime = (seconds: number): { amount: number; unit: string } => {
+const formatTime = (
+  seconds: number
+): { amount: number; unit: string; numDays: number } => {
+  const secondsInADay = 86400;
+  const numDays = Math.ceil(seconds / secondsInADay);
+
   if (seconds < 3600) {
     const minutes = Math.ceil(seconds / 60);
     return {
       amount: minutes,
       unit: `min.`,
+      numDays,
     };
   } else if (seconds < 86400) {
     const hours = Math.ceil(seconds / 3600);
     return {
       amount: hours,
       unit: `hr${hours === 1 ? "" : "s"}.`,
+      numDays,
     };
   } else {
     const days = Math.ceil(seconds / 86400);
     return {
       amount: days,
       unit: `day${days === 1 ? "" : "s"}`,
+      numDays,
     };
   }
 };
