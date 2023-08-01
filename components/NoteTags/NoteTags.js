@@ -30,7 +30,7 @@ const NoteTags = ({ classes, ...rest }) => {
             checked={false}
             onClick={() =>
               router.push({
-                pathname: Route.Tags,
+                pathname: Route.Tag,
                 query: { tag: tag[1] },
               })
             }
