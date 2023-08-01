@@ -16,6 +16,7 @@ export default function NoteReplyingToHeader() {
   }, [event]);
   const user = useUser(event.pubkey);
   const replyingTo = useUser(replyingToPubkey);
+  const verb = event.kind === 1808 ? "remixed" : "replied to";
 
   return replyingToPubkey ? (
     <Group spacing={0} c="white" fz="sm" lh="normal">
@@ -24,7 +25,7 @@ export default function NoteReplyingToHeader() {
         {getFormattedName(user)}
       </Text>
       <Text c="gray.3" span>
-        &nbsp;remixed
+        &nbsp;{verb}
       </Text>
       <Text fw="bold" span>
         &nbsp;{getFormattedName(replyingTo)}
