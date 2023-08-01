@@ -180,7 +180,9 @@ export const Feed = memo(
 
         <AutoSizer
           style={{
-            height: `calc(100vh - ${headerHeight}px - ${heightOffset}px`,
+            height: hasAttemptedProfileCachePreload
+              ? `calc(100vh - ${headerHeight}px - ${heightOffset}px`
+              : 0,
           }}
         >
           {({ height, width }: { height: number; width: number }) => (
