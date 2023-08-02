@@ -5,16 +5,19 @@ import React, {
   useEffect,
   PropsWithChildren,
 } from "react";
-import NDK, {
-  NDKNip07Signer,
-  NDKPrivateKeySigner,
-  NDKRelay,
-  NDKRelaySet,
-} from "@nostr-dev-kit/ndk";
+import NDK, { NDKRelay, NDKRelaySet } from "@nostr-dev-kit/ndk";
 import { useDispatch, useSelector } from "react-redux";
-import { isAuthState, selectAuthState, setAuthState } from "store/Auth";
+import {
+  isAuthState,
+  reset as logout,
+  selectAuthState,
+  setAuthState,
+} from "store/Auth";
 import { getCachedAuth } from "cache/cache";
 import inMemoryCacheAdapter from "./inMemoryCacheAdapter";
+import { createSigner } from "./utils";
+import { useRouter } from "next/router";
+import { Route } from "../enums";
 
 interface NDKContext {
   ndk?: NDK;
@@ -30,6 +33,7 @@ const NDKProvider = ({
   explicitRelayUrls,
   children,
 }: PropsWithChildren<{ explicitRelayUrls: string[] }>) => {
+  const router = useRouter();
   const dispatch = useDispatch();
   const authState = useSelector(selectAuthState);
   const [ndk, setNDK] = useState<NDK | undefined>(undefined);
@@ -74,29 +78,28 @@ const NDKProvider = ({
   }, [ndk, setStemstrRelaySet]);
 
   useEffect(() => {
-    if (ndk) {
-      let signer;
-      switch (authState.type) {
-        case "privatekey":
-          signer = new NDKPrivateKeySigner(authState.sk);
-          break;
-        case "nip07":
-          signer = new NDKNip07Signer();
-          break;
-        default:
-          break;
-      }
-      ndk.signer = signer;
-      setCanPublishEvents(!!ndk?.signer);
+    const isAuthenticated = Boolean(authState.type);
+
+    if (ndk && isAuthenticated) {
+      createSigner(authState)
+        .then((signer) => {
+          ndk.signer = signer;
+          setCanPublishEvents(!!ndk?.signer);
+        })
+        .catch((error) => {
+          console.error(error);
+          dispatch(logout());
+          router.push(Route.Login);
+        });
     }
-  }, [ndk, authState.type, authState.sk, authState.pk]);
+  }, [ndk, authState, dispatch, router]);
 
   useEffect(() => {
     const auth = getCachedAuth();
     if (isAuthState(auth)) {
       dispatch(setAuthState(auth));
     }
-  }, []);
+  }, [dispatch]);
 
   // Return the provider with the NDK instance
   return (

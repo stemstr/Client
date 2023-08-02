@@ -7,6 +7,9 @@ import NDK, {
   NDKUserProfile,
   NostrEvent,
   NDKKind,
+  NDKPrivateKeySigner,
+  NDKNip07Signer,
+  NDKSigner,
 } from "@nostr-dev-kit/ndk";
 import {
   nip19,
@@ -19,6 +22,7 @@ import {
 import axios from "axios";
 import { bech32 } from "@scure/base";
 import { DEFAULT_RELAY_URLS, NPUB_NOSTR_URI_REGEX } from "../constants";
+import { AuthState } from "../store/Auth";
 
 interface ParsedEventTags {
   root?: NDKTag;
@@ -527,4 +531,50 @@ export const createRepostEvent = (ndk: NDK, event: NDKEvent): NDKEvent => {
   repostEvent.tags = tags;
   repostEvent.content = JSON.stringify(event.rawEvent());
   return repostEvent;
+};
+
+export const createSigner = async (
+  authState: AuthState
+): Promise<NDKSigner> => {
+  if (authState.type === "privatekey") {
+    return new NDKPrivateKeySigner(authState.sk);
+  }
+
+  if (authState.type === "nip07") {
+    const tryToCreateSigner = () => {
+      try {
+        return new NDKNip07Signer();
+      } catch {
+        return null;
+      }
+    };
+    let tryCount = 0;
+    let signer = tryToCreateSigner();
+
+    if (signer) {
+      return signer;
+    }
+
+    tryCount += 1;
+
+    return new Promise((resolve, reject) => {
+      const interval = setInterval(() => {
+        const signer = tryToCreateSigner();
+
+        if (signer) {
+          resolve(signer);
+          clearInterval(interval);
+        }
+
+        if (tryCount > 5) {
+          reject("Failed to create signer");
+          clearInterval(interval);
+        }
+
+        tryCount += 1;
+      }, 1000);
+    });
+  }
+
+  throw new Error("Invalid auth state");
 };
