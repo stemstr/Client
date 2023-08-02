@@ -1,4 +1,4 @@
-import { Box, Button, Center, Group, Stack, Text } from "@mantine/core";
+import { Box, Button, Center, Group, Loader, Stack, Text } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useDispatch, useSelector } from "react-redux";
 import { PostSheetState, closeSheet, openSheet } from "../../store/Sheets";
@@ -289,6 +289,12 @@ export default function PostSheet() {
             {!replyingTo && <TagsFieldGroup {...form.getInputProps("tags")} />}
             {/* <ShareAcrossField {...form.getInputProps("shareAcross")} /> */}
             <Button disabled={isUploading || !hasContent} type="submit">
+              {isUploading && (
+                <>
+                  <Loader size="xs" />
+                  &nbsp;
+                </>
+              )}
               {replyingTo ? "Reply" : "Share"}
             </Button>
           </Stack>
