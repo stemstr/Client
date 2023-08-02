@@ -8,7 +8,7 @@ import BottomNavigationItem from "components/BottomNavigationItem/BottomNavigati
 import BottomNavigationMiddleItem from "./BottomNavigationMiddleItem";
 
 import useStyles from "./BottomNavigation.styles";
-import { isPwa } from "../../utils/common";
+import { hasNotch, isPwa } from "../../utils/common";
 import useFooterHeight from "../../ndk/hooks/useFooterHeight";
 import { PWA_BOTTOM_BUFFER } from "../../constants/styles";
 
@@ -31,7 +31,9 @@ export default function BottomNavigation() {
   return (
     <Footer
       height={footerHeight}
-      p={isPwa() ? `0 16px ${PWA_BOTTOM_BUFFER}px 16px` : "0 16px"}
+      p={
+        isPwa() && hasNotch() ? `0 16px ${PWA_BOTTOM_BUFFER}px 16px` : "0 16px"
+      }
       styles={{
         root: {
           width: "100%",
