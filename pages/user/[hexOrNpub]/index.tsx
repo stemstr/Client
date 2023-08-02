@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { ActionIcon, Box, Group, Image, Stack, Text } from "@mantine/core";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -26,6 +26,7 @@ export default function ProfilePage() {
   );
   const user = useUser(pk);
   const nip05Status = useNip05(user?.hexpubkey(), user?.profile?.nip05);
+  const [bannerHasError, setBannerHasError] = useState(false);
 
   return (
     <>
@@ -38,9 +39,14 @@ export default function ProfilePage() {
           height: 200,
         })}
       >
-        {user?.profile?.banner && (
+        {user?.profile && (
           <Image
-            src={user.profile.banner}
+            src={
+              !user.profile.banner || bannerHasError
+                ? "/default-banner.png"
+                : user.profile.banner
+            }
+            onError={() => setBannerHasError(true)}
             height={200}
             styles={(theme) => ({
               root: {
