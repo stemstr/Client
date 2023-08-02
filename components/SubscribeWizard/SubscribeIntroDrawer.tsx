@@ -46,13 +46,13 @@ export default function SubscribeIntroDrawer({
         fullWidth
         disabled={!passOptions.length}
       >
-        Explore passes
         {!passOptions.length && (
           <>
-            &nbsp;
             <Loader size={14} />
+            &nbsp;
           </>
         )}
+        Explore passes
       </Button>
     </SubscribeDrawer>
   );

@@ -128,13 +128,13 @@ export default function SubscribeSelectPassDrawer({
         disabled={isFetchingInvoice || !selectedPassOption}
         fullWidth
       >
-        Continue to Payment
         {isFetchingInvoice && (
           <>
-            &nbsp;
             <Loader size={14} />
+            &nbsp;
           </>
         )}
+        Continue to Payment
       </Button>
     </SubscribeDrawer>
   );
