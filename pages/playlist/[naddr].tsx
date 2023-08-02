@@ -28,7 +28,7 @@ export default function Playlist() {
   // title for now
   const { identifier: playlistTitle, pubkey } = useNip19Address() ?? {};
 
-  if (!playlistTitle) {
+  if (!playlistTitle || !pubkey) {
     return null;
   }
 
