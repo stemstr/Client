@@ -10,6 +10,7 @@ import { useEvent } from "../../ndk/NDKEventProvider";
 import { useUser } from "ndk/hooks/useUser";
 import useNip05 from "ndk/hooks/useNip05";
 import { Nip05Status } from "store/Nip05";
+import useProfilePicSrc from "ndk/hooks/useProfilePicSrc";
 
 const UserDetailsAnchorWrapper = ({ children }) => {
   const { event } = useEvent();
@@ -45,15 +46,9 @@ const UserDetailsNip05 = () => {
 const UserDetailsAvatar = () => {
   const { event } = useEvent();
   const user = useUser(event.pubkey);
+  const src = useProfilePicSrc(user);
 
-  return (
-    <Avatar
-      src={user?.profile?.image}
-      alt={user?.profile?.name}
-      size={42}
-      radius="50%"
-    />
-  );
+  return <Avatar src={src} alt={user?.profile?.name} size={42} radius="50%" />;
 };
 
 const UserDetailsDisplayName = (props) => {
