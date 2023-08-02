@@ -10,25 +10,6 @@ const withPWA = require("next-pwa")({
 
 module.exports = withPWA(
   withBundleAnalyzer({
-    async headers() {
-      return [
-        {
-          // CORS for nip05
-          source: "/.well-known/nostr.json",
-          headers: [
-            { key: "Access-Control-Allow-Origin", value: "*" },
-            {
-              key: "Access-Control-Allow-Methods",
-              value: "GET, POST, PUT, DELETE, OPTIONS",
-            },
-            {
-              key: "Access-Control-Allow-Headers",
-              value: "Origin, X-Requested-With, Content-Type, Accept",
-            },
-          ],
-        },
-      ];
-    },
     reactStrictMode: false,
     eslint: {
       ignoreDuringBuilds: true,
