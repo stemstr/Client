@@ -27,6 +27,15 @@ export default function ProfilePage() {
   const user = useUser(pk);
   const nip05Status = useNip05(user?.hexpubkey(), user?.profile?.nip05);
   const [bannerHasError, setBannerHasError] = useState(false);
+  const normalizeNip05 = (nip05?: string) => {
+    if (!nip05) {
+      return "";
+    }
+
+    const isRootId = nip05[0] === "_";
+
+    return isRootId ? nip05.split("@")[1] : nip05;
+  };
 
   return (
     <>
@@ -98,7 +107,7 @@ export default function ProfilePage() {
             <>
               <VerifiedIcon width={14} height={14} />
               <Text size="sm" color="purple.2">
-                {user?.profile?.nip05 && user.profile.nip05.split("@")[1]}
+                {normalizeNip05(user?.profile?.nip05)}
               </Text>
             </>
           )}
