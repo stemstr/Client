@@ -14,7 +14,7 @@ module.exports = withPWA(
       return [
         {
           // CORS for nip05
-          source: "/.well-known/:path*",
+          source: "/.well-known/nostr.json",
           headers: [
             { key: "Access-Control-Allow-Credentials", value: "true" },
             { key: "Access-Control-Allow-Origin", value: "*" },
