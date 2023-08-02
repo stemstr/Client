@@ -7,6 +7,7 @@ import { HeartIcon, ProfileIcon, RepostIcon, ZapIcon } from "icons/StemstrIcon";
 import { EventProvider } from "ndk/NDKEventProvider";
 import { useNDK } from "ndk/NDKProvider";
 import { Notification } from "ndk/NostrNotificationsProvider";
+import useProfilePicSrc from "ndk/hooks/useProfilePicSrc";
 import { useUsers } from "ndk/hooks/useUsers";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -192,30 +193,45 @@ function NotificationHeader(props: NotificationProps) {
   );
 }
 
+function NotificationHeaderProfilePic({
+  user,
+  index,
+}: {
+  user: NDKUser;
+  index: number;
+}) {
+  const src = useProfilePicSrc(user);
+
+  return (
+    <Avatar
+      key={index}
+      src={src}
+      alt={user.profile?.name}
+      size={28}
+      styles={(theme) => ({
+        root: {
+          marginLeft: index > 0 ? -7 : undefined,
+        },
+        image: {
+          borderRadius: "50%",
+          border: `2px solid ${theme.colors.dark[8]}`,
+        },
+      })}
+    >
+      <ProfileIcon />
+    </Avatar>
+  );
+}
+
 function NotificationHeaderProfilePics(props: NotificationProps) {
   const { classes } = useStyles();
   const { users } = props;
   const maxDisplayedUsers = 10;
+
   return (
     <Group className={classes.notificationHeaderProfilePics} spacing={0}>
       {users.slice(0, maxDisplayedUsers).map((user, index) => (
-        <Avatar
-          key={index}
-          src={user.profile?.image}
-          alt={user.profile?.name}
-          size={28}
-          styles={(theme) => ({
-            root: {
-              marginLeft: index > 0 ? -7 : undefined,
-            },
-            image: {
-              borderRadius: "50%",
-              border: `2px solid ${theme.colors.dark[8]}`,
-            },
-          })}
-        >
-          <ProfileIcon />
-        </Avatar>
+        <NotificationHeaderProfilePic user={user} index={index} />
       ))}
       {users.length > maxDisplayedUsers && (
         <Center
