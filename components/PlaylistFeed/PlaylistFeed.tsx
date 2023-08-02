@@ -22,8 +22,6 @@ export default function PlaylistFeed({
       return;
     }
 
-    // for some reason, the query works more consistently providing the author pubkey even though it shouldn't
-    // be necessary
     ndk
       .fetchEvent(
         {
