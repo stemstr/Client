@@ -48,7 +48,7 @@ export default function TermsOfService() {
             contribution
           </List.Item>
           <List.Item>
-            Only share music that that you have rights to release
+            Only share music that you have rights to release
           </List.Item>
           <List.Item>
             Do not share anything illegal or that can cause harm to another
