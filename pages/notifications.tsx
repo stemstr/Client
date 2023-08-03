@@ -25,6 +25,7 @@ export default function Notifications() {
         <FeedHeader>Notifications</FeedHeader>
         {Array.from(notifications.values())
           .sort((a, b) => b.created_at - a.created_at)
+          .slice(0, 30)
           .map((notification, index) => (
             <NotificationView key={index} notification={notification} />
           ))}
