@@ -6,6 +6,7 @@ import React, {
   PropsWithChildren,
   useMemo,
   useCallback,
+  useRef,
 } from "react";
 import { NDKEvent, NDKFilter, NostrEvent } from "@nostr-dev-kit/ndk";
 import { useSelector } from "react-redux";
@@ -64,64 +65,75 @@ const NostrNotificationsProvider = ({ children }: PropsWithChildren) => {
     [pubkey]
   );
   const zapEvents = useFeed(zapFilter, undefined, 3000);
+  const processedEventIds = useRef<string[]>([]);
 
   useEffect(() => {
-    const notifications: NotificationsMap = new Map();
-    [...events, ...zapEvents].forEach((event) => {
-      // Filter out non-stemstr zaps
-      if (event.kind === Kind.Zap) {
-        const descriptionTag = event.tags.find(
-          (tag) => tag[0] === "description"
-        );
-        if (!descriptionTag) return;
-        try {
-          const description = JSON.parse(descriptionTag[1]) as NostrEvent;
-          if (
-            !description.tags.some(
-              (tag) => tag[0] === "client" && tag[1] === "stemstr.app"
-            )
-          )
-            return;
-        } catch (err) {
-          return;
+    setNotifications((prev) => {
+      const newEvents = [...events, ...zapEvents].filter((event) => {
+        const isNewEvent = !processedEventIds.current.includes(event.id);
+        if (isNewEvent) {
+          processedEventIds.current.push(event.id);
         }
-      }
-      // Construct notification from event
-      const { root, reply } = parseEventTags(event);
-      const eTag = reply ? reply : root ? root : undefined;
-      const referencedEventId = eTag ? eTag[1] : "";
-      const isGrouped = ![Kind.Text, 1808 as Kind].includes(event.kind as Kind);
-      const index: NotificationsMapIndex = isGrouped
-        ? JSON.stringify([event.kind as Kind, referencedEventId])
-        : event.id;
-      if (notificationsStatus.get(index) === undefined) {
-        setNotificationsStatus((prev) => {
-          prev.set(index, false);
-          localStorage.setItem(
-            "stemstr:cachedNotificationsStatus",
-            JSON.stringify([...prev])
+        return isNewEvent;
+      });
+      newEvents.forEach((event) => {
+        // Filter out non-stemstr zaps
+        if (event.kind === Kind.Zap) {
+          const descriptionTag = event.tags.find(
+            (tag) => tag[0] === "description"
           );
-          return new Map(prev);
-        });
-      }
-      const notification = notifications.get(index);
-      if (notification) {
-        notification.created_at = Math.max(
-          notification.created_at,
-          event.created_at as number
+          if (!descriptionTag) return;
+          try {
+            const description = JSON.parse(descriptionTag[1]) as NostrEvent;
+            if (
+              !description.tags.some(
+                (tag) => tag[0] === "client" && tag[1] === "stemstr.app"
+              )
+            )
+              return;
+          } catch (err) {
+            return;
+          }
+        }
+        // Construct notification from event
+        const { root, reply } = parseEventTags(event);
+        const eTag = reply ? reply : root ? root : undefined;
+        const referencedEventId = eTag ? eTag[1] : "";
+        const isGrouped = ![Kind.Text, 1808 as Kind].includes(
+          event.kind as Kind
         );
-        notification.events.push(event);
-        notifications.set(index, notification);
-      } else {
-        notifications.set(index, {
-          kind: event.kind as Kind,
-          referencedEventId,
-          created_at: event.created_at as number,
-          events: [event],
-        });
-      }
+        const index: NotificationsMapIndex = isGrouped
+          ? JSON.stringify([event.kind as Kind, referencedEventId])
+          : event.id;
+        if (notificationsStatus.get(index) === undefined) {
+          setNotificationsStatus((prev) => {
+            prev.set(index, false);
+            localStorage.setItem(
+              "stemstr:cachedNotificationsStatus",
+              JSON.stringify([...prev])
+            );
+            return new Map(prev);
+          });
+        }
+        const notification = prev.get(index);
+        if (notification) {
+          notification.created_at = Math.max(
+            notification.created_at,
+            event.created_at as number
+          );
+          notification.events.push(event);
+          prev.set(index, notification);
+        } else {
+          prev.set(index, {
+            kind: event.kind as Kind,
+            referencedEventId,
+            created_at: event.created_at as number,
+            events: [event],
+          });
+        }
+      });
+      return new Map(prev);
     });
-    setNotifications(notifications);
   }, [events.length]);
 
   useEffect(() => {
