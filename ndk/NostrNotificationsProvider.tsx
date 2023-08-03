@@ -51,9 +51,11 @@ const NostrNotificationsProvider = ({ children }: PropsWithChildren) => {
     }),
     [pubkey]
   );
-  const events = useFeed(filter, [
-    process.env.NEXT_PUBLIC_STEMSTR_RELAY as string,
-  ]);
+  const events = useFeed(
+    filter,
+    [process.env.NEXT_PUBLIC_STEMSTR_RELAY as string],
+    3000
+  );
   const zapFilter = useMemo<NDKFilter>(
     () => ({
       kinds: [Kind.Zap],
@@ -61,7 +63,7 @@ const NostrNotificationsProvider = ({ children }: PropsWithChildren) => {
     }),
     [pubkey]
   );
-  const zapEvents = useFeed(zapFilter);
+  const zapEvents = useFeed(zapFilter, undefined, 3000);
 
   useEffect(() => {
     const notifications: NotificationsMap = new Map();
