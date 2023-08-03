@@ -1,4 +1,4 @@
-import NDK, {
+import {
   NDKEvent,
   NDKFilter,
   NDKRelay,
@@ -10,7 +10,11 @@ import { useNDK } from "ndk/NDKProvider";
 import { uniqBy } from "ndk/utils";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-export function useFeed(filter: NDKFilter, relayUrls: string[] = []) {
+export function useFeed(
+  filter: NDKFilter,
+  relayUrls: string[] = [],
+  throttleTime: number = 500
+) {
   const { ndk } = useNDK();
   const [feed, setFeed] = useState<NDKEvent[]>([]);
 
@@ -29,9 +33,17 @@ export function useFeed(filter: NDKFilter, relayUrls: string[] = []) {
   }, []);
 
   useEffect(() => {
-    const debounceId = setInterval(processEventBatch, 500);
-    return () => clearInterval(debounceId);
-  }, [500, processEventBatch]);
+    // First batch is processed after 500 ms, then every <throttleTime> ms after that
+    let processEventsInterval: NodeJS.Timeout | undefined;
+    const processEventsTimeout = setTimeout(() => {
+      processEventBatch();
+      processEventsInterval = setInterval(processEventBatch, throttleTime);
+    }, 500);
+    return () => {
+      clearInterval(processEventsInterval);
+      clearTimeout(processEventsTimeout);
+    };
+  }, [throttleTime, processEventBatch]);
 
   useEffect(() => {
     setFeed([]);
