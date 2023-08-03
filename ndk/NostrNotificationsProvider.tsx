@@ -48,7 +48,7 @@ const NostrNotificationsProvider = ({ children }: PropsWithChildren) => {
     () => ({
       kinds: [Kind.Reaction, Kind.Text, 1808 as Kind, 6 as Kind],
       "#p": pubkey ? [pubkey] : [],
-      limit: 100,
+      limit: 5,
     }),
     [pubkey]
   );
@@ -61,7 +61,7 @@ const NostrNotificationsProvider = ({ children }: PropsWithChildren) => {
     () => ({
       kinds: [Kind.Zap],
       "#p": pubkey ? [pubkey] : [],
-      limit: 100,
+      limit: 5,
     }),
     [pubkey]
   );
