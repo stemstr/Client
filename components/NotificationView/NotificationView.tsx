@@ -231,7 +231,7 @@ function NotificationHeaderProfilePics(props: NotificationProps) {
   return (
     <Group className={classes.notificationHeaderProfilePics} spacing={0}>
       {users.slice(0, maxDisplayedUsers).map((user, index) => (
-        <NotificationHeaderProfilePic user={user} index={index} />
+        <NotificationHeaderProfilePic user={user} index={index} key={index} />
       ))}
       {users.length > maxDisplayedUsers && (
         <Center
