@@ -1,5 +1,6 @@
 import { Center } from "@mantine/core";
 import { useRouter } from "next/router";
+import { MouseEvent } from "react";
 
 interface BackButtonProps {
   defaultUrl: string;
@@ -11,7 +12,9 @@ const BackButton = ({
 }: React.PropsWithChildren<BackButtonProps>) => {
   const router = useRouter();
 
-  const handleBackClick = () => {
+  const handleBackClick = (e: MouseEvent) => {
+    e.stopPropagation();
+
     if (window.history.length > 2) {
       return router.back();
     } else {
