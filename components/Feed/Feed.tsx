@@ -181,11 +181,11 @@ export const Feed = memo(
 
         <AutoSizer
           className={classes.feed}
-          style={{
-            height: hasAttemptedProfileCachePreload
-              ? `calc(100vh - ${headerHeight}px - ${heightOffset}px`
-              : 0,
-          }}
+          // style={{
+          //   height: hasAttemptedProfileCachePreload
+          //     ? `calc(100vh - ${headerHeight}px - ${heightOffset}px`
+          //     : 0,
+          // }}
         >
           {({ height, width }: { height: number; width: number }) => (
             <Box
@@ -220,7 +220,7 @@ export const Feed = memo(
                     >
                       {({ onItemsRendered, ref }) => (
                         <VariableSizeList
-                          height={document.body.clientHeight * 1.1}
+                          height={height}
                           itemKey={(index: number) => events[index].id}
                           itemCount={events.length}
                           itemSize={getRowHeight}

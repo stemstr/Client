@@ -6,7 +6,7 @@ export function MaxWidthContainer({
   ...rest
 }: PropsWithChildren<DefaultProps>) {
   return (
-    <Box m="auto" pl="md" pr="md" w="100%" maw={600} {...rest}>
+    <Box mx="auto" pl="md" pr="md" w="100%" maw={600} {...rest}>
       {children}
     </Box>
   );
