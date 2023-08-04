@@ -56,6 +56,7 @@ export default function BannerSelector({
           position: "relative",
           cursor: "pointer",
           border: "1px dashed transparent",
+          transition: "border-color .3s ease-in-out",
           ":hover": {
             borderColor: theme.white,
           },

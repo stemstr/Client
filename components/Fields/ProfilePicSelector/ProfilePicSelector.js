@@ -60,6 +60,7 @@ export default function ProfilePicSelector({
           marginTop: -50,
           position: "relative",
           border: "1px dashed transparent",
+          transition: "border-color .3s ease-in-out",
           ":hover": {
             borderColor: theme.white,
           },
