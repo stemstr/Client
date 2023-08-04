@@ -13,6 +13,7 @@ import { noop } from "../../utils/common";
 import useFooterHeight from "../../ndk/hooks/useFooterHeight";
 import { NewEventsPill } from "./NewEventsPill";
 import { GhostFeed } from "./GhostFeed";
+import useStyles from "./Feed.styles";
 
 interface FeedProps {
   filter: NDKFilter;
@@ -29,6 +30,7 @@ export const Feed = memo(
     onEventsLoaded = noop,
   }: FeedProps) => {
     const { ndk, stemstrRelaySet } = useNDK();
+    const { classes } = useStyles();
     const [events, setEvents] = useState<NDKEvent[]>([]);
     const hasMoreEvents = useRef(true);
     const isLoadingMore = useRef(false);
@@ -134,9 +136,8 @@ export const Feed = memo(
 
       return () => {
         hasMoreEvents.current = true;
-        setEvents([]);
       };
-    }, [ndk, filter, stemstrRelaySet, processEvents]);
+    }, [ndk, filter, stemstrRelaySet]);
 
     const loadMoreItems = async () => {
       if (!ndk || !stemstrRelaySet || isLoadingMore.current) {
@@ -179,6 +180,7 @@ export const Feed = memo(
         )}
 
         <AutoSizer
+          className={classes.feed}
           style={{
             height: hasAttemptedProfileCachePreload
               ? `calc(100vh - ${headerHeight}px - ${heightOffset}px`
@@ -218,9 +220,7 @@ export const Feed = memo(
                     >
                       {({ onItemsRendered, ref }) => (
                         <VariableSizeList
-                          height={
-                            height - headerHeight - heightOffset - footerHeight
-                          }
+                          height={document.body.clientHeight * 1.1}
                           itemKey={(index: number) => events[index].id}
                           itemCount={events.length}
                           itemSize={getRowHeight}

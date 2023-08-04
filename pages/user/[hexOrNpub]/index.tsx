@@ -1,5 +1,13 @@
-import { useMemo, useState } from "react";
-import { ActionIcon, Box, Group, Image, Stack, Text } from "@mantine/core";
+import { UIEventHandler, useMemo, useState } from "react";
+import {
+  ActionIcon,
+  Box,
+  Group,
+  Image,
+  Space,
+  Stack,
+  Text,
+} from "@mantine/core";
 import Head from "next/head";
 import { useRouter } from "next/router";
 
@@ -122,9 +130,7 @@ export default function ProfilePage() {
         <CopyNpub npub={npub} />
       </Stack>
       <ProfileContactsBar pubkey={pk} />
-      <Box pl="md" pr="md">
-        <ProfileFeed pubkey={pk} />
-      </Box>
+      <ProfileFeed pubkey={pk} />
     </>
   );
 }
