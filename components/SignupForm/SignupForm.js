@@ -25,7 +25,7 @@ export default function SignupForm({ handleSubmit }) {
     <form onSubmit={form.onSubmit(handleSubmit)}>
       <BannerSelector {...form.getInputProps("banner")} />
       <ProfilePicSelector {...form.getInputProps("picture")} />
-      <Space h={64} />
+      <Space h={32} />
       <Stack spacing="md">
         <DisplayNameFieldGroup {...form.getInputProps("display_name")} />
         <NameFieldGroup {...form.getInputProps("name")} />

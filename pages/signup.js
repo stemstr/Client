@@ -58,7 +58,7 @@ export default function Signup() {
       <Head>
         <title>Stemstr - Signup</title>
       </Head>
-      <Box pl="md" pr="md">
+      <Box pl="md" pr="md" pb="md">
         <SignupForm handleSubmit={handleSubmit} />
       </Box>
     </>
