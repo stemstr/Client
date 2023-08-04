@@ -1,9 +1,20 @@
-import { Box, Center, FileInput, Image, TextInput } from "@mantine/core";
+import {
+  Box,
+  Center,
+  FileInput,
+  Image,
+  Loader,
+  TextInput,
+} from "@mantine/core";
 import { useRef } from "react";
 import { CameraPlusIcon } from "../../../icons/StemstrIcon";
 import { uploadImage } from "../../../utils/media";
 
-export default function BannerSelector(props) {
+export default function BannerSelector({
+  isUploading,
+  setIsUploading,
+  ...rest
+}) {
   const inputRef = useRef(null);
 
   const handleSelectClick = () => {
@@ -11,9 +22,12 @@ export default function BannerSelector(props) {
   };
 
   const handleImageChange = (file) => {
+    rest.onChange("");
+    setIsUploading(true);
     uploadImage(file)
-      .then((imageUrl) => props.onChange(imageUrl))
-      .catch((err) => props.onChange(""));
+      .then((imageUrl) => rest.onChange(imageUrl))
+      .catch((err) => rest.onChange(""))
+      .finally(() => setIsUploading(false));
   };
 
   return (
@@ -23,7 +37,7 @@ export default function BannerSelector(props) {
           display: "none",
         }}
       >
-        <TextInput {...props} />
+        <TextInput {...rest} />
         <FileInput
           accept="image/*"
           ref={inputRef}
@@ -42,14 +56,15 @@ export default function BannerSelector(props) {
           position: "relative",
           cursor: "pointer",
           border: "1px dashed transparent",
+          transition: "border-color .3s ease-in-out",
           ":hover": {
             borderColor: theme.white,
           },
         })}
       >
-        {props.value && (
+        {rest.value && (
           <Image
-            src={props.value}
+            src={rest.value}
             height={169}
             styles={(theme) => ({
               root: {
@@ -64,7 +79,7 @@ export default function BannerSelector(props) {
             })}
           />
         )}
-        {!props.value && (
+        {!rest.value && (
           <Center
             sx={{
               position: "absolute",
@@ -82,10 +97,14 @@ export default function BannerSelector(props) {
             right: theme.spacing.md,
             bottom: theme.spacing.md,
             position: "absolute",
-            opacity: props.value ? 0.5 : undefined,
+            opacity: rest.value ? 0.5 : undefined,
           })}
         >
-          <CameraPlusIcon width={20} height={20} />
+          {isUploading ? (
+            <Loader size={20} />
+          ) : (
+            <CameraPlusIcon width={20} height={20} />
+          )}
         </Box>
       </Box>
     </>

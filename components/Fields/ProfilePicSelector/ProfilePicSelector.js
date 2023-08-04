@@ -1,9 +1,20 @@
-import { Avatar, Box, Center, FileInput, TextInput } from "@mantine/core";
+import {
+  Avatar,
+  Box,
+  Center,
+  FileInput,
+  Loader,
+  TextInput,
+} from "@mantine/core";
 import { useRef } from "react";
 import { CameraPlusIcon } from "../../../icons/StemstrIcon";
 import { uploadImage } from "../../../utils/media";
 
-export default function ProfilePicSelector(props) {
+export default function ProfilePicSelector({
+  isUploading,
+  setIsUploading,
+  ...rest
+}) {
   const inputRef = useRef(null);
 
   const handleSelectClick = () => {
@@ -11,9 +22,12 @@ export default function ProfilePicSelector(props) {
   };
 
   const handleImageChange = (file) => {
+    rest.onChange("");
+    setIsUploading(true);
     uploadImage(file)
-      .then((imageUrl) => props.onChange(imageUrl))
-      .catch((err) => props.onChange(""));
+      .then((imageUrl) => rest.onChange(imageUrl))
+      .catch((err) => rest.onChange(""))
+      .finally(() => setIsUploading(false));
   };
 
   return (
@@ -23,7 +37,7 @@ export default function ProfilePicSelector(props) {
           display: "none",
         }}
       >
-        <TextInput {...props} />
+        <TextInput {...rest} />
         <FileInput
           accept="image/*"
           ref={inputRef}
@@ -46,13 +60,14 @@ export default function ProfilePicSelector(props) {
           marginTop: -50,
           position: "relative",
           border: "1px dashed transparent",
+          transition: "border-color .3s ease-in-out",
           ":hover": {
             borderColor: theme.white,
           },
         })}
       >
         <Avatar
-          src={props.value && props.value}
+          src={rest.value && rest.value}
           styles={(theme) => ({
             root: {
               width: "100%",
@@ -70,10 +85,14 @@ export default function ProfilePicSelector(props) {
             right: 0,
             bottom: 0,
             position: "absolute",
-            opacity: props.value ? 0.5 : undefined,
+            opacity: rest.value ? 0.5 : undefined,
           }}
         >
-          <CameraPlusIcon width={32} height={35} />
+          {isUploading ? (
+            <Loader size="md" />
+          ) : (
+            <CameraPlusIcon width={32} height={35} />
+          )}
         </Center>
       </Box>
     </>
