@@ -1,4 +1,10 @@
-import React, { useEffect, useState, useRef, useMemo } from "react";
+import React, {
+  useEffect,
+  useState,
+  useRef,
+  useMemo,
+  useCallback,
+} from "react";
 import { motion } from "framer-motion";
 import useResizeObserver from "@react-hook/resize-observer";
 import { constrain } from "utils/common";
@@ -165,6 +171,8 @@ export default function WaveForm({
     }
     setScrubTime(null);
   };
+  const isAnimating = !data;
+  const Rect = isAnimating ? motion.rect : rect;
 
   return (
     <div
@@ -199,7 +207,7 @@ export default function WaveForm({
             bars.map((bar, barIndex) => (
               <g key={`${barsIndex}-${barIndex}`}>
                 {/* Filled part of bar */}
-                <motion.rect
+                <Rect
                   initial={{ scaleY: 1 }}
                   // Upload animation
                   animate={
@@ -221,7 +229,7 @@ export default function WaveForm({
                   fill={bar.fillColor}
                 />
                 {/* Empty part of bar */}
-                <motion.rect
+                <Rect
                   initial={{ scaleY: 1 }}
                   x={bar.x + bar.filledWidth}
                   y={bar.y}
@@ -236,6 +244,10 @@ export default function WaveForm({
     </div>
   );
 }
+
+const rect = ({ children, ...rest }) => {
+  return <rect {...rest}>{children}</rect>;
+};
 
 export function generateWaveFormData(n) {
   let result = [];
