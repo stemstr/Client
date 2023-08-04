@@ -42,7 +42,7 @@ export default function SignupForm({ handleSubmit }) {
         <NameFieldGroup {...form.getInputProps("name")} />
         <AboutFieldGroup {...form.getInputProps("about")} />
         {/* <LNURLFieldGroup {...form.getInputProps("lnurl")} /> */}
-        <Space h={42} />
+        <Space h={32} />
         <Button
           disabled={bannerIsUploading || profilePicIsUploading}
           type="submit"
