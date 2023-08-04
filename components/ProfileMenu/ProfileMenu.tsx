@@ -178,60 +178,67 @@ export default function ProfileMenu() {
           Close
         </Button>
       </Drawer>
-      <Group
-        noWrap
-        spacing={8}
-        pos="relative"
+      <Box
         sx={(theme) => ({
-          color: isHighlightingSubscriptionStatus
-            ? theme.colors.green[5]
-            : theme.white,
-          border: "1px solid",
-          borderColor: isHighlightingSubscriptionStatus
-            ? theme.colors.green[5]
-            : theme.colors.gray[2],
-          outline: "3px solid",
-          outlineColor: isHighlightingSubscriptionStatus
+          padding: 3,
+          borderRadius: 22,
+          backgroundColor: isHighlightingSubscriptionStatus
             ? theme.colors.green[8]
             : theme.colors.gray[4],
-          padding: 3,
-          borderRadius: 19,
-          transition:
-            "color 0.5s ease, border-color 0.5s ease, outline-color 0.5s ease",
         })}
       >
-        <Stars mounted={isHighlightingSubscriptionStatus} />
-        <Transition
-          mounted={Boolean(formattedSubscriptionTimeData)}
-          transition="slide-left"
-          duration={500}
-          timingFunction="ease"
+        <Group
+          noWrap
+          spacing={8}
+          pos="relative"
+          sx={(theme) => ({
+            color: isHighlightingSubscriptionStatus
+              ? theme.colors.green[5]
+              : theme.white,
+            border: "1px solid",
+            borderColor: isHighlightingSubscriptionStatus
+              ? theme.colors.green[5]
+              : theme.colors.gray[2],
+            backgroundColor: theme.colors.gray[8],
+            padding: 3,
+            borderRadius: 19,
+            transition:
+              "color 0.5s ease, border-color 0.5s ease, outline-color 0.5s ease",
+          })}
         >
-          {(styles) => (
-            <Box
-              onClick={openSubscriptionDrawer}
-              style={{
-                ...styles,
-                cursor: "pointer",
-              }}
-            >
-              {hasLifetimePass ? (
-                <Center ml={10}>
-                  <InfinityIcon width={20} height={20} />
-                </Center>
-              ) : (
-                <>
-                  <Text fw="bold" ml={10} span>
-                    {formattedSubscriptionTimeData?.amount}
-                  </Text>{" "}
-                  {formattedSubscriptionTimeData?.unit}
-                </>
-              )}
-            </Box>
-          )}
-        </Transition>
-        <ProfileLink size={30} />
-      </Group>
+          <Stars mounted={isHighlightingSubscriptionStatus} />
+          <Transition
+            mounted={Boolean(formattedSubscriptionTimeData)}
+            transition="slide-left"
+            duration={500}
+            timingFunction="ease"
+          >
+            {(styles) => (
+              <Box
+                onClick={openSubscriptionDrawer}
+                style={{
+                  ...styles,
+                  cursor: "pointer",
+                }}
+              >
+                {hasLifetimePass ? (
+                  <Center ml={10}>
+                    <InfinityIcon width={20} height={20} />
+                  </Center>
+                ) : (
+                  <>
+                    <Text fw="bold" ml={10} span>
+                      {formattedSubscriptionTimeData?.amount}
+                    </Text>{" "}
+                    {formattedSubscriptionTimeData?.unit}
+                  </>
+                )}
+              </Box>
+            )}
+          </Transition>
+          <ProfileLink size={30} />
+        </Group>
+      </Box>
     </>
   );
 }
