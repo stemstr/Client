@@ -7,6 +7,7 @@ import LNURLFieldGroup from "../FieldGroups/LNURLFieldGroup";
 import NameFieldGroup from "../FieldGroups/NameFieldGroup";
 import BannerSelector from "../Fields/BannerSelector/BannerSelector";
 import ProfilePicSelector from "../Fields/ProfilePicSelector/ProfilePicSelector";
+import { useState } from "react";
 
 export default function SignupForm({ handleSubmit }) {
   const form = useForm({
@@ -20,11 +21,21 @@ export default function SignupForm({ handleSubmit }) {
     },
     validate: {},
   });
+  const [bannerIsUploading, setBannerIsUploading] = useState(false);
+  const [profilePicIsUploading, setProfilePicIsUploading] = useState(false);
 
   return (
     <form onSubmit={form.onSubmit(handleSubmit)}>
-      <BannerSelector {...form.getInputProps("banner")} />
-      <ProfilePicSelector {...form.getInputProps("picture")} />
+      <BannerSelector
+        isUploading={bannerIsUploading}
+        setIsUploading={setBannerIsUploading}
+        {...form.getInputProps("banner")}
+      />
+      <ProfilePicSelector
+        isUploading={profilePicIsUploading}
+        setIsUploading={setProfilePicIsUploading}
+        {...form.getInputProps("picture")}
+      />
       <Space h={32} />
       <Stack spacing="md">
         <DisplayNameFieldGroup {...form.getInputProps("display_name")} />
@@ -32,7 +43,10 @@ export default function SignupForm({ handleSubmit }) {
         <AboutFieldGroup {...form.getInputProps("about")} />
         {/* <LNURLFieldGroup {...form.getInputProps("lnurl")} /> */}
         <Space h={42} />
-        <Button type="submit">
+        <Button
+          disabled={bannerIsUploading || profilePicIsUploading}
+          type="submit"
+        >
           Sign me up and generate keys{" "}
           <ChevronRightIcon width={16} height={16} />
         </Button>
