@@ -2,9 +2,15 @@ import { NDKEvent, NDKFilter } from "@nostr-dev-kit/ndk";
 import { Kind } from "nostr-tools";
 import { Feed } from "components/Feed";
 import { isRootEvent } from "ndk/utils";
-import { useMemo } from "react";
+import { RefObject, useMemo } from "react";
 
-export default function ProfileFeed({ pubkey }: { pubkey: string }) {
+export default function ProfileFeed({
+  pubkey,
+  aboveContentRef,
+}: {
+  pubkey: string;
+  aboveContentRef?: RefObject<HTMLElement>;
+}) {
   const filter = useMemo<NDKFilter>(
     () => ({
       kinds: [1, 6, 16 as Kind, 1808 as Kind],
@@ -29,5 +35,11 @@ export default function ProfileFeed({ pubkey }: { pubkey: string }) {
     }
   };
 
-  return <Feed filter={filter} feedFilter={isProfileEvent} />;
+  return (
+    <Feed
+      filter={filter}
+      feedFilter={isProfileEvent}
+      aboveContentRef={aboveContentRef}
+    />
+  );
 }

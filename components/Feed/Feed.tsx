@@ -1,6 +1,13 @@
-import { useRef, useEffect, memo, useState, useCallback } from "react";
+import {
+  useRef,
+  useEffect,
+  memo,
+  useState,
+  useCallback,
+  RefObject,
+} from "react";
 import { FeedNote } from "../Note/Note";
-import { VariableSizeList, areEqual } from "react-window";
+import { ListOnScrollProps, VariableSizeList, areEqual } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import InfiniteLoader from "react-window-infinite-loader";
 import { Box, Transition } from "@mantine/core";
@@ -20,6 +27,7 @@ interface FeedProps {
   feedFilter?: (event: NDKEvent) => boolean;
   heightOffset?: number;
   onEventsLoaded?: (events: NDKEvent[]) => void;
+  aboveContentRef?: RefObject<HTMLElement>;
 }
 
 export const Feed = memo(
@@ -28,6 +36,7 @@ export const Feed = memo(
     feedFilter = () => true,
     heightOffset = 0,
     onEventsLoaded = noop,
+    aboveContentRef,
   }: FeedProps) => {
     const { ndk, stemstrRelaySet } = useNDK();
     const { classes } = useStyles();
@@ -175,20 +184,22 @@ export const Feed = memo(
       listRef.current?.scrollToItem(0);
     };
 
+    const handleScroll = (props: ListOnScrollProps) => {
+      if (aboveContentRef?.current) {
+        aboveContentRef.current.style.marginTop = `-${Math.min(
+          props.scrollOffset,
+          aboveContentRef.current.clientHeight
+        )}px`;
+      }
+    };
+
     return (
       <>
         {!hasAttemptedProfileCachePreload && (
           <GhostFeed headerHeight={headerHeight} headerOffset={heightOffset} />
         )}
 
-        <AutoSizer
-          className={classes.feed}
-          // style={{
-          //   height: hasAttemptedProfileCachePreload
-          //     ? `calc(100vh - ${headerHeight}px - ${heightOffset}px`
-          //     : 0,
-          // }}
-        >
+        <AutoSizer className={classes.feed}>
           {({ height, width }: { height: number; width: number }) => (
             <Box
               w="100vw"
@@ -222,6 +233,7 @@ export const Feed = memo(
                     >
                       {({ onItemsRendered, ref }) => (
                         <VariableSizeList
+                          onScroll={handleScroll}
                           height={height}
                           itemKey={(index: number) => events[index].id}
                           itemCount={events.length}
