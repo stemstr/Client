@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { ActionIcon, Box, Group, Image, Stack, Text } from "@mantine/core";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -36,94 +36,98 @@ export default function ProfilePage() {
 
     return isRootId ? nip05.split("@")[1] : nip05;
   };
+  const divRef = useRef<HTMLDivElement>(null);
 
   return (
     <>
       <Head>
         <title>{`Stemstr - ${user?.profile?.displayName || "Profile"}`}</title>
       </Head>
-      <Box
-        sx={(theme) => ({
-          padding: `${theme.spacing.md}px ${theme.spacing.md}px 0`,
-          height: 200,
-        })}
-      >
-        {user?.profile && (
-          <Image
-            src={
-              !user.profile.banner || bannerHasError
-                ? "/default-banner.png"
-                : user.profile.banner
-            }
-            onError={() => setBannerHasError(true)}
-            height={200}
-            styles={(theme) => ({
-              root: {
-                position: "absolute",
-                zIndex: -1,
-                top: 0,
-                left: 0,
-                right: 0,
-              },
-              imageWrapper: {
-                position: "static",
-              },
-            })}
-          />
-        )}
-        <Group position="apart">
-          <Group spacing="sm" align="center" c="white">
-            <BackButton defaultUrl={Route.Home}>
-              <ChevronLeftIcon width={24} height={24} />
-            </BackButton>
-            <Text c="white" fw="bold" fz={24} lh="normal">
-              Profile
-            </Text>
-          </Group>
-          <ActionIcon
-            component={Link}
-            href={Route.Settings}
-            variant="transparent"
-          >
-            <SettingsIcon color="white" width={24} height={24} />
-          </ActionIcon>
-        </Group>
-      </Box>
-      <Group pl="md" pr="md" mb="lg" position="apart" align="start">
-        <ProfilePic pubkey={pk} />
-        <ProfileActionButtons pubkey={pk} />
-      </Group>
-      <Stack spacing={6} mb="xl" pl="md" pr="md" c="white">
-        <Text size="lg" color="white" fw="bold">
-          {user?.profile?.displayName
-            ? user.profile.displayName
-            : `@${pk.substring(0, 5)}...`}
-        </Text>
-        <Group spacing={4}>
-          <Text size="sm">
-            {user?.profile?.name && `@${user?.profile.name}`}
-          </Text>
-          {nip05Status === Nip05Status.Valid && (
-            <>
-              <VerifiedIcon width={14} height={14} />
-              <Text size="sm" color="purple.2">
-                {normalizeNip05(user?.profile?.nip05)}
-              </Text>
-            </>
-          )}
-        </Group>
-        <Text
-          size="sm"
-          mb={8}
-          sx={{ whiteSpace: "pre-wrap", overflowWrap: "anywhere" }}
+      <Box ref={divRef}>
+        <Box
+          sx={(theme) => ({
+            position: "relative",
+            padding: `${theme.spacing.md}px ${theme.spacing.md}px 0`,
+            height: 200,
+          })}
         >
-          {user?.profile?.about}
-        </Text>
-        <CopyNpub npub={npub} />
-      </Stack>
-      <ProfileContactsBar pubkey={pk} />
+          {user?.profile && (
+            <Image
+              src={
+                !user.profile.banner || bannerHasError
+                  ? "/default-banner.png"
+                  : user.profile.banner
+              }
+              onError={() => setBannerHasError(true)}
+              height={200}
+              styles={(theme) => ({
+                root: {
+                  position: "absolute",
+                  zIndex: -1,
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                },
+                imageWrapper: {
+                  position: "static",
+                },
+              })}
+            />
+          )}
+          <Group position="apart">
+            <Group spacing="sm" align="center" c="white">
+              <BackButton defaultUrl={Route.Home}>
+                <ChevronLeftIcon width={24} height={24} />
+              </BackButton>
+              <Text c="white" fw="bold" fz={24} lh="normal">
+                Profile
+              </Text>
+            </Group>
+            <ActionIcon
+              component={Link}
+              href={Route.Settings}
+              variant="transparent"
+            >
+              <SettingsIcon color="white" width={24} height={24} />
+            </ActionIcon>
+          </Group>
+        </Box>
+        <Group pl="md" pr="md" mb="lg" position="apart" align="start">
+          <ProfilePic pubkey={pk} />
+          <ProfileActionButtons pubkey={pk} />
+        </Group>
+        <Stack spacing={6} mb="xl" pl="md" pr="md" c="white">
+          <Text size="lg" color="white" fw="bold">
+            {user?.profile?.displayName
+              ? user.profile.displayName
+              : `@${pk.substring(0, 5)}...`}
+          </Text>
+          <Group spacing={4}>
+            <Text size="sm">
+              {user?.profile?.name && `@${user?.profile.name}`}
+            </Text>
+            {nip05Status === Nip05Status.Valid && (
+              <>
+                <VerifiedIcon width={14} height={14} />
+                <Text size="sm" color="purple.2">
+                  {normalizeNip05(user?.profile?.nip05)}
+                </Text>
+              </>
+            )}
+          </Group>
+          <Text
+            size="sm"
+            mb={8}
+            sx={{ whiteSpace: "pre-wrap", overflowWrap: "anywhere" }}
+          >
+            {user?.profile?.about}
+          </Text>
+          <CopyNpub npub={npub} />
+        </Stack>
+        <ProfileContactsBar pubkey={pk} />
+      </Box>
       <Box h="100vh">
-        <ProfileFeed pubkey={pk} />
+        <ProfileFeed pubkey={pk} aboveContentRef={divRef} />
       </Box>
     </>
   );
