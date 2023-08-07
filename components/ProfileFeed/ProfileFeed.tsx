@@ -2,13 +2,17 @@ import { NDKEvent, NDKFilter } from "@nostr-dev-kit/ndk";
 import { Kind } from "nostr-tools";
 import { Feed } from "components/Feed";
 import { isRootEvent } from "ndk/utils";
+import { useMemo } from "react";
 
 export default function ProfileFeed({ pubkey }: { pubkey: string }) {
-  const filter: NDKFilter = {
-    kinds: [1, 6, 16 as Kind, 1808 as Kind],
-    limit: 50,
-    authors: [pubkey],
-  };
+  const filter = useMemo<NDKFilter>(
+    () => ({
+      kinds: [1, 6, 16 as Kind, 1808 as Kind],
+      limit: 50,
+      authors: [pubkey],
+    }),
+    [pubkey]
+  );
 
   const isProfileEvent = (event: NDKEvent): boolean => {
     switch (event.kind) {
