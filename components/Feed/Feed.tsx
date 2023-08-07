@@ -83,7 +83,8 @@ export const Feed = memo(
     // only preload the profiles for the first 50 events to reduce amount of data fetched and since relays don't return
     // any results when requesting too many profiles
     const hasAttemptedProfileCachePreload = usePreloadProfileCache(
-      events.slice(0, 50).map(({ pubkey }) => pubkey)
+      events.slice(0, 50).map(({ pubkey }) => pubkey),
+      JSON.stringify(filter)
     );
 
     const processEvents = useCallback(
@@ -135,6 +136,7 @@ export const Feed = memo(
         .catch(console.error);
 
       return () => {
+        setEvents([]);
         hasMoreEvents.current = true;
       };
     }, [ndk, filter, stemstrRelaySet]);
