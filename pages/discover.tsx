@@ -9,7 +9,7 @@ export default function Discover() {
       <Head>
         <title>Stemstr - Discover</title>
       </Head>
-      <Stack spacing={0}>
+      <Stack spacing={0} h="100vh">
         <FeedHeader>Stemstr</FeedHeader>
         <DiscoverFeed />
       </Stack>

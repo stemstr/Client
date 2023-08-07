@@ -1,14 +1,11 @@
 import { Feed } from "../Feed";
 import { NDKEvent, type NDKFilter } from "@nostr-dev-kit/ndk";
+import { isRootEvent } from "ndk/utils";
 import { Kind } from "nostr-tools";
 
 const filter: NDKFilter = {
   kinds: [1, 6, 16 as Kind, 1808 as Kind],
   limit: 50,
-};
-
-const isRootEvent = (event: NDKEvent): boolean => {
-  return !event.tags.find((tag) => tag[0] === "e");
 };
 
 const isDiscoverFeedEvent = (event: NDKEvent): boolean => {

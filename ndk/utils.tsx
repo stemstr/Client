@@ -578,3 +578,7 @@ export const createSigner = async (
 
   throw new Error("Invalid auth state");
 };
+
+export const isRootEvent = (event: NDKEvent): boolean => {
+  return !event.tags.find((tag) => tag[0] === "e");
+};

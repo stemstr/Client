@@ -1,9 +1,12 @@
 import { type PropsWithChildren } from "react";
-import { Box } from "@mantine/core";
+import { Box, DefaultProps } from "@mantine/core";
 
-export function MaxWidthContainer({ children }: PropsWithChildren<{}>) {
+export function MaxWidthContainer({
+  children,
+  ...rest
+}: PropsWithChildren<DefaultProps>) {
   return (
-    <Box m="auto" pl="md" pr="md" w="100%" sx={{ maxWidth: 600 }}>
+    <Box mx="auto" pl="md" pr="md" w="100%" maw={600} {...rest}>
       {children}
     </Box>
   );

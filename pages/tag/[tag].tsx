@@ -16,7 +16,7 @@ export default function Tag() {
       <Head>
         <title>Stemstr - #{tag}</title>
       </Head>
-      <Stack spacing={0}>
+      <Stack spacing={0} h="100vh">
         <FeedHeader>
           <Flex gap={12}>
             <BackButton defaultUrl={Route.Home}>

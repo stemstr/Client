@@ -122,7 +122,7 @@ export default function ProfilePage() {
         <CopyNpub npub={npub} />
       </Stack>
       <ProfileContactsBar pubkey={pk} />
-      <Box pl="md" pr="md">
+      <Box h="100vh">
         <ProfileFeed pubkey={pk} />
       </Box>
     </>

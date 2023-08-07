@@ -8,7 +8,7 @@ export default function FeedHeader({ children }: PropsWithChildren) {
   const router = useRouter();
 
   return (
-    <MaxWidthContainer>
+    <MaxWidthContainer sx={{ position: "sticky", top: 0, zIndex: 1 }}>
       <Group
         position="apart"
         noWrap
