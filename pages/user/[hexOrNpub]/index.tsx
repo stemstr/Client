@@ -16,6 +16,7 @@ import useNip05 from "ndk/hooks/useNip05";
 import { Nip05Status } from "store/Nip05";
 import Link from "next/link";
 import ProfileContactsBar from "components/ProfilePage/ProfileContactsBar";
+import useFooterHeight from "ndk/hooks/useFooterHeight";
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -37,6 +38,7 @@ export default function ProfilePage() {
     return isRootId ? nip05.split("@")[1] : nip05;
   };
   const divRef = useRef<HTMLDivElement>(null);
+  const footerHeight = useFooterHeight();
 
   return (
     <>
@@ -126,7 +128,7 @@ export default function ProfilePage() {
         </Stack>
         <ProfileContactsBar pubkey={pk} />
       </Box>
-      <Box h="100vh">
+      <Box h={`calc(100vh - ${footerHeight}px)`}>
         <ProfileFeed pubkey={pk} aboveContentRef={divRef} />
       </Box>
     </>

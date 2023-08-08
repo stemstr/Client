@@ -6,17 +6,19 @@ import TagFeed from "../../components/TagFeed/TagFeed";
 import { Route } from "../../enums";
 import { ChevronLeftIcon } from "../../icons/StemstrIcon";
 import BackButton from "../../components/BackButton/BackButton";
+import useFooterHeight from "ndk/hooks/useFooterHeight";
 
 export default function Tag() {
   const router = useRouter();
   const { tag } = router.query;
+  const footerHeight = useFooterHeight();
 
   return (
     <>
       <Head>
         <title>Stemstr - #{tag}</title>
       </Head>
-      <Stack spacing={0} h="100vh">
+      <Stack spacing={0} h={`calc(100vh - ${footerHeight}px - 76px)`}>
         <FeedHeader>
           <Flex gap={12}>
             <BackButton defaultUrl={Route.Home}>
