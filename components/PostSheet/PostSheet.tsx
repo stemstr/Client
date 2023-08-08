@@ -19,7 +19,7 @@ import { AddSoundIcon, TrashIcon } from "icons/StemstrIcon";
 import { hasNotch, isPwa } from "../../utils/common";
 import Drawer from "../Drawer/Drawer";
 
-type PostSheetFormValues = {
+export type PostSheetFormValues = {
   file: File | null;
   uploadResponse: {
     streamUrl: string | null;
