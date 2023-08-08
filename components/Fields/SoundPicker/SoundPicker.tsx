@@ -61,6 +61,102 @@ export default function SoundPicker({
     return ((scrubTime - currentTime) / duration) * playButtonSpinVelocity;
   }, [scrubTime, currentTime, duration]);
 
+  const uploadFile = async () => {
+    if (!rest.value || !auth.pk) {
+      rest.onChange(null);
+      setIsUploading(false);
+      return;
+    }
+    const sum = await calculateHash(rest.value);
+    if (!sum) return;
+    const maxFileSizeMB = 100;
+    const maxFileSize = 1024 * 1024 * maxFileSizeMB;
+    if (rest.value.size > maxFileSize) {
+      alert(`File too big (Max ${maxFileSizeMB}MB)`);
+      rest.onChange(null);
+    } else {
+      const formData = new FormData();
+      formData.append("pk", auth.pk);
+      formData.append("sum", sum);
+      formData.append("filename", rest.value.name);
+      formData.append("file", rest.value);
+      setIsUploading(true);
+      setWaveformData(null);
+      axios
+        .post(`${process.env.NEXT_PUBLIC_STEMSTR_API}/upload`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then((response) => {
+          setStreamUrl(response.data.stream_url);
+          setWaveformData(response.data.waveform);
+          form.setFieldValue(
+            "uploadResponse.streamUrl",
+            response.data.stream_url
+          );
+          form.setFieldValue(
+            "uploadResponse.downloadUrl",
+            response.data.download_url
+          );
+          form.setFieldValue("uploadResponse.waveform", response.data.waveform);
+        })
+        .catch((error) => {
+          switch (error.response.status) {
+            case 400:
+              showNotification({
+                title: "Error 400",
+                message:
+                  "Problem uploading file. Please try again later, or try another file",
+                color: "red",
+                autoClose: 5000,
+              });
+              break;
+            case 401:
+              dispatch(closeSheet("postSheet"));
+              router.push(Route.Login);
+              break;
+            case 420:
+              showNotification({
+                title: "Error 420",
+                message: (
+                  <>
+                    The electric squirrel needs you to enhance your calm
+                    <br />
+                    🐿️🧘‍♂️☘️
+                  </>
+                ),
+                color: "red",
+                autoClose: 5000,
+              });
+              break;
+            case 500:
+              showNotification({
+                title: "Error 500",
+                message:
+                  "Problem uploading file. Please try again later, or try another file",
+                color: "red",
+                autoClose: 5000,
+              });
+              break;
+            default:
+              showNotification({
+                title: "Unknown Error",
+                message:
+                  "Problem uploading file. Please try again later, or try another file",
+                color: "red",
+                autoClose: 5000,
+              });
+              break;
+          }
+          rest.onChange(null);
+        })
+        .finally(() => {
+          setIsUploading(false);
+        });
+    }
+  };
+
   const handleAudioChange = async () => {
     form.setValues((prev) => ({
       ...prev,
@@ -70,97 +166,31 @@ export default function SoundPicker({
     }));
     setIsPlaying(false);
     if (rest.value && auth.pk) {
-      const sum = await calculateHash(rest.value);
-      if (!sum) return;
-      const maxFileSizeMB = 100;
-      const maxFileSize = 1024 * 1024 * maxFileSizeMB;
-      if (rest.value.size > maxFileSize) {
-        alert(`File too big (Max ${maxFileSizeMB}MB)`);
-        rest.onChange(null);
-      } else {
-        const formData = new FormData();
-        formData.append("pk", auth.pk);
-        formData.append("sum", sum);
-        formData.append("filename", rest.value.name);
-        formData.append("file", rest.value);
-        setIsUploading(true);
-        setWaveformData(null);
-        axios
-          .post(`${process.env.NEXT_PUBLIC_STEMSTR_API}/upload`, formData, {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          })
-          .then((response) => {
-            setStreamUrl(response.data.stream_url);
-            setWaveformData(response.data.waveform);
-            form.setFieldValue(
-              "uploadResponse.streamUrl",
-              response.data.stream_url
-            );
-            form.setFieldValue(
-              "uploadResponse.downloadUrl",
-              response.data.download_url
-            );
-            form.setFieldValue(
-              "uploadResponse.waveform",
-              response.data.waveform
-            );
-          })
-          .catch((error) => {
-            switch (error.response.status) {
-              case 400:
-                showNotification({
-                  title: "Error 400",
-                  message:
-                    "Problem uploading file. Please try again later, or try another file",
-                  color: "red",
-                  autoClose: 5000,
-                });
-                break;
-              case 401:
-                dispatch(closeSheet("postSheet"));
-                router.push(Route.Login);
-                break;
-              case 420:
-                showNotification({
-                  title: "Error 420",
-                  message: (
-                    <>
-                      The electric squirrel needs you to enhance your calm
-                      <br />
-                      🐿️🧘‍♂️☘️
-                    </>
-                  ),
-                  color: "red",
-                  autoClose: 5000,
-                });
-                break;
-              case 500:
-                showNotification({
-                  title: "Error 500",
-                  message:
-                    "Problem uploading file. Please try again later, or try another file",
-                  color: "red",
-                  autoClose: 5000,
-                });
-                break;
-              default:
-                showNotification({
-                  title: "Unknown Error",
-                  message:
-                    "Problem uploading file. Please try again later, or try another file",
-                  color: "red",
-                  autoClose: 5000,
-                });
-                break;
-            }
-            rest.onChange(null);
-          })
-          .finally(() => {
-            setIsUploading(false);
+      const audio = new Audio();
+      // Wait for the audio's metadata to load
+      audio.addEventListener("canplaythrough", async () => {
+        if (audio.duration > 300) {
+          rest.onChange(null);
+          showNotification({
+            title: "Stem Too Long",
+            message: "Maximum track length is 5 minutes",
+            color: "red",
+            autoClose: 5000,
           });
-      }
+          return;
+        }
+        audio.src = ""; // Clear the src to release the resources
+        URL.revokeObjectURL(audio.src);
+        uploadFile();
+      });
+      audio.addEventListener("error", (e) => {
+        if (audio.error?.message.includes("DEMUXER_ERROR_COULD_NOT_OPEN")) {
+          audio.src = ""; // Clear the src to release the resources
+          URL.revokeObjectURL(audio.src);
+          uploadFile();
+        }
+      });
+      audio.src = URL.createObjectURL(rest.value);
     }
   };
 
