@@ -18,6 +18,7 @@ import inMemoryCacheAdapter from "./inMemoryCacheAdapter";
 import { createSigner } from "./utils";
 import { useRouter } from "next/router";
 import { Route } from "../enums";
+import useLoadCache from "./hooks/useLoadCache";
 
 interface NDKContext {
   ndk?: NDK;
@@ -41,6 +42,7 @@ const NDKProvider = ({
     NDKRelaySet | undefined
   >(undefined);
   const [canPublishEvents, setCanPublishEvents] = useState(false);
+  useLoadCache(ndk);
 
   // Initialize NDK instance on component mount
   useEffect(() => {

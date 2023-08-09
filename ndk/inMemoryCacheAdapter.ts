@@ -9,19 +9,11 @@ import localforage from "localforage";
 
 const eventsCache: Record<string, Record<string, NostrEvent>> = {};
 
-const profileEventsCacheKey = "stemstr:profileEventsCache";
-let profileEventsCache: Record<string, NostrEvent> = {};
-// Load cache from localStorage if using browser
-if (typeof window !== "undefined") {
-  localforage
-    .getItem(profileEventsCacheKey)
-    .then((value) => {
-      if (typeof value === "object" && value !== null) {
-        profileEventsCache = value as Record<string, NostrEvent>;
-      }
-    })
-    .catch((error) => {});
-}
+export const profileEventsCacheKey = "stemstr:profileEventsCache";
+export let profileEventsCache: Record<string, NostrEvent> = {};
+export const setProfileEventsCache = (cache: Record<string, NostrEvent>) => {
+  profileEventsCache = cache;
+};
 
 const contactListEventsCache: Record<string, NostrEvent> = {};
 
