@@ -1,5 +1,5 @@
 import { Group } from "@mantine/core";
-import { useMemo, useEffect, useCallback } from "react";
+import { useMemo, useEffect, useCallback, useState } from "react";
 import NoteActionComment from "../NoteAction/NoteActionComment";
 import NoteActionLike from "../NoteAction/NoteActionLike";
 import NoteActionZap from "../NoteActionZap/NoteActionZap";
@@ -44,6 +44,7 @@ const NoteActionRow = () => {
     }),
     [noteId]
   );
+  const [hasFetchedMetaEvents, sethasFetchedMetaEvents] = useState(false);
   const dispatchData = useCallback(
     async (events: NDKEvent[]) => {
       const reactions = events.filter(({ kind }) => kind === Kind.Reaction);
@@ -105,9 +106,10 @@ const NoteActionRow = () => {
   );
 
   useEffect(() => {
-    if (!ndk) {
+    if (!ndk || hasFetchedMetaEvents) {
       return;
     }
+    sethasFetchedMetaEvents(true);
 
     const relaySet = createRelaySet(
       [...DEFAULT_RELAY_URLS, process.env.NEXT_PUBLIC_STEMSTR_RELAY as string],
@@ -119,7 +121,7 @@ const NoteActionRow = () => {
       .then((events) => Array.from(events))
       .then(dispatchData)
       .catch(console.error);
-  }, [ndk, filter, dispatchData]);
+  }, [ndk, filter, dispatchData, hasFetchedMetaEvents]);
 
   return (
     <Group position="apart" noWrap spacing="xs" sx={{ overflowX: "hidden" }}>

@@ -7,7 +7,7 @@ import {
   RefObject,
 } from "react";
 import { FeedNote } from "../Note/Note";
-import { ListOnScrollProps, VariableSizeList, areEqual } from "react-window";
+import { ListOnScrollProps, VariableSizeList } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import InfiniteLoader from "react-window-infinite-loader";
 import { Box, Transition } from "@mantine/core";
@@ -29,6 +29,48 @@ interface FeedProps {
   onEventsLoaded?: (events: NDKEvent[]) => void;
   aboveContentRef?: RefObject<HTMLElement>;
 }
+
+const FeedRow = ({
+  index,
+  data,
+  style,
+}: {
+  index: number;
+  data: {
+    events: NDKEvent[];
+    setRowHeight: (index: number, height: number) => void;
+  };
+  style: Record<string, any>;
+}) => {
+  const rowRef = useRef<HTMLDivElement>(null);
+  const event = data.events[index];
+
+  useEffect(() => {
+    if (rowRef.current) {
+      data.setRowHeight(index, rowRef.current.clientHeight);
+    }
+  }, [index]);
+
+  return (
+    <Box
+      m="auto"
+      pl="md"
+      pr="md"
+      sx={{
+        ...style,
+        right: 0,
+        maxWidth: 600,
+      }}
+    >
+      <div ref={rowRef}>
+        <EventProvider event={event}>
+          <FeedNote key={event.id} />
+        </EventProvider>
+      </div>
+    </Box>
+  );
+};
+FeedRow.displayName = "FeedRow";
 
 export const Feed = memo(
   ({
@@ -53,41 +95,6 @@ export const Feed = memo(
       listRef.current?.resetAfterIndex(0);
       rowHeights.current = { ...rowHeights.current, [index]: height };
     };
-
-    const FeedRow = memo(
-      ({ index, style }: { index: number; style: Record<string, any> }) => {
-        const rowRef = useRef<HTMLDivElement>(null);
-        const event = events[index];
-
-        useEffect(() => {
-          if (rowRef.current) {
-            setRowHeight(index, rowRef.current.clientHeight);
-          }
-        }, [index]);
-
-        return (
-          <Box
-            m="auto"
-            pl="md"
-            pr="md"
-            sx={{
-              ...style,
-              right: 0,
-              maxWidth: 600,
-            }}
-          >
-            <div ref={rowRef}>
-              <EventProvider event={event}>
-                <FeedNote key={event.id} />
-              </EventProvider>
-            </div>
-          </Box>
-        );
-      },
-      areEqual
-    );
-
-    FeedRow.displayName = "FeedRow";
 
     // only preload the profiles for the first 50 events to reduce amount of data fetched and since relays don't return
     // any results when requesting too many profiles
@@ -237,6 +244,7 @@ export const Feed = memo(
                           height={height}
                           itemKey={(index: number) => events[index].id}
                           itemCount={events.length}
+                          itemData={{ events, setRowHeight }}
                           itemSize={getRowHeight}
                           width={width}
                           overscanCount={5}

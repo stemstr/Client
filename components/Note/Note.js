@@ -10,7 +10,6 @@ import NoteActionRow from "../NoteActionRow/NoteActionRow";
 import { Route } from "enums";
 import NoteContent from "../NoteContent/NoteContent";
 import NoteRepostHeader from "components/NoteHeader/NoteRepostHeader";
-import { useNDK } from "ndk/NDKProvider";
 import NoteReplyingToHeader from "components/NoteHeader/NoteReplyingToHeader";
 
 const Note = ({ type }) => {
