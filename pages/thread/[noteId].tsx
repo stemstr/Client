@@ -16,7 +16,14 @@ export default function ThreadPage() {
           <BackButton defaultUrl={Route.Discover}>
             <ChevronLeftIcon width={24} height={24} />
           </BackButton>
-          <Text c="white" fw="bold" fz={24} lh="normal">
+          <Text
+            onClick={() => router.reload()}
+            c="white"
+            fw="bold"
+            fz={24}
+            lh="normal"
+            sx={{ cursor: "pointer" }}
+          >
             Replies
           </Text>
         </Group>
