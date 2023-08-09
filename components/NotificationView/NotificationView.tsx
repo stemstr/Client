@@ -334,8 +334,6 @@ function NotificationHeaderProfileNames(props: NotificationProps) {
 }
 
 function NotificationBody(props: NotificationProps) {
-  const { classes } = useStyles();
-
   return (
     <Box c="white" mt="md" sx={{ overflowWrap: "anywhere" }}>
       <Text>{props.referencedEvent?.content}</Text>
