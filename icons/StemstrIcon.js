@@ -59,6 +59,7 @@ import StarsSolid from "./Solid icons/Weather/stars-02.svg";
 
 import Collection from "./collection.svg";
 import ElectricSquirrel from "./electric-squirrel.svg";
+import Premium from "./premium.svg";
 import Remix from "./remix.svg";
 import Repost from "./repost.svg";
 import Shaka from "./shaka.svg";
@@ -481,6 +482,14 @@ export const CalendarSolidIcon = (props) => {
   return (
     <StemstrIcon>
       <CalendarSolid {...props} />
+    </StemstrIcon>
+  );
+};
+
+export const PremiumIcon = (props) => {
+  return (
+    <StemstrIcon>
+      <Premium {...props} />
     </StemstrIcon>
   );
 };
