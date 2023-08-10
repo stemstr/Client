@@ -7,7 +7,7 @@ import {
   RefObject,
 } from "react";
 import { FeedNote } from "../Note/Note";
-import { ListOnScrollProps, VariableSizeList } from "react-window";
+import { ListOnScrollProps, VariableSizeList, areEqual } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import InfiniteLoader from "react-window-infinite-loader";
 import { Box, Transition } from "@mantine/core";
@@ -30,46 +30,49 @@ interface FeedProps {
   aboveContentRef?: RefObject<HTMLElement>;
 }
 
-const FeedRow = ({
-  index,
-  data,
-  style,
-}: {
-  index: number;
-  data: {
-    events: NDKEvent[];
-    setRowHeight: (index: number, height: number) => void;
-  };
-  style: Record<string, any>;
-}) => {
-  const rowRef = useRef<HTMLDivElement>(null);
-  const event = data.events[index];
+const FeedRow = memo(
+  ({
+    index,
+    data,
+    style,
+  }: {
+    index: number;
+    data: {
+      events: NDKEvent[];
+      setRowHeight: (index: number, height: number) => void;
+    };
+    style: Record<string, any>;
+  }) => {
+    const rowRef = useRef<HTMLDivElement>(null);
+    const event = data.events[index];
 
-  useEffect(() => {
-    if (rowRef.current) {
-      data.setRowHeight(index, rowRef.current.clientHeight);
-    }
-  }, [index]);
+    useEffect(() => {
+      if (rowRef.current) {
+        data.setRowHeight(index, rowRef.current.clientHeight);
+      }
+    }, [index]);
 
-  return (
-    <Box
-      m="auto"
-      pl="md"
-      pr="md"
-      sx={{
-        ...style,
-        right: 0,
-        maxWidth: 600,
-      }}
-    >
-      <div ref={rowRef}>
-        <EventProvider event={event}>
-          <FeedNote key={event.id} />
-        </EventProvider>
-      </div>
-    </Box>
-  );
-};
+    return (
+      <Box
+        m="auto"
+        pl="md"
+        pr="md"
+        sx={{
+          ...style,
+          right: 0,
+          maxWidth: 600,
+        }}
+      >
+        <div ref={rowRef}>
+          <EventProvider event={event}>
+            <FeedNote key={event.id} />
+          </EventProvider>
+        </div>
+      </Box>
+    );
+  },
+  areEqual
+);
 FeedRow.displayName = "FeedRow";
 
 export const Feed = memo(
