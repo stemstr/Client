@@ -17,9 +17,13 @@ import { Nip05Status } from "store/Nip05";
 import Link from "next/link";
 import ProfileContactsBar from "components/ProfilePage/ProfileContactsBar";
 import useFooterHeight from "ndk/hooks/useFooterHeight";
+import SubscriptionStatusDrawer from "components/ProfilePage/SubscriptionStatusDrawer";
+import { useSelector } from "react-redux";
+import { selectAuthState } from "store/Auth";
 
 export default function ProfilePage() {
   const router = useRouter();
+  const authState = useSelector(selectAuthState);
   const { hexOrNpub } = router.query;
   const { pk, npub } = useMemo(
     () => getPublicKeys(hexOrNpub as string),
@@ -85,13 +89,19 @@ export default function ProfilePage() {
                 Profile
               </Text>
             </Group>
-            <ActionIcon
-              component={Link}
-              href={Route.Settings}
-              variant="transparent"
-            >
-              <SettingsIcon color="white" width={24} height={24} />
-            </ActionIcon>
+            <Group>
+              {pk === authState.pk &&
+                authState.subscriptionStatus?.created_at !== undefined && (
+                  <SubscriptionStatusDrawer />
+                )}
+              <ActionIcon
+                component={Link}
+                href={Route.Settings}
+                variant="transparent"
+              >
+                <SettingsIcon color="white" width={24} height={24} />
+              </ActionIcon>
+            </Group>
           </Group>
         </Box>
         <Group pl="md" pr="md" mb="lg" position="apart" align="start">
