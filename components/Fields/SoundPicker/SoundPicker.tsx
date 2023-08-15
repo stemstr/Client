@@ -164,6 +164,7 @@ export default function SoundPicker({
   };
 
   const handleAudioChange = async () => {
+    console.log("audio change");
     form.setValues((prev) => ({
       ...prev,
       "uploadResponse.streamUrl": null,
@@ -191,6 +192,7 @@ export default function SoundPicker({
         uploadFile();
       });
       audio.addEventListener("error", (e) => {
+        console.log(audio.error);
         if (audio.error?.message.includes("DEMUXER_ERROR_COULD_NOT_OPEN")) {
           audio.src = ""; // Clear the src to release the resources
           URL.revokeObjectURL(audio.src);
@@ -237,6 +239,7 @@ export default function SoundPicker({
 
   useEffect(() => {
     if (!rest.value) {
+      console.log("waveform null");
       setWaveformData(null);
     }
   }, [rest.value, setWaveformData]);
