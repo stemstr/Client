@@ -69,7 +69,6 @@ export default function SoundPicker({
       setIsUploading(false);
       return;
     }
-    console.log("sum", sum.current);
     if (!sum.current) return;
     const maxFileSizeMB = 100;
     const maxFileSize = 1024 * 1024 * maxFileSizeMB;
@@ -174,9 +173,11 @@ export default function SoundPicker({
     setIsPlaying(false);
     if (rest.value && auth.pk) {
       sum.current = await calculateHash(rest.value);
+      console.log("sum", sum.current);
       const audio = new Audio();
       // Wait for the audio's metadata to load
       audio.addEventListener("canplaythrough", async () => {
+        console.log("canplaythrough");
         if (audio.duration > 300) {
           rest.onChange(null);
           showNotification({
@@ -200,6 +201,7 @@ export default function SoundPicker({
         }
       });
       audio.src = URL.createObjectURL(rest.value);
+      console.log(audio.src);
     }
   };
 
