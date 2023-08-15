@@ -35,11 +35,13 @@ export function hasNotch() {
   const screenWidth = window.screen.width;
   const screenHeight = window.screen.height;
   const viewportSizes = [
+    { width: 360, height: 780 }, // iPhone 12 mini, 13 mini
     { width: 375, height: 812 }, // iPhone X, XS, 11 Pro
-    { width: 414, height: 896 }, // iPhone XS Max, 11 Pro Max
-    { width: 414, height: 896 }, // iPhone XR, 11
-    { width: 390, height: 844 }, // iPhone 12, 13 mini
-    { width: 428, height: 926 }, // iPhone 12 Pro Max, 13 Pro Max
+    { width: 390, height: 844 }, // iPhone 12, 13 mini, 14
+    { width: 393, height: 852 }, // iPhone 14 Pro
+    { width: 414, height: 896 }, // iPhone XS Max, XR, 11 Pro Max, 11
+    { width: 428, height: 926 }, // iPhone 12 Pro Max, 13 Pro Max, 14 Plus
+    { width: 430, height: 932 }, // iPhone 14 Pro Max
   ];
 
   return (
