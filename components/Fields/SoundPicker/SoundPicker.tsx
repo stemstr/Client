@@ -60,6 +60,7 @@ export default function SoundPicker({
     if (!scrubTime || !duration) return 0;
     return ((scrubTime - currentTime) / duration) * playButtonSpinVelocity;
   }, [scrubTime, currentTime, duration]);
+  const sum = useRef<string | null>(null);
 
   const uploadFile = async () => {
     if (!rest.value || !auth.pk) {
@@ -67,8 +68,7 @@ export default function SoundPicker({
       setIsUploading(false);
       return;
     }
-    const sum = await calculateHash(rest.value);
-    if (!sum) return;
+    if (!sum.current) return;
     const maxFileSizeMB = 100;
     const maxFileSize = 1024 * 1024 * maxFileSizeMB;
     if (rest.value.size > maxFileSize) {
@@ -77,7 +77,7 @@ export default function SoundPicker({
     } else {
       const formData = new FormData();
       formData.append("pk", auth.pk);
-      formData.append("sum", sum);
+      formData.append("sum", sum.current);
       formData.append("filename", rest.value.name);
       formData.append("file", rest.value);
       setIsUploading(true);
@@ -166,6 +166,7 @@ export default function SoundPicker({
     }));
     setIsPlaying(false);
     if (rest.value && auth.pk) {
+      sum.current = await calculateHash(rest.value);
       const audio = new Audio();
       // Wait for the audio's metadata to load
       audio.addEventListener("canplaythrough", async () => {
