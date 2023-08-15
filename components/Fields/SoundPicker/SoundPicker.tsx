@@ -63,11 +63,13 @@ export default function SoundPicker({
   const sum = useRef<string | null>(null);
 
   const uploadFile = async () => {
+    console.log("upload");
     if (!rest.value || !auth.pk) {
       rest.onChange(null);
       setIsUploading(false);
       return;
     }
+    console.log("sum", sum.current);
     if (!sum.current) return;
     const maxFileSizeMB = 100;
     const maxFileSize = 1024 * 1024 * maxFileSizeMB;
@@ -81,7 +83,9 @@ export default function SoundPicker({
       formData.append("filename", rest.value.name);
       formData.append("file", rest.value);
       setIsUploading(true);
+      console.log("is uploading");
       setWaveformData(null);
+      console.log(`${process.env.NEXT_PUBLIC_STEMSTR_API}/upload`);
       axios
         .post(`${process.env.NEXT_PUBLIC_STEMSTR_API}/upload`, formData, {
           headers: {
@@ -89,6 +93,7 @@ export default function SoundPicker({
           },
         })
         .then((response) => {
+          console.log("success");
           setStreamUrl(response.data.stream_url);
           setWaveformData(response.data.waveform);
           form.setFieldValue(
@@ -102,6 +107,7 @@ export default function SoundPicker({
           form.setFieldValue("uploadResponse.waveform", response.data.waveform);
         })
         .catch((error) => {
+          console.log("failure");
           switch (error.response.status) {
             case 400:
               showNotification({
