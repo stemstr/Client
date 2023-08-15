@@ -191,6 +191,7 @@ export default function SoundPicker({
         }
       });
       audio.src = URL.createObjectURL(rest.value);
+      audio.load();
     }
   };
 
