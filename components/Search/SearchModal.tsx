@@ -34,8 +34,6 @@ export default function SearchModal(props: ModalProps) {
       }
     }
 
-    console.log(pubkeys);
-
     setProfilePubkeyResults(pubkeys);
   };
 
