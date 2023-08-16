@@ -1,10 +1,11 @@
-import { Modal, ModalProps, TextInput } from "@mantine/core";
+import { Modal, ModalProps, Space, TextInput } from "@mantine/core";
 import { NDKEvent, mergeEvent } from "@nostr-dev-kit/ndk";
 import { SearchIcon } from "icons/StemstrIcon";
 import { useNDK } from "ndk/NDKProvider";
 import { profileEventsCache } from "ndk/inMemoryCacheAdapter";
 import { useEffect, useState } from "react";
 import SearchResults from "./SearchResults";
+import useFooterHeight from "ndk/hooks/useFooterHeight";
 
 export default function SearchModal(props: ModalProps) {
   const { ndk } = useNDK();
@@ -12,6 +13,7 @@ export default function SearchModal(props: ModalProps) {
   const [profilePubkeyResults, setProfilePubkeyResults] = useState<string[]>(
     []
   );
+  const footerHeight = useFooterHeight();
 
   const fetchProfiles = () => {
     if (!query) {
@@ -59,12 +61,22 @@ export default function SearchModal(props: ModalProps) {
           })}
         />
       }
-      styles={{ title: { flexGrow: 1 } }}
+      styles={{
+        modal: {
+          maxWidth: 600,
+          margin: "auto",
+        },
+        title: {
+          flexGrow: 1,
+        },
+      }}
+      zIndex={99}
       closeButtonLabel="Cancel"
       fullScreen
       {...props}
     >
       <SearchResults profilePubkeyResults={profilePubkeyResults} />
+      <Space h={footerHeight} />
     </Modal>
   );
 }
