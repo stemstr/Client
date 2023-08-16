@@ -3,6 +3,7 @@ import { PropsWithChildren } from "react";
 import { MaxWidthContainer } from "../Feed";
 import ProfileMenu from "components/ProfileMenu/ProfileMenu";
 import { useRouter } from "next/router";
+import SearchButton from "components/Search/SearchButton";
 
 export default function FeedHeader({ children }: PropsWithChildren) {
   const router = useRouter();
@@ -36,7 +37,10 @@ export default function FeedHeader({ children }: PropsWithChildren) {
         >
           {children}
         </Text>
-        <ProfileMenu />
+        <Group>
+          <SearchButton />
+          <ProfileMenu />
+        </Group>
       </Group>
     </MaxWidthContainer>
   );
