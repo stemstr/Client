@@ -41,7 +41,7 @@ export default function SearchResults({
 
   return (
     <Stack onClick={onClose}>
-      <HashtagResult query={query} />
+      <HashtagResult key="HashtagResult" query={query} />
       {profilePubkeyResults.map((pubkey) => (
         <UserCard key={pubkey} pubkey={pubkey} showFollowButton={false} />
       ))}
