@@ -1,18 +1,12 @@
-import {
-  Button,
-  Group,
-  Modal,
-  ModalProps,
-  Space,
-  TextInput,
-} from "@mantine/core";
+import { Modal, ModalProps, Space, Transition } from "@mantine/core";
 import { NDKEvent, mergeEvent } from "@nostr-dev-kit/ndk";
-import { SearchIcon } from "icons/StemstrIcon";
 import { useNDK } from "ndk/NDKProvider";
 import { profileEventsCache } from "ndk/inMemoryCacheAdapter";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import SearchResults from "./SearchResults";
 import useFooterHeight from "ndk/hooks/useFooterHeight";
+import { useDebouncedValue } from "@mantine/hooks";
+import SearchBar from "./SearchBar";
 
 export default function SearchModal(props: ModalProps) {
   const { ndk } = useNDK();
@@ -21,6 +15,8 @@ export default function SearchModal(props: ModalProps) {
     []
   );
   const footerHeight = useFooterHeight();
+  const [searchBarMounted] = useDebouncedValue(props.opened, 100);
+  const [searchResultsMounted] = useDebouncedValue(props.opened, 300);
 
   const fetchProfiles = () => {
     if (!query) {
@@ -65,58 +61,37 @@ export default function SearchModal(props: ModalProps) {
       fullScreen
       {...props}
     >
-      <SearchBar query={query} setQuery={setQuery} onClose={props.onClose} />
-      <SearchResults
-        onClose={props.onClose}
-        query={query}
-        profilePubkeyResults={profilePubkeyResults}
-      />
+      <Transition
+        mounted={searchBarMounted}
+        transition="pop"
+        duration={400}
+        timingFunction="ease"
+      >
+        {(styles) => (
+          <SearchBar
+            query={query}
+            setQuery={setQuery}
+            onClose={props.onClose}
+            style={styles}
+          />
+        )}
+      </Transition>
+      <Transition
+        mounted={searchResultsMounted}
+        transition="pop"
+        duration={400}
+        timingFunction="ease"
+      >
+        {(styles) => (
+          <SearchResults
+            onClose={props.onClose}
+            query={query}
+            profilePubkeyResults={profilePubkeyResults}
+            style={styles}
+          />
+        )}
+      </Transition>
       <Space h={footerHeight} />
     </Modal>
   );
 }
-
-const SearchBar = ({
-  query,
-  setQuery,
-  onClose,
-}: {
-  query: string;
-  setQuery: Dispatch<SetStateAction<string>>;
-  onClose: () => void;
-}) => {
-  return (
-    <Group mb="md">
-      <TextInput
-        autoFocus
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        placeholder="Search profiles and hashtags"
-        icon={<SearchIcon width={16} height={16} />}
-        styles={(theme) => ({
-          root: {
-            flexGrow: 1,
-          },
-          icon: {
-            color: theme.colors.gray[2],
-          },
-          input: {
-            backgroundColor: theme.colors.gray[9],
-            "&::placeholder": {
-              color: theme.colors.gray[2],
-            },
-          },
-        })}
-        aria-label="Search profiles and hashtags"
-      />
-      <Button
-        onClick={onClose}
-        variant="light"
-        px={16}
-        aria-label="Cancel search"
-      >
-        Cancel
-      </Button>
-    </Group>
-  );
-};

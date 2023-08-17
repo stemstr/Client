@@ -1,10 +1,19 @@
-import { Anchor, Box, Center, Group, Space, Stack, Text } from "@mantine/core";
+import {
+  Anchor,
+  Box,
+  Center,
+  DefaultProps,
+  Group,
+  Space,
+  Stack,
+  Text,
+} from "@mantine/core";
 import UserCard from "components/UserCard/UserCard";
 import { Route } from "enums";
 import { HashtagIcon, SearchIcon } from "icons/StemstrIcon";
 import Link from "next/link";
 
-type SearchResultsProps = {
+type SearchResultsProps = DefaultProps & {
   onClose: () => void;
   query: string;
   profilePubkeyResults: string[];
@@ -14,33 +23,23 @@ export default function SearchResults({
   onClose,
   query,
   profilePubkeyResults,
+  ...rest
 }: SearchResultsProps) {
   if (!query)
     return (
-      <>
+      <Box {...rest}>
         <Space h={60} />
-        <Box mx="auto" pos="relative" c="white" w={40} h={40}>
+        <Box mx="auto" c="white" w={40} h={40}>
           <SearchIcon width={40} height={40} />
-          <Box
-            pos="absolute"
-            top={0}
-            right={0}
-            bottom={0}
-            left={0}
-            sx={{
-              background: "linear-gradient(135deg, #F9F5FF 0%, #A17BF0 100%)",
-              mixBlendMode: "darken",
-            }}
-          />
         </Box>
         <Text mt="md" ta="center" c="white" fz="md">
           Search for profiles and hashtags
         </Text>
-      </>
+      </Box>
     );
 
   return (
-    <Stack onClick={onClose}>
+    <Stack onClick={onClose} {...rest}>
       <HashtagResult key="HashtagResult" query={query} />
       {profilePubkeyResults.map((pubkey) => (
         <UserCard key={pubkey} pubkey={pubkey} showFollowButton={false} />
