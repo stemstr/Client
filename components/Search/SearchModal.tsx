@@ -98,7 +98,10 @@ export default function SearchModal(props: ModalProps) {
       fullScreen
       {...props}
     >
-      <SearchResults profilePubkeyResults={profilePubkeyResults} />
+      <SearchResults
+        query={query}
+        profilePubkeyResults={profilePubkeyResults}
+      />
       <Space h={footerHeight} />
     </Modal>
   );
