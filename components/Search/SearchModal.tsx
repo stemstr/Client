@@ -74,6 +74,7 @@ export default function SearchModal(props: ModalProps) {
               },
             })}
             aria-label="Search profiles and hashtags"
+            autoFocus
           />
           <Button
             onClick={props.onClose}
