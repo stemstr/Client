@@ -99,6 +99,7 @@ export default function SearchModal(props: ModalProps) {
       {...props}
     >
       <SearchResults
+        onClose={props.onClose}
         query={query}
         profilePubkeyResults={profilePubkeyResults}
       />

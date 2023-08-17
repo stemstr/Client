@@ -1,13 +1,17 @@
-import { Box, Space, Stack, Text } from "@mantine/core";
+import { Anchor, Box, Center, Group, Space, Stack, Text } from "@mantine/core";
 import UserCard from "components/UserCard/UserCard";
-import { SearchIcon } from "icons/StemstrIcon";
+import { Route } from "enums";
+import { HashtagIcon, SearchIcon } from "icons/StemstrIcon";
+import Link from "next/link";
 
 type SearchResultsProps = {
+  onClose: () => void;
   query: string;
   profilePubkeyResults: string[];
 };
 
 export default function SearchResults({
+  onClose,
   query,
   profilePubkeyResults,
 }: SearchResultsProps) {
@@ -36,10 +40,64 @@ export default function SearchResults({
     );
 
   return (
-    <Stack>
+    <Stack onClick={onClose}>
+      <HashtagResult query={query} />
       {profilePubkeyResults.map((pubkey) => (
         <UserCard key={pubkey} pubkey={pubkey} />
       ))}
     </Stack>
   );
 }
+
+const HashtagResult = ({ query }: { query: string }) => {
+  return (
+    <Anchor
+      component={Link}
+      href={{
+        pathname: Route.Tag,
+        query: { tag: query },
+      }}
+      c="white"
+      p="md"
+      sx={(theme) => ({
+        border: "1px solid",
+        borderColor: theme.colors.gray[4],
+        borderRadius: 12,
+        transition: "border-color .3s ease",
+        "&:hover": {
+          borderColor: theme.colors.purple[5],
+        },
+      })}
+    >
+      <Group>
+        <Center
+          w={42}
+          h={42}
+          sx={{
+            borderRadius: 21,
+            background:
+              "linear-gradient(135deg, rgba(249, 245, 255, 0.40) 0%, rgba(161, 123, 240, 0.40) 100%)",
+          }}
+        >
+          <Box pos="relative" w={24} h={24}>
+            <HashtagIcon width={24} height={24} />
+            <Box
+              pos="absolute"
+              top={0}
+              right={0}
+              bottom={0}
+              left={0}
+              sx={{
+                background: "linear-gradient(135deg, #F9F5FF 0%, #A17BF0 100%)",
+                mixBlendMode: "darken",
+              }}
+            />
+          </Box>
+        </Center>
+        <Text fz="lg" fw={500}>
+          {query}
+        </Text>
+      </Group>
+    </Anchor>
+  );
+};
