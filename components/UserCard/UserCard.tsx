@@ -19,9 +19,14 @@ import withStopClickPropagation from "utils/hoc/withStopClickPropagation";
 
 interface UserCardProps extends DefaultProps {
   pubkey: string;
+  showFollowButton?: boolean;
 }
 
-export default function UserCard({ pubkey, ...rest }: UserCardProps) {
+export default function UserCard({
+  pubkey,
+  showFollowButton = true,
+  ...rest
+}: UserCardProps) {
   const router = useRouter();
   const user = useUser(pubkey);
 
@@ -53,7 +58,7 @@ export default function UserCard({ pubkey, ...rest }: UserCardProps) {
           <UserCardTitle pubkey={pubkey} />
           <UserCardContent pubkey={pubkey} />
         </Stack>
-        <UserCardFollowButton pubkey={pubkey} />
+        {showFollowButton && <UserCardFollowButton pubkey={pubkey} />}
       </Group>
     </Box>
   );
