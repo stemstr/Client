@@ -10,7 +10,7 @@ import { NDKEvent, mergeEvent } from "@nostr-dev-kit/ndk";
 import { SearchIcon } from "icons/StemstrIcon";
 import { useNDK } from "ndk/NDKProvider";
 import { profileEventsCache } from "ndk/inMemoryCacheAdapter";
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import SearchResults from "./SearchResults";
 import useFooterHeight from "ndk/hooks/useFooterHeight";
 
@@ -65,38 +65,7 @@ export default function SearchModal(props: ModalProps) {
       fullScreen
       {...props}
     >
-      <Group mb="md">
-        <TextInput
-          autoFocus
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search profiles and hashtags"
-          icon={<SearchIcon width={16} height={16} />}
-          styles={(theme) => ({
-            root: {
-              flexGrow: 1,
-            },
-            icon: {
-              color: theme.colors.gray[2],
-            },
-            input: {
-              backgroundColor: theme.colors.gray[9],
-              "&::placeholder": {
-                color: theme.colors.gray[2],
-              },
-            },
-          })}
-          aria-label="Search profiles and hashtags"
-        />
-        <Button
-          onClick={props.onClose}
-          variant="light"
-          px={16}
-          aria-label="Cancel search"
-        >
-          Cancel
-        </Button>
-      </Group>
+      <SearchBar query={query} setQuery={setQuery} onClose={props.onClose} />
       <SearchResults
         onClose={props.onClose}
         query={query}
@@ -106,3 +75,48 @@ export default function SearchModal(props: ModalProps) {
     </Modal>
   );
 }
+
+const SearchBar = ({
+  query,
+  setQuery,
+  onClose,
+}: {
+  query: string;
+  setQuery: Dispatch<SetStateAction<string>>;
+  onClose: () => void;
+}) => {
+  return (
+    <Group mb="md">
+      <TextInput
+        autoFocus
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        placeholder="Search profiles and hashtags"
+        icon={<SearchIcon width={16} height={16} />}
+        styles={(theme) => ({
+          root: {
+            flexGrow: 1,
+          },
+          icon: {
+            color: theme.colors.gray[2],
+          },
+          input: {
+            backgroundColor: theme.colors.gray[9],
+            "&::placeholder": {
+              color: theme.colors.gray[2],
+            },
+          },
+        })}
+        aria-label="Search profiles and hashtags"
+      />
+      <Button
+        onClick={onClose}
+        variant="light"
+        px={16}
+        aria-label="Cancel search"
+      >
+        Cancel
+      </Button>
+    </Group>
+  );
+};
