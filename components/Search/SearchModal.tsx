@@ -1,4 +1,11 @@
-import { Modal, ModalProps, Space, TextInput } from "@mantine/core";
+import {
+  Button,
+  Group,
+  Modal,
+  ModalProps,
+  Space,
+  TextInput,
+} from "@mantine/core";
 import { NDKEvent, mergeEvent } from "@nostr-dev-kit/ndk";
 import { SearchIcon } from "icons/StemstrIcon";
 import { useNDK } from "ndk/NDKProvider";
@@ -46,32 +53,48 @@ export default function SearchModal(props: ModalProps) {
   return (
     <Modal
       title={
-        <TextInput
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search profiles and hashtags"
-          icon={<SearchIcon width={16} height={16} />}
-          styles={(theme) => ({
-            input: {
-              backgroundColor: theme.colors.dark[8],
-              "&::placeholder": {
-                color: theme.colors.dark[2],
+        <Group>
+          <TextInput
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search profiles and hashtags"
+            icon={<SearchIcon width={16} height={16} />}
+            styles={(theme) => ({
+              root: {
+                flexGrow: 1,
               },
-            },
-          })}
-        />
+              icon: {
+                color: theme.colors.gray[2],
+              },
+              input: {
+                backgroundColor: theme.colors.gray[9],
+                "&::placeholder": {
+                  color: theme.colors.gray[2],
+                },
+              },
+            })}
+            aria-label="Search profiles and hashtags"
+          />
+          <Button
+            onClick={props.onClose}
+            variant="light"
+            px={16}
+            aria-label="Cancel search"
+          >
+            Cancel
+          </Button>
+        </Group>
       }
       styles={{
         modal: {
           maxWidth: 600,
           margin: "auto",
         },
-        title: {
-          flexGrow: 1,
-        },
+        header: { marginRight: 0 },
+        title: { width: "100%", marginRight: 0 },
       }}
       zIndex={99}
-      closeButtonLabel="Cancel"
+      withCloseButton={false}
       fullScreen
       {...props}
     >
