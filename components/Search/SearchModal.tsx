@@ -52,40 +52,6 @@ export default function SearchModal(props: ModalProps) {
 
   return (
     <Modal
-      title={
-        <Group>
-          <TextInput
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search profiles and hashtags"
-            icon={<SearchIcon width={16} height={16} />}
-            styles={(theme) => ({
-              root: {
-                flexGrow: 1,
-              },
-              icon: {
-                color: theme.colors.gray[2],
-              },
-              input: {
-                backgroundColor: theme.colors.gray[9],
-                "&::placeholder": {
-                  color: theme.colors.gray[2],
-                },
-              },
-            })}
-            aria-label="Search profiles and hashtags"
-            autoFocus
-          />
-          <Button
-            onClick={props.onClose}
-            variant="light"
-            px={16}
-            aria-label="Cancel search"
-          >
-            Cancel
-          </Button>
-        </Group>
-      }
       styles={{
         modal: {
           maxWidth: 600,
@@ -99,6 +65,38 @@ export default function SearchModal(props: ModalProps) {
       fullScreen
       {...props}
     >
+      <Group mb="md">
+        <TextInput
+          autoFocus
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Search profiles and hashtags"
+          icon={<SearchIcon width={16} height={16} />}
+          styles={(theme) => ({
+            root: {
+              flexGrow: 1,
+            },
+            icon: {
+              color: theme.colors.gray[2],
+            },
+            input: {
+              backgroundColor: theme.colors.gray[9],
+              "&::placeholder": {
+                color: theme.colors.gray[2],
+              },
+            },
+          })}
+          aria-label="Search profiles and hashtags"
+        />
+        <Button
+          onClick={props.onClose}
+          variant="light"
+          px={16}
+          aria-label="Cancel search"
+        >
+          Cancel
+        </Button>
+      </Group>
       <SearchResults
         onClose={props.onClose}
         query={query}
