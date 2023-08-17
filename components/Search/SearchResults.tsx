@@ -79,20 +79,7 @@ const HashtagResult = ({ query }: { query: string }) => {
               "linear-gradient(135deg, rgba(249, 245, 255, 0.40) 0%, rgba(161, 123, 240, 0.40) 100%)",
           }}
         >
-          <Box pos="relative" w={24} h={24}>
-            <HashtagIcon width={24} height={24} />
-            <Box
-              pos="absolute"
-              top={0}
-              right={0}
-              bottom={0}
-              left={0}
-              sx={{
-                background: "linear-gradient(135deg, #F9F5FF 0%, #A17BF0 100%)",
-                mixBlendMode: "darken",
-              }}
-            />
-          </Box>
+          <HashtagIcon width={24} height={24} />
         </Center>
         <Text fz="lg" fw={500}>
           {query}
