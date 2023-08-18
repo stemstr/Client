@@ -1,6 +1,7 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { AppState } from "./Store";
 import { HYDRATE } from "next-redux-wrapper";
+import { cacheSearchHistoryState } from "cache/cache";
 
 export type SearchResultType = "hashtag" | "profile";
 
@@ -43,8 +44,10 @@ export const searchHistorySlice = createSlice({
       updatedHistory.sort((a, b) => b.timestamp - a.timestamp);
 
       state.history = updatedHistory;
+      cacheSearchHistoryState(state);
     },
     reset: () => {
+      cacheSearchHistoryState(null);
       return initialState;
     },
   },

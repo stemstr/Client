@@ -66,7 +66,7 @@ export default function SearchResults({
   }
 
   return (
-    <>
+    <Box {...rest}>
       {!query && history.length && (
         <Group position="apart" fz="md" fw="bold" mb={8}>
           <Text c="white">Recent searches</Text>
@@ -82,9 +82,7 @@ export default function SearchResults({
           </Button>
         </Group>
       )}
-      <Stack onClick={onClose} {...rest}>
-        {results}
-      </Stack>
-    </>
+      <Stack onClick={onClose}>{results}</Stack>
+    </Box>
   );
 }
