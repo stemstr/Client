@@ -1,17 +1,20 @@
 import {
-  Anchor,
   Box,
-  Center,
+  Button,
   DefaultProps,
   Group,
   Space,
   Stack,
   Text,
 } from "@mantine/core";
-import UserCard from "components/UserCard/UserCard";
-import { Route } from "enums";
-import { HashtagIcon, SearchIcon } from "icons/StemstrIcon";
-import Link from "next/link";
+import { SearchIcon } from "icons/StemstrIcon";
+import SearchResult from "./SearchResult";
+import {
+  reset as clearSearchHistory,
+  selectSearchHistoryState,
+} from "store/SearchHistory";
+import { useDispatch, useSelector } from "react-redux";
+import { ReactNode } from "react";
 
 type SearchResultsProps = DefaultProps & {
   onClose: () => void;
@@ -25,7 +28,10 @@ export default function SearchResults({
   profilePubkeyResults,
   ...rest
 }: SearchResultsProps) {
-  if (!query)
+  const dispatch = useDispatch();
+  const { history } = useSelector(selectSearchHistoryState);
+
+  if (!query && !history.length)
     return (
       <Box {...rest}>
         <Space h={60} />
@@ -38,52 +44,47 @@ export default function SearchResults({
       </Box>
     );
 
+  let results: ReactNode = null;
+
+  if (query) {
+    results = (
+      <>
+        <SearchResult type="hashtag" data={query} />
+        {profilePubkeyResults.map((pubkey) => (
+          <SearchResult type="profile" data={pubkey} />
+        ))}
+      </>
+    );
+  } else {
+    results = (
+      <>
+        {history.map((item) => (
+          <SearchResult type={item.type} data={item.data} />
+        ))}
+      </>
+    );
+  }
+
   return (
-    <Stack onClick={onClose} {...rest}>
-      <HashtagResult key="HashtagResult" query={query} />
-      {profilePubkeyResults.map((pubkey) => (
-        <UserCard key={pubkey} pubkey={pubkey} showFollowButton={false} />
-      ))}
-    </Stack>
+    <>
+      {!query && history.length && (
+        <Group position="apart" fz="md" fw="bold" mb={8}>
+          <Text c="white">Recent searches</Text>
+          <Button
+            onClick={() => {
+              dispatch(clearSearchHistory());
+            }}
+            fz="md"
+            variant="subtle"
+            c="purple.5"
+          >
+            Clear history
+          </Button>
+        </Group>
+      )}
+      <Stack onClick={onClose} {...rest}>
+        {results}
+      </Stack>
+    </>
   );
 }
-
-const HashtagResult = ({ query }: { query: string }) => {
-  return (
-    <Anchor
-      component={Link}
-      href={{
-        pathname: Route.Tag,
-        query: { tag: query },
-      }}
-      c="white"
-      p="md"
-      sx={(theme) => ({
-        border: "1px solid",
-        borderColor: theme.colors.gray[4],
-        borderRadius: 12,
-        transition: "border-color .3s ease",
-        "&:hover": {
-          borderColor: theme.colors.purple[5],
-        },
-      })}
-    >
-      <Group>
-        <Center
-          w={42}
-          h={42}
-          sx={{
-            borderRadius: 21,
-            background:
-              "linear-gradient(135deg, rgba(249, 245, 255, 0.40) 0%, rgba(161, 123, 240, 0.40) 100%)",
-          }}
-        >
-          <HashtagIcon width={24} height={24} />
-        </Center>
-        <Text fz="lg" fw={500}>
-          {query}
-        </Text>
-      </Group>
-    </Anchor>
-  );
-};
