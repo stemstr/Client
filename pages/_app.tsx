@@ -76,7 +76,7 @@ function App(props: AppProps & { colorScheme: ColorScheme }) {
         />
         <meta
           name="twitter:image"
-          content="https://nostr.build/i/nostr.build_bfb0664574164159b287893e2f0b07c4585ff0a2b4725b4da7aa1683f7a8759d.png"
+          content="https://i.nostrimg.com/c7b9edc7c3e81206afbd6a97825da99021699ac1de510651fb53362df488955c/file.png"
         />
 
         <link rel="shortcut icon" href="/favicon.svg" />
