@@ -67,8 +67,8 @@ function App(props: AppProps & { colorScheme: ColorScheme }) {
         />
 
         <meta name="twitter:card" content="summary_large_image" />
-        <meta property="twitter:domain" content="stemstr.app" />
-        <meta property="twitter:url" content="https://stemstr.app" />
+        <meta name="twitter:domain" content="stemstr.app" />
+        <meta name="twitter:url" content="https://stemstr.app" />
         <meta name="twitter:title" content="Stemstr" />
         <meta
           name="twitter:description"
