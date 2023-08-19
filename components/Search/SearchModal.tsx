@@ -42,6 +42,11 @@ export default function SearchModal(props: ModalProps) {
     setProfilePubkeyResults(pubkeys);
   };
 
+  const handleClose = () => {
+    props.onClose();
+    setQuery("");
+  };
+
   useEffect(() => {
     fetchProfiles();
   }, [query]);
@@ -71,7 +76,7 @@ export default function SearchModal(props: ModalProps) {
           <SearchBar
             query={query}
             setQuery={setQuery}
-            onClose={props.onClose}
+            onClose={handleClose}
             style={styles}
           />
         )}
@@ -84,7 +89,7 @@ export default function SearchModal(props: ModalProps) {
       >
         {(styles) => (
           <SearchResults
-            onClose={props.onClose}
+            onClose={handleClose}
             query={query}
             profilePubkeyResults={profilePubkeyResults}
             style={styles}
