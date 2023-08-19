@@ -45,8 +45,16 @@ export default function SearchResults({
     );
 
   let results: ReactNode = null;
-
-  if (query) {
+  const showSearchHistory = !query && history.length;
+  if (showSearchHistory) {
+    results = (
+      <>
+        {history.map((item) => (
+          <SearchResult type={item.type} data={item.data} />
+        ))}
+      </>
+    );
+  } else {
     results = (
       <>
         <SearchResult type="hashtag" data={query} />
@@ -55,19 +63,11 @@ export default function SearchResults({
         ))}
       </>
     );
-  } else {
-    results = (
-      <>
-        {history.map((item) => (
-          <SearchResult type={item.type} data={item.data} />
-        ))}
-      </>
-    );
   }
 
   return (
     <Box {...rest}>
-      {!query && history.length && (
+      {showSearchHistory && (
         <Group position="apart" fz="md" fw="bold" mb={8}>
           <Text c="white">Recent searches</Text>
           <Button
@@ -82,7 +82,9 @@ export default function SearchResults({
           </Button>
         </Group>
       )}
-      <Stack onClick={onClose}>{results}</Stack>
+      <Stack spacing={8} onClick={onClose}>
+        {results}
+      </Stack>
     </Box>
   );
 }

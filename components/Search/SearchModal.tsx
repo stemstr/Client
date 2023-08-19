@@ -78,6 +78,7 @@ export default function SearchModal(props: ModalProps) {
             setQuery={setQuery}
             onClose={handleClose}
             style={styles}
+            mb={24}
           />
         )}
       </Transition>
