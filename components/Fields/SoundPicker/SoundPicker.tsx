@@ -99,6 +99,10 @@ export default function SoundPicker({
             "uploadResponse.downloadUrl",
             response.data.download_url
           );
+          form.setFieldValue(
+            "uploadResponse.downloadHash",
+            response.data.download_hash
+          );
           form.setFieldValue("uploadResponse.waveform", response.data.waveform);
         })
         .catch((error) => {
@@ -162,6 +166,7 @@ export default function SoundPicker({
       ...prev,
       "uploadResponse.streamUrl": null,
       "uploadResponse.downloadUrl": null,
+      "uploadResponse.downloadHash": null,
       "uploadResponse.waveform": null,
     }));
     setIsPlaying(false);
