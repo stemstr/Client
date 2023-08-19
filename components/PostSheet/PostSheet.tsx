@@ -24,6 +24,7 @@ export type PostSheetFormValues = {
   uploadResponse: {
     streamUrl: string | null;
     downloadUrl: string | null;
+    downloadHash: string | null;
     waveform: number[] | null;
   };
   comment: string;
@@ -48,6 +49,7 @@ export default function PostSheet() {
       uploadResponse: {
         streamUrl: null,
         downloadUrl: null,
+        downloadHash: null,
         waveform: null,
       },
       comment: "",
@@ -74,6 +76,7 @@ export default function PostSheet() {
     if (
       values.uploadResponse.streamUrl &&
       values.uploadResponse.downloadUrl &&
+      values.uploadResponse.downloadHash &&
       values.uploadResponse.waveform
     ) {
       kind = 1808;
@@ -87,6 +90,7 @@ export default function PostSheet() {
         values.uploadResponse.streamUrl,
         "application/vnd.apple.mpegurl",
       ]);
+      tags.push(["x", values.uploadResponse.downloadHash]);
       tags.push(["waveform", JSON.stringify(values.uploadResponse.waveform)]);
     }
 
@@ -257,6 +261,7 @@ export default function PostSheet() {
                           uploadResponse: {
                             streamUrl: null,
                             downloadUrl: null,
+                            downloadHash: null,
                             waveform: null,
                           },
                         });
