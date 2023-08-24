@@ -7,9 +7,11 @@ import SearchResults from "./SearchResults";
 import useFooterHeight from "ndk/hooks/useFooterHeight";
 import { useDebouncedValue } from "@mantine/hooks";
 import SearchBar from "./SearchBar";
+import { useRouter } from "next/router";
 
 export default function SearchModal(props: ModalProps) {
   const { ndk } = useNDK();
+  const router = useRouter();
   const [query, setQuery] = useState("");
   const [profilePubkeyResults, setProfilePubkeyResults] = useState<string[]>(
     []
@@ -51,6 +53,18 @@ export default function SearchModal(props: ModalProps) {
     fetchProfiles();
   }, [query]);
 
+  useEffect(() => {
+    const handleRouteChange = (url: any) => {
+      handleClose();
+    };
+
+    router.events.on("routeChangeComplete", handleRouteChange);
+
+    return () => {
+      router.events.off("routeChangeComplete", handleRouteChange);
+    };
+  }, [router.events, handleClose]);
+
   return (
     <Modal
       styles={{
@@ -90,7 +104,6 @@ export default function SearchModal(props: ModalProps) {
       >
         {(styles) => (
           <SearchResults
-            onClose={handleClose}
             query={query}
             profilePubkeyResults={profilePubkeyResults}
             style={styles}

@@ -23,10 +23,10 @@ export default function SearchResult({ type, data }: SearchResultProps) {
   let inner: ReactNode = null;
   switch (type) {
     case "hashtag":
-      inner = <HashtagResult key={`#${data}`} query={data} />;
+      inner = <HashtagResult query={data} />;
       break;
     case "profile":
-      inner = <UserCard key={data} pubkey={data} showFollowButton={false} />;
+      inner = <UserCard pubkey={data} showFollowButton={false} />;
       break;
   }
 

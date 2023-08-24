@@ -10,6 +10,7 @@ import {
 import { SearchIcon } from "icons/StemstrIcon";
 import SearchResult from "./SearchResult";
 import {
+  SearchResultType,
   reset as clearSearchHistory,
   selectSearchHistoryState,
 } from "store/SearchHistory";
@@ -17,13 +18,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { ReactNode } from "react";
 
 type SearchResultsProps = DefaultProps & {
-  onClose: () => void;
   query: string;
   profilePubkeyResults: string[];
 };
 
 export default function SearchResults({
-  onClose,
   query,
   profilePubkeyResults,
   ...rest
@@ -50,16 +49,28 @@ export default function SearchResults({
     results = (
       <>
         {history.map((item) => (
-          <SearchResult type={item.type} data={item.data} />
+          <SearchResult
+            key={getSearchResultKey(item.type, item.data)}
+            type={item.type}
+            data={item.data}
+          />
         ))}
       </>
     );
   } else {
     results = (
       <>
-        <SearchResult type="hashtag" data={query} />
+        <SearchResult
+          key={getSearchResultKey("hashtag", query)}
+          type="hashtag"
+          data={query}
+        />
         {profilePubkeyResults.map((pubkey) => (
-          <SearchResult type="profile" data={pubkey} />
+          <SearchResult
+            key={getSearchResultKey("profile", pubkey)}
+            type="profile"
+            data={pubkey}
+          />
         ))}
       </>
     );
@@ -82,9 +93,20 @@ export default function SearchResults({
           </Button>
         </Group>
       )}
-      <Stack spacing={8} onClick={onClose}>
-        {results}
-      </Stack>
+      <Stack spacing={8}>{results}</Stack>
     </Box>
   );
 }
+
+const getSearchResultKey = (type: SearchResultType, data: string) => {
+  let key: string | undefined;
+  switch (type) {
+    case "hashtag":
+      key = `#${data}`;
+      break;
+    case "profile":
+      key = data;
+      break;
+  }
+  return key;
+};
