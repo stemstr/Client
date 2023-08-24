@@ -12,6 +12,7 @@ import useStyles from "components/UserCard/UserCard.styles";
 import { Route } from "enums";
 import { VerifiedIcon } from "icons/StemstrIcon";
 import useNip05 from "ndk/hooks/useNip05";
+import useProfilePicSrc from "ndk/hooks/useProfilePicSrc";
 import { useUser } from "ndk/hooks/useUser";
 import { getNormalizedName, getNormalizedUsername } from "ndk/utils";
 import { useRouter } from "next/router";
@@ -30,6 +31,7 @@ export default function UserCard({
 }: UserCardProps) {
   const router = useRouter();
   const user = useUser(pubkey);
+  const profilePicSrc = useProfilePicSrc(user);
 
   return (
     <Box onClick={() => router.push(`${Route.User}/${user?.npub}`)} {...rest}>
@@ -50,7 +52,7 @@ export default function UserCard({
         })}
       >
         <Avatar
-          src={user?.profile?.image}
+          src={profilePicSrc}
           alt={user?.profile?.name}
           size={42}
           radius={21}
