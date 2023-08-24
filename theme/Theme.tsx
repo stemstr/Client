@@ -15,6 +15,7 @@ declare module "@mantine/core" {
 }
 
 const stemstrTheme: MantineThemeOverride = {
+  lineHeight: 1.5,
   breakpoints: {
     xs: 480,
     sm: 768,

@@ -63,7 +63,7 @@ export default function UserFeed({ pubkeys, height }: UserFeedProps) {
           height={height}
           itemCount={pubkeys.length}
           itemData={{ pubkeys: pubkeys }}
-          itemSize={104}
+          itemSize={92 + GUTTER_HEIGHT}
           innerElementType={innerElementType}
           overscanCount={20}
           width={width}
