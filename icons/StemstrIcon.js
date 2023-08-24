@@ -24,8 +24,9 @@ import Copy from "./Line icons/General/copy-03.svg";
 import DownloadCloud from "./Line icons/General/download-cloud-01.svg";
 import Edit from "./Line icons/General/edit-02.svg";
 import Ellipsis from "./Line icons/General/dots-horizontal.svg";
-import Home from "./Line icons/General/home-03.svg";
+import Hashtag from "./Line icons/General/hash-02.svg";
 import Heart from "./Line icons/General/heart.svg";
+import Home from "./Line icons/General/home-03.svg";
 import Logout from "./Line icons/General/log-out-04.svg";
 import More from "./Line icons/General/dots-vertical.svg";
 import Plus from "./Line icons/General/plus.svg";
@@ -490,6 +491,14 @@ export const PremiumIcon = (props) => {
   return (
     <StemstrIcon>
       <Premium {...props} />
+    </StemstrIcon>
+  );
+};
+
+export const HashtagIcon = (props) => {
+  return (
+    <StemstrIcon>
+      <Hashtag {...props} />
     </StemstrIcon>
   );
 };

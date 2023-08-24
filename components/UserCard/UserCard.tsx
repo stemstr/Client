@@ -5,31 +5,39 @@ import {
   Text,
   useMantineTheme,
 } from "@mantine/core";
-import { Avatar, Group, Stack } from "@mantine/core";
+import { Avatar, Group } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import FollowButton from "components/FollowButton/FollowButton";
 import useStyles from "components/UserCard/UserCard.styles";
 import { Route } from "enums";
 import { VerifiedIcon } from "icons/StemstrIcon";
 import useNip05 from "ndk/hooks/useNip05";
+import useProfilePicSrc from "ndk/hooks/useProfilePicSrc";
 import { useUser } from "ndk/hooks/useUser";
+import { getNormalizedName, getNormalizedUsername } from "ndk/utils";
 import { useRouter } from "next/router";
 import { Nip05Status } from "store/Nip05";
 import withStopClickPropagation from "utils/hoc/withStopClickPropagation";
 
 interface UserCardProps extends DefaultProps {
   pubkey: string;
+  showFollowButton?: boolean;
 }
 
-export default function UserCard({ pubkey, ...rest }: UserCardProps) {
+export default function UserCard({
+  pubkey,
+  showFollowButton = true,
+  ...rest
+}: UserCardProps) {
   const router = useRouter();
   const user = useUser(pubkey);
+  const profilePicSrc = useProfilePicSrc(user);
 
   return (
     <Box onClick={() => router.push(`${Route.User}/${user?.npub}`)} {...rest}>
       <Group
         p="md"
-        h={88}
+        h={92}
         noWrap
         sx={(theme) => ({
           cursor: "pointer",
@@ -44,16 +52,16 @@ export default function UserCard({ pubkey, ...rest }: UserCardProps) {
         })}
       >
         <Avatar
-          src={user?.profile?.image}
+          src={profilePicSrc}
           alt={user?.profile?.name}
           size={42}
           radius={21}
         />
-        <Stack spacing={6} sx={{ overflow: "hidden", flex: 1 }}>
+        <Box sx={{ overflow: "hidden", flex: 1 }}>
           <UserCardTitle pubkey={pubkey} />
           <UserCardContent pubkey={pubkey} />
-        </Stack>
-        <UserCardFollowButton pubkey={pubkey} />
+        </Box>
+        {showFollowButton && <UserCardFollowButton pubkey={pubkey} />}
       </Group>
     </Box>
   );
@@ -64,17 +72,19 @@ const UserCardTitle = ({ pubkey }: { pubkey: string }) => {
   const nip05Status = useNip05(user?.hexpubkey(), user?.profile?.nip05);
 
   return (
-    <Group spacing={6} w="100%" noWrap>
-      <Text color="white" fz="lg" truncate>
-        {user?.profile?.displayName
-          ? user?.profile.displayName
-          : `@${user?.hexpubkey().substring(0, 5)}...`}
+    <>
+      <Group spacing={6} w="100%" noWrap>
+        <Text color="white" fz="lg" truncate>
+          {getNormalizedName(user?.hexpubkey() ?? "", user)}
+        </Text>
+        {nip05Status === Nip05Status.Valid && (
+          <VerifiedIcon width={14} height={14} />
+        )}
+      </Group>
+      <Text mb={6} fz="xs">
+        {getNormalizedUsername(user)}
       </Text>
-      {nip05Status === Nip05Status.Valid && (
-        <VerifiedIcon width={14} height={14} />
-      )}
-      <Text fz="xs">@{user?.profile?.name}</Text>
-    </Group>
+    </>
   );
 };
 const UserCardContent = ({ pubkey }: { pubkey: string }) => {

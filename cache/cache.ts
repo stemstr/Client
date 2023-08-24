@@ -1,8 +1,8 @@
-// import { Metadata } from "../ndk/hooks/useProfile";
-import { AuthState, setAuthState } from "../store/Auth";
+import { SearchHistoryState } from "store/SearchHistory";
+import { AuthState } from "../store/Auth";
 
 const AUTH_KEY = "stemstr:cachedAuth";
-// const PROFILES_KEY = "stemstr:cachedProfiles";
+const SEARCH_HISTORY_KEY = "stemstr:cachesSearchHistory";
 
 export const cacheAuthState = (state: AuthState | null) => {
   if (state === null) {
@@ -11,7 +11,7 @@ export const cacheAuthState = (state: AuthState | null) => {
   localStorage.setItem(AUTH_KEY, JSON.stringify(state));
 };
 
-export const getCachedAuth = () => {
+export const getCachedAuthState = () => {
   const localStorageData = localStorage.getItem(AUTH_KEY);
 
   if (!localStorageData) return null;
@@ -21,26 +21,19 @@ export const getCachedAuth = () => {
   return auth;
 };
 
-// export const getCachedProfile = (npub: string) => {
-//   const localStorageData = localStorage.getItem(PROFILES_KEY);
+export const cacheSearchHistoryState = (state: SearchHistoryState | null) => {
+  if (state === null) {
+    localStorage.removeItem(SEARCH_HISTORY_KEY);
+  }
+  localStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify(state));
+};
 
-//   if (!localStorageData) return null;
+export const getCachedSearchHistoryState = () => {
+  const localStorageData = localStorage.getItem(SEARCH_HISTORY_KEY);
 
-//   const cachedProfiles: Record<string, Metadata> = JSON.parse(localStorageData);
+  if (!localStorageData) return null;
 
-//   return cachedProfiles[npub];
-// };
+  const searchHistory = JSON.parse(localStorageData);
 
-// export const cacheProfile = (npub: string, profile: Metadata) => {
-//   const localStorageData = localStorage.getItem(PROFILES_KEY);
-
-//   let cachedProfiles: Record<string, Metadata> = {};
-
-//   if (localStorageData) {
-//     cachedProfiles = JSON.parse(localStorageData);
-//   }
-
-//   cachedProfiles[npub] = profile;
-
-//   localStorage.setItem(PROFILES_KEY, JSON.stringify(cachedProfiles));
-// };
+  return searchHistory;
+};

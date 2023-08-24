@@ -8,6 +8,7 @@ import { eventsSlice } from "./Events";
 import { nip05Slice } from "./Nip05";
 import { notesSlice } from "./Notes";
 import { userPreferencesSlice } from "./UserPreferences";
+import { searchHistorySlice } from "./SearchHistory";
 
 const makeStore = () =>
   configureStore({
@@ -20,6 +21,7 @@ const makeStore = () =>
       [nip05Slice.name]: nip05Slice.reducer,
       [notesSlice.name]: notesSlice.reducer,
       [userPreferencesSlice.name]: userPreferencesSlice.reducer,
+      [searchHistorySlice.name]: searchHistorySlice.reducer,
     },
     devTools: true,
   });
