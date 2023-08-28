@@ -180,7 +180,9 @@ export default function SoundPicker({
           rest.onChange(null);
           showNotification({
             title: "Stem Too Long",
-            message: "Maximum track length is 5 minutes",
+            message: `Maximum track length is ${formatSecondsToMinutesAndSeconds(
+              maxUploadDuration
+            )}`,
             color: "red",
             autoClose: 5000,
           });
@@ -419,4 +421,22 @@ async function calculateHash(file: File) {
     .map((b) => b.toString(16).padStart(2, "0"))
     .join("");
   return hashHex;
+}
+
+function formatSecondsToMinutesAndSeconds(seconds: number) {
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = seconds % 60;
+
+  const minutesStr =
+    minutes > 0 ? `${minutes} minute${minutes !== 1 ? "s" : ""}` : "";
+  const secondsStr =
+    remainingSeconds > 0
+      ? `${remainingSeconds} second${remainingSeconds !== 1 ? "s" : ""}`
+      : "";
+
+  if (minutesStr && secondsStr) {
+    return `${minutesStr} and ${secondsStr}`;
+  } else {
+    return minutesStr || secondsStr || "0 seconds";
+  }
 }
