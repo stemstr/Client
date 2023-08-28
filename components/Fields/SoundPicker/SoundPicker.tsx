@@ -174,7 +174,9 @@ export default function SoundPicker({
       const audio = new Audio();
       // Wait for the audio's metadata to load
       audio.addEventListener("canplaythrough", async () => {
-        if (audio.duration > 300) {
+        const maxUploadDuration =
+          Number(process.env.NEXT_PUBLIC_MAX_UPLOAD_DURATION) || 300;
+        if (audio.duration > maxUploadDuration) {
           rest.onChange(null);
           showNotification({
             title: "Stem Too Long",
