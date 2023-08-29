@@ -71,7 +71,7 @@ const NoteActionContentWithZapWizard = () => {
 const NoteActionZap = () => {
   const { event } = useEvent();
   const zapRecipient = useUser(event.pubkey);
-  let isZappable = false as boolean | undefined;
+  let isZappable: boolean | undefined = false;
 
   try {
     isZappable =
