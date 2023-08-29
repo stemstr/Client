@@ -17,10 +17,16 @@ export const ProfileActionZapButtonWithZapWizard = () => {
 
 const ProfileActionZapButton = ({ pubkey }: { pubkey: string }) => {
   const zapRecipient = useUser(pubkey);
-  const isZappable =
-    zapRecipient && getLnurlServiceEndpoint(zapRecipient.profile);
+  let isZappable: boolean | undefined = false;
 
-  return isZappable ? (
+  try {
+    isZappable =
+      zapRecipient && !!getLnurlServiceEndpoint(zapRecipient.profile);
+  } catch (err) {
+    console.error(err);
+  }
+
+  return isZappable && zapRecipient ? (
     <ZapWizardProvider zapRecipient={zapRecipient}>
       <ProfileActionZapButtonWithZapWizard />
     </ZapWizardProvider>
