@@ -71,10 +71,16 @@ const NoteActionContentWithZapWizard = () => {
 const NoteActionZap = () => {
   const { event } = useEvent();
   const zapRecipient = useUser(event.pubkey);
-  const isZappable =
-    zapRecipient && getLnurlServiceEndpoint(zapRecipient.profile, event);
+  let isZappable = false as boolean | undefined;
 
-  return isZappable ? (
+  try {
+    isZappable =
+      zapRecipient && !!getLnurlServiceEndpoint(zapRecipient.profile, event);
+  } catch (err) {
+    console.log(err);
+  }
+
+  return isZappable && zapRecipient ? (
     <ZapWizardProvider zapRecipient={zapRecipient} zappedEvent={event}>
       <NoteActionContentWithZapWizard />
     </ZapWizardProvider>
