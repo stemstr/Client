@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Group, Text } from "@mantine/core";
+import { DefaultProps, Group, Text } from "@mantine/core";
 import { motion, useAnimation } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
 import { Kind } from "nostr-tools";
@@ -13,7 +13,11 @@ import useAuth from "hooks/useAuth";
 import { currentUserLikedNote, selectNoteState } from "../../store/Notes";
 import { AppState } from "../../store/Store";
 
-const NoteActionLike = ({ size = 18 }: { size?: number }) => {
+type NoteActionLikeProps = DefaultProps & {
+  size?: number;
+};
+
+const NoteActionLike = ({ size = 18, c = "gray.1" }: NoteActionLikeProps) => {
   const dispatch = useDispatch();
   const { ndk } = useNDK();
   const { event } = useEvent();
@@ -70,11 +74,9 @@ const NoteActionLike = ({ size = 18 }: { size?: number }) => {
       <Group
         position="center"
         spacing={6}
+        c={isLikedByCurrentUser ? "red.5" : c}
         sx={(theme) => ({
           transition: "color 1s ease",
-          color: isLikedByCurrentUser
-            ? theme.colors.red[5]
-            : theme.colors.gray[1],
         })}
         noWrap
       >

@@ -106,8 +106,8 @@ const CommentActions = () => {
       <Button fz={13} variant="subtle" c="purple.0" py={4} px={16} mih={0}>
         Reply
       </Button>
-      <NoteActionLike size={16} />
-      <NoteActionZap size={16} />
+      <NoteActionLike size={16} c="white" />
+      <NoteActionZap size={16} c="white" />
     </Group>
   );
 };
