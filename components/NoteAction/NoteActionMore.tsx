@@ -13,12 +13,15 @@ import {
   MoreIcon,
   ShareIcon,
 } from "icons/StemstrIcon";
-import withStopClickPropagation from "utils/hoc/withStopClickPropagation";
 import { useEvent } from "../../ndk/NDKEventProvider";
 import { selectUserPreferencesState } from "store/UserPreferences";
 import { useSelector } from "react-redux";
 
-const NoteActionMore = () => {
+type NoteActionMoreProps = {
+  size: number;
+};
+
+const NoteActionMore = ({ size = 24 }: NoteActionMoreProps) => {
   const [opened, { open, close }] = useDisclosure(false);
   const { userPreferences } = useSelector(selectUserPreferencesState);
 
@@ -79,8 +82,14 @@ const NoteActionMore = () => {
           Close
         </Button>
       </Drawer>
-      <Center onClick={open} sx={(theme) => ({ cursor: "pointer" })}>
-        <MoreIcon width={24} height={24} />
+      <Center
+        onClick={(e) => {
+          e.stopPropagation();
+          open();
+        }}
+        sx={(theme) => ({ cursor: "pointer" })}
+      >
+        <MoreIcon width={size} height={size} />
       </Center>
     </>
   );
@@ -187,4 +196,4 @@ const NoteActionMoreShare = () => {
   );
 };
 
-export default withStopClickPropagation(NoteActionMore);
+export default NoteActionMore;

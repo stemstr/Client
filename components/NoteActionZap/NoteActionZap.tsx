@@ -1,4 +1,4 @@
-import { Space, Text, Group } from "@mantine/core";
+import { Text, Group } from "@mantine/core";
 import { ZapIcon } from "icons/StemstrIcon";
 import NoteAction from "components/NoteAction/NoteAction";
 import { useEvent } from "ndk/NDKEventProvider";
@@ -41,7 +41,7 @@ const ZapsAmountTotal = () => {
   ) : null;
 };
 
-const NoteActionContentWithZapWizard = () => {
+const NoteActionContentWithZapWizard = ({ size = 18 }: { size?: number }) => {
   const { start } = useZapWizard();
   const { event } = useEvent();
   const { isZappedByCurrentUser } = useSelector((state: AppState) =>
@@ -60,7 +60,7 @@ const NoteActionContentWithZapWizard = () => {
         })}
         noWrap
       >
-        <ZapIcon width={18} height={18} />
+        <ZapIcon width={size} height={size} />
         <ZapsAmountTotal />
       </Group>
       <ZapWizard />
@@ -68,7 +68,7 @@ const NoteActionContentWithZapWizard = () => {
   );
 };
 
-const NoteActionZap = () => {
+const NoteActionZap = ({ size = 18 }: { size?: number }) => {
   const { event } = useEvent();
   const zapRecipient = useUser(event.pubkey);
   let isZappable: boolean | undefined = false;
@@ -82,7 +82,7 @@ const NoteActionZap = () => {
 
   return isZappable && zapRecipient ? (
     <ZapWizardProvider zapRecipient={zapRecipient} zappedEvent={event}>
-      <NoteActionContentWithZapWizard />
+      <NoteActionContentWithZapWizard size={size} />
     </ZapWizardProvider>
   ) : null;
 };

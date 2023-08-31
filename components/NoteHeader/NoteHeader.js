@@ -43,15 +43,17 @@ const UserDetailsNip05 = () => {
   ) : null;
 };
 
-const UserDetailsAvatar = () => {
+export const UserDetailsAvatar = ({ size = 42 }) => {
   const { event } = useEvent();
   const user = useUser(event.pubkey);
   const src = useProfilePicSrc(user);
 
-  return <Avatar src={src} alt={user?.profile?.name} size={42} radius="50%" />;
+  return (
+    <Avatar src={src} alt={user?.profile?.name} size={size} radius="50%" />
+  );
 };
 
-const UserDetailsDisplayName = (props) => {
+export const UserDetailsDisplayName = (props) => {
   const { event } = useEvent();
   const user = useUser(event.pubkey);
 
@@ -62,7 +64,7 @@ const UserDetailsDisplayName = (props) => {
   );
 };
 
-const UserDetailsName = (props) => {
+export const UserDetailsName = (props) => {
   const { event } = useEvent();
   const user = useUser(event.pubkey);
   const willDisplay = user?.profile?.name && user?.profile?.displayName;
@@ -79,7 +81,7 @@ const UserDetailsName = (props) => {
   );
 };
 
-const RelativeTime = (props) => {
+export const RelativeTime = (props) => {
   const { event } = useEvent();
 
   return (

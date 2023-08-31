@@ -1,5 +1,5 @@
 import { Fragment, type MouseEvent } from "react";
-import { Text, Anchor } from "@mantine/core";
+import { Text, Anchor, DefaultProps } from "@mantine/core";
 import MentionLink from "./MentionLink";
 import { NPUB_NOSTR_URI_REGEX } from "../../constants";
 import useStyles from "./NoteContent.styles";
@@ -7,7 +7,9 @@ import useStyles from "./NoteContent.styles";
 const HYPERLINK_REGEX =
   /(https?:\/\/[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|])/;
 
-export const NoteContent = ({ content }: { content: string }) => {
+type NoteContentProps = DefaultProps & { content: string };
+
+export const NoteContent = ({ content, ...rest }: NoteContentProps) => {
   const { classes } = useStyles();
   const formattingRegEx = new RegExp(
     `(?:${NPUB_NOSTR_URI_REGEX.source}|${HYPERLINK_REGEX.source})`,
@@ -42,7 +44,7 @@ export const NoteContent = ({ content }: { content: string }) => {
   });
 
   return (
-    <Text c="white" sx={{ overflowWrap: "anywhere" }}>
+    <Text c="white" sx={{ overflowWrap: "anywhere" }} {...rest}>
       {formattingRegEx.test(content) ? formattedContent : content}
     </Text>
   );

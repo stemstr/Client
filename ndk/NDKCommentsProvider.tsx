@@ -10,7 +10,7 @@ import {
 import { useNDK } from "./NDKProvider";
 import { parseEventTags } from "./utils";
 
-type Comment = {
+export type Comment = {
   event: NDKEvent;
   children: NDKEvent[];
 };
@@ -44,16 +44,18 @@ export const CommentsProvider = ({
         const events = Array.from(eventSet.values()).sort(
           (a, b) => b.created_at! - a.created_at!
         );
-        console.log(events);
         let comments: Comment[] = events
           .filter((event) => {
             const { root, reply } = parseEventTags(event);
-            return root && !reply && root[1] === noteId;
+            if (reply && reply[1] === noteId) return true;
+            return !reply && root && root[1] === noteId;
           })
           .map((event) => {
-            const children = events.filter((child) => {
-              return eventIsDescendantOf(child, event, events);
-            });
+            const children = events
+              .filter((child) => {
+                return eventIsDescendantOf(child, event, events);
+              })
+              .sort((a, b) => a.created_at! - b.created_at!);
             return { event, children };
           });
         setComments(comments);

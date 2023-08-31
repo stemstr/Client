@@ -13,7 +13,7 @@ import useAuth from "hooks/useAuth";
 import { currentUserLikedNote, selectNoteState } from "../../store/Notes";
 import { AppState } from "../../store/Store";
 
-const NoteActionLike = () => {
+const NoteActionLike = ({ size = 18 }: { size?: number }) => {
   const dispatch = useDispatch();
   const { ndk } = useNDK();
   const { event } = useEvent();
@@ -79,7 +79,7 @@ const NoteActionLike = () => {
         noWrap
       >
         <motion.span animate={controls} style={{ lineHeight: 0 }}>
-          <HeartIcon width={18} height={18} />
+          <HeartIcon width={size} height={size} />
         </motion.span>{" "}
         {reactionCount > 0 && <Text lh="normal">{reactionCount}</Text>}
       </Group>
