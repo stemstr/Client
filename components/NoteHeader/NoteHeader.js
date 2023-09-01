@@ -12,7 +12,7 @@ import useNip05 from "ndk/hooks/useNip05";
 import { Nip05Status } from "store/Nip05";
 import useProfilePicSrc from "ndk/hooks/useProfilePicSrc";
 
-const UserDetailsAnchorWrapper = ({ children }) => {
+export const UserDetailsAnchorWrapper = ({ children }) => {
   const { event } = useEvent();
 
   return (

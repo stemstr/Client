@@ -6,6 +6,7 @@ import NoteActionZap from "components/NoteActionZap/NoteActionZap";
 import NoteContent from "components/NoteContent/NoteContent";
 import {
   RelativeTime,
+  UserDetailsAnchorWrapper,
   UserDetailsAvatar,
   UserDetailsDisplayName,
   UserDetailsName,
@@ -83,12 +84,12 @@ const CommentHeader = ({
 }: DefaultProps & { isReply: boolean }) => {
   return (
     <Group position="apart" {...rest}>
-      <Group spacing={6}>
+      <UserDetailsAnchorWrapper>
         <UserDetailsAvatar size={isReply ? 28 : 36} />
         <UserDetailsDisplayName ml={6} size="sm" />
         <UserDetailsName />
         <RelativeTime />
-      </Group>
+      </UserDetailsAnchorWrapper>
       <NoteActionMore size={16} />
     </Group>
   );
