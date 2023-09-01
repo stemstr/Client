@@ -83,11 +83,11 @@ const CommentHeader = ({
   ...rest
 }: DefaultProps & { isReply: boolean }) => {
   return (
-    <Group position="apart" {...rest}>
+    <Group position="apart" noWrap {...rest}>
       <UserDetailsAnchorWrapper>
         <UserDetailsAvatar size={isReply ? 28 : 36} />
         <UserDetailsDisplayName ml={6} size="sm" />
-        <UserDetailsName />
+        <UserDetailsName truncate />
         <RelativeTime />
       </UserDetailsAnchorWrapper>
       <NoteActionMore size={16} />
