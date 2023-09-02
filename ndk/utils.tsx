@@ -586,3 +586,62 @@ export const createSigner = async (
 export const isRootEvent = (event: NDKEvent): boolean => {
   return !event.tags.find((tag) => tag[0] === "e");
 };
+
+export const createKind1Event = (
+  ndk: NDK,
+  content: string,
+  opts: {
+    hashtags?: string[];
+    replyingTo?: NostrEvent;
+  }
+): NDKEvent => {
+  return createEvent(ndk, Kind.Text, content, opts);
+};
+
+export const createEvent = (
+  ndk: NDK,
+  kind: Kind,
+  content: string,
+  opts: {
+    hashtags?: string[];
+    replyingTo?: NostrEvent;
+  }
+): NDKEvent => {
+  const created_at = Math.floor(Date.now() / 1000);
+
+  const tags = [
+    ["client", "stemstr.app"],
+    ["stemstr_version", "1.0"],
+  ];
+
+  opts.hashtags?.forEach((hashtag) => {
+    tags.push(["t", hashtag]);
+  });
+
+  if (opts.replyingTo?.id) {
+    const { root } = parseEventTags(new NDKEvent(ndk, opts.replyingTo));
+    if (root) {
+      tags.push(root);
+      tags.push(["e", opts.replyingTo.id, "", "reply"]);
+    } else {
+      tags.push(["e", opts.replyingTo.id, "", "root"]);
+    }
+    const pTagPKs = [opts.replyingTo.pubkey];
+    opts.replyingTo.tags.forEach((t) => {
+      if (t[0] === "p") {
+        pTagPKs.push(t[1]);
+      }
+    });
+    Array.from(new Set(pTagPKs)).forEach((pk) => {
+      tags.push(["p", pk]);
+    });
+  }
+
+  const event = new NDKEvent(ndk);
+  event.kind = kind;
+  event.created_at = created_at;
+  event.tags = tags;
+  event.content = content;
+
+  return event;
+};

@@ -1,35 +1,19 @@
-import { Avatar, Box, Group, Text, TextInput } from "@mantine/core";
+import { Box, Group, Text } from "@mantine/core";
 import Drawer, { DrawerProps } from "components/Drawer/Drawer";
-import useAuth from "hooks/useAuth";
-import useProfilePicSrc from "ndk/hooks/useProfilePicSrc";
-import { useUser } from "ndk/hooks/useUser";
 import CommentsFeed from "./CommentsFeed";
 import { useEvent } from "ndk/NDKEventProvider";
 import { CommentsProvider, useComments } from "ndk/NDKCommentsProvider";
+import CommentForm from "./CommentForm";
 
 export default function CommentsDrawer(props: DrawerProps) {
-  const { authState } = useAuth();
-  const user = useUser(authState.pk);
-  const src = useProfilePicSrc(user);
   const { event } = useEvent();
 
   return (
     <Drawer {...props}>
-      <CommentsProvider noteId={event.id} enabled={props.opened}>
+      <CommentsProvider rootEvent={event} enabled={props.opened}>
         <CommentsDrawerHeader />
         <CommentsFeed />
-        <Group spacing="sm" px="md" py={8}>
-          <Avatar
-            src={user?.profile?.image || src}
-            alt={user?.profile?.name}
-            size={36}
-            radius={18}
-            sx={(theme) => ({
-              border: `1px solid ${theme.colors.gray[4]}`,
-            })}
-          />
-          <TextInput placeholder="Add your comment" sx={{ flexGrow: 1 }} />
-        </Group>
+        <CommentForm />
       </CommentsProvider>
     </Drawer>
   );

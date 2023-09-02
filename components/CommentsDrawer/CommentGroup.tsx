@@ -11,7 +11,7 @@ import {
   UserDetailsDisplayName,
   UserDetailsName,
 } from "components/NoteHeader/NoteHeader";
-import { Comment } from "ndk/NDKCommentsProvider";
+import { Comment, useComments } from "ndk/NDKCommentsProvider";
 import { EventProvider, useEvent } from "ndk/NDKEventProvider";
 import { useState } from "react";
 
@@ -21,7 +21,7 @@ type CommentProps = {
 
 export default function CommentGroup({ comment }: CommentProps) {
   return (
-    <Box py={8} px={16}>
+    <Box py={8}>
       <EventProvider event={comment.event}>
         <CommentView />
       </EventProvider>
@@ -66,9 +66,15 @@ const CommentChildren = ({ events }: { events: NDKEvent[] }) => {
 
 const CommentView = ({ isReply = false }: { isReply?: boolean }) => {
   const { event } = useEvent();
+  const { highlightedEvent } = useComments();
+  const isHighlighted = event.id === highlightedEvent?.id;
 
   return (
-    <Box py={12}>
+    <Box
+      py={12}
+      bg={isHighlighted ? "dark.7" : undefined}
+      sx={{ borderRadius: 8, transition: ".5s background-color ease" }}
+    >
       <CommentHeader isReply={isReply} ml={isReply ? 46 : undefined} />
       <Space h={isReply ? 12 : 8} />
       <CommentContent />
