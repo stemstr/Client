@@ -15,7 +15,7 @@ const ZapDrawer = ({
   const { end } = useZapWizard();
 
   return (
-    <Drawer opened={isOpen} onClose={onClose} onDragEnd={end}>
+    <Drawer opened={isOpen} onClose={onClose} onDragEnd={end} padding="md">
       {children}
     </Drawer>
   );

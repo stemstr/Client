@@ -12,7 +12,8 @@ const useStyles = createStyles((theme, _params, getRef) => ({
     borderTopRightRadius: 40,
     maxWidth: 600,
     margin: "auto",
-    padding: `0 16px 24px 16px !important`,
+    paddingTop: "0 !important",
+    paddingBottom: "24px !important",
   },
 }));
 

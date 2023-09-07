@@ -12,6 +12,7 @@ export default function SubscribeDrawer({
     <Drawer
       withCloseButton={false}
       trapFocus={true}
+      padding="md"
       styles={(theme: MantineTheme) => ({
         overlay: {
           backgroundColor: `${theme.colors.dark[7]} !important`,
@@ -24,7 +25,6 @@ export default function SubscribeDrawer({
           borderTopRightRadius: 40,
           maxWidth: 600,
           margin: "auto",
-          padding: `0 16px 24px 16px !important`,
         },
       })}
       onDragEnd={end}

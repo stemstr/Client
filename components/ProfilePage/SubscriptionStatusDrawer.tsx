@@ -78,6 +78,7 @@ export default function SubscriptionStatusDrawer() {
         withCloseButton={false}
         onDragEnd={closeSubscriptionDrawer}
         trapFocus={false}
+        padding="md"
         styles={(theme: MantineTheme) => ({
           overlay: {
             backgroundColor: `${theme.colors.dark[7]} !important`,
@@ -90,7 +91,6 @@ export default function SubscriptionStatusDrawer() {
             borderTopRightRadius: 40,
             maxWidth: 600,
             margin: "auto",
-            padding: `0 16px 24px 16px !important`,
             color: theme.colors.dark[8],
           },
         })}
