@@ -40,7 +40,7 @@ const CommentChildren = ({ events }: { events: NDKEvent[] }) => {
   if (!events.length) return null;
 
   return isShowingReplies ? (
-    <Box>
+    <Box px="md">
       {events.map((event) => (
         <EventProvider event={event}>
           <CommentView isReply={true} />
@@ -71,15 +71,20 @@ const CommentView = ({ isReply = false }: { isReply?: boolean }) => {
 
   return (
     <Box
-      py={12}
+      pr={isReply ? 8 : 16}
+      pl={isReply ? 46 : 16}
+      py={8}
       bg={isHighlighted ? "dark.7" : undefined}
-      sx={{ borderRadius: 8, transition: ".5s background-color ease" }}
+      sx={{
+        borderRadius: isReply ? 8 : 0,
+        transition: ".5s background-color ease",
+      }}
     >
-      <CommentHeader isReply={isReply} ml={isReply ? 46 : undefined} />
+      <CommentHeader isReply={isReply} />
       <Space h={isReply ? 12 : 8} />
-      <CommentContent />
+      <CommentContent isReply={isReply} />
       <Space h={12} />
-      <CommentActions />
+      <CommentActions isReply={isReply} />
     </Box>
   );
 };
@@ -101,15 +106,15 @@ const CommentHeader = ({
   );
 };
 
-const CommentContent = () => {
+const CommentContent = ({ isReply = false }: { isReply?: boolean }) => {
   const { event } = useEvent();
 
-  return <NoteContent fz="sm" ml={46} content={event.content} />;
+  return <NoteContent fz="sm" ml={isReply ? 0 : 46} content={event.content} />;
 };
 
-const CommentActions = () => {
+const CommentActions = ({ isReply = false }: { isReply?: boolean }) => {
   return (
-    <Group spacing={12} ml={46}>
+    <Group spacing={12} ml={isReply ? 0 : 46}>
       <Button fz={13} variant="subtle" c="purple.0" py={4} px={16} mih={0}>
         Reply
       </Button>
