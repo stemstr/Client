@@ -16,6 +16,7 @@ import {
 import { useEvent } from "../../ndk/NDKEventProvider";
 import { selectUserPreferencesState } from "store/UserPreferences";
 import { useSelector } from "react-redux";
+import { MouseEvent } from "react";
 
 type NoteActionMoreProps = {
   size: number;
@@ -83,7 +84,7 @@ const NoteActionMore = ({ size = 24 }: NoteActionMoreProps) => {
         </Button>
       </Drawer>
       <Center
-        onClick={(e) => {
+        onClick={(e: MouseEvent) => {
           e.stopPropagation();
           open();
         }}
