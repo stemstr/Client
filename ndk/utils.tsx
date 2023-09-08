@@ -236,6 +236,15 @@ export const getNormalizedUsername = (user?: NDKUser) => {
   return user?.profile?.name ? `@${user.profile.name}` : "";
 };
 
+export const getFormattedAtName = (user?: NDKUser) => {
+  return (
+    "@" +
+    (user?.profile?.name ||
+      user?.profile?.displayName ||
+      `${user?.hexpubkey().substring(0, 5)}...`)
+  );
+};
+
 export const getFormattedName = (user?: NDKUser) => {
   if (user?.profile?.name) return `@${user.profile.name}`;
   return (

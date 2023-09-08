@@ -1,12 +1,12 @@
-import { Avatar, Button, Group, Textarea } from "@mantine/core";
+import { Avatar, Button, Group, Text, Textarea } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import useAuth from "hooks/useAuth";
 import { useComments } from "ndk/NDKCommentsProvider";
 import { useNDK } from "ndk/NDKProvider";
 import useProfilePicSrc from "ndk/hooks/useProfilePicSrc";
 import { useUser } from "ndk/hooks/useUser";
-import { createKind1Event } from "ndk/utils";
-import { ChangeEventHandler } from "react";
+import { createKind1Event, getFormattedAtName } from "ndk/utils";
+import { ChangeEventHandler, KeyboardEventHandler } from "react";
 
 type CommentFormValues = {
   comment: string;
@@ -14,7 +14,13 @@ type CommentFormValues = {
 
 export default function CommentForm() {
   const { ndk, stemstrRelaySet } = useNDK();
-  const { replyingTo, rootEvent, setHighlightedEvent } = useComments();
+  const {
+    replyingTo,
+    setReplyingTo,
+    rootEvent,
+    setHighlightedEvent,
+    commentTextareaRef,
+  } = useComments();
   const isShowingName = replyingTo?.id !== rootEvent?.id;
   const replyingToUser = useUser(
     isShowingName ? replyingTo?.pubkey : undefined
@@ -29,6 +35,10 @@ export default function CommentForm() {
     validate: {},
   });
 
+  const formattedReplyingToName = replyingTo?.pubkey
+    ? getFormattedAtName(replyingToUser)
+    : "";
+
   const handleChange: ChangeEventHandler<HTMLTextAreaElement> = (e) => {
     form.setFieldValue("comment", e.target.value);
   };
@@ -40,13 +50,27 @@ export default function CommentForm() {
       });
       event.publish(stemstrRelaySet).then(() => {
         setHighlightedEvent(event);
+        form.reset();
+        if (rootEvent) {
+          setReplyingTo(rootEvent);
+        }
       });
+    }
+  };
+
+  const handleKeyDown: KeyboardEventHandler<HTMLTextAreaElement> = (e) => {
+    if (e.key === "Backspace") {
+      if (!form.values.comment) {
+        if (rootEvent) {
+          setReplyingTo(rootEvent);
+        }
+      }
     }
   };
 
   return (
     <form onSubmit={form.onSubmit(handleSubmit)}>
-      <Group spacing="sm" py={8}>
+      <Group spacing="sm" py={8} px="md">
         <Avatar
           src={user?.profile?.image || src}
           alt={user?.profile?.name}
@@ -57,6 +81,7 @@ export default function CommentForm() {
           })}
         />
         <Textarea
+          ref={commentTextareaRef}
           autoFocus
           placeholder="Add your comment"
           sx={{ flexGrow: 1 }}
@@ -65,6 +90,16 @@ export default function CommentForm() {
           radius="md"
           autosize
           maxRows={3}
+          size="xs"
+          onKeyDown={handleKeyDown}
+          icon={
+            replyingTo?.id === rootEvent?.id ? undefined : (
+              <Text c="purple.5" fz="xs" px={4} truncate>
+                {formattedReplyingToName}
+              </Text>
+            )
+          }
+          iconWidth={Math.min(84, formattedReplyingToName.length * 12 + 8)}
           rightSection={
             form.values.comment ? (
               <Button

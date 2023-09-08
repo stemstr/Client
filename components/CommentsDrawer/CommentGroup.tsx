@@ -13,7 +13,7 @@ import {
 } from "components/NoteHeader/NoteHeader";
 import { Comment, useComments } from "ndk/NDKCommentsProvider";
 import { EventProvider, useEvent } from "ndk/NDKEventProvider";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type CommentProps = {
   comment: Comment;
@@ -21,7 +21,7 @@ type CommentProps = {
 
 export default function CommentGroup({ comment }: CommentProps) {
   return (
-    <Box py={8}>
+    <Box pb={8}>
       <EventProvider event={comment.event}>
         <CommentView />
       </EventProvider>
@@ -31,7 +31,14 @@ export default function CommentGroup({ comment }: CommentProps) {
 }
 
 const CommentChildren = ({ events }: { events: NDKEvent[] }) => {
+  const { highlightedEvent } = useComments();
   const [isShowingReplies, setIsShowingReplies] = useState(false);
+
+  useEffect(() => {
+    if (events.find((event) => event.id === highlightedEvent?.id)) {
+      setIsShowingReplies(true);
+    }
+  }, [events, highlightedEvent]);
 
   const handleShowRepliesClick = () => {
     setIsShowingReplies(true);
@@ -115,11 +122,33 @@ const CommentContent = ({ isReply = false }: { isReply?: boolean }) => {
 const CommentActions = ({ isReply = false }: { isReply?: boolean }) => {
   return (
     <Group spacing={12} ml={isReply ? 0 : 46}>
-      <Button fz={13} variant="subtle" c="purple.0" py={4} px={16} mih={0}>
-        Reply
-      </Button>
+      <CommentActionReply />
       <NoteActionLike size={16} c="white" />
       <NoteActionZap size={16} c="white" />
     </Group>
+  );
+};
+
+const CommentActionReply = () => {
+  const { setReplyingTo, commentTextareaRef } = useComments();
+  const { event } = useEvent();
+
+  const handleClick = () => {
+    setReplyingTo(event);
+    commentTextareaRef?.current?.focus();
+  };
+
+  return (
+    <Button
+      onClick={handleClick}
+      fz={13}
+      variant="subtle"
+      c="purple.0"
+      py={4}
+      px={16}
+      mih={0}
+    >
+      Reply
+    </Button>
   );
 };
