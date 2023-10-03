@@ -2,7 +2,7 @@ export const DEFAULT_RELAY_URLS: string[] = [
   // // paid relays
   "wss://eden.nostr.land",
   "wss://puravida.nostr.land",
-  "wss://nostr.milou.lol",
+  // "wss://nostr.milou.lol",
   "wss://nostr.wine",
   // // public relays
   "wss://relay.damus.io",
