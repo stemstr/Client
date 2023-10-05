@@ -2,7 +2,6 @@ import {
   Drawer as BaseDrawer,
   type DrawerProps as BaseDrawerProp,
 } from "@mantine/core";
-import withStopClickPropagation from "../../utils/hoc/withStopClickPropagation";
 import {
   type PropsWithChildren,
   type SyntheticEvent,
@@ -12,8 +11,7 @@ import {
 import DrawerHandle from "./DrawerHandle";
 import { noop } from "../../utils/common";
 import { useMediaQuery } from "@mantine/hooks";
-
-const MantineDrawer = withStopClickPropagation<any>(BaseDrawer);
+import useStyles from "components/Drawer/Drawer.styles";
 
 export interface DrawerProps extends BaseDrawerProp {
   onDragEnd?: () => void;
@@ -22,6 +20,9 @@ export interface DrawerProps extends BaseDrawerProp {
 const Drawer = ({
   onDragEnd = noop,
   children,
+  withCloseButton,
+  position,
+  trapFocus,
   ...rest
 }: PropsWithChildren<DrawerProps>) => {
   const [isDragging, setIsDragging] = useState(false);
@@ -31,6 +32,7 @@ const Drawer = ({
   const isOpened = rest.opened;
   const containerRef = useRef<HTMLDivElement>(null);
   const [size, setSize] = useState<number | string>("auto");
+  const { classes } = useStyles();
 
   const getClientY = (event: SyntheticEvent) => {
     if (event.nativeEvent instanceof TouchEvent) {
@@ -80,7 +82,18 @@ const Drawer = ({
   };
 
   return (
-    <MantineDrawer {...rest} size={size}>
+    <BaseDrawer
+      onClick={(e) => e.stopPropagation()}
+      position={position || "bottom"}
+      withCloseButton={withCloseButton || false}
+      trapFocus={trapFocus || false}
+      classNames={{
+        overlay: classes.overlay,
+        drawer: classes.drawer,
+      }}
+      {...rest}
+      size={size}
+    >
       <div ref={containerRef}>
         <DrawerHandle
           pt={24}
@@ -95,7 +108,7 @@ const Drawer = ({
         />
         {children}
       </div>
-    </MantineDrawer>
+    </BaseDrawer>
   );
 };
 

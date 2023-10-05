@@ -1,4 +1,4 @@
-import { Space, Text, Group } from "@mantine/core";
+import { Text, Group, DefaultProps } from "@mantine/core";
 import { ZapIcon } from "icons/StemstrIcon";
 import NoteAction from "components/NoteAction/NoteAction";
 import { useEvent } from "ndk/NDKEventProvider";
@@ -41,7 +41,7 @@ const ZapsAmountTotal = () => {
   ) : null;
 };
 
-const NoteActionContentWithZapWizard = () => {
+const NoteActionContentWithZapWizard = ({ size, c }: NoteActionZapProps) => {
   const { start } = useZapWizard();
   const { event } = useEvent();
   const { isZappedByCurrentUser } = useSelector((state: AppState) =>
@@ -53,14 +53,10 @@ const NoteActionContentWithZapWizard = () => {
       <Group
         position="center"
         spacing={6}
-        sx={(theme) => ({
-          color: isZappedByCurrentUser
-            ? theme.colors.orange[5]
-            : theme.colors.gray[1],
-        })}
+        c={isZappedByCurrentUser ? "orange.5" : c}
         noWrap
       >
-        <ZapIcon width={18} height={18} />
+        <ZapIcon width={size} height={size} />
         <ZapsAmountTotal />
       </Group>
       <ZapWizard />
@@ -68,7 +64,11 @@ const NoteActionContentWithZapWizard = () => {
   );
 };
 
-const NoteActionZap = () => {
+type NoteActionZapProps = DefaultProps & {
+  size?: number;
+};
+
+const NoteActionZap = ({ size = 18, c = "gray.1" }: NoteActionZapProps) => {
   const { event } = useEvent();
   const zapRecipient = useUser(event.pubkey);
   let isZappable: boolean | undefined = false;
@@ -82,7 +82,7 @@ const NoteActionZap = () => {
 
   return isZappable && zapRecipient ? (
     <ZapWizardProvider zapRecipient={zapRecipient} zappedEvent={event}>
-      <NoteActionContentWithZapWizard />
+      <NoteActionContentWithZapWizard size={size} c={c} />
     </ZapWizardProvider>
   ) : null;
 };
