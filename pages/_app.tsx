@@ -19,6 +19,8 @@ import { NostrNotificationsProvider } from "ndk/NostrNotificationsProvider";
 import { SubscribeWizardProvider } from "components/SubscribeWizard/SubscribeWizardProvider";
 import { Analytics } from "@vercel/analytics/react";
 
+import "../theme/global.css";
+
 if (process.env.NEXT_PUBLIC_STEMSTR_RELAY)
   DEFAULT_RELAY_URLS.push(process.env.NEXT_PUBLIC_STEMSTR_RELAY);
 

@@ -1,0 +1,5 @@
+.public-DraftEditorPlaceholder-inner {
+  position: absolute;
+  color: #8a8a8a;
+  pointer-events: none;
+}
