@@ -4,6 +4,7 @@ import CommentsFeed from "./CommentsFeed";
 import { useEvent } from "ndk/NDKEventProvider";
 import { CommentsProvider, useComments } from "ndk/NDKCommentsProvider";
 import CommentForm from "./CommentForm";
+import { isMobile } from "react-device-detect";
 
 export default function CommentsDrawer(props: DrawerProps) {
   const { event } = useEvent();
@@ -12,8 +13,17 @@ export default function CommentsDrawer(props: DrawerProps) {
     <Drawer {...props}>
       <CommentsProvider rootEvent={event} enabled={props.opened}>
         <CommentsDrawerHeader />
-        <CommentsFeed />
-        <CommentForm />
+        {isMobile ? (
+          <>
+            <CommentForm />
+            <CommentsFeed />
+          </>
+        ) : (
+          <>
+            <CommentsFeed />
+            <CommentForm />
+          </>
+        )}
       </CommentsProvider>
     </Drawer>
   );

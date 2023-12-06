@@ -2,6 +2,7 @@ import { Avatar, Box, Group, Stack, Text } from "@mantine/core";
 import { useDraftEditor } from "./DraftEditorProvider";
 import { useUser } from "ndk/hooks/useUser";
 import useProfilePicSrc from "ndk/hooks/useProfilePicSrc";
+import { isMobile } from "react-device-detect";
 
 export default function MentionMenu() {
   const { mentionQuery, mentionOptions, focusedOptionIndex } = useDraftEditor();
@@ -14,11 +15,12 @@ export default function MentionMenu() {
     <Box
       pos="absolute"
       left={0}
-      top={-height}
+      top={isMobile ? undefined : -height}
+      bottom={isMobile ? -height : undefined}
       w="100%"
       h={height}
       bg="dark.8"
-      sx={{ overflowY: "scroll" }}
+      sx={{ overflowY: "scroll", zIndex: 1 }}
     >
       {mentionOptions.map((user, index) => (
         <MentionMenuOption
