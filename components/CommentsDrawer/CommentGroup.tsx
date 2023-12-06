@@ -130,12 +130,12 @@ const CommentActions = ({ isReply = false }: { isReply?: boolean }) => {
 };
 
 const CommentActionReply = () => {
-  const { setReplyingTo, commentTextareaRef } = useComments();
+  const { setReplyingTo, draftEditorRef } = useComments();
   const { event } = useEvent();
 
   const handleClick = () => {
     setReplyingTo(event);
-    commentTextareaRef?.current?.focus();
+    draftEditorRef?.current?.focus();
   };
 
   return (

@@ -14,6 +14,7 @@ import {
 import { useNDK } from "./NDKProvider";
 import { parseEventTags } from "./utils";
 import { noop } from "utils/common";
+import { Editor } from "draft-js";
 
 export type Comment = {
   event: NDKEvent;
@@ -32,7 +33,7 @@ type CommentsContextType = {
   highlightedEvent?: NDKEvent;
   setReplyingTo: Dispatch<SetStateAction<NDKEvent>>;
   setHighlightedEvent: Dispatch<SetStateAction<NDKEvent | undefined>>;
-  commentTextareaRef?: MutableRefObject<HTMLTextAreaElement | null>;
+  draftEditorRef?: MutableRefObject<Editor | null>;
 };
 
 const CommentsContext = createContext<CommentsContextType>({
@@ -50,7 +51,7 @@ export const CommentsProvider = ({
   const [comments, setComments] = useState<Comment[] | undefined>();
   const [replyingTo, setReplyingTo] = useState<NDKEvent>(rootEvent);
   const [highlightedEvent, setHighlightedEvent] = useState<NDKEvent>();
-  const commentTextareaRef = useRef<HTMLTextAreaElement>(null);
+  const draftEditorRef = useRef<Editor>(null);
 
   useEffect(() => {
     if (enabled && ndk) {
@@ -114,7 +115,7 @@ export const CommentsProvider = ({
     highlightedEvent,
     setReplyingTo,
     setHighlightedEvent,
-    commentTextareaRef,
+    draftEditorRef,
   };
 
   return (

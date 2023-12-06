@@ -1,4 +1,4 @@
-import { KeyboardEvent } from "react";
+import { KeyboardEvent, useRef } from "react";
 import {
   DraftHandleValue,
   Editor,
@@ -18,7 +18,7 @@ export default function DraftEditorTextarea() {
     navigateMentionList,
     rawNoteContent,
   } = useDraftEditor();
-  const { setReplyingTo, rootEvent } = useComments();
+  const { setReplyingTo, rootEvent, draftEditorRef } = useComments();
 
   const handleKeyCommand = (command: string): DraftHandleValue => {
     switch (command) {
@@ -70,6 +70,7 @@ export default function DraftEditorTextarea() {
   return (
     <Box miw={0} sx={{ flexGrow: 1 }}>
       <Editor
+        ref={draftEditorRef}
         editorState={editorState}
         handleKeyCommand={handleKeyCommand}
         keyBindingFn={handleKeyDown}
