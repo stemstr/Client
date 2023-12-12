@@ -1,4 +1,5 @@
 import { createStyles } from "@mantine/core";
+import { hasNotch, isPwa } from "utils/common";
 
 const useStyles = createStyles((theme, _params, getRef) => ({
   overlay: {
@@ -13,7 +14,7 @@ const useStyles = createStyles((theme, _params, getRef) => ({
     maxWidth: 600,
     margin: "auto",
     paddingTop: "0 !important",
-    paddingBottom: "24px !important",
+    paddingBottom: isPwa() && hasNotch() ? "32px !important" : undefined,
   },
 }));
 
