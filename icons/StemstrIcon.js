@@ -1,21 +1,15 @@
 import Bell from "./Line icons/Alerts & feedback/bell-02.svg";
-
 import ArrowRight from "./Line icons/Arrows/arrow-right.svg";
 import ChevronLeft from "./Line icons/Arrows/chevron-left.svg";
 import ChevronRight from "./Line icons/Arrows/chevron-right.svg";
 import Download from "./Line icons/Arrows/arrow-down.svg";
 import Infinity from "./Line icons/Arrows/infinity.svg";
-
 import Comment from "./Line icons/Communication/message-square-02.svg";
-
 import BracketsEllipses from "./Line icons/Development/brackets-ellipses.svg";
 import Code from "./Line icons/Development/code-02.svg";
-
 import AlignLeft from "./Line icons/Editor/align-left.svg";
-
 import Tags from "./Line icons/Finance & eCommerce/tag-03.svg";
 import Wallet from "./Line icons/Finance & eCommerce/wallet-02.svg";
-
 import AtSign from "./Line icons/General/at-sign.svg";
 import Check from "./Line icons/General/check.svg";
 import CheckCircle from "./Line icons/General/check-circle.svg";
@@ -36,26 +30,22 @@ import Share from "./Line icons/General/share-02.svg";
 import Trash from "./Line icons/General/trash-03.svg";
 import XClose from "./Line icons/General/x-close.svg";
 import Zap from "./Line icons/General/zap.svg";
-
 import CameraPlus from "./Line icons/Images/camera-plus.svg";
-
 import Compass from "./Line icons/Maps & travel/compass-03.svg";
-
 import AddSound from "./Line icons/Media & devices/music.svg";
 import Pause from "./Line icons/Media & devices/pause.svg";
 import Play from "./Line icons/Media & devices/play.svg";
 import Stop from "./Line icons/Media & devices/stop.svg";
-
 import Key from "./Line icons/Security/key-01.svg";
 import Lock from "./Line icons/Security/lock-01.svg";
-
+import StarLine from "./Line icons/Shapes/star-04.svg";
 import Follow from "./Line icons/Users/user-right-01.svg";
 import Following from "./Line icons/Users/user-check-01.svg";
 import Profile from "./Line icons/Users/user-circle.svg";
 import Unfollow from "./Line icons/Users/user-left-01.svg";
 
+import StarSolid from "./Solid icons/Shapes/star-04.svg";
 import CalendarSolid from "./Solid icons/Time/calendar.svg";
-
 import StarsSolid from "./Solid icons/Weather/stars-02.svg";
 
 import Collection from "./collection.svg";
@@ -451,6 +441,22 @@ export const StarsSolidIcon = (props) => {
   return (
     <StemstrIcon>
       <StarsSolid {...props} />
+    </StemstrIcon>
+  );
+};
+
+export const StarSolidIcon = (props) => {
+  return (
+    <StemstrIcon>
+      <StarSolid {...props} />
+    </StemstrIcon>
+  );
+};
+
+export const StarLineIcon = (props) => {
+  return (
+    <StemstrIcon>
+      <StarLine {...props} />
     </StemstrIcon>
   );
 };
