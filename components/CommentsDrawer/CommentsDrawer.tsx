@@ -10,7 +10,17 @@ export default function CommentsDrawer(props: DrawerProps) {
   const { event } = useEvent();
 
   return (
-    <Drawer {...props}>
+    <Drawer
+      {...props}
+      styles={(theme) => ({
+        drawer: {
+          borderTopWidth: 1,
+          borderTopStyle: "solid",
+          borderTopColor: theme.colors.purple[4],
+          boxShadow: "0px -8px 32px 0px #2E1F4D",
+        },
+      })}
+    >
       <CommentsProvider rootEvent={event} enabled={props.opened}>
         <CommentsDrawerHeader />
         {isMobile ? (

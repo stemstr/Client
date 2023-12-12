@@ -29,7 +29,7 @@ const stemstrTheme: MantineThemeOverride = {
       "#EAE2FC", // purple.1
       "#BFAAEA", // purple.2
       "#BFAAEA", // purple.3
-      "#BFAAEA", // purple.4
+      "#9747FF", // purple.4
       "#865AE2", // purple.5
       "#865AE2", // purple.6
       "#763AF4", // purple.7
